@@ -70,7 +70,7 @@ token, internal service token).
 ```bash
 npm install
 cp .env.example .env.local   # fill in real values
-npm run dev
+npm run dev   # serves on :3001 — :3000 is teracom-ai-frontend's, run both side by side
 ```
 
 ## Notes

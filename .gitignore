@@ -14,6 +14,8 @@
 .DS_Store
 *.log
 
-# typescript (tsconfig.json exists for editor tooling only — this repo is JS)
+# typescript (jsconfig.json is what this repo actually uses — this repo is
+# JS, not TS; these two are ignored pre-emptively in case @types/node or
+# @types/react ever trigger Next.js's own auto-generated tsconfig.json)
 *.tsbuildinfo
 next-env.d.ts
