@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { stripe } from '@/lib/stripe';
 import { findProduct } from '@/lib/products';
+import { SITE_URL } from '@/lib/config';
 
 const CheckoutRequest = z.object({
   productId: z.string(),
@@ -18,7 +19,7 @@ const CheckoutRequest = z.object({
 });
 
 export async function POST(req) {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+  const siteUrl = SITE_URL;
   const parsed = CheckoutRequest.safeParse(await req.json());
 
   if (!parsed.success) {
