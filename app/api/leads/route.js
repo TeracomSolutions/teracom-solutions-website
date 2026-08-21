@@ -2,6 +2,15 @@ import { NextResponse } from 'next/server';
 
 import { submitLead } from '@/lib/api/leads';
 import { ApiError } from '@/lib/api/client';
+import { checkRateLimit, clientIpFromRequest } from '@/lib/rateLimit';
+
+// Spam/junk-CRM-data defence, not fraud defence (flagged in
+// Repository_Audit_Decision_Memo_V1.md item 6) -- a looser limit than
+// checkout's, since a real prospect submitting this form more than once in
+// a short window (fixing a typo, trying a different interest) is plausible
+// and shouldn't be blocked.
+const LEADS_RATE_LIMIT_MAX_ATTEMPTS = Number(process.env.LEADS_RATE_LIMIT_MAX_ATTEMPTS) || 5;
+const LEADS_RATE_LIMIT_WINDOW_MS = (Number(process.env.LEADS_RATE_LIMIT_WINDOW_SECONDS) || 600) * 1000;
 
 // "Customer Experience & Commercial Readiness Wave", objectives
 // #10-#11 (Contact Sales / Demo Request workflows). Previously this
@@ -21,6 +30,20 @@ const INTEREST_TO_INQUIRY_TYPE = {
 };
 
 export async function POST(req) {
+  const rateLimitKey = `leads:${clientIpFromRequest(req)}`;
+  const rateLimit = checkRateLimit(rateLimitKey, {
+    maxAttempts: LEADS_RATE_LIMIT_MAX_ATTEMPTS,
+    windowMs: LEADS_RATE_LIMIT_WINDOW_MS,
+  });
+  if (!rateLimit.allowed) {
+    // Same visitor-facing redirect the backend-call failure path below
+    // uses (the homepage only distinguishes lead=received/lead=error) —
+    // logged distinctly server-side so the two cases stay distinguishable
+    // in the logs even though the visitor sees the same generic message.
+    console.warn('Lead submission rate limited', rateLimitKey, `retry after ${rateLimit.retryAfterSeconds}s`);
+    return NextResponse.redirect(new URL('/?lead=error#contact', req.url), 303);
+  }
+
   const form = await req.formData();
   const lead = Object.fromEntries(form.entries());
 

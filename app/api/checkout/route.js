@@ -3,6 +3,15 @@ import { z } from 'zod';
 import { stripe } from '@/lib/stripe';
 import { findProduct } from '@/lib/products';
 import { SITE_URL } from '@/lib/config';
+import { checkRateLimit, clientIpFromRequest, rateLimitResponse } from '@/lib/rateLimit';
+
+// Card-testing defence: an unauthenticated endpoint that creates a real
+// Stripe Checkout Session is a standard target for automated card-testing
+// fraud once this is public (flagged in Repository_Audit_Decision_Memo_V1.md
+// item 6). A generous-but-real per-IP limit -- legitimate customers don't
+// start 20 checkouts a minute; a card-testing script does.
+const CHECKOUT_RATE_LIMIT_MAX_ATTEMPTS = Number(process.env.CHECKOUT_RATE_LIMIT_MAX_ATTEMPTS) || 10;
+const CHECKOUT_RATE_LIMIT_WINDOW_MS = (Number(process.env.CHECKOUT_RATE_LIMIT_WINDOW_SECONDS) || 60) * 1000;
 
 const CheckoutRequest = z.object({
   productId: z.string(),
@@ -19,6 +28,15 @@ const CheckoutRequest = z.object({
 });
 
 export async function POST(req) {
+  const rateLimitKey = `checkout:${clientIpFromRequest(req)}`;
+  const rateLimit = checkRateLimit(rateLimitKey, {
+    maxAttempts: CHECKOUT_RATE_LIMIT_MAX_ATTEMPTS,
+    windowMs: CHECKOUT_RATE_LIMIT_WINDOW_MS,
+  });
+  if (!rateLimit.allowed) {
+    return rateLimitResponse(rateLimit.retryAfterSeconds, 'Too many checkout attempts. Please try again shortly.');
+  }
+
   const siteUrl = SITE_URL;
   const parsed = CheckoutRequest.safeParse(await req.json());
 
