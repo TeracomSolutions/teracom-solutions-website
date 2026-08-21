@@ -1,0 +1,116 @@
+name: CI
+
+# Website_Application_Separation_Plan_V1.md §4.4 / §5 Phase 4. Mirrors
+# teracom-ai-frontend's own pipeline (introduced Phase 2), adapted for
+# this repo's own routes and its own file: dependency on @teracoms/ui.
+#
+# Every step below is self-contained: no GitHub repo secrets, no real
+# backend, no database. The deployment-validation smoke test below
+# deliberately only exercises routes that render with no backend call at
+# all (the homepage and the static robots.txt/sitemap.xml routes) — this
+# pipeline must be able to prove the app builds and boots on its own,
+# without requiring teracom-ai-backend to be running anywhere. (The
+# Stripe webhook, checkout, and lead-capture routes DO call
+# teracom-ai-backend server-side, but only when actually hit — no route
+# calls it at build time or at idle, so it's absent here without issue.)
+#
+# package.json depends on @teracoms/ui via a local `file:../teracom-ui`
+# path (see README.md), so this repo and teracoms/teracom-ui are checked
+# out as siblings under the same workspace below rather than this repo
+# alone — npm ci's install of that dependency resolves that relative
+# path the same way it does on a developer's machine. This assumes a
+# `teracoms/teracom-ui` remote exists; harmless if it doesn't yet, since
+# this whole workflow is inert until this repo itself has a remote to
+# run it against.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch: {}
+
+jobs:
+  ci:
+    name: Lint, test, build, and deployment validation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout teracom-solutions-website
+        uses: actions/checkout@v4
+        with:
+          path: teracom-solutions-website
+
+      - name: Checkout @teracoms/ui (sibling, for the local file: dependency)
+        uses: actions/checkout@v4
+        with:
+          repository: teracoms/teracom-ui
+          path: teracom-ui
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: 'teracom-solutions-website/.nvmrc'
+          cache: 'npm'
+          cache-dependency-path: 'teracom-solutions-website/package-lock.json'
+
+      - name: Install dependencies
+        working-directory: teracom-solutions-website
+        run: npm ci
+
+      - name: Lint
+        working-directory: teracom-solutions-website
+        run: npm run lint
+
+      - name: Test
+        working-directory: teracom-solutions-website
+        run: npm test
+
+      - name: Build
+        working-directory: teracom-solutions-website
+        run: npm run build
+
+      # Deployment validation — not a real deploy (Phase 5's job, once a
+      # real target exists per Website_Application_Separation_Plan_V1.md
+      # §4.8). This starts the actual production build the same way
+      # `npm start` would on the real host, and proves it comes up and
+      # serves real traffic before anything is allowed to merge to main.
+      - name: Start production server
+        working-directory: teracom-solutions-website
+        run: |
+          npm start &
+          disown
+
+      - name: Wait for server to become ready
+        run: |
+          for i in $(seq 1 30); do
+            if curl -s -o /dev/null "http://127.0.0.1:3000/robots.txt"; then
+              echo "Server is up after ${i}s"
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "::error::Server did not become ready within 30s"
+          exit 1
+
+      - name: Smoke-test backend-independent routes
+        run: |
+          set -e
+          for path in "/" "/robots.txt" "/sitemap.xml" "/securityos-ai" "/store"; do
+            code=$(curl -s -o /dev/null -w "%{http_code}" "http://127.0.0.1:3000${path}")
+            echo "GET ${path} -> ${code}"
+            if [ "${code}" != "200" ]; then
+              echo "::error::${path} returned ${code}, expected 200"
+              exit 1
+            fi
+          done
+
+      # `npm start` spawns `next start` as a child process — the PID `$!`
+      # captures is npm's own wrapper, not the actual server, so this
+      # kills by matching the real process instead of a tracked PID.
+      # Harmless either way in CI (each job runs in a throwaway VM that's
+      # destroyed after this job), but correct is still better than
+      # accidentally-correct.
+      - name: Stop production server
+        if: always()
+        run: pkill -f "next-server" || true
