@@ -84,7 +84,7 @@ jobs:
       - name: Wait for server to become ready
         run: |
           for i in $(seq 1 30); do
-            if curl -s -o /dev/null "http://127.0.0.1:3000/robots.txt"; then
+            if curl -s -o /dev/null "http://127.0.0.1:3001/robots.txt"; then
               echo "Server is up after ${i}s"
               exit 0
             fi
@@ -97,7 +97,7 @@ jobs:
         run: |
           set -e
           for path in "/" "/robots.txt" "/sitemap.xml" "/securityos-ai" "/store"; do
-            code=$(curl -s -o /dev/null -w "%{http_code}" "http://127.0.0.1:3000${path}")
+            code=$(curl -s -o /dev/null -w "%{http_code}" "http://127.0.0.1:3001${path}")
             echo "GET ${path} -> ${code}"
             if [ "${code}" != "200" ]; then
               echo "::error::${path} returned ${code}, expected 200"
