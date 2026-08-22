@@ -39,19 +39,14 @@ lib/                            products, stripe, zoho, feed-importer, config
 lib/api/                        client, commerceLicensing, leads
 ```
 
-## Shared design system
+## Design system
 
-Visual styling (CSS custom properties, `.btn`/`.hero`/`.section`/etc. class
-vocabulary) comes from the `@teracoms/ui` package, not a local
-`globals.css`. See `../teracom-ui/README.md`. This repo expects
-`teracom-ui` checked out as a sibling directory:
-
-```text
-teracom-ai/
-  teracom-solutions-website/   (this repo)
-  teracom-ui/
-  frontend/                    (teracom-ai-frontend, the product app)
-```
+Visual styling (CSS custom properties, `.btn`/`.hero`/`.section`/`.showcase-*`
+etc. class vocabulary) lives entirely in this repo's own `app/globals.css`.
+Per `UI_DECOUPLING_PLAN_V1.md` (2026-08-22), the former shared `@teracoms/ui`
+package has been dissolved: this app no longer has any cross-repository
+dependency for its styling. Edit `app/globals.css` directly for any visual
+change; there is no longer a second file or repository to keep in sync.
 
 ## Backend dependency
 
