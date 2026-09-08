@@ -25,7 +25,7 @@ export default function Footer() {
         </div>
       </div>
       <div className="container footer-bottom">
-        <span>© Teracom Solutions</span>
+        <span>© {new Date().getFullYear()} Teracom Solutions</span>
         <Link href="#top">Back to top ↑</Link>
       </div>
     </footer>
