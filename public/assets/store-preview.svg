@@ -1,0 +1,49 @@
+<svg viewBox="0 0 1200 700" width="1200" height="700" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="700" fill="#050505"/>
+
+  <!-- product grid -->
+  <g font-family="Arial, sans-serif">
+    <!-- card 1 -->
+    <g transform="translate(90,90)">
+      <rect width="300" height="340" rx="16" fill="rgba(255,255,255,.045)" stroke="rgba(255,255,255,.14)"/>
+      <rect x="24" y="24" width="252" height="180" rx="10" fill="rgba(255,255,255,.06)"/>
+      <rect x="110" y="80" width="80" height="68" rx="8" fill="none" stroke="#ff4b4b" stroke-width="4"/>
+      <circle cx="150" cy="114" r="16" fill="none" stroke="#ff4b4b" stroke-width="4"/>
+      <rect x="24" y="222" width="160" height="12" rx="6" fill="rgba(255,255,255,.35)"/>
+      <rect x="24" y="248" width="100" height="10" rx="5" fill="rgba(255,255,255,.2)"/>
+      <rect x="24" y="284" width="70" height="24" rx="12" fill="#ff1717"/>
+      <rect x="180" y="284" width="96" height="24" rx="12" fill="rgba(255,255,255,.08)"/>
+    </g>
+
+    <!-- card 2, highlighted -->
+    <g transform="translate(430,70)">
+      <rect width="300" height="380" rx="16" fill="rgba(255,23,23,.08)" stroke="#ff4b4b" stroke-width="2"/>
+      <rect x="24" y="24" width="252" height="24" rx="12" fill="#ff1717"/>
+      <rect x="24" y="72" width="252" height="160" rx="10" fill="rgba(255,255,255,.07)"/>
+      <path d="M150,102 L190,182 L110,182 Z" fill="none" stroke="#ff4b4b" stroke-width="4" stroke-linejoin="round"/>
+      <circle cx="150" cy="150" r="14" fill="none" stroke="#ff4b4b" stroke-width="4"/>
+      <rect x="24" y="252" width="180" height="12" rx="6" fill="rgba(255,255,255,.4)"/>
+      <rect x="24" y="278" width="120" height="10" rx="5" fill="rgba(255,255,255,.22)"/>
+      <rect x="24" y="322" width="252" height="30" rx="15" fill="#ff1717"/>
+    </g>
+
+    <!-- card 3 -->
+    <g transform="translate(770,90)">
+      <rect width="300" height="340" rx="16" fill="rgba(255,255,255,.045)" stroke="rgba(255,255,255,.14)"/>
+      <rect x="24" y="24" width="252" height="180" rx="10" fill="rgba(255,255,255,.06)"/>
+      <rect x="90" y="70" width="120" height="90" rx="10" fill="none" stroke="#ff4b4b" stroke-width="4"/>
+      <path d="M110,70 V50 a40,40 0 0 1 80,0 V70" fill="none" stroke="#ff4b4b" stroke-width="4"/>
+      <rect x="24" y="222" width="160" height="12" rx="6" fill="rgba(255,255,255,.35)"/>
+      <rect x="24" y="248" width="100" height="10" rx="5" fill="rgba(255,255,255,.2)"/>
+      <rect x="24" y="284" width="70" height="24" rx="12" fill="#ff1717"/>
+      <rect x="180" y="284" width="96" height="24" rx="12" fill="rgba(255,255,255,.08)"/>
+    </g>
+  </g>
+
+  <!-- cart icon, bottom right -->
+  <g transform="translate(1030,560)" stroke="#ff4b4b" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M0,0 H16 L34,80 H104 L120,24 H28"/>
+    <circle cx="42" cy="104" r="10" fill="#ff1717" stroke="none"/>
+    <circle cx="96" cy="104" r="10" fill="#ff1717" stroke="none"/>
+  </g>
+</svg>

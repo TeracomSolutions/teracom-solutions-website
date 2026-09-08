@@ -1,0 +1,69 @@
+<svg viewBox="0 0 1400 900" width="1400" height="900" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="heroGlow" cx="72%" cy="28%" r="60%">
+      <stop offset="0%" stop-color="#ff1717" stop-opacity="0.22"/>
+      <stop offset="100%" stop-color="#ff1717" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="heroLine" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ff4b4b"/>
+      <stop offset="100%" stop-color="#ff1717"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1400" height="900" fill="#050505"/>
+  <rect width="1400" height="900" fill="url(#heroGlow)"/>
+
+  <!-- connective network lines behind the panels -->
+  <g stroke="rgba(255,255,255,.14)" stroke-width="1.5" fill="none">
+    <path d="M120,760 L420,560 L760,620 L1060,420 L1300,300"/>
+    <path d="M180,300 L420,560"/>
+    <path d="M760,620 L980,760"/>
+    <path d="M1060,420 L1180,220"/>
+  </g>
+  <g fill="#ff4b4b">
+    <circle cx="120" cy="760" r="6"/>
+    <circle cx="420" cy="560" r="6"/>
+    <circle cx="760" cy="620" r="6"/>
+    <circle cx="1060" cy="420" r="6"/>
+    <circle cx="1300" cy="300" r="6"/>
+    <circle cx="180" cy="300" r="5" fill="rgba(255,255,255,.5)"/>
+    <circle cx="980" cy="760" r="5" fill="rgba(255,255,255,.5)"/>
+    <circle cx="1180" cy="220" r="5" fill="rgba(255,255,255,.5)"/>
+  </g>
+
+  <!-- central shield: security -->
+  <g transform="translate(560,300)">
+    <path d="M120,0 L228,40 L228,150 C228,235 180,290 120,320 C60,290 12,235 12,150 L12,40 Z"
+          fill="rgba(255,23,23,.10)" stroke="url(#heroLine)" stroke-width="3"/>
+    <path d="M72,158 L108,196 L172,116" fill="none" stroke="#fff" stroke-width="8"
+          stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <!-- floating data panels: AI / dashboard -->
+  <g transform="translate(860,140)">
+    <rect width="300" height="150" rx="14" fill="rgba(255,255,255,.045)" stroke="rgba(255,255,255,.16)"/>
+    <rect x="24" y="28" width="120" height="10" rx="5" fill="rgba(255,255,255,.35)"/>
+    <rect x="24" y="52" width="80" height="10" rx="5" fill="rgba(255,255,255,.2)"/>
+    <polyline points="24,118 70,90 116,104 162,58 208,76 254,44"
+              fill="none" stroke="#ff4b4b" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <g transform="translate(90,120)">
+    <rect width="220" height="120" rx="14" fill="rgba(255,255,255,.045)" stroke="rgba(255,255,255,.16)"/>
+    <circle cx="46" cy="46" r="20" fill="none" stroke="#ff4b4b" stroke-width="4"/>
+    <path d="M46,30 L46,46 L58,58" stroke="#ff4b4b" stroke-width="4" stroke-linecap="round" fill="none"/>
+    <rect x="86" y="34" width="104" height="9" rx="4.5" fill="rgba(255,255,255,.3)"/>
+    <rect x="86" y="56" width="72" height="9" rx="4.5" fill="rgba(255,255,255,.18)"/>
+  </g>
+
+  <g transform="translate(980,600)">
+    <rect width="260" height="130" rx="14" fill="rgba(255,255,255,.045)" stroke="rgba(255,255,255,.16)"/>
+    <g fill="#ff4b4b">
+      <rect x="26" y="72" width="20" height="34" rx="3"/>
+      <rect x="58" y="52" width="20" height="54" rx="3" fill="#ff1717"/>
+      <rect x="90" y="34" width="20" height="72" rx="3"/>
+      <rect x="122" y="60" width="20" height="46" rx="3" fill="#ff1717"/>
+    </g>
+    <rect x="26" y="24" width="130" height="9" rx="4.5" fill="rgba(255,255,255,.3)"/>
+  </g>
+</svg>
