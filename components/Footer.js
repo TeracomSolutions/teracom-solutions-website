@@ -7,7 +7,7 @@ export default function Footer() {
       <div className="container footer-main">
         <div className="footer-brand">
           <Image
-            src="/assets/teracom-logo.png"
+            src="/assets/teracom-logo.svg"
             alt="Teracom Solutions"
             width={260}
             height={68}

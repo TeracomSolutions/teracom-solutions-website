@@ -1,0 +1,74 @@
+<svg viewBox="0 0 1200 760" width="1200" height="760" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="760" fill="#050505"/>
+  <rect x="1" y="1" width="1198" height="758" rx="20" fill="rgba(255,255,255,.03)" stroke="rgba(255,255,255,.12)"/>
+
+  <!-- top bar -->
+  <g>
+    <rect x="1" y="1" width="1198" height="64" rx="20" fill="rgba(255,255,255,.04)"/>
+    <rect x="1" y="45" width="1198" height="20" fill="rgba(255,255,255,.04)"/>
+    <circle cx="40" cy="33" r="7" fill="#ff1717"/>
+    <circle cx="64" cy="33" r="7" fill="rgba(255,255,255,.25)"/>
+    <circle cx="88" cy="33" r="7" fill="rgba(255,255,255,.25)"/>
+    <rect x="500" y="22" width="200" height="22" rx="11" fill="rgba(255,255,255,.06)"/>
+  </g>
+
+  <!-- left nav rail -->
+  <g transform="translate(0,64)">
+    <rect x="1" y="0" width="220" height="695" fill="rgba(255,255,255,.03)"/>
+    <g fill="rgba(255,255,255,.5)">
+      <rect x="32" y="36" width="150" height="12" rx="6" fill="#ff4b4b"/>
+      <rect x="32" y="76" width="120" height="10" rx="5" opacity=".7"/>
+      <rect x="32" y="112" width="130" height="10" rx="5" opacity=".45"/>
+      <rect x="32" y="148" width="100" height="10" rx="5" opacity=".45"/>
+      <rect x="32" y="184" width="140" height="10" rx="5" opacity=".45"/>
+    </g>
+  </g>
+
+  <!-- main panels -->
+  <g transform="translate(256,104)">
+    <!-- alert / shield card -->
+    <rect width="360" height="180" rx="16" fill="rgba(255,23,23,.08)" stroke="rgba(255,23,23,.4)"/>
+    <path d="M40,44 L86,58 L86,104 C86,132 66,150 40,160 C14,150 -6,132 -6,104"
+          transform="translate(30,0)" fill="none" stroke="#ff4b4b" stroke-width="4"/>
+    <rect x="140" y="40" width="180" height="12" rx="6" fill="rgba(255,255,255,.4)"/>
+    <rect x="140" y="66" width="140" height="10" rx="5" fill="rgba(255,255,255,.22)"/>
+    <rect x="140" y="110" width="150" height="28" rx="8" fill="#ff1717"/>
+  </g>
+
+  <g transform="translate(648,104)">
+    <rect width="296" height="180" rx="16" fill="rgba(255,255,255,.045)" stroke="rgba(255,255,255,.14)"/>
+    <circle cx="80" cy="90" r="56" fill="none" stroke="rgba(255,255,255,.14)" stroke-width="14"/>
+    <circle cx="80" cy="90" r="56" fill="none" stroke="#ff4b4b" stroke-width="14"
+            stroke-dasharray="230 352" stroke-linecap="round" transform="rotate(-90 80 90)"/>
+    <rect x="176" y="56" width="96" height="10" rx="5" fill="rgba(255,255,255,.3)"/>
+    <rect x="176" y="78" width="70" height="10" rx="5" fill="rgba(255,255,255,.18)"/>
+    <rect x="176" y="112" width="90" height="22" rx="6" fill="rgba(255,255,255,.08)"/>
+  </g>
+
+  <g transform="translate(256,320)">
+    <rect width="688" height="220" rx="16" fill="rgba(255,255,255,.045)" stroke="rgba(255,255,255,.14)"/>
+    <rect x="28" y="28" width="160" height="12" rx="6" fill="rgba(255,255,255,.32)"/>
+    <polyline points="28,168 108,120 188,152 268,90 348,110 428,64 508,96 588,50 648,74"
+              fill="none" stroke="#ff4b4b" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    <g fill="#ff4b4b">
+      <circle cx="108" cy="120" r="5"/><circle cx="268" cy="90" r="5"/>
+      <circle cx="428" cy="64" r="5"/><circle cx="588" cy="50" r="5"/>
+    </g>
+  </g>
+
+  <g transform="translate(256,564)">
+    <rect width="220" height="112" rx="14" fill="rgba(255,255,255,.045)" stroke="rgba(255,255,255,.14)"/>
+    <rect x="228" y="0" width="220" height="112" rx="14" fill="rgba(255,255,255,.045)" stroke="rgba(255,255,255,.14)"/>
+    <rect x="456" y="0" width="232" height="112" rx="14" fill="rgba(255,255,255,.045)" stroke="rgba(255,255,255,.14)"/>
+    <g fill="rgba(255,255,255,.35)">
+      <rect x="24" y="24" width="80" height="10" rx="5"/>
+      <rect x="252" y="24" width="80" height="10" rx="5"/>
+      <rect x="480" y="24" width="80" height="10" rx="5"/>
+    </g>
+    <g fill="#ff4b4b">
+      <text x="24" y="76" font-family="monospace" font-size="30" font-weight="700">128</text>
+      <text x="252" y="76" font-family="monospace" font-size="30" font-weight="700">99%</text>
+      <text x="480" y="76" font-family="monospace" font-size="30" font-weight="700">4.2s</text>
+    </g>
+  </g>
+</svg>
