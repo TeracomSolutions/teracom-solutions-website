@@ -41,6 +41,15 @@ a {
 .nav a:hover {
   opacity:1;color:#fff;
 }
+.cart-indicator {
+  position:relative;display:flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:12px;border:1px solid var(--line);color:var(--text);
+}
+.cart-indicator:hover {
+  background:rgba(255,255,255,.06);
+}
+.cart-count {
+  position:absolute;top:-6px;right:-6px;min-width:20px;height:20px;padding:0 5px;border-radius:999px;background:var(--red);color:#fff;font-size:11px;font-weight:900;display:flex;align-items:center;justify-content:center;
+}
 .mobile-nav-toggle {
   display:none;background:transparent;border:1px solid var(--line);border-radius:10px;width:44px;height:44px;align-items:center;justify-content:center;cursor:pointer;
 }
@@ -251,6 +260,39 @@ a {
 .price {
   font-size:28px;font-weight:900;margin:24px 0 14px!important;color:#fff!important;
 }
+.cart-qty-control {
+  display:inline-flex;align-items:center;gap:12px;border:1px solid var(--line);border-radius:999px;padding:8px 16px;background:rgba(255,255,255,.04);color:#dedede;font-size:14px;
+}
+.cart-qty-control button {
+  width:26px;height:26px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.06);color:#fff;font-size:16px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;
+}
+.cart-qty-control button:hover {
+  background:rgba(255,255,255,.12);
+}
+.cart-lines {
+  display:flex;flex-direction:column;gap:16px;margin-top:36px;
+}
+.cart-line {
+  display:grid;grid-template-columns:1fr auto auto auto;gap:22px;align-items:center;border:1px solid var(--line);background:rgba(255,255,255,.04);border-radius:22px;padding:22px 26px;
+}
+.cart-line-info h3 {
+  font-size:18px;margin:0 0 6px;
+}
+.cart-line-total {
+  font-size:17px;font-weight:800;min-width:90px;text-align:right;
+}
+.cart-remove {
+  background:transparent;border:none;color:var(--muted);font-size:13px;text-decoration:underline;cursor:pointer;
+}
+.cart-remove:hover {
+  color:var(--red2);
+}
+.cart-summary {
+  display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--line);margin-top:30px;padding-top:24px;font-size:18px;
+}
+.cart-total-amount {
+  font-size:28px;font-weight:900;
+}
 .site-footer {
   border-top:1px solid var(--line);padding:70px 0 30px;background:#050505;
 }
@@ -328,6 +370,12 @@ a {
   }
   .large-service-list h3 {
     font-size:28px;
+  }
+  .cart-line {
+    grid-template-columns:1fr;justify-items:start;gap:12px;
+  }
+  .cart-line-total {
+    text-align:left;
   }
 }
 .form-error {

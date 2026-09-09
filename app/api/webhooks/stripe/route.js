@@ -64,26 +64,58 @@ async function linkIfKnownLicence({ licenceId, customerId, subscriptionId, invoi
   }
 }
 
+// Multi-item cart checkouts (app/api/checkout/cart/route.js) carry no single
+// productId in session metadata -- itemization comes from Stripe's own line
+// items instead of our product catalog, since a cart can mix any number of
+// products in one session and metadata values are capped at 500 characters.
+async function syncCartCheckoutToZoho(session, email) {
+  if (!email || !process.env.ZOHO_REFRESH_TOKEN) return;
+
+  try {
+    const lineItemsResponse = await stripe.checkout.sessions.listLineItems(session.id, { limit: 100 });
+    const lineItems = lineItemsResponse.data.map((li) => ({
+      name: li.description || 'Teracom Store item',
+      rate: (li.price?.unit_amount ?? Math.round(li.amount_total / (li.quantity || 1))) / 100,
+      quantity: li.quantity || 1,
+    }));
+    if (lineItems.length === 0) return;
+
+    const contact = await createZohoContact({ contactName: session.customer_details?.name || email, email });
+    const customerId = contact?.contact?.contact_id || contact?.contact_id;
+
+    if (customerId) {
+      await createZohoInvoice({ customerId, referenceNumber: session.id, lineItems });
+    }
+  } catch (error) {
+    console.error('Zoho cart sync failed', error);
+  }
+}
+
 async function handleCheckoutSessionCompleted(session) {
-  const product = findProduct(session.metadata?.productId);
   const email = session.customer_details?.email;
 
-  if (product && email && process.env.ZOHO_REFRESH_TOKEN) {
-    try {
-      const contact = await createZohoContact({ contactName: session.customer_details?.name || email, email });
-      const customerId = contact?.contact?.contact_id || contact?.contact_id;
+  if (session.metadata?.cartCheckout === 'true') {
+    await syncCartCheckoutToZoho(session, email);
+  } else {
+    const product = findProduct(session.metadata?.productId);
 
-      if (customerId) {
-        await createZohoInvoice({
-          customerId,
-          referenceNumber: session.id,
-          lineItems: [
-            { name: product.name, description: product.description, rate: product.priceCents / 100, quantity: 1 },
-          ],
-        });
+    if (product && email && process.env.ZOHO_REFRESH_TOKEN) {
+      try {
+        const contact = await createZohoContact({ contactName: session.customer_details?.name || email, email });
+        const customerId = contact?.contact?.contact_id || contact?.contact_id;
+
+        if (customerId) {
+          await createZohoInvoice({
+            customerId,
+            referenceNumber: session.id,
+            lineItems: [
+              { name: product.name, description: product.description, rate: product.priceCents / 100, quantity: 1 },
+            ],
+          });
+        }
+      } catch (error) {
+        console.error('Zoho sync failed', error);
       }
-    } catch (error) {
-      console.error('Zoho sync failed', error);
     }
   }
 

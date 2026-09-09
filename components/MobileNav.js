@@ -1,9 +1,11 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useCart } from '@/lib/cart-context';
 
 export default function MobileNav() {
   const [open, setOpen] = useState(false);
+  const { totalItems } = useCart();
 
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -44,6 +46,7 @@ export default function MobileNav() {
             <li><a href="/#expertise">Expertise</a></li>
             <li><a href="/store">Store</a></li>
             <li><a href="/resources">Resources</a></li>
+            <li><a href="/cart">Cart{totalItems > 0 ? ` (${totalItems})` : ''}</a></li>
           </ul>
         </nav>
       )}
