@@ -43,7 +43,7 @@ export default function MobileNav() {
             <li><a href="/securityos-ai">Teracom AI</a></li>
             <li><a href="/#expertise">Expertise</a></li>
             <li><a href="/store">Store</a></li>
-            <li><a href="https://app.teracomsolutions.com.au/portal">Portal</a></li>
+            <li><a href="/resources">Resources</a></li>
           </ul>
         </nav>
       )}
