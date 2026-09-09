@@ -19,7 +19,7 @@ export default function Footer() {
         </div>
         <div className="footer-links">
           <Link href="/">Home</Link>
-          <Link href="/securityos-ai">SecurityOS</Link>
+          <Link href="/securityos-ai">Teracom AI</Link>
           <Link href="/store">Teracom Store</Link>
           <Link href="https://app.teracomsolutions.com.au/portal">Portal</Link>
         </div>
