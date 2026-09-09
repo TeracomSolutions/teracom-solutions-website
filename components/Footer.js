@@ -16,7 +16,13 @@ export default function Footer() {
           <p className="muted">
             Building smarter solutions for the electronic security industry.
           </p>
-          <Link className="btn btn-primary" href="https://app.teracomsolutions.com.au/portal" style={{marginTop:'18px'}}>
+          <Link
+            className="btn btn-primary"
+            href="https://app.teracomsolutions.com.au/portal"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{marginTop:'18px'}}
+          >
             Teracom AI Portal Access
           </Link>
         </div>
