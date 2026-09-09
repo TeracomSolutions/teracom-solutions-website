@@ -23,6 +23,7 @@ export default function Footer() {
           <Link href="/securityos-ai">Teracom AI</Link>
           <Link href="/store">Teracom Store</Link>
           <Link href="/warranty">Warranty & Returns</Link>
+          <Link href="/terms">Terms & Conditions</Link>
           <Link href="https://app.teracomsolutions.com.au/portal">Portal</Link>
         </div>
       </div>
