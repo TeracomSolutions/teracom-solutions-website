@@ -1,6 +1,6 @@
 export const metadata = {
   title: 'Terms & Conditions | Teracom Solutions',
-  description: 'Teracom Solutions Pty Ltd (ABN 19 381 251 882) Terms and Conditions of Trade.',
+  description: 'Teracom Solutions Pty Ltd (ABN 49 107 979 546) Terms and Conditions of Trade.',
 };
 
 const sections = [
@@ -8,7 +8,7 @@ const sections = [
     title: '1. Definitions',
     body: [
       '"ACL" means the Australian Consumer Law schedule of the Competition and Consumer Act.',
-      '"Teracom Solutions" means Teracom Solutions Pty Ltd (ABN 19 381 251 882).',
+      '"Teracom Solutions" means Teracom Solutions Pty Ltd (ABN 49 107 979 546).',
       '"Consumer" is as defined in the ACL.',
       '"Contract" means any contract for the provision of Goods and Services.',
       '"Customer" means the person, jointly and severally if more than one, acquiring the Goods and Services.',
@@ -114,4 +114,4 @@ const sections = [
   },
 ];
 
-export default function Terms(){return <main><section className="hero hero-product"><div className="container hero-layout"><div className="hero-copy"><span className="eyebrow">Legal</span><h1>Terms & Conditions</h1><p className="lead">Teracom Solutions Pty Ltd (ABN 19 381 251 882) — Terms and Conditions of Trade.</p></div></div></section><section className="section section-spacious"><div className="container copy-block" style={{maxWidth:'860px'}}>{sections.map((s)=><div key={s.title} style={{marginBottom:'44px'}}><h3>{s.title}</h3>{s.body.map((line,i)=><p key={i} style={{fontSize:'15px'}}>{line}</p>)}</div>)}</div></section></main>}
+export default function Terms(){return <main><section className="hero hero-product"><div className="container hero-layout"><div className="hero-copy"><span className="eyebrow">Legal</span><h1>Terms & Conditions</h1><p className="lead">Teracom Solutions Pty Ltd (ABN 49 107 979 546) — Terms and Conditions of Trade.</p></div></div></section><section className="section section-spacious"><div className="container copy-block" style={{maxWidth:'860px'}}>{sections.map((s)=><div key={s.title} style={{marginBottom:'44px'}}><h3>{s.title}</h3>{s.body.map((line,i)=><p key={i} style={{fontSize:'15px'}}>{line}</p>)}</div>)}</div></section></main>}
