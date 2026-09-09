@@ -23,7 +23,7 @@ const LEADS_RATE_LIMIT_WINDOW_MS = (Number(process.env.LEADS_RATE_LIMIT_WINDOW_S
 const INTEREST_TO_INQUIRY_TYPE = {
   'Talk to Sales': 'contact_sales',
   'Request Demo': 'demo_request',
-  SecurityOS: 'securityos',
+  'Teracom AI': 'securityos',
   'Technical Consulting': 'technical_consulting',
   'Teracom Store': 'store',
   Partnership: 'partnership',
