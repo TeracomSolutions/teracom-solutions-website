@@ -1,0 +1,52 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+
+export default function MobileNav() {
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        setOpen(false);
+      }
+    };
+
+    if (open) {
+      window.addEventListener('keydown', handleKeyDown);
+    }
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [open]);
+
+  return (
+    <>
+      <button
+        className="mobile-nav-toggle"
+        aria-label="Toggle navigation menu"
+        aria-expanded={open}
+        onClick={() => setOpen(!open)}
+      >
+        <span className="hamburger-icon">
+          <span className="hamburger-bar"></span>
+          <span className="hamburger-bar"></span>
+          <span className="hamburger-bar"></span>
+        </span>
+      </button>
+
+      {open && (
+        <nav className="mobile-nav-panel">
+          <ul className="mobile-nav-links">
+            <li><a href="/#what-we-do">What We Do</a></li>
+            <li><a href="/securityos-ai">Teracom AI</a></li>
+            <li><a href="/#expertise">Expertise</a></li>
+            <li><a href="/store">Store</a></li>
+            <li><a href="https://app.teracomsolutions.com.au/portal">Portal</a></li>
+          </ul>
+        </nav>
+      )}
+    </>
+  );
+}
