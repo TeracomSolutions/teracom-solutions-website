@@ -58,33 +58,44 @@ export async function POST(req) {
     ...(parsed.data.licenceId ? { licenceId: parsed.data.licenceId } : {}),
   };
 
-  const session = await stripe.checkout.sessions.create({
-    mode: isSubscription ? 'subscription' : 'payment',
-    line_items: [
-      {
-        price_data: {
-          currency: 'aud',
-          product_data: {
-            name: product.name,
-            description: product.description,
-            metadata: { sku: product.sku, productType: product.type },
+  // Stripe throwing here (bad/missing API key, network error, etc.) must
+  // never reach the client as a body-less 500 -- Next's default error
+  // handler for an uncaught route exception returns no JSON body, and the
+  // client's res.json() call then fails with a confusing "Unexpected end
+  // of JSON input" that hides the real problem.
+  let session;
+  try {
+    session = await stripe.checkout.sessions.create({
+      mode: isSubscription ? 'subscription' : 'payment',
+      line_items: [
+        {
+          price_data: {
+            currency: 'aud',
+            product_data: {
+              name: product.name,
+              description: product.description,
+              metadata: { sku: product.sku, productType: product.type },
+            },
+            unit_amount: product.priceCents,
+            ...(isSubscription ? { recurring: { interval: 'month' } } : {}),
           },
-          unit_amount: product.priceCents,
-          ...(isSubscription ? { recurring: { interval: 'month' } } : {}),
+          quantity: parsed.data.quantity,
         },
-        quantity: parsed.data.quantity,
-      },
-    ],
-    success_url: `${siteUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${siteUrl}/checkout/cancel`,
-    metadata,
-    // A Checkout Session's own metadata does NOT propagate onto the
-    // Subscription object it creates — only subscription_data.metadata
-    // does. Without this, later customer.subscription.updated/deleted
-    // and invoice.paid renewal webhook events would have no way to see
-    // licenceId at all (see app/api/webhooks/stripe/route.js).
-    ...(isSubscription ? { subscription_data: { metadata } } : {}),
-  });
+      ],
+      success_url: `${siteUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${siteUrl}/checkout/cancel`,
+      metadata,
+      // A Checkout Session's own metadata does NOT propagate onto the
+      // Subscription object it creates — only subscription_data.metadata
+      // does. Without this, later customer.subscription.updated/deleted
+      // and invoice.paid renewal webhook events would have no way to see
+      // licenceId at all (see app/api/webhooks/stripe/route.js).
+      ...(isSubscription ? { subscription_data: { metadata } } : {}),
+    });
+  } catch (error) {
+    console.error('Stripe checkout session creation failed', error);
+    return NextResponse.json({ error: 'Unable to start checkout right now. Please try again shortly.' }, { status: 502 });
+  }
 
   return NextResponse.json({ url: session.url });
 }

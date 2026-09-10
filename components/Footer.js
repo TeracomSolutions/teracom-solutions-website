@@ -12,7 +12,7 @@ export default function Footer() {
             width={260}
             height={68}
           />
-          <p>AI • Security • Technology</p>
+          <p>AI.Technology</p>
           <p className="muted">
             Building smarter solutions for the electronic security industry.
           </p>
@@ -35,9 +35,15 @@ export default function Footer() {
           <Link href="/warranty">Warranty & Returns</Link>
           <Link href="/terms">Terms & Conditions</Link>
         </div>
+        <address className="footer-contact">
+          1B Yazaki Way, Carrum Downs, VIC 3201, Australia<br/>
+          <a href="tel:+61397082685">+61 3 9708 2685</a><br/>
+          <a href="mailto:sales@teracomsolutions.com.au">sales@teracomsolutions.com.au</a><br/>
+          <a href="mailto:accounts@teracomsolutions.com.au">accounts@teracomsolutions.com.au</a>
+        </address>
       </div>
       <div className="container footer-bottom">
-        <span>© {new Date().getFullYear()} Teracom Solutions</span>
+        <span>© {new Date().getFullYear()} Teracom Solutions — all prices displayed are inclusive of GST</span>
         <Link href="#top">Back to top ↑</Link>
       </div>
     </footer>

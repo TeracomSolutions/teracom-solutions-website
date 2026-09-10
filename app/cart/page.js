@@ -21,7 +21,10 @@ export default function CartPage() {
           items: lines.map((l) => ({ productId: l.productId, quantity: l.quantity })),
         }),
       });
-      const data = await res.json();
+      // A non-JSON response (e.g. a platform-level 502/504 HTML error page)
+      // must not crash this with a confusing "Unexpected end of JSON
+      // input" -- fall back to a generic message instead.
+      const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || 'Checkout failed');
       if (data.url) window.location.href = data.url;
     } catch (e) {
@@ -77,9 +80,10 @@ export default function CartPage() {
         </div>
 
         <div className="cart-summary">
-          <span>Subtotal</span>
+          <span>Subtotal <span className="price-gst-note">(inc. GST)</span></span>
           <span className="cart-total-amount">{formatMoney(totalCents)}</span>
         </div>
+        <p className="form-note">A flat shipping fee applies to orders containing physical products, added at checkout.</p>
 
         {error && <p className="form-error" role="alert">{error}</p>}
 

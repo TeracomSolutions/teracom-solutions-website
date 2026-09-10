@@ -35,12 +35,6 @@ const paths = {
       <circle cx="12" cy="15.5" r="2.5" />
     </>
   ),
-  solar: (
-    <>
-      <circle cx="12" cy="12" r="3.2" />
-      <path d="M12 3v2.4M12 18.6V21M3 12h2.4M18.6 12H21M5.6 5.6l1.7 1.7M16.7 16.7l1.7 1.7M18.4 5.6l-1.7 1.7M7.3 16.7l-1.7 1.7" />
-    </>
-  ),
   ups: (
     <>
       <rect x="6" y="3" width="12" height="18" rx="2" />
@@ -104,6 +98,12 @@ const paths = {
     <>
       <path d="M4 20L11 4l2 8 3-5 4 13" />
       <circle cx="11" cy="4" r="1" fill="currentColor" stroke="none" />
+    </>
+  ),
+  'cyber-security': (
+    <>
+      <path d="M12 3l8 3.6v5c0 4.6-3.2 7.8-8 9.4-4.8-1.6-8-4.8-8-9.4v-5L12 3z" />
+      <path d="M8.7 12l2.3 2.3 4.3-4.6" />
     </>
   ),
 };

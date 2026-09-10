@@ -13,7 +13,10 @@ export default function CheckoutButton({ productId, label }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ productId, quantity: 1 }),
       });
-      const data = await res.json();
+      // A non-JSON response (e.g. a platform-level 502/504 HTML error page)
+      // must not crash this with a confusing "Unexpected end of JSON
+      // input" -- fall back to a generic message instead.
+      const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || 'Checkout failed');
       if (data.url) window.location.href = data.url;
     } catch (e) {

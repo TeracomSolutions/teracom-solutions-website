@@ -12,6 +12,15 @@ import { checkRateLimit, clientIpFromRequest, rateLimitResponse } from '@/lib/ra
 const CART_CHECKOUT_RATE_LIMIT_MAX_ATTEMPTS = Number(process.env.CHECKOUT_RATE_LIMIT_MAX_ATTEMPTS) || 10;
 const CART_CHECKOUT_RATE_LIMIT_WINDOW_MS = (Number(process.env.CHECKOUT_RATE_LIMIT_WINDOW_SECONDS) || 60) * 1000;
 
+// Flat-rate placeholder freight (Robert, 2026-09-10): no per-product
+// weight/dimension data exists yet to support real carrier-calculated
+// shipping, so this is a single static AU-wide rate applied whenever the
+// cart contains at least one physical ('hardware') item -- a pure
+// digital/software/service order never gets a shipping line. Revisit once
+// real weight/size data exists (e.g. from the recovered historical
+// catalogue) to move to Stripe's per-item shipping or a carrier API.
+const FLAT_SHIPPING_RATE_CENTS = Number(process.env.FLAT_SHIPPING_RATE_CENTS) || 1500;
+
 const CartCheckoutRequest = z.object({
   items: z
     .array(
@@ -60,29 +69,59 @@ export async function POST(req) {
   }
 
   const siteUrl = SITE_URL;
+  const hasPhysicalItem = lines.some(({ product }) => product.type === 'hardware');
 
-  const session = await stripe.checkout.sessions.create({
-    mode: 'payment',
-    line_items: lines.map(({ item, product }) => ({
-      price_data: {
-        currency: 'aud',
-        product_data: {
-          name: product.name,
-          description: product.description,
-          metadata: { sku: product.sku, productType: product.type },
+  // Stripe throwing here (bad/missing API key, network error, etc.) must
+  // never reach the client as a body-less 500 -- Next's default error
+  // handler for an uncaught route exception returns no JSON body, and the
+  // client's res.json() call then fails with a confusing "Unexpected end
+  // of JSON input" that hides the real problem.
+  let session;
+  try {
+    session = await stripe.checkout.sessions.create({
+      mode: 'payment',
+      line_items: lines.map(({ item, product }) => ({
+        price_data: {
+          currency: 'aud',
+          product_data: {
+            name: product.name,
+            description: product.description,
+            metadata: { sku: product.sku, productType: product.type },
+          },
+          unit_amount: product.priceCents,
         },
-        unit_amount: product.priceCents,
-      },
-      quantity: item.quantity,
-    })),
-    success_url: `${siteUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${siteUrl}/checkout/cancel`,
-    // Flags this session for app/api/webhooks/stripe/route.js to itemize via
-    // stripe.checkout.sessions.listLineItems at webhook time, rather than
-    // trying to cram every cart line into session metadata (Stripe caps
-    // each metadata value at 500 characters).
-    metadata: { cartCheckout: 'true' },
-  });
+        quantity: item.quantity,
+      })),
+      success_url: `${siteUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${siteUrl}/checkout/cancel`,
+      // Flags this session for app/api/webhooks/stripe/route.js to itemize
+      // via stripe.checkout.sessions.listLineItems at webhook time, rather
+      // than trying to cram every cart line into session metadata (Stripe
+      // caps each metadata value at 500 characters).
+      metadata: { cartCheckout: 'true' },
+      ...(hasPhysicalItem
+        ? {
+            shipping_address_collection: { allowed_countries: ['AU'] },
+            shipping_options: [
+              {
+                shipping_rate_data: {
+                  type: 'fixed_amount',
+                  fixed_amount: { amount: FLAT_SHIPPING_RATE_CENTS, currency: 'aud' },
+                  display_name: 'Standard Shipping',
+                  delivery_estimate: {
+                    minimum: { unit: 'business_day', value: 3 },
+                    maximum: { unit: 'business_day', value: 7 },
+                  },
+                },
+              },
+            ],
+          }
+        : {}),
+    });
+  } catch (error) {
+    console.error('Stripe cart checkout session creation failed', error);
+    return NextResponse.json({ error: 'Unable to start checkout right now. Please try again shortly.' }, { status: 502 });
+  }
 
   return NextResponse.json({ url: session.url });
 }
