@@ -44,6 +44,7 @@ export default function MobileNav() {
           <ul className="mobile-nav-links">
             <li><a href="/#what-we-do">What We Do</a></li>
             <li><a href="/securityos-ai">Teracom AI</a></li>
+            <li><a href="/brands">Brands</a></li>
             <li><a href="/store">Store</a></li>
             <li>
               <a href="/resources">Resources</a>
