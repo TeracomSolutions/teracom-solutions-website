@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useCart } from '@/lib/cart-context';
 import { formatMoney } from '@/lib/products';
+import StripeTrustBadge from '@/components/StripeTrustBadge';
 
 export default function CartPage() {
   const { lines, totalCents, updateQuantity, removeItem } = useCart();
@@ -84,6 +85,8 @@ export default function CartPage() {
           <span className="cart-total-amount">{formatMoney(totalCents)}</span>
         </div>
         <p className="form-note">A flat shipping fee applies to orders containing physical products, added at checkout.</p>
+
+        <StripeTrustBadge />
 
         {error && <p className="form-error" role="alert">{error}</p>}
 
