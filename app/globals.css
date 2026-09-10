@@ -462,6 +462,21 @@ a {
 .cart-total-amount {
   font-size:28px;font-weight:900;
 }
+.stripe-trust-badge {
+  display:flex;gap:14px;align-items:flex-start;border:1px solid var(--line);background:rgba(255,255,255,.03);border-radius:18px;padding:18px 20px;margin:22px 0;
+}
+.stripe-trust-icon {
+  flex:none;color:var(--muted);margin-top:2px;
+}
+.stripe-trust-badge p {
+  margin:0;color:var(--muted);font-size:13.5px;line-height:1.6;
+}
+.stripe-trust-logo-row {
+  display:flex;align-items:center;gap:8px;margin-top:10px;color:var(--muted);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
+}
+.stripe-trust-logo-row img {
+  height:18px;width:auto;
+}
 .site-footer {
   border-top:1px solid var(--line);padding:70px 0 30px;background:#050505;
 }
