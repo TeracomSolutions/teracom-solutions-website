@@ -32,7 +32,18 @@ export default function BrandPage({ params }) {
                 &larr; Brands
               </Link>
             </span>
-            <h1>{brand.name}</h1>
+            <div className="brand-hero-heading">
+              <h1>{brand.name}</h1>
+              {brand.logoFile && (
+                <Image
+                  className="brand-hero-logo"
+                  src={`/assets/logos/${brand.logoFile}`}
+                  alt={`${brand.name} logo`}
+                  width={180}
+                  height={48}
+                />
+              )}
+            </div>
             <p className="lead">{brand.tagline}</p>
           </div>
         </div>
@@ -54,7 +65,11 @@ export default function BrandPage({ params }) {
             )}
           </div>
           <div className="showcase-image">
-            <Image src="/assets/consulting-visual.svg" alt="Abstract technology visual" width={1200} height={700} />
+            {brand.imageFile ? (
+              <Image src={`/assets/brands/${brand.imageFile}`} alt={`${brand.name} product imagery`} width={1200} height={700} />
+            ) : (
+              <Image src="/assets/consulting-visual.svg" alt="Abstract technology visual" width={1200} height={700} />
+            )}
           </div>
         </div>
       </section>
