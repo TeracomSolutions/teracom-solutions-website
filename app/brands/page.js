@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import { brands } from '@/lib/brands';
 
@@ -9,7 +10,7 @@ export const metadata = {
 export default function Brands() {
   return (
     <main>
-      <section className="hero hero-product">
+      <section className="hero hero-product hero-shallow hero-centered">
         <div className="container hero-layout">
           <div className="hero-copy">
             <span className="eyebrow">Brands</span>
@@ -27,7 +28,18 @@ export default function Brands() {
             {brands.map((b) => (
               <Link href={`/brands/${b.slug}`} key={b.slug} style={{ textDecoration: 'none', color: 'inherit' }}>
                 <article>
-                  <h3>{b.name}</h3>
+                  <div className="brand-card-heading">
+                    <h3>{b.name}</h3>
+                    {b.logoFile && (
+                      <Image
+                        className="brand-card-logo"
+                        src={`/assets/logos/${b.logoFile}`}
+                        alt={`${b.name} logo`}
+                        width={110}
+                        height={30}
+                      />
+                    )}
+                  </div>
                   <p>{b.tagline}</p>
                 </article>
               </Link>
