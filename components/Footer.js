@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import AdminEntryPoint from './AdminEntryPoint';
 
 export default function Footer() {
   return (
@@ -44,7 +45,7 @@ export default function Footer() {
         </address>
       </div>
       <div className="container footer-bottom">
-        <span>© {new Date().getFullYear()} Teracom Solutions</span>
+        <AdminEntryPoint />
         <Link href="#top">Back to top ↑</Link>
       </div>
     </footer>
