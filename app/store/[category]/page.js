@@ -1,9 +1,8 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { findCategory, categories } from '@/lib/categories';
-import { getProductsByCategory, formatMoney } from '@/lib/products';
-import CheckoutButton from '@/components/CheckoutButton';
-import AddToCartButton from '@/components/AddToCartButton';
+import { getProductsByCategory } from '@/lib/products';
+import CategoryProductGrid from '@/components/CategoryProductGrid';
 
 export function generateStaticParams() {
   return categories.map((c) => ({ category: c.slug }));
@@ -24,5 +23,5 @@ export default function CategoryPage({ params }) {
 
   const products = category.productCategory ? getProductsByCategory(category.productCategory) : [];
 
-  return <main><section className="hero hero-product"><div className="container hero-layout"><div className="hero-copy"><span className="eyebrow"><Link href="/store" style={{color:'inherit'}}>Teracom Store</Link></span><h1>{category.title}</h1><p className="lead">{category.description}</p></div></div></section><section className="section section-spacious"><div className="container">{products.length > 0 ? <div className="product-grid">{products.map((p) => <article className="product-card" key={p.id}><div><span className="badge">{p.type}</span><h3>{p.name}</h3><p>{p.description}</p></div><div><p className="price">{formatMoney(p.priceCents)}</p>{p.type === 'subscription' ? <CheckoutButton productId={p.id} label="Subscribe" /> : <AddToCartButton productId={p.id} label="Add to Cart" />}</div></article>)}</div> : <div className="form-note-banner" role="status">Full product listings for {category.title} are coming soon. In the meantime, <Link href="/#contact" style={{color:'var(--text)',textDecoration:'underline'}}>contact us</Link> for current stock and pricing.</div>}</div></section></main>;
+  return <main><section className="hero hero-product hero-shallow"><div className="container hero-layout"><div className="hero-copy"><Link href="/store" className="back-link">&larr; Back to Store</Link><span className="eyebrow"><Link href="/store" style={{color:'inherit'}}>Teracom Store</Link></span><h1>{category.title}</h1><p className="lead">{category.description}</p></div></div></section><section className="section section-spacious"><div className="container">{products.length > 0 ? <CategoryProductGrid products={products} /> : <div className="form-note-banner" role="status">Full product listings for {category.title} are coming soon. In the meantime, <Link href="/#contact" style={{color:'var(--text)',textDecoration:'underline'}}>contact us</Link> for current stock and pricing.</div>}</div></section></main>;
 }

@@ -43,7 +43,6 @@ export default function MobileNav() {
           <ul className="mobile-nav-links">
             <li><a href="/#what-we-do">What We Do</a></li>
             <li><a href="/securityos-ai">Teracom AI</a></li>
-            <li><a href="/#expertise">Expertise</a></li>
             <li><a href="/store">Store</a></li>
             <li><a href="/resources">Resources</a></li>
             <li><a href="/cart">Cart{totalItems > 0 ? ` (${totalItems})` : ''}</a></li>
