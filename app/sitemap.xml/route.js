@@ -1,4 +1,5 @@
 import { categories } from '@/lib/categories';
+import { aiCapabilities } from '@/lib/aiCapabilities';
 
 const staticPages = [
   { path: '/', changefreq: 'weekly', priority: '1.0' },
@@ -16,7 +17,13 @@ export function GET() {
     priority: '0.7',
   }));
 
-  const urls = [...staticPages, ...categoryPages]
+  const capabilityPages = aiCapabilities.map((c) => ({
+    path: `/securityos-ai/${c.slug}`,
+    changefreq: 'monthly',
+    priority: '0.6',
+  }));
+
+  const urls = [...staticPages, ...categoryPages, ...capabilityPages]
     .map(
       (p) =>
         `<url><loc>https://www.teracomsolutions.com.au${p.path}</loc><changefreq>${p.changefreq}</changefreq><priority>${p.priority}</priority></url>`
