@@ -36,14 +36,15 @@ export default function Footer() {
           <Link href="/terms">Terms & Conditions</Link>
         </div>
         <address className="footer-contact">
-          1B Yazaki Way, Carrum Downs, VIC 3201, Australia<br/>
+          1B Yazaki Way, Carrum Downs<br/>
+          VIC 3201, Australia<br/>
           <a href="tel:+61397082685">+61 3 9708 2685</a><br/>
           <a href="mailto:sales@teracomsolutions.com.au">sales@teracomsolutions.com.au</a><br/>
           <a href="mailto:accounts@teracomsolutions.com.au">accounts@teracomsolutions.com.au</a>
         </address>
       </div>
       <div className="container footer-bottom">
-        <span>© {new Date().getFullYear()} Teracom Solutions — all prices displayed are inclusive of GST</span>
+        <span>© {new Date().getFullYear()} Teracom Solutions</span>
         <Link href="#top">Back to top ↑</Link>
       </div>
     </footer>

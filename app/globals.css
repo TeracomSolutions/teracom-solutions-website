@@ -89,6 +89,15 @@ a {
 .hero {
   position:relative;padding:110px 0 90px;overflow:hidden;
 }
+.hero-home {
+  padding-top:52px;
+}
+.hero-home .hero-image {
+  height:640px;
+}
+.hero-home .hero-image img {
+  width:100%;height:100%;object-fit:cover;
+}
 .hero-shallow {
   padding:56px 0 44px;
 }
@@ -164,6 +173,9 @@ a {
 .showcase-grid {
   display:grid;grid-template-columns:1.08fr .92fr;gap:86px;align-items:center;
 }
+.product-showcase .showcase-grid {
+  align-items:start;
+}
 .showcase-grid.reverse {
   grid-template-columns:.9fr 1.1fr;
 }
@@ -201,19 +213,19 @@ a {
   display:grid;grid-template-columns:repeat(3,1fr);gap:16px;
 }
 .logo-chip {
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;min-height:140px;border-radius:22px;padding:26px;background:#f4f4f2;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;min-height:190px;border-radius:22px;padding:18px;background:#f4f4f2;
 }
 .logo-chip img {
-  max-width:100%;max-height:56px;width:auto;height:auto;object-fit:contain;
+  max-width:88%;max-height:105px;width:auto;height:auto;object-fit:contain;filter:drop-shadow(0 0 1px rgba(0,0,0,.18));
 }
 .logo-chip img.logo-boost {
-  max-height:74px;
+  max-height:130px;
 }
 .logo-chip-generic {
   color:#3a3a3a;
 }
 .logo-chip-generic .category-icon {
-  width:40px;height:40px;
+  width:64px;height:64px;
 }
 .logo-caption {
   font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#4a4a4a;
@@ -272,6 +284,12 @@ a {
 .feature-grid article, .product-card {
   border:1px solid var(--line);background:rgba(255,255,255,.04);border-radius:28px;padding:30px;min-height:210px;
 }
+.feature-grid article {
+  height:236px;overflow:hidden;
+}
+.feature-grid p {
+  display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:4;overflow:hidden;
+}
 .product-card {
   display:flex;flex-direction:column;justify-content:space-between;min-height:360px;
 }
@@ -293,11 +311,8 @@ a {
 .price-gst-note {
   font-size:13px;font-weight:600;color:var(--muted);text-transform:none;letter-spacing:0;
 }
-.back-link {
-  display:inline-flex;align-items:center;gap:8px;color:var(--muted);font-size:14px;font-weight:700;text-decoration:none;margin-bottom:22px;
-}
-.back-link:hover {
-  color:var(--red2);
+.gst-highlight {
+  display:inline-flex;margin-top:18px;color:var(--red2)!important;font-size:14px!important;font-weight:800;letter-spacing:.02em;
 }
 .brand-tabs {
   display:flex;flex-wrap:wrap;gap:10px;margin-bottom:32px;
