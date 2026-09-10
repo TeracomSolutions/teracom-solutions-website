@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import ResourcesSubNav from '@/components/ResourcesSubNav';
 import HelpCenterAccordion from '@/components/HelpCenterAccordion';
+import CategoryIcon from '@/components/CategoryIcon';
 
 export const metadata = {
   title: 'Help Centre & FAQs | Teracom Solutions',
@@ -11,7 +12,7 @@ export default function HelpCentre() {
   return (
     <main>
       <section className="hero hero-product hero-shallow">
-        <div className="container hero-layout">
+        <div className="container help-hero-row">
           <div className="hero-copy">
             <span className="eyebrow">
               <Link href="/resources" style={{ color: 'inherit' }}>
@@ -27,6 +28,9 @@ export default function HelpCentre() {
               </a>{' '}
               and we&apos;ll deal with your query promptly.
             </p>
+          </div>
+          <div className="help-hero-graphic" aria-hidden="true">
+            <CategoryIcon slug="help" />
           </div>
         </div>
       </section>

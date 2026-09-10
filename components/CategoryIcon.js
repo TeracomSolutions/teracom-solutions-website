@@ -106,6 +106,13 @@ const paths = {
       <path d="M8.7 12l2.3 2.3 4.3-4.6" />
     </>
   ),
+  help: (
+    <>
+      <path d="M4 5.5A2.5 2.5 0 016.5 3h11A2.5 2.5 0 0120 5.5v9a2.5 2.5 0 01-2.5 2.5H10l-4.5 4v-4H6.5A2.5 2.5 0 014 14.5v-9z" />
+      <path d="M9.6 9.3a2.4 2.4 0 114 1.8c-.7.5-1.6 1-1.6 2.1" />
+      <circle cx="12" cy="15.3" r="0.1" fill="currentColor" stroke="currentColor" strokeWidth="1.8" />
+    </>
+  ),
 };
 
 export default function CategoryIcon({ slug }) {
