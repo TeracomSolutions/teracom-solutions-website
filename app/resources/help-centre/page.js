@@ -23,9 +23,9 @@ export default function HelpCentre() {
             <p className="lead">
               We know that finding the right information can be difficult and time consuming. Below are our technical
               help articles -- if you can&apos;t find what you&apos;re after,{' '}
-              <a href="/#contact" style={{ color: 'var(--text)', textDecoration: 'underline' }}>
+              <Link href="/#contact" style={{ color: 'var(--text)', textDecoration: 'underline' }}>
                 contact us
-              </a>{' '}
+              </Link>{' '}
               and we&apos;ll deal with your query promptly.
             </p>
           </div>
