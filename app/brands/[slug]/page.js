@@ -47,9 +47,40 @@ export default function BrandPage({ params }) {
               )}
             </div>
             <p className="lead">{brand.tagline}</p>
+            {brand.stats && (
+              <div className="brand-stats">
+                {brand.stats.map((s) => (
+                  <div className="brand-stat" key={s.label}>
+                    <span className="brand-stat-value">{s.value}</span>
+                    <span className="brand-stat-label">{s.label}</span>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </section>
+      {brand.highlights && (
+        <section className="section section-spacious alt">
+          <div className="container">
+            <div className="section-heading left">
+              <span className="eyebrow">Why Teracom works with {brand.name}</span>
+              <h2>{brand.highlightsHeading}</h2>
+            </div>
+            <div className="feature-grid">
+              {brand.highlights.map((h, i) => (
+                <article key={h.title}>
+                  <span style={{ color: 'var(--red)', fontWeight: 900, fontSize: '14px', letterSpacing: '.08em' }}>
+                    {String(i + 1).padStart(2, '0')}
+                  </span>
+                  <h3>{h.title}</h3>
+                  <p>{h.body}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
       <section className="section section-spacious">
         <div className="container showcase-grid reverse">
           <div className="showcase-copy">
