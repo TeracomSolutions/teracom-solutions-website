@@ -392,11 +392,25 @@ a {
 .brand-stat-label {
   display:block;margin-top:8px;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;
 }
+.brand-highlights-heading {
+  margin-bottom:48px;
+}
 .brand-highlight-grid article {
   height:auto;min-height:260px;
 }
 .brand-highlight-grid p {
   -webkit-line-clamp:4;
+}
+.brand-showcase-grid {
+  align-items:stretch;
+}
+.brand-showcase-image {
+  position:relative;min-height:480px;
+}
+@media(max-width:980px) {
+  .brand-showcase-image {
+    min-height:320px;
+  }
 }
 .brand-store-cta {
   display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;border:1px solid var(--line);background:rgba(255,255,255,.04);border-radius:28px;padding:36px 40px;
