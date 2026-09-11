@@ -3,6 +3,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { brands, findBrand } from '@/lib/brands';
 
+const THEME_FALLBACKS = { 'cctv': '/assets/brand-fallback-cctv.svg', 'access-control': '/assets/brand-fallback-access.svg', 'audio': '/assets/brand-fallback-audio.svg', 'power': '/assets/brand-fallback-power.svg', 'networking': '/assets/brand-fallback-network.svg', 'accessories': '/assets/brand-fallback-accessories.svg' };
+
 export function generateStaticParams() {
   return brands.map((b) => ({ slug: b.slug }));
 }
@@ -68,7 +70,7 @@ export default function BrandPage({ params }) {
             {brand.imageFile ? (
               <Image src={`/assets/brands/${brand.imageFile}`} alt={`${brand.name} product imagery`} width={1200} height={700} />
             ) : (
-              <Image src="/assets/consulting-visual.svg" alt="Abstract technology visual" width={1200} height={700} />
+              <Image src={THEME_FALLBACKS[brand.theme] || '/assets/consulting-visual.svg'} alt="Abstract technology visual" width={1200} height={700} />
             )}
           </div>
         </div>
