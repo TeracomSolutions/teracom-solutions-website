@@ -1,0 +1,52 @@
+<svg viewBox="0 0 900 1300" width="900" height="1300" xmlns="http://www.w3.org/2000/svg">
+  <rect width="900" height="1300" fill="#050505"/>
+  <g stroke="rgba(255,255,255,.045)" stroke-width="1">
+    <path d="M0,140 H900 M0,280 H900 M0,420 H900 M0,560 H900 M0,700 H900 M0,840 H900 M0,980 H900 M0,1120 H900"/>
+    <path d="M120,0 V1300 M300,0 V1300 M480,0 V1300 M660,0 V1300 M780,0 V1300"/>
+  </g>
+
+  <!-- open platform: XProtect hub with many third-party camera brands -->
+  <g transform="translate(450,340)">
+    <rect x="-110" y="-55" width="220" height="110" rx="14" fill="rgba(255,23,23,.1)" stroke="#ff4b4b" stroke-width="3"/>
+    <text y="-8" text-anchor="middle" fill="rgba(255,255,255,.8)" font-family="Arial, sans-serif" font-size="22" font-weight="800">XProtect</text>
+    <text y="20" text-anchor="middle" fill="rgba(255,255,255,.4)" font-family="Arial, sans-serif" font-size="13">Open-platform VMS</text>
+  </g>
+  <g stroke="#ff4b4b" stroke-width="2" fill="none" stroke-dasharray="2 8" opacity="0.6">
+    <path d="M340,300 L180,220"/>
+    <path d="M340,380 L180,460"/>
+    <path d="M560,300 L720,220"/>
+    <path d="M560,380 L720,460"/>
+  </g>
+  <g fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.2)" stroke-width="2">
+    <circle cx="180" cy="220" r="26"/>
+    <circle cx="180" cy="460" r="26"/>
+    <circle cx="720" cy="220" r="26"/>
+    <circle cx="720" cy="460" r="26"/>
+  </g>
+  <text x="450" y="620" text-anchor="middle" fill="rgba(255,255,255,.4)" font-family="Arial, sans-serif" font-size="13" letter-spacing="1">1,000+ THIRD-PARTY CAMERA INTEGRATIONS</text>
+
+  <!-- lower stats panel -->
+  <g transform="translate(150,700)" font-family="Arial, sans-serif">
+    <rect width="600" height="400" rx="20" fill="rgba(255,255,255,.045)" stroke="rgba(255,255,255,.16)" stroke-width="2"/>
+    <text x="40" y="58" fill="rgba(255,255,255,.85)" font-size="24" font-weight="800">Open by design, since the first SDK.</text>
+    <g stroke="rgba(255,255,255,.14)" stroke-width="1"><path d="M40,88 H560"/></g>
+    <g fill="rgba(255,255,255,.85)" font-size="26" font-weight="900">
+      <text x="40" y="150">25+</text>
+      <text x="290" y="150">150+</text>
+    </g>
+    <g fill="rgba(255,255,255,.4)" font-size="13" letter-spacing=".04em">
+      <text x="40" y="174">YEARS IN OPEN-PLATFORM VMS</text>
+      <text x="290" y="174">COUNTRIES REPRESENTED IN</text>
+    </g>
+    <g fill="rgba(255,255,255,.85)" font-size="26" font-weight="900">
+      <text x="40" y="222">8,000+</text>
+      <text x="290" y="222">1,000+</text>
+    </g>
+    <g fill="rgba(255,255,255,.4)" font-size="13" letter-spacing=".04em">
+      <text x="40" y="246">PARTNERS WORLDWIDE</text>
+      <text x="290" y="246">TECHNOLOGY INTEGRATIONS</text>
+    </g>
+    <g stroke="rgba(255,255,255,.14)" stroke-width="1"><path d="M40,282 H560"/></g>
+    <text x="40" y="316" fill="rgba(255,255,255,.5)" font-size="14">Standalone within the Canon Group since 2014</text>
+  </g>
+</svg>

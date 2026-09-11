@@ -1,0 +1,50 @@
+<svg viewBox="0 0 900 1300" width="900" height="1300" xmlns="http://www.w3.org/2000/svg">
+  <rect width="900" height="1300" fill="#050505"/>
+  <g stroke="rgba(255,255,255,.045)" stroke-width="1">
+    <path d="M0,140 H900 M0,280 H900 M0,420 H900 M0,560 H900 M0,700 H900 M0,840 H900 M0,980 H900 M0,1120 H900"/>
+    <path d="M120,0 V1300 M300,0 V1300 M480,0 V1300 M660,0 V1300 M780,0 V1300"/>
+  </g>
+
+  <!-- Security Center hub: Omnicast / Synergis / AutoVu -->
+  <g transform="translate(450,380)">
+    <circle r="170" fill="none" stroke="rgba(255,75,75,.14)" stroke-width="1.5"/>
+    <circle r="60" fill="rgba(255,23,23,.1)" stroke="#ff4b4b" stroke-width="3"/>
+    <text y="6" text-anchor="middle" fill="rgba(255,255,255,.8)" font-family="Arial, sans-serif" font-size="15" font-weight="800">SECURITY</text>
+    <text y="24" text-anchor="middle" fill="rgba(255,255,255,.8)" font-family="Arial, sans-serif" font-size="15" font-weight="800">CENTER</text>
+  </g>
+  <g stroke="#ff4b4b" stroke-width="2" fill="none" stroke-dasharray="2 8" opacity="0.7">
+    <path d="M450,220 L450,140"/>
+    <path d="M310,470 L200,560"/>
+    <path d="M590,470 L700,560"/>
+  </g>
+  <g font-family="Arial, sans-serif" fill="rgba(255,255,255,.5)" font-size="14" text-anchor="middle">
+    <g transform="translate(450,90)"><rect x="-70" y="0" width="140" height="50" rx="10" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.18)" stroke-width="2"/><text y="32">Omnicast</text></g>
+    <g transform="translate(200,560)"><rect x="-70" y="0" width="140" height="50" rx="10" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.18)" stroke-width="2"/><text y="32">Synergis</text></g>
+    <g transform="translate(700,560)"><rect x="-70" y="0" width="140" height="50" rx="10" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.18)" stroke-width="2"/><text y="32">AutoVu</text></g>
+  </g>
+
+  <!-- lower stats panel -->
+  <g transform="translate(150,700)" font-family="Arial, sans-serif">
+    <rect width="600" height="380" rx="20" fill="rgba(255,255,255,.045)" stroke="rgba(255,255,255,.16)" stroke-width="2"/>
+    <text x="40" y="58" fill="rgba(255,255,255,.85)" font-size="24" font-weight="800">Unified security, built on an open platform.</text>
+    <g stroke="rgba(255,255,255,.14)" stroke-width="1"><path d="M40,88 H560"/></g>
+    <g fill="rgba(255,255,255,.85)" font-size="26" font-weight="900">
+      <text x="40" y="150">1997</text>
+      <text x="290" y="150">159+</text>
+    </g>
+    <g fill="rgba(255,255,255,.4)" font-size="13" letter-spacing=".04em">
+      <text x="40" y="174">FOUNDED</text>
+      <text x="290" y="174">COUNTRIES SERVED</text>
+    </g>
+    <g fill="rgba(255,255,255,.85)" font-size="26" font-weight="900">
+      <text x="40" y="222">42,500+</text>
+      <text x="290" y="222">2,100+</text>
+    </g>
+    <g fill="rgba(255,255,255,.4)" font-size="13" letter-spacing=".04em">
+      <text x="40" y="246">CUSTOMERS WORLDWIDE</text>
+      <text x="290" y="246">EMPLOYEES</text>
+    </g>
+    <g stroke="rgba(255,255,255,.14)" stroke-width="1"><path d="M40,282 H560"/></g>
+    <text x="40" y="316" fill="rgba(255,255,255,.5)" font-size="14">10,000+ integrated third-party devices</text>
+  </g>
+</svg>

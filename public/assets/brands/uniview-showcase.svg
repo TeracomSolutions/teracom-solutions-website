@@ -1,0 +1,52 @@
+<svg viewBox="0 0 900 1300" width="900" height="1300" xmlns="http://www.w3.org/2000/svg">
+  <rect width="900" height="1300" fill="#050505"/>
+  <g stroke="rgba(255,255,255,.045)" stroke-width="1">
+    <path d="M0,140 H900 M0,280 H900 M0,420 H900 M0,560 H900 M0,700 H900 M0,840 H900 M0,980 H900 M0,1120 H900"/>
+    <path d="M120,0 V1300 M300,0 V1300 M480,0 V1300 M660,0 V1300 M780,0 V1300"/>
+  </g>
+
+  <!-- PTZ dome camera with AI scan cone -->
+  <g transform="translate(450,340)">
+    <path d="M-220,220 L0,-40 L220,220 Z" fill="rgba(255,23,23,.06)" stroke="rgba(255,75,75,.25)" stroke-width="1.5"/>
+    <circle r="90" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.2)" stroke-width="2"/>
+    <circle r="46" fill="#0a0a0a" stroke="#ff4b4b" stroke-width="3"/>
+    <circle r="18" fill="#ff1717"/>
+    <circle cx="16" cy="-14" r="6" fill="rgba(255,255,255,.6)"/>
+  </g>
+  <g font-family="Arial, sans-serif" fill="rgba(255,255,255,.4)" font-size="13" letter-spacing="1" text-anchor="middle">
+    <text x="450" y="620">ABCI: AI + BIG DATA + CLOUD + IOT</text>
+  </g>
+
+  <g stroke="rgba(255,255,255,.14)" stroke-width="1"><path d="M180,680 H720"/></g>
+  <g font-family="Arial, sans-serif" fill="rgba(255,255,255,.5)" font-size="14" text-anchor="middle">
+    <text x="300" y="720">540+ industrial parks</text>
+    <text x="600" y="720">300+ landmarks</text>
+    <text x="300" y="750">110+ airports</text>
+    <text x="600" y="750">900+ transit sites</text>
+  </g>
+
+  <!-- lower stats panel -->
+  <g transform="translate(150,830)" font-family="Arial, sans-serif">
+    <rect width="600" height="340" rx="20" fill="rgba(255,255,255,.045)" stroke="rgba(255,255,255,.16)" stroke-width="2"/>
+    <text x="40" y="58" fill="rgba(255,255,255,.85)" font-size="26" font-weight="800">AIoT security, deployed at scale.</text>
+    <g stroke="rgba(255,255,255,.14)" stroke-width="1"><path d="M40,88 H560"/></g>
+    <g fill="rgba(255,255,255,.85)" font-size="28" font-weight="900">
+      <text x="40" y="150">200+</text>
+      <text x="320" y="150">5,200+</text>
+    </g>
+    <g fill="rgba(255,255,255,.4)" font-size="13" letter-spacing=".04em">
+      <text x="40" y="174">COUNTRIES &amp; REGIONS</text>
+      <text x="320" y="174">PATENTS APPLIED</text>
+    </g>
+    <g fill="rgba(255,255,255,.85)" font-size="28" font-weight="900">
+      <text x="40" y="222">20,000+</text>
+      <text x="320" y="222">15+</text>
+    </g>
+    <g fill="rgba(255,255,255,.4)" font-size="13" letter-spacing=".04em">
+      <text x="40" y="246">GLOBAL PARTNERS</text>
+      <text x="320" y="246">YEARS IN BUSINESS</text>
+    </g>
+    <g stroke="rgba(255,255,255,.14)" stroke-width="1"><path d="M40,282 H560"/></g>
+    <text x="40" y="316" fill="rgba(255,255,255,.5)" font-size="14">Over 80% of patents are invention-class</text>
+  </g>
+</svg>

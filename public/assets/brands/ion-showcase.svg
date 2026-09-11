@@ -1,0 +1,51 @@
+<svg viewBox="0 0 900 1300" width="900" height="1300" xmlns="http://www.w3.org/2000/svg">
+  <rect width="900" height="1300" fill="#050505"/>
+  <g stroke="rgba(255,255,255,.045)" stroke-width="1">
+    <path d="M0,140 H900 M0,280 H900 M0,420 H900 M0,560 H900 M0,700 H900 M0,840 H900 M0,980 H900 M0,1120 H900"/>
+    <path d="M120,0 V1300 M300,0 V1300 M480,0 V1300 M660,0 V1300 M780,0 V1300"/>
+  </g>
+
+  <!-- UPS tower with power-flow bolt -->
+  <g transform="translate(310,150)">
+    <rect width="280" height="440" rx="16" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
+    <rect x="100" y="-24" width="80" height="24" rx="6" fill="rgba(255,255,255,.14)"/>
+    <rect x="24" y="26" width="232" height="120" rx="8" fill="rgba(255,23,23,.08)" stroke="rgba(255,75,75,.35)"/>
+    <path d="M120,50 L70,110 L110,110 L80,150 L160,80 L118,80 Z" fill="#ff1717"/>
+    <rect x="24" y="170" width="232" height="10" rx="5" fill="rgba(255,255,255,.16)"/>
+    <rect x="24" y="196" width="170" height="8" rx="4" fill="rgba(255,255,255,.1)"/>
+    <rect x="24" y="230" width="232" height="8" rx="4" fill="rgba(255,255,255,.1)"/>
+    <g fill="rgba(255,255,255,.16)">
+      <circle cx="50" cy="380" r="8"/><circle cx="80" cy="380" r="8"/><circle cx="110" cy="380" r="8"/>
+    </g>
+    <rect x="24" y="390" width="232" height="34" rx="8" fill="rgba(255,23,23,.15)" stroke="#ff4b4b"/>
+    <text x="140" y="412" text-anchor="middle" fill="rgba(255,255,255,.7)" font-family="Arial, sans-serif" font-size="13">WI-FI ENABLED</text>
+  </g>
+
+  <g stroke="rgba(255,75,75,.4)" stroke-width="2" fill="none" stroke-dasharray="2 8">
+    <circle cx="450" cy="380" r="230"/>
+  </g>
+  <g font-family="Arial, sans-serif" fill="rgba(255,255,255,.4)" font-size="13" text-anchor="middle">
+    <text x="450" y="640">650VA TO 500kVA -- ONE BRAND</text>
+  </g>
+
+  <!-- lower stats panel -->
+  <g transform="translate(150,750)" font-family="Arial, sans-serif">
+    <rect width="600" height="290" rx="20" fill="rgba(255,255,255,.045)" stroke="rgba(255,255,255,.16)" stroke-width="2"/>
+    <text x="40" y="58" fill="rgba(255,255,255,.85)" font-size="24" font-weight="800">Power protection, made in Australia.</text>
+    <g stroke="rgba(255,255,255,.14)" stroke-width="1"><path d="M40,88 H560"/></g>
+    <g fill="rgba(255,255,255,.85)" font-size="26" font-weight="900">
+      <text x="40" y="150">3-Year</text>
+      <text x="280" y="150">24/7</text>
+    </g>
+    <g fill="rgba(255,255,255,.4)" font-size="13" letter-spacing=".04em">
+      <text x="40" y="174">REPLACEMENT WARRANTY</text>
+      <text x="280" y="174">PHONE SUPPORT</text>
+    </g>
+    <g fill="rgba(255,255,255,.85)" font-size="26" font-weight="900">
+      <text x="40" y="222">500kVA</text>
+    </g>
+    <g fill="rgba(255,255,255,.4)" font-size="13" letter-spacing=".04em">
+      <text x="40" y="246">LARGEST SYSTEM SIZE</text>
+    </g>
+  </g>
+</svg>

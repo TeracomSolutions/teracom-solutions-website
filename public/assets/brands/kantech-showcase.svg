@@ -1,0 +1,51 @@
+<svg viewBox="0 0 900 1300" width="900" height="1300" xmlns="http://www.w3.org/2000/svg">
+  <rect width="900" height="1300" fill="#050505"/>
+  <g stroke="rgba(255,255,255,.045)" stroke-width="1">
+    <path d="M0,140 H900 M0,280 H900 M0,420 H900 M0,560 H900 M0,700 H900 M0,840 H900 M0,980 H900 M0,1120 H900"/>
+    <path d="M120,0 V1300 M300,0 V1300 M480,0 V1300 M660,0 V1300 M780,0 V1300"/>
+  </g>
+
+  <!-- door + reader + mobile app -->
+  <g transform="translate(180,160)">
+    <path d="M40,60 Q40,0 100,0 L220,0 Q280,0 280,60 L280,90 L40,90 Z" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="6"/>
+    <rect x="0" y="90" width="320" height="340" rx="18" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
+    <rect x="30" y="230" width="90" height="60" rx="8" fill="rgba(255,23,23,.12)" stroke="#ff4b4b" stroke-width="2"/>
+    <circle cx="75" cy="260" r="14" fill="#ff1717"/>
+  </g>
+
+  <g stroke="#ff4b4b" stroke-width="2" fill="none" stroke-dasharray="2 8" opacity="0.7">
+    <path d="M500,300 L610,300"/>
+  </g>
+
+  <g transform="translate(620,190)" font-family="Arial, sans-serif">
+    <rect width="180" height="320" rx="24" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
+    <rect x="16" y="16" width="148" height="255" rx="10" fill="rgba(255,23,23,.06)" stroke="rgba(255,75,75,.3)"/>
+    <circle cx="90" cy="60" r="24" fill="none" stroke="#ff4b4b" stroke-width="3"/>
+    <path d="M78,60 L86,68 L104,46" fill="none" stroke="#ff4b4b" stroke-width="3" stroke-linecap="round"/>
+    <rect x="34" y="110" width="112" height="9" rx="4.5" fill="rgba(255,255,255,.22)"/>
+    <rect x="34" y="132" width="80" height="8" rx="4" fill="rgba(255,255,255,.12)"/>
+    <rect x="34" y="170" width="112" height="34" rx="8" fill="rgba(255,23,23,.15)" stroke="#ff4b4b"/>
+  </g>
+  <text x="710" y="540" text-anchor="middle" fill="rgba(255,255,255,.4)" font-family="Arial, sans-serif" font-size="13" letter-spacing="1">ENTRAPASS MOBILE</text>
+
+  <!-- lower stats panel -->
+  <g transform="translate(150,900)" font-family="Arial, sans-serif">
+    <rect width="600" height="270" rx="20" fill="rgba(255,255,255,.045)" stroke="rgba(255,255,255,.16)" stroke-width="2"/>
+    <text x="40" y="58" fill="rgba(255,255,255,.85)" font-size="26" font-weight="800">One door, or one thousand.</text>
+    <g stroke="rgba(255,255,255,.14)" stroke-width="1"><path d="M40,88 H560"/></g>
+    <g fill="rgba(255,255,255,.85)" font-size="28" font-weight="900">
+      <text x="40" y="150">40+</text>
+      <text x="290" y="150">400+</text>
+    </g>
+    <g fill="rgba(255,255,255,.4)" font-size="13" letter-spacing=".04em">
+      <text x="40" y="174">YEARS IN ACCESS CONTROL</text>
+      <text x="290" y="174">DOORS PER SYSTEM</text>
+    </g>
+    <g fill="rgba(255,255,255,.85)" font-size="28" font-weight="900">
+      <text x="40" y="222">20+</text>
+    </g>
+    <g fill="rgba(255,255,255,.4)" font-size="13" letter-spacing=".04em">
+      <text x="40" y="246">TASKS VIA MOBILE APP</text>
+    </g>
+  </g>
+</svg>

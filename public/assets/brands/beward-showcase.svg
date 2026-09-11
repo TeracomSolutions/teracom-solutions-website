@@ -1,0 +1,54 @@
+<svg viewBox="0 0 900 1300" width="900" height="1300" xmlns="http://www.w3.org/2000/svg">
+  <rect width="900" height="1300" fill="#050505"/>
+  <g stroke="rgba(255,255,255,.045)" stroke-width="1">
+    <path d="M0,140 H900 M0,280 H900 M0,420 H900 M0,560 H900 M0,700 H900 M0,840 H900 M0,980 H900 M0,1120 H900"/>
+    <path d="M120,0 V1300 M300,0 V1300 M480,0 V1300 M660,0 V1300 M780,0 V1300"/>
+  </g>
+
+  <!-- door station with facial-recognition scan -->
+  <g transform="translate(330,140)">
+    <rect width="240" height="420" rx="20" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
+    <rect x="24" y="30" width="192" height="140" rx="10" fill="#0a0a0a" stroke="rgba(255,75,75,.4)" stroke-width="2"/>
+    <path d="M84,60 a36,36 0 1,0 0.1,0" fill="none" stroke="#ff4b4b" stroke-width="2.5"/>
+    <path d="M60,60 L108,60 M84,36 L84,84" stroke="rgba(255,75,75,.4)" stroke-width="1"/>
+    <circle cx="84" cy="60" r="5" fill="#ff1717"/>
+    <g fill="rgba(255,255,255,.16)">
+      <circle cx="150" cy="40" r="10"/>
+      <circle cx="150" cy="70" r="10"/>
+      <circle cx="150" cy="100" r="10"/>
+    </g>
+    <rect x="24" y="200" width="192" height="9" rx="4.5" fill="rgba(255,255,255,.22)"/>
+    <rect x="24" y="224" width="140" height="8" rx="4" fill="rgba(255,255,255,.12)"/>
+    <rect x="24" y="270" width="192" height="34" rx="8" fill="rgba(255,23,23,.15)" stroke="#ff4b4b"/>
+    <text x="120" y="292" text-anchor="middle" fill="rgba(255,255,255,.7)" font-family="Arial, sans-serif" font-size="13">ACCESS GRANTED</text>
+  </g>
+
+  <g stroke="#ff4b4b" stroke-width="2" fill="none" stroke-dasharray="2 8" opacity="0.6">
+    <path d="M570,300 L680,240"/>
+    <path d="M570,400 L680,460"/>
+  </g>
+  <g font-family="Arial, sans-serif" fill="rgba(255,255,255,.4)" font-size="13">
+    <text x="690" y="235">3-channel actuator</text>
+    <text x="690" y="465">SIP / PBX compatible</text>
+  </g>
+
+  <!-- lower stats panel -->
+  <g transform="translate(150,720)" font-family="Arial, sans-serif">
+    <rect width="600" height="330" rx="20" fill="rgba(255,255,255,.045)" stroke="rgba(255,255,255,.16)" stroke-width="2"/>
+    <text x="40" y="58" fill="rgba(255,255,255,.85)" font-size="24" font-weight="800">Enterprise intercoms, built for reliability.</text>
+    <g stroke="rgba(255,255,255,.14)" stroke-width="1"><path d="M40,88 H560"/></g>
+    <g fill="rgba(255,255,255,.85)" font-size="26" font-weight="900">
+      <text x="40" y="148">20+</text>
+      <text x="220" y="148">ISO 9001</text>
+      <text x="430" y="148">&lt;1%</text>
+    </g>
+    <g fill="rgba(255,255,255,.4)" font-size="12" letter-spacing=".03em">
+      <text x="40" y="172">YEARS IN BUSINESS</text>
+      <text x="220" y="172">CERTIFIED QUALITY</text>
+      <text x="430" y="172">FACTORY DEFECT RATE</text>
+    </g>
+    <g stroke="rgba(255,255,255,.14)" stroke-width="1"><path d="M40,208 H560"/></g>
+    <text x="40" y="246" fill="rgba(255,255,255,.5)" font-size="14">Runs standalone -- no internet required</text>
+    <text x="40" y="276" fill="rgba(255,255,255,.5)" font-size="14">20-30% less bandwidth than standard systems</text>
+  </g>
+</svg>

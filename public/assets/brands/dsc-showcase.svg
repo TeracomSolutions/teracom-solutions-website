@@ -1,0 +1,53 @@
+<svg viewBox="0 0 900 1300" width="900" height="1300" xmlns="http://www.w3.org/2000/svg">
+  <rect width="900" height="1300" fill="#050505"/>
+  <g stroke="rgba(255,255,255,.045)" stroke-width="1">
+    <path d="M0,140 H900 M0,280 H900 M0,420 H900 M0,560 H900 M0,700 H900 M0,840 H900 M0,980 H900 M0,1120 H900"/>
+    <path d="M120,0 V1300 M300,0 V1300 M480,0 V1300 M660,0 V1300 M780,0 V1300"/>
+  </g>
+
+  <!-- keypad + PowerG frequency-hopping waves -->
+  <g transform="translate(310,150)">
+    <rect width="280" height="360" rx="16" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
+    <rect x="24" y="24" width="232" height="80" rx="8" fill="#0a0a0a" stroke="rgba(255,75,75,.3)"/>
+    <text x="140" y="70" text-anchor="middle" fill="rgba(255,255,255,.6)" font-family="Arial, sans-serif" font-size="16">PowerSeries Neo</text>
+    <g fill="rgba(255,255,255,.16)">
+      <rect x="30" y="120" width="56" height="44" rx="6"/><rect x="96" y="120" width="56" height="44" rx="6"/><rect x="162" y="120" width="56" height="44" rx="6"/>
+      <rect x="30" y="174" width="56" height="44" rx="6"/><rect x="96" y="174" width="56" height="44" rx="6"/><rect x="162" y="174" width="56" height="44" rx="6"/>
+      <rect x="30" y="228" width="56" height="44" rx="6"/><rect x="96" y="228" width="56" height="44" rx="6"/><rect x="162" y="228" width="56" height="44" rx="6"/>
+    </g>
+    <rect x="24" y="296" width="232" height="34" rx="8" fill="rgba(255,23,23,.15)" stroke="#ff4b4b"/>
+    <text x="140" y="318" text-anchor="middle" fill="rgba(255,255,255,.7)" font-family="Arial, sans-serif" font-size="13">128 ZONES</text>
+  </g>
+  <g stroke="#ff4b4b" stroke-width="2" fill="none" opacity="0.5">
+    <path d="M310,330 a150,150 0 0,1 0,-1" stroke-dasharray="1 6"/>
+    <circle cx="450" cy="330" r="180" stroke-dasharray="2 10"/>
+    <circle cx="450" cy="330" r="230" stroke-dasharray="2 12"/>
+  </g>
+  <text x="450" y="580" text-anchor="middle" fill="rgba(255,255,255,.4)" font-family="Arial, sans-serif" font-size="13" letter-spacing="1">POWERG -- 2KM FREQUENCY-HOPPING WIRELESS</text>
+
+  <!-- lower stats panel -->
+  <g transform="translate(150,660)" font-family="Arial, sans-serif">
+    <rect width="600" height="400" rx="20" fill="rgba(255,255,255,.045)" stroke="rgba(255,255,255,.16)" stroke-width="2"/>
+    <text x="40" y="58" fill="rgba(255,255,255,.85)" font-size="24" font-weight="800">Verifies before it alarms.</text>
+    <g stroke="rgba(255,255,255,.14)" stroke-width="1"><path d="M40,88 H560"/></g>
+    <g fill="rgba(255,255,255,.85)" font-size="26" font-weight="900">
+      <text x="40" y="150">2km</text>
+      <text x="290" y="150">128-bit</text>
+    </g>
+    <g fill="rgba(255,255,255,.4)" font-size="13" letter-spacing=".04em">
+      <text x="40" y="174">POWERG WIRELESS RANGE</text>
+      <text x="290" y="174">AES ENCRYPTION</text>
+    </g>
+    <g fill="rgba(255,255,255,.85)" font-size="26" font-weight="900">
+      <text x="40" y="222">8-Year</text>
+      <text x="290" y="222">128</text>
+    </g>
+    <g fill="rgba(255,255,255,.4)" font-size="13" letter-spacing=".04em">
+      <text x="40" y="246">WIRELESS BATTERY LIFE</text>
+      <text x="290" y="246">ZONES PER PANEL</text>
+    </g>
+    <g stroke="rgba(255,255,255,.14)" stroke-width="1"><path d="M40,282 H560"/></g>
+    <text x="40" y="316" fill="rgba(255,255,255,.5)" font-size="14">Backed by Johnson Controls</text>
+    <text x="40" y="346" fill="rgba(255,255,255,.5)" font-size="14">Visual, audio and sequential alarm verification</text>
+  </g>
+</svg>

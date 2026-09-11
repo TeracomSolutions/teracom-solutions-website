@@ -1,0 +1,48 @@
+<svg viewBox="0 0 900 1300" width="900" height="1300" xmlns="http://www.w3.org/2000/svg">
+  <rect width="900" height="1300" fill="#050505"/>
+  <g stroke="rgba(255,255,255,.045)" stroke-width="1">
+    <path d="M0,140 H900 M0,280 H900 M0,420 H900 M0,560 H900 M0,700 H900 M0,840 H900 M0,980 H900 M0,1120 H900"/>
+    <path d="M120,0 V1300 M300,0 V1300 M480,0 V1300 M660,0 V1300 M780,0 V1300"/>
+  </g>
+
+  <!-- perimeter fence-line motif + Command Centre hub -->
+  <g stroke="rgba(255,75,75,.3)" stroke-width="2">
+    <path d="M120,300 H780" stroke-dasharray="4 4"/>
+    <path d="M180,300 V260 M280,300 V260 M380,300 V260 M520,300 V260 M620,300 V260 M720,300 V260" stroke-dasharray="none"/>
+  </g>
+  <g transform="translate(450,460)">
+    <rect x="-140" y="-90" width="280" height="180" rx="16" fill="rgba(255,23,23,.1)" stroke="#ff4b4b" stroke-width="3"/>
+    <text y="-30" text-anchor="middle" fill="rgba(255,255,255,.8)" font-family="Arial, sans-serif" font-size="20" font-weight="800">COMMAND CENTRE</text>
+    <text y="0" text-anchor="middle" fill="rgba(255,255,255,.4)" font-family="Arial, sans-serif" font-size="13">Access + Intruder + Perimeter</text>
+    <circle cy="40" r="10" fill="#ff1717"/>
+  </g>
+  <g font-family="Arial, sans-serif" fill="rgba(255,255,255,.4)" font-size="13" text-anchor="middle">
+    <text x="450" y="640">C7000 CONTROLLER -- CYBER-HARDENED BY DEFAULT</text>
+  </g>
+
+  <!-- lower stats panel -->
+  <g transform="translate(150,730)" font-family="Arial, sans-serif">
+    <rect width="600" height="400" rx="20" fill="rgba(255,255,255,.045)" stroke="rgba(255,255,255,.16)" stroke-width="2"/>
+    <text x="40" y="58" fill="rgba(255,255,255,.85)" font-size="24" font-weight="800">Security for high-stakes sites.</text>
+    <g stroke="rgba(255,255,255,.14)" stroke-width="1"><path d="M40,88 H560"/></g>
+    <g fill="rgba(255,255,255,.85)" font-size="26" font-weight="900">
+      <text x="40" y="150">35+</text>
+      <text x="290" y="150">140+</text>
+    </g>
+    <g fill="rgba(255,255,255,.4)" font-size="13" letter-spacing=".04em">
+      <text x="40" y="174">YEARS DESIGNING SECURITY</text>
+      <text x="290" y="174">COUNTRIES TRUSTED IN</text>
+    </g>
+    <g fill="rgba(255,255,255,.85)" font-size="26" font-weight="900">
+      <text x="40" y="222">20,000+</text>
+      <text x="290" y="222">15%</text>
+    </g>
+    <g fill="rgba(255,255,255,.4)" font-size="13" letter-spacing=".04em">
+      <text x="40" y="246">CUSTOMERS WORLDWIDE</text>
+      <text x="290" y="246">OF REVENUE TO R&amp;D</text>
+    </g>
+    <g stroke="rgba(255,255,255,.14)" stroke-width="1"><path d="M40,282 H560"/></g>
+    <text x="40" y="316" fill="rgba(255,255,255,.5)" font-size="14">Approved supplier to Five Eyes governments</text>
+    <text x="40" y="346" fill="rgba(255,255,255,.5)" font-size="14">ISO 27001:2022 / SOC 2 Type II accredited</text>
+  </g>
+</svg>
