@@ -1,0 +1,31 @@
+<svg viewBox="0 0 900 1300" width="900" height="1300" xmlns="http://www.w3.org/2000/svg">
+  <rect width="900" height="1300" fill="#050505"/>
+  <g stroke="rgba(255,255,255,.045)" stroke-width="1">
+    <path d="M0,140 H900 M0,280 H900 M0,420 H900 M0,560 H900 M0,700 H900 M0,980 H900 M0,1120 H900"/>
+    <path d="M120,0 V1300 M300,0 V1300 M480,0 V1300 M660,0 V1300 M780,0 V1300"/>
+  </g>
+
+  <!-- in-ceiling speaker cutaway with concentric sound waves -->
+  <g transform="translate(450,360)">
+    <circle r="230" fill="none" stroke="rgba(255,75,75,.1)" stroke-width="2"/>
+    <circle r="170" fill="none" stroke="rgba(255,75,75,.16)" stroke-width="2"/>
+    <circle r="110" fill="none" stroke="rgba(255,75,75,.24)" stroke-width="2"/>
+    <circle r="60" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.22)" stroke-width="2"/>
+    <circle r="30" fill="#0a0a0a" stroke="#ff4b4b" stroke-width="3"/>
+    <circle r="10" fill="#ff1717"/>
+  </g>
+  <text x="450" y="640" text-anchor="middle" fill="rgba(255,255,255,.4)" font-family="Arial, sans-serif" font-size="13" letter-spacing="1">PAINTABLE GRILLE -- ARCHITECTURALLY INVISIBLE</text>
+
+  <!-- lower panel -->
+  <g transform="translate(150,760)" font-family="Arial, sans-serif">
+    <rect width="600" height="320" rx="20" fill="rgba(255,255,255,.045)" stroke="rgba(255,255,255,.16)" stroke-width="2"/>
+    <text x="40" y="58" fill="rgba(255,255,255,.85)" font-size="24" font-weight="800">Sound that disappears into the room.</text>
+    <g stroke="rgba(255,255,255,.14)" stroke-width="1"><path d="M40,88 H560"/></g>
+    <text x="40" y="130" fill="rgba(255,255,255,.5)" font-size="14">Polypropylene and Kevlar woofers, silk dome tweeters</text>
+    <text x="40" y="164" fill="rgba(255,255,255,.5)" font-size="14">8-inch speaker with built-in Wi-Fi amplifier</text>
+    <text x="40" y="198" fill="rgba(255,255,255,.5)" font-size="14">Bluetooth-enabled digital power amps</text>
+    <text x="40" y="232" fill="rgba(255,255,255,.5)" font-size="14">Gold-plated spring-loaded terminals in the box</text>
+    <rect x="40" y="260" width="280" height="34" rx="8" fill="rgba(255,23,23,.15)" stroke="#ff4b4b"/>
+    <text x="180" y="282" text-anchor="middle" fill="rgba(255,255,255,.7)" font-size="13">TERACOM'S OWN RANGE</text>
+  </g>
+</svg>

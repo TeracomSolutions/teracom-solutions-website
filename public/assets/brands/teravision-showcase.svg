@@ -1,0 +1,47 @@
+<svg viewBox="0 0 900 1300" width="900" height="1300" xmlns="http://www.w3.org/2000/svg">
+  <rect width="900" height="1300" fill="#050505"/>
+  <g stroke="rgba(255,255,255,.045)" stroke-width="1">
+    <path d="M0,140 H900 M0,280 H900 M0,420 H900 M0,560 H900 M0,700 H900 M0,840 H900 M0,980 H900 M0,1120 H900"/>
+    <path d="M120,0 V1300 M300,0 V1300 M480,0 V1300 M660,0 V1300 M780,0 V1300"/>
+  </g>
+
+  <!-- multi-format recorder: 5 input types feeding one NVR -->
+  <g font-family="Arial, sans-serif" fill="rgba(255,255,255,.16)">
+    <g transform="translate(150,160)"><rect width="130" height="80" rx="10" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.18)" stroke-width="2"/><text x="65" y="46" text-anchor="middle" fill="rgba(255,255,255,.5)" font-size="14">AHD</text></g>
+    <g transform="translate(150,280)"><rect width="130" height="80" rx="10" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.18)" stroke-width="2"/><text x="65" y="46" text-anchor="middle" fill="rgba(255,255,255,.5)" font-size="14">CVI</text></g>
+    <g transform="translate(150,400)"><rect width="130" height="80" rx="10" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.18)" stroke-width="2"/><text x="65" y="46" text-anchor="middle" fill="rgba(255,255,255,.5)" font-size="14">TVI</text></g>
+    <g transform="translate(150,520)"><rect width="130" height="80" rx="10" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.18)" stroke-width="2"/><text x="65" y="46" text-anchor="middle" fill="rgba(255,255,255,.5)" font-size="14">IP</text></g>
+    <g transform="translate(150,640)"><rect width="130" height="80" rx="10" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.18)" stroke-width="2"/><text x="65" y="46" text-anchor="middle" fill="rgba(255,255,255,.5)" font-size="14">Analog</text></g>
+  </g>
+  <g stroke="#ff4b4b" stroke-width="2" fill="none" stroke-dasharray="2 8" opacity="0.7">
+    <path d="M280,200 L570,400"/>
+    <path d="M280,320 L570,400"/>
+    <path d="M280,440 L570,400"/>
+    <path d="M280,560 L570,400"/>
+    <path d="M280,680 L570,400"/>
+  </g>
+  <g transform="translate(570,340)">
+    <rect width="200" height="120" rx="14" fill="rgba(255,23,23,.1)" stroke="#ff4b4b" stroke-width="3"/>
+    <text x="100" y="55" text-anchor="middle" fill="rgba(255,255,255,.8)" font-family="Arial, sans-serif" font-size="18" font-weight="800">ONE NVR</text>
+    <text x="100" y="80" text-anchor="middle" fill="rgba(255,255,255,.4)" font-family="Arial, sans-serif" font-size="12">Every generation, one recorder</text>
+  </g>
+
+  <!-- lower stats panel -->
+  <g transform="translate(150,830)" font-family="Arial, sans-serif">
+    <rect width="600" height="330" rx="20" fill="rgba(255,255,255,.045)" stroke="rgba(255,255,255,.16)" stroke-width="2"/>
+    <text x="40" y="58" fill="rgba(255,255,255,.85)" font-size="24" font-weight="800">CCTV experience since 1990.</text>
+    <g stroke="rgba(255,255,255,.14)" stroke-width="1"><path d="M40,88 H560"/></g>
+    <g fill="rgba(255,255,255,.85)" font-size="28" font-weight="900">
+      <text x="40" y="150">35+</text>
+      <text x="290" y="150">5</text>
+    </g>
+    <g fill="rgba(255,255,255,.4)" font-size="13" letter-spacing=".04em">
+      <text x="40" y="174">YEARS CCTV EXPERIENCE</text>
+      <text x="290" y="174">FORMATS ON ONE RECORDER</text>
+    </g>
+    <g stroke="rgba(255,255,255,.14)" stroke-width="1"><path d="M40,210 H560"/></g>
+    <text x="40" y="248" fill="rgba(255,255,255,.5)" font-size="14">BitVision app, facial recognition on compatible models</text>
+    <text x="40" y="278" fill="rgba(255,255,255,.5)" font-size="14">Cloud backup to Dropbox / Google Drive</text>
+    <text x="40" y="308" fill="rgba(255,255,255,.5)" font-size="14">TERACOM'S OWN RANGE</text>
+  </g>
+</svg>

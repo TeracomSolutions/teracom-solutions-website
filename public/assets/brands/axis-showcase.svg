@@ -1,0 +1,54 @@
+<svg viewBox="0 0 900 1300" width="900" height="1300" xmlns="http://www.w3.org/2000/svg">
+  <rect width="900" height="1300" fill="#050505"/>
+  <g stroke="rgba(255,255,255,.045)" stroke-width="1">
+    <path d="M0,140 H900 M0,280 H900 M0,420 H900 M0,560 H900 M0,700 H900 M0,840 H900 M0,980 H900 M0,1120 H900"/>
+    <path d="M120,0 V1300 M300,0 V1300 M480,0 V1300 M660,0 V1300 M780,0 V1300"/>
+  </g>
+
+  <!-- the original 1996 camera lineage into a modern dome -->
+  <g transform="translate(230,200)" font-family="Arial, sans-serif">
+    <rect width="140" height="90" rx="10" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
+    <rect x="16" y="30" width="60" height="30" rx="4" fill="none" stroke="rgba(255,75,75,.4)" stroke-width="2"/>
+    <text x="70" y="118" text-anchor="middle" fill="rgba(255,255,255,.4)" font-size="13">Neteye 200, 1996</text>
+  </g>
+  <g stroke="#ff4b4b" stroke-width="2" fill="none" stroke-dasharray="2 8" opacity="0.7">
+    <path d="M370,240 L580,300"/>
+  </g>
+  <g transform="translate(590,230)">
+    <circle r="90" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.2)" stroke-width="2"/>
+    <circle r="46" fill="#0a0a0a" stroke="#ff4b4b" stroke-width="3"/>
+    <circle r="16" fill="#ff1717"/>
+    <text y="130" text-anchor="middle" fill="rgba(255,255,255,.4)" font-family="Arial, sans-serif" font-size="13">Today, ARTPEC chipset</text>
+  </g>
+
+  <text x="450" y="480" text-anchor="middle" fill="rgba(255,255,255,.4)" font-family="Arial, sans-serif" font-size="13" letter-spacing="1">EDGE VAULT -- HARDWARE-BASED CYBERSECURITY</text>
+  <g stroke="rgba(255,75,75,.3)" stroke-width="2" fill="none">
+    <circle cx="450" cy="560" r="120" stroke-dasharray="2 8"/>
+  </g>
+
+  <!-- lower stats panel -->
+  <g transform="translate(150,720)" font-family="Arial, sans-serif">
+    <rect width="600" height="400" rx="20" fill="rgba(255,255,255,.045)" stroke="rgba(255,255,255,.16)" stroke-width="2"/>
+    <text x="40" y="58" fill="rgba(255,255,255,.85)" font-size="24" font-weight="800">Invented the network camera.</text>
+    <g stroke="rgba(255,255,255,.14)" stroke-width="1"><path d="M40,88 H560"/></g>
+    <g fill="rgba(255,255,255,.85)" font-size="26" font-weight="900">
+      <text x="40" y="150">1996</text>
+      <text x="290" y="150">50+</text>
+    </g>
+    <g fill="rgba(255,255,255,.4)" font-size="13" letter-spacing=".04em">
+      <text x="40" y="174">INVENTED THE NETWORK CAMERA</text>
+      <text x="290" y="174">COUNTRIES OPERATED IN</text>
+    </g>
+    <g fill="rgba(255,255,255,.85)" font-size="26" font-weight="900">
+      <text x="40" y="222">5,000+</text>
+      <text x="290" y="222">40+</text>
+    </g>
+    <g fill="rgba(255,255,255,.4)" font-size="13" letter-spacing=".04em">
+      <text x="40" y="246">EMPLOYEES WORLDWIDE</text>
+      <text x="290" y="246">YEARS IN OPERATION</text>
+    </g>
+    <g stroke="rgba(255,255,255,.14)" stroke-width="1"><path d="M40,282 H560"/></g>
+    <text x="40" y="316" fill="rgba(255,255,255,.5)" font-size="14">Lightfinder + Forensic WDR imaging</text>
+    <text x="40" y="346" fill="rgba(255,255,255,.5)" font-size="14">Open standards from day one</text>
+  </g>
+</svg>

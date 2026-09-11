@@ -1,0 +1,60 @@
+<svg viewBox="0 0 900 1300" width="900" height="1300" xmlns="http://www.w3.org/2000/svg">
+  <rect width="900" height="1300" fill="#050505"/>
+  <g stroke="rgba(255,255,255,.045)" stroke-width="1">
+    <path d="M0,140 H900 M0,280 H900 M0,420 H900 M0,560 H900 M0,700 H900 M0,840 H900 M0,980 H900 M0,1120 H900"/>
+    <path d="M120,0 V1300 M300,0 V1300 M480,0 V1300 M660,0 V1300 M780,0 V1300"/>
+  </g>
+
+  <!-- network topology mesh -->
+  <g stroke="#ff4b4b" stroke-width="2" fill="none" stroke-dasharray="2 7" opacity="0.6">
+    <path d="M450,420 L230,260"/>
+    <path d="M450,420 L670,260"/>
+    <path d="M450,420 L230,580"/>
+    <path d="M450,420 L670,580"/>
+    <path d="M230,260 L230,580"/>
+    <path d="M670,260 L670,580"/>
+  </g>
+  <g fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.22)" stroke-width="2">
+    <circle cx="230" cy="260" r="28"/>
+    <circle cx="670" cy="260" r="28"/>
+    <circle cx="230" cy="580" r="28"/>
+    <circle cx="670" cy="580" r="28"/>
+  </g>
+  <circle cx="450" cy="420" r="52" fill="rgba(255,23,23,.12)" stroke="#ff4b4b" stroke-width="3"/>
+  <circle cx="450" cy="420" r="16" fill="#ff1717"/>
+  <text x="450" y="500" text-anchor="middle" fill="rgba(255,255,255,.7)" font-family="Arial, sans-serif" font-size="20" font-weight="800" letter-spacing="2">MERAKI DASHBOARD</text>
+  <text x="450" y="524" text-anchor="middle" fill="rgba(255,255,255,.35)" font-family="Arial, sans-serif" font-size="14">Single pane of glass</text>
+
+  <g font-family="Arial, sans-serif" fill="rgba(255,255,255,.4)" font-size="13" text-anchor="middle">
+    <text x="230" y="230">SWITCH</text>
+    <text x="670" y="230">ACCESS POINT</text>
+    <text x="230" y="640">CAMERA</text>
+    <text x="670" y="640">GATEWAY</text>
+  </g>
+
+  <!-- lower panel -->
+  <g transform="translate(150,750)" font-family="Arial, sans-serif">
+    <rect width="600" height="420" rx="20" fill="rgba(255,255,255,.045)" stroke="rgba(255,255,255,.16)" stroke-width="2"/>
+    <text x="40" y="58" fill="rgba(255,255,255,.85)" font-size="26" font-weight="800">Infrastructure that scales, edge to cloud.</text>
+    <g stroke="rgba(255,255,255,.14)" stroke-width="1"><path d="M40,88 H560"/></g>
+    <g fill="rgba(255,255,255,.85)" font-size="28" font-weight="900">
+      <text x="40" y="150">40+</text>
+      <text x="340" y="150">190+</text>
+    </g>
+    <g fill="rgba(255,255,255,.4)" font-size="13" letter-spacing=".04em">
+      <text x="40" y="174">YEARS OF INNOVATION</text>
+      <text x="340" y="174">COUNTRIES REACHED</text>
+    </g>
+    <g fill="rgba(255,255,255,.85)" font-size="28" font-weight="900">
+      <text x="40" y="230">20M+</text>
+      <text x="340" y="230">$56.7B</text>
+    </g>
+    <g fill="rgba(255,255,255,.4)" font-size="13" letter-spacing=".04em">
+      <text x="40" y="254">PEOPLE TRAINED</text>
+      <text x="340" y="254">FY25 REVENUE</text>
+    </g>
+    <g stroke="rgba(255,255,255,.14)" stroke-width="1"><path d="M40,290 H560"/></g>
+    <text x="40" y="330" fill="rgba(255,255,255,.5)" font-size="14">Cisco Talos threat intelligence, built in</text>
+    <text x="40" y="360" fill="rgba(255,255,255,.5)" font-size="14">Catalyst switching + Meraki cloud management</text>
+  </g>
+</svg>
