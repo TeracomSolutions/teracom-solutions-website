@@ -70,7 +70,7 @@ export default function BrandPage({ params }) {
         <section className="section section-spacious alt">
           <div className="container">
             <div className="section-heading left brand-highlights-heading">
-              <span className="eyebrow">Why Teracom works with {brand.name}</span>
+              <span className="eyebrow">{brand.isOwnBrand ? `Why choose ${brand.name}` : `Why Teracom works with ${brand.name}`}</span>
               <h2>{brand.highlightsHeading}</h2>
             </div>
             <div className="feature-grid brand-highlight-grid">
