@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { brands, findBrand } from '@/lib/brands';
+import CategoryIcon from '@/components/CategoryIcon';
 
 const THEME_FALLBACKS = { 'cctv': '/assets/brand-fallback-cctv.svg', 'access-control': '/assets/brand-fallback-access.svg', 'audio': '/assets/brand-fallback-audio.svg', 'power': '/assets/brand-fallback-power.svg', 'networking': '/assets/brand-fallback-network.svg', 'accessories': '/assets/brand-fallback-accessories.svg' };
 
@@ -51,6 +52,11 @@ export default function BrandPage({ params }) {
               <div className="brand-stats">
                 {brand.stats.map((s) => (
                   <div className="brand-stat" key={s.label}>
+                    {s.icon && (
+                      <span className="brand-stat-icon">
+                        <CategoryIcon slug={s.icon} />
+                      </span>
+                    )}
                     <span className="brand-stat-value">{s.value}</span>
                     <span className="brand-stat-label">{s.label}</span>
                   </div>
@@ -67,12 +73,14 @@ export default function BrandPage({ params }) {
               <span className="eyebrow">Why Teracom works with {brand.name}</span>
               <h2>{brand.highlightsHeading}</h2>
             </div>
-            <div className="feature-grid">
-              {brand.highlights.map((h, i) => (
+            <div className="feature-grid brand-highlight-grid">
+              {brand.highlights.map((h) => (
                 <article key={h.title}>
-                  <span style={{ color: 'var(--red)', fontWeight: 900, fontSize: '14px', letterSpacing: '.08em' }}>
-                    {String(i + 1).padStart(2, '0')}
-                  </span>
+                  {h.icon && (
+                    <span className="category-icon-badge" style={{ marginBottom: '16px' }}>
+                      <CategoryIcon slug={h.icon} />
+                    </span>
+                  )}
                   <h3>{h.title}</h3>
                   <p>{h.body}</p>
                 </article>
@@ -103,6 +111,19 @@ export default function BrandPage({ params }) {
             ) : (
               <Image src={THEME_FALLBACKS[brand.theme] || '/assets/consulting-visual.svg'} alt="Abstract technology visual" width={1200} height={700} />
             )}
+          </div>
+        </div>
+      </section>
+      <section className="section">
+        <div className="container">
+          <div className="brand-store-cta">
+            <div>
+              <h3>Interested in {brand.name} products?</h3>
+              <p>Visit the Teracom Store for current stock, pricing and availability.</p>
+            </div>
+            <Link className="btn btn-primary" href="/store">
+              Visit the Store
+            </Link>
           </div>
         </div>
       </section>
