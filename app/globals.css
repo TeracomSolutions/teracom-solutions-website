@@ -392,7 +392,7 @@ a {
 .brand-stat-label {
   display:block;margin-top:8px;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;
 }
-.brand-highlights-heading {
+.section-heading.left.brand-highlights-heading {
   margin-bottom:48px;
 }
 .brand-highlight-grid article {
