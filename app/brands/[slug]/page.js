@@ -69,7 +69,7 @@ export default function BrandPage({ params }) {
       {brand.highlights && (
         <section className="section section-spacious alt">
           <div className="container">
-            <div className="section-heading left">
+            <div className="section-heading left brand-highlights-heading">
               <span className="eyebrow">Why Teracom works with {brand.name}</span>
               <h2>{brand.highlightsHeading}</h2>
             </div>
@@ -90,7 +90,7 @@ export default function BrandPage({ params }) {
         </section>
       )}
       <section className="section section-spacious">
-        <div className="container showcase-grid reverse">
+        <div className="container showcase-grid reverse brand-showcase-grid">
           <div className="showcase-copy">
             {paragraphs.map((p, i) => (
               <p key={i}>{p}</p>
@@ -105,11 +105,11 @@ export default function BrandPage({ params }) {
               </p>
             )}
           </div>
-          <div className="showcase-image">
+          <div className="showcase-image brand-showcase-image">
             {brand.imageFile ? (
-              <Image src={`/assets/brands/${brand.imageFile}`} alt={`${brand.name} product imagery`} width={1200} height={700} />
+              <Image src={`/assets/brands/${brand.imageFile}`} alt={`${brand.name} product imagery`} fill style={{ objectFit: 'cover' }} sizes="(max-width: 980px) 100vw, 45vw" />
             ) : (
-              <Image src={THEME_FALLBACKS[brand.theme] || '/assets/consulting-visual.svg'} alt="Abstract technology visual" width={1200} height={700} />
+              <Image src={THEME_FALLBACKS[brand.theme] || '/assets/consulting-visual.svg'} alt="Abstract technology visual" fill style={{ objectFit: 'cover' }} sizes="(max-width: 980px) 100vw, 45vw" />
             )}
           </div>
         </div>
