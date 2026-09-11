@@ -383,11 +383,29 @@ a {
 .brand-stats {
   display:flex;flex-wrap:wrap;gap:40px;margin-top:40px;padding-top:32px;border-top:1px solid var(--line);
 }
+.brand-stat-icon {
+  display:flex;align-items:center;justify-content:center;width:36px;height:36px;color:var(--red2);margin-bottom:10px;
+}
 .brand-stat-value {
   display:block;font-size:32px;font-weight:900;color:#fff;letter-spacing:-.02em;line-height:1;
 }
 .brand-stat-label {
   display:block;margin-top:8px;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;
+}
+.brand-highlight-grid article {
+  height:auto;min-height:260px;
+}
+.brand-highlight-grid p {
+  -webkit-line-clamp:4;
+}
+.brand-store-cta {
+  display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;border:1px solid var(--line);background:rgba(255,255,255,.04);border-radius:28px;padding:36px 40px;
+}
+.brand-store-cta h3 {
+  margin:0 0 8px;font-size:26px;letter-spacing:-.03em;
+}
+.brand-store-cta p {
+  margin:0;color:var(--muted);
 }
 .brand-hero-logo {
   flex:none;max-height:48px;max-width:180px;width:auto;height:auto;object-fit:contain;background:#f4f4f2;border-radius:12px;padding:8px 14px;
