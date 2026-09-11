@@ -1,0 +1,94 @@
+<svg viewBox="0 0 900 1300" width="900" height="1300" xmlns="http://www.w3.org/2000/svg">
+  <rect width="900" height="1300" fill="#050505"/>
+  <g stroke="rgba(255,255,255,.045)" stroke-width="1">
+    <path d="M0,140 H900 M0,280 H900 M0,420 H900 M0,560 H900 M0,700 H900 M0,840 H900 M0,980 H900 M0,1120 H900"/>
+    <path d="M120,0 V1300 M300,0 V1300 M480,0 V1300 M660,0 V1300 M780,0 V1300"/>
+  </g>
+
+  <!-- central Integriti hub -->
+  <g transform="translate(450,430)">
+    <circle r="150" fill="none" stroke="rgba(255,75,75,.12)" stroke-width="1.5"/>
+    <circle r="108" fill="none" stroke="rgba(255,75,75,.18)" stroke-width="1.5"/>
+    <circle r="70" fill="rgba(255,23,23,.08)" stroke="#ff4b4b" stroke-width="2.5"/>
+    <circle r="26" fill="#ff1717"/>
+    <text x="0" y="150" text-anchor="middle" fill="rgba(255,255,255,.7)" font-family="Arial, sans-serif" font-size="20" font-weight="800" letter-spacing="2">INTEGRITI</text>
+    <text x="0" y="175" text-anchor="middle" fill="rgba(255,255,255,.35)" font-family="Arial, sans-serif" font-size="14" letter-spacing="1">UNIFIED PLATFORM</text>
+  </g>
+
+  <!-- radiating connections to integrated systems -->
+  <g stroke="#ff4b4b" stroke-width="2" fill="none" stroke-dasharray="2 8" stroke-linecap="round" opacity="0.7">
+    <path d="M450,280 L450,140"/>
+    <path d="M340,340 L180,220"/>
+    <path d="M560,340 L720,220"/>
+    <path d="M340,520 L180,660"/>
+    <path d="M560,520 L720,660"/>
+    <path d="M450,580 L450,760"/>
+  </g>
+
+  <!-- door / access control node -->
+  <g transform="translate(140,150)" font-family="Arial, sans-serif">
+    <rect width="150" height="140" rx="14" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
+    <rect x="18" y="18" width="114" height="70" rx="6" fill="rgba(255,23,23,.1)" stroke="rgba(255,75,75,.4)"/>
+    <circle cx="100" cy="53" r="7" fill="#ff4b4b"/>
+    <rect x="18" y="98" width="90" height="9" rx="4.5" fill="rgba(255,255,255,.22)"/>
+    <rect x="18" y="116" width="60" height="8" rx="4" fill="rgba(255,255,255,.12)"/>
+  </g>
+  <text x="215" y="315" text-anchor="middle" fill="rgba(255,255,255,.4)" font-family="Arial, sans-serif" font-size="13" letter-spacing="1">ACCESS CONTROL</text>
+
+  <!-- shield / intrusion node -->
+  <g transform="translate(645,150)" font-family="Arial, sans-serif">
+    <rect width="150" height="140" rx="14" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
+    <path d="M75,22 L118,38 v34c0,32 -22,52 -43,60 -21,-8 -43,-28 -43,-60 V38 Z" fill="none" stroke="#ff4b4b" stroke-width="3"/>
+    <path d="M60,72 L70,84 L92,58" fill="none" stroke="#ff4b4b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="18" y="98" width="90" height="9" rx="4.5" fill="rgba(255,255,255,.22)"/>
+    <rect x="18" y="116" width="60" height="8" rx="4" fill="rgba(255,255,255,.12)"/>
+  </g>
+  <text x="720" y="315" text-anchor="middle" fill="rgba(255,255,255,.4)" font-family="Arial, sans-serif" font-size="13" letter-spacing="1">INTRUSION</text>
+
+  <!-- camera / CCTV node -->
+  <g transform="translate(140,660)" font-family="Arial, sans-serif">
+    <rect width="150" height="140" rx="14" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
+    <rect x="24" y="52" width="80" height="34" rx="8" fill="rgba(255,23,23,.1)" stroke="rgba(255,75,75,.4)"/>
+    <circle cx="112" cy="69" r="14" fill="#0a0a0a" stroke="#ff4b4b" stroke-width="3"/>
+    <circle cx="112" cy="69" r="6" fill="#ff1717"/>
+    <rect x="18" y="98" width="90" height="9" rx="4.5" fill="rgba(255,255,255,.22)"/>
+    <rect x="18" y="116" width="60" height="8" rx="4" fill="rgba(255,255,255,.12)"/>
+  </g>
+  <text x="215" y="825" text-anchor="middle" fill="rgba(255,255,255,.4)" font-family="Arial, sans-serif" font-size="13" letter-spacing="1">CCTV</text>
+
+  <!-- lighting/HVAC node -->
+  <g transform="translate(645,660)" font-family="Arial, sans-serif">
+    <rect width="150" height="140" rx="14" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
+    <circle cx="75" cy="55" r="24" fill="none" stroke="#ff4b4b" stroke-width="3"/>
+    <path d="M65,80 h20 M68,90 h14" stroke="#ff4b4b" stroke-width="3" stroke-linecap="round"/>
+    <rect x="18" y="98" width="90" height="9" rx="4.5" fill="rgba(255,255,255,.22)"/>
+    <rect x="18" y="116" width="60" height="8" rx="4" fill="rgba(255,255,255,.12)"/>
+  </g>
+  <text x="720" y="825" text-anchor="middle" fill="rgba(255,255,255,.4)" font-family="Arial, sans-serif" font-size="13" letter-spacing="1">LIGHTING / HVAC</text>
+
+  <!-- lower panel: scale/deployment summary -->
+  <g transform="translate(150,900)" font-family="Arial, sans-serif">
+    <rect width="600" height="300" rx="20" fill="rgba(255,255,255,.045)" stroke="rgba(255,255,255,.16)" stroke-width="2"/>
+    <text x="40" y="58" fill="rgba(255,255,255,.85)" font-size="26" font-weight="800">One platform. Every site.</text>
+    <text x="40" y="92" fill="rgba(255,255,255,.4)" font-size="15">Single-door installs through to multi-site global deployments.</text>
+    <g stroke="rgba(255,255,255,.14)" stroke-width="1">
+      <path d="M40,120 H560"/>
+    </g>
+    <g fill="rgba(255,255,255,.85)" font-size="30" font-weight="900">
+      <text x="40" y="180">50,000+</text>
+      <text x="340" y="180">25</text>
+    </g>
+    <g fill="rgba(255,255,255,.4)" font-size="13" letter-spacing=".05em">
+      <text x="40" y="204">SITES INSTALLED</text>
+      <text x="340" y="204">COUNTRIES</text>
+    </g>
+    <g fill="rgba(255,255,255,.85)" font-size="30" font-weight="900">
+      <text x="40" y="250">5,000+</text>
+      <text x="340" y="250">30+</text>
+    </g>
+    <g fill="rgba(255,255,255,.4)" font-size="13" letter-spacing=".05em">
+      <text x="40" y="274">CERTIFIED INTEGRATORS</text>
+      <text x="340" y="274">YEARS IN THE FIELD</text>
+    </g>
+  </g>
+</svg>
