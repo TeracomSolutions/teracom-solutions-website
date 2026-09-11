@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import Link from 'next/link';
 
 export default function DocumentList({ documents, emptyMessage }) {
   const brands = useMemo(
@@ -12,7 +13,7 @@ export default function DocumentList({ documents, emptyMessage }) {
   if (documents.length === 0) {
     return (
       <div className="form-note-banner" role="status">
-        {emptyMessage} In the meantime, <a href="/#contact" style={{ color: 'var(--text)', textDecoration: 'underline' }}>contact us</a> for what you need.
+        {emptyMessage} In the meantime, <Link href="/#contact" style={{ color: 'var(--text)', textDecoration: 'underline' }}>contact us</Link> for what you need.
       </div>
     );
   }

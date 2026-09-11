@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { channelUrl, videos } from '@/lib/resourceVideos';
 
 export default function VideoGrid() {
@@ -17,7 +18,7 @@ export default function VideoGrid() {
         ) : (
           <>
             {' '}
-            In the meantime, <a href="/#contact" style={{ color: 'var(--text)', textDecoration: 'underline' }}>contact us</a> for the video you need.
+            In the meantime, <Link href="/#contact" style={{ color: 'var(--text)', textDecoration: 'underline' }}>contact us</Link> for the video you need.
           </>
         )}
       </div>

@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import Link from 'next/link';
 import { helpCenterTopics } from '@/lib/helpCenterTopics';
 
 function renderMultiline(text) {
@@ -90,9 +91,9 @@ export default function HelpCenterAccordion() {
       {normalizedQuery && results.length === 0 && (
         <p className="form-note-banner" role="status" style={{ marginTop: '24px' }}>
           No results for &quot;{query}&quot; -- try a different term, or{' '}
-          <a href="/#contact" style={{ color: 'var(--text)', textDecoration: 'underline' }}>
+          <Link href="/#contact" style={{ color: 'var(--text)', textDecoration: 'underline' }}>
             contact us
-          </a>
+          </Link>
           .
         </p>
       )}
