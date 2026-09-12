@@ -46,14 +46,23 @@ export default function CategoryProductGrid({ products }) {
               <p>{p.description}</p>
             </div>
             <div>
-              <p className="price">
-                {formatMoney(p.priceCents)}
-                <span className="price-gst-note"> inc. GST</span>
-              </p>
-              {p.type === 'subscription' ? (
-                <CheckoutButton productId={p.id} label="Subscribe" />
+              {p.priceCents === null ? (
+                <>
+                  <p className="price">Sign in to view pricing</p>
+                  <a href="/account/login" className="btn btn-primary">Sign in</a>
+                </>
               ) : (
-                <AddToCartButton productId={p.id} label="Add to Cart" />
+                <>
+                  <p className="price">
+                    {formatMoney(p.priceCents)}
+                    <span className="price-gst-note"> inc. GST</span>
+                  </p>
+                  {p.type === 'subscription' ? (
+                    <CheckoutButton productId={p.id} label="Subscribe" />
+                  ) : (
+                    <AddToCartButton productId={p.id} label="Add to Cart" />
+                  )}
+                </>
               )}
             </div>
           </article>
