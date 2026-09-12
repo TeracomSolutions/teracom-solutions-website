@@ -4,6 +4,10 @@ import { stripe } from '@/lib/stripe';
 import { findProduct } from '@/lib/products';
 import { SITE_URL } from '@/lib/config';
 import { checkRateLimit, clientIpFromRequest, rateLimitResponse } from '@/lib/rateLimit';
+import { cookies } from 'next/headers';
+import { CUSTOMER_ACCESS_TOKEN_COOKIE } from '@/lib/customerSession';
+import { getCurrentCustomer } from '@/lib/api/customerAuth';
+import { ApiError } from '@/lib/api/client';
 
 // Same card-testing rationale as app/api/checkout/route.js -- reuses the
 // same env vars so both endpoints share one operator-facing knob, but a
@@ -41,6 +45,23 @@ export async function POST(req) {
   });
   if (!rateLimit.allowed) {
     return rateLimitResponse(rateLimit.retryAfterSeconds, 'Too many checkout attempts. Please try again shortly.');
+  }
+
+  // Server-side login check - must be done after rate limit but before zod parse
+  const token = cookies().get(CUSTOMER_ACCESS_TOKEN_COOKIE)?.value;
+  if (!token) {
+    return NextResponse.json({ error: 'Sign in to complete checkout.' }, { status: 401 });
+  }
+
+  // Verify the customer token
+  try {
+    await getCurrentCustomer(token);
+  } catch (error) {
+    if (error instanceof ApiError && (error.status === 401 || error.status === 403)) {
+      return NextResponse.json({ error: 'Sign in to complete checkout.' }, { status: 401 });
+    }
+    // For any other error (network failure, etc.)
+    return NextResponse.json({ error: 'Unable to verify your account right now. Please try again shortly.' }, { status: 502 });
   }
 
   const parsed = CartCheckoutRequest.safeParse(await req.json());
