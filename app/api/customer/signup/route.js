@@ -13,6 +13,15 @@ const CUSTOMER_SIGNUP_RATE_LIMIT_WINDOW_SECONDS = (Number(process.env.CUSTOMER_S
 const SignupRequest = z.object({
   email: z.string().min(1),
   password: z.string().min(8),
+  first_name: z.string().min(1),
+  last_name: z.string().min(1),
+  shipping_address_line1: z.string().min(1),
+  shipping_address_line2: z.string().optional(),
+  shipping_city: z.string().min(1),
+  shipping_state: z.string().min(1),
+  shipping_postcode: z.string().min(1),
+  captcha_token: z.string().min(1),
+  captcha_answer: z.string().min(1),
 });
 
 export async function POST(req) {
@@ -32,7 +41,7 @@ export async function POST(req) {
 
   let data;
   try {
-    data = await customerSignup(parsed.data.email, parsed.data.password);
+    data = await customerSignup(parsed.data);
   } catch (err) {
     if (err instanceof ApiError) {
       if (err.status === 409) {
