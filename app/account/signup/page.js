@@ -1,14 +1,43 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function CustomerSignupPage() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [addressLine1, setAddressLine1] = useState('');
+  const [addressLine2, setAddressLine2] = useState('');
+  const [city, setCity] = useState('');
+  const [state, setState] = useState('NSW');
+  const [postcode, setPostcode] = useState('');
+  const [captchaQuestion, setCaptchaQuestion] = useState(null);
+  const [captchaToken, setCaptchaToken] = useState('');
+  const [captchaAnswer, setCaptchaAnswer] = useState('');
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    async function loadCaptcha() {
+      try {
+        const res = await fetch('/api/customer/captcha');
+        const data = await res.json();
+        if (res.ok) {
+          setCaptchaQuestion(data.question);
+          setCaptchaToken(data.token);
+        } else {
+          setError('Unable to load the verification question.');
+        }
+      } catch {
+        setError('Unable to load the verification question.');
+      }
+    }
+
+    loadCaptcha();
+  }, []);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -19,7 +48,19 @@ export default function CustomerSignupPage() {
       const res = await fetch('/api/customer/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({
+          email,
+          password,
+          first_name: firstName,
+          last_name: lastName,
+          shipping_address_line1: addressLine1,
+          shipping_address_line2: addressLine2,
+          shipping_city: city,
+          shipping_state: state,
+          shipping_postcode: postcode,
+          captcha_token: captchaToken,
+          captcha_answer: captchaAnswer
+        }),
       });
       const data = await res.json();
 
@@ -67,6 +108,109 @@ export default function CustomerSignupPage() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                style={{ display: 'block', width: '100%' }}
+              />
+            </div>
+
+            <div style={{ marginBottom: '16px' }}>
+              <label htmlFor="firstName">First Name</label>
+              <input
+                id="firstName"
+                type="text"
+                required
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                style={{ display: 'block', width: '100%' }}
+              />
+            </div>
+
+            <div style={{ marginBottom: '16px' }}>
+              <label htmlFor="lastName">Last Name</label>
+              <input
+                id="lastName"
+                type="text"
+                required
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                style={{ display: 'block', width: '100%' }}
+              />
+            </div>
+
+            <p>We ship within Australia only -- no PO Boxes, locked bags, or parcel lockers.</p>
+
+            <div style={{ marginBottom: '16px' }}>
+              <label htmlFor="addressLine1">Address Line 1</label>
+              <input
+                id="addressLine1"
+                type="text"
+                required
+                value={addressLine1}
+                onChange={(e) => setAddressLine1(e.target.value)}
+                style={{ display: 'block', width: '100%' }}
+              />
+            </div>
+
+            <div style={{ marginBottom: '16px' }}>
+              <label htmlFor="addressLine2">Address Line 2</label>
+              <input
+                id="addressLine2"
+                type="text"
+                value={addressLine2}
+                onChange={(e) => setAddressLine2(e.target.value)}
+                style={{ display: 'block', width: '100%' }}
+              />
+            </div>
+
+            <div style={{ marginBottom: '16px' }}>
+              <label htmlFor="city">City</label>
+              <input
+                id="city"
+                type="text"
+                required
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                style={{ display: 'block', width: '100%' }}
+              />
+            </div>
+
+            <div style={{ marginBottom: '16px' }}>
+              <label htmlFor="state">State</label>
+              <select
+                id="state"
+                value={state}
+                onChange={(e) => setState(e.target.value)}
+                style={{ display: 'block', width: '100%' }}
+              >
+                <option value="NSW">NSW</option>
+                <option value="VIC">VIC</option>
+                <option value="QLD">QLD</option>
+                <option value="WA">WA</option>
+                <option value="SA">SA</option>
+                <option value="TAS">TAS</option>
+                <option value="ACT">ACT</option>
+                <option value="NT">NT</option>
+              </select>
+            </div>
+
+            <div style={{ marginBottom: '16px' }}>
+              <label htmlFor="postcode">Postcode</label>
+              <input
+                id="postcode"
+                type="text"
+                required
+                value={postcode}
+                onChange={(e) => setPostcode(e.target.value)}
+                style={{ display: 'block', width: '100%' }}
+              />
+            </div>
+
+            <div style={{ marginBottom: '16px' }}>
+              <label>{captchaQuestion ? `What is ${captchaQuestion}?` : 'Loading verification question...'}</label>
+              <input
+                type="text"
+                required
+                value={captchaAnswer}
+                onChange={(e) => setCaptchaAnswer(e.target.value)}
                 style={{ display: 'block', width: '100%' }}
               />
             </div>
