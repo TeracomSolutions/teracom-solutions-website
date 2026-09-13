@@ -581,6 +581,15 @@ a {
 .footer-brand img {
   width:260px;
 }
+.footer-social {
+  display:flex;gap:14px;margin-top:18px;
+}
+.footer-social-icon {
+  display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;border:1px solid var(--line);color:#d6d6d6;transition:color .2s,border-color .2s,transform .2s;
+}
+.footer-social-icon:hover {
+  color:var(--red2);border-color:var(--red2);transform:translateY(-2px);
+}
 .footer-brand p {
   color:#fff;margin:18px 0 0;font-weight:800;letter-spacing:.12em;
 }
