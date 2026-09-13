@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Link from 'next/link';
 
 export default function StripeTrustBadge() {
   return (
@@ -13,10 +14,15 @@ export default function StripeTrustBadge() {
           details -- everything is encrypted and processed directly by Stripe, a PCI DSS Level 1 certified payment
           provider trusted by millions of businesses worldwide.
         </p>
-        <div className="stripe-trust-logo-row">
+        <Link
+          href="https://stripe.com/au/payments/payment-methods"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="stripe-trust-logo-row"
+        >
           <span>Payments powered by</span>
           <Image src="/assets/logos/stripe.svg" alt="Stripe" width={70} height={29} />
-        </div>
+        </Link>
       </div>
     </div>
   );
