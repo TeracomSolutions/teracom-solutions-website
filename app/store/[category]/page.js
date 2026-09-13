@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { cookies } from 'next/headers';
 import { findCategory, categories } from '@/lib/categories';
-import { getProductsByCategory } from '@/lib/products';
+import { getProductsByCategory, getNewArrivals } from '@/lib/products';
 import CategoryProductGrid from '@/components/CategoryProductGrid';
 import { CUSTOMER_ACCESS_TOKEN_COOKIE } from '@/lib/customerSession';
 
@@ -25,7 +25,11 @@ export default function CategoryPage({ params }) {
 
   const token = cookies().get(CUSTOMER_ACCESS_TOKEN_COOKIE)?.value;
   
-  let products = category.productCategory ? getProductsByCategory(category.productCategory) : [];
+  let products = category.isDynamic
+    ? getNewArrivals()
+    : category.productCategory
+      ? getProductsByCategory(category.productCategory)
+      : [];
   
   if (!token) {
     products = products.map(p => ({ ...p, priceCents: null }));
