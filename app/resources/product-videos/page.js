@@ -1,23 +1,25 @@
+import { pageMetadata } from '@/lib/seo';
 import Link from 'next/link';
 import ResourcesSubNav from '@/components/ResourcesSubNav';
+import Breadcrumbs from '@/components/Breadcrumbs';
 import VideoGrid from '@/components/VideoGrid';
 
-export const metadata = {
+export const metadata = pageMetadata({
   title: 'Product Videos | Teracom Solutions',
   description: 'Installation, configuration and product overview videos from Teracom Solutions.',
-};
+  path: '/resources/product-videos',
+});
 
 export default function ProductVideos() {
   return (
-    <main>
+    <main id="main-content">
       <section className="hero hero-product hero-shallow">
         <div className="container hero-layout">
           <div className="hero-copy">
-            <span className="eyebrow">
-              <Link href="/resources" style={{ color: 'inherit' }}>
-                &larr; Resources
-              </Link>
-            </span>
+            <Breadcrumbs
+              items={[{ name: 'Resources', href: '/resources' }]}
+              current={'Product Videos'}
+            />
             <h1>Product Videos</h1>
             <p className="lead">Installation, configuration and product overview videos.</p>
           </div>

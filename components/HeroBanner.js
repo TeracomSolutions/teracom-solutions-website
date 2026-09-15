@@ -8,6 +8,15 @@ export default function HeroBanner({ slides }) {
   const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
+    // Honour prefers-reduced-motion: an auto-advancing carousel is exactly
+    // the kind of unsolicited motion WCAG 2.2.2 (Pause, Stop, Hide) and
+    // 2.3.3 ask to be suppressed for users who have opted out. The manual
+    // prev/next/dot controls still work.
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
+
+    // activeIndex is deliberately not a dependency -- the functional update
+    // below doesn't need it, and including it tore down and recreated the
+    // interval on every single slide change.
     const interval = setInterval(() => {
       setActiveIndex((prevIndex) => (prevIndex + 1) % slides.length);
     }, 6000);
@@ -15,7 +24,7 @@ export default function HeroBanner({ slides }) {
     return () => {
       clearInterval(interval);
     };
-  }, [activeIndex, slides.length]);
+  }, [slides.length]);
 
   const goToSlide = (index) => {
     setActiveIndex(index);
@@ -46,7 +55,22 @@ export default function HeroBanner({ slides }) {
           </div>
         </div>
         <div className="hero-image">
-          <Image src={currentSlide.image} alt={currentSlide.imageAlt} width={1400} height={900} />
+          {/* The hero image is the homepage's Largest Contentful Paint
+              element. Without `priority` Next lazy-loads it, so the browser
+              only discovers it after hydration -- a direct, measurable LCP
+              penalty on the single most important page. Only the first slide
+              gets it: the rest are not in the initial viewport render and
+              preloading all of them would compete for bandwidth with the one
+              that actually counts. `sizes` stops the browser downloading a
+              1400px-wide asset to fill a ~55% column on desktop. */}
+          <Image
+            src={currentSlide.image}
+            alt={currentSlide.imageAlt}
+            width={1400}
+            height={900}
+            priority={activeIndex === 0}
+            sizes="(max-width: 980px) 100vw, 55vw"
+          />
         </div>
       </div>
       <div className="hero-controls">

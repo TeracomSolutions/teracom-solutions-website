@@ -38,7 +38,7 @@ export default function AdminLoginPage() {
   }
 
   return (
-    <main>
+    <main id="main-content">
       <section className="section section-spacious">
         <div className="container" style={{ maxWidth: '420px' }}>
           <h1>Staff Login</h1>

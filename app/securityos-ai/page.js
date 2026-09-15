@@ -2,10 +2,50 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { aiCapabilities } from '@/lib/aiCapabilities';
 import CategoryIcon from '@/components/CategoryIcon';
+import JsonLd from '@/components/JsonLd';
+import { pageMetadata, SITE_ORIGIN, absoluteUrl } from '@/lib/seo';
+
+
+export const metadata = pageMetadata({
+  title: 'Teracom AI | AI Platform for Security & Technical Teams',
+  description:
+    'Teracom AI is an AI operating system for technicians, engineers and project teams. Product-specific support agents, scope generation, documentation and knowledge tools for platforms including Gallagher, Genetec, Milestone, Inner Range and HID.',
+  path: '/securityos-ai',
+});
+
+// SoftwareApplication describes the product itself; the ItemList enumerates
+// its capabilities so each one is discoverable as a named feature with its own
+// URL rather than only as prose inside this page. `offers` is omitted on
+// purpose -- subscription pricing lives behind the store's sign-in gate, so
+// declaring a price here would contradict what an anonymous visitor sees.
+const AI_PLATFORM_SCHEMA = {
+  '@type': 'SoftwareApplication',
+  name: 'Teracom AI',
+  applicationCategory: 'BusinessApplication',
+  operatingSystem: 'Web',
+  url: absoluteUrl('/securityos-ai'),
+  description:
+    'An AI operating system for modern organisations. Teracom AI helps technicians, engineers, estimators and project teams access expert knowledge, generate documentation and solve technical challenges faster.',
+  publisher: { '@id': `${SITE_ORIGIN}/#organisation` },
+  featureList: aiCapabilities.map((capability) => capability.title),
+};
+
+const AI_CAPABILITIES_SCHEMA = {
+  '@type': 'ItemList',
+  name: 'Teracom AI capabilities',
+  itemListElement: aiCapabilities.map((capability, index) => ({
+    '@type': 'ListItem',
+    position: index + 1,
+    name: capability.title,
+    url: absoluteUrl(`/securityos-ai/${capability.slug}`),
+  })),
+};
 
 export default function SecurityOSAI() {
   return (
-    <main>
+    <main id="main-content">
+      <JsonLd schema={AI_PLATFORM_SCHEMA} />
+      <JsonLd schema={AI_CAPABILITIES_SCHEMA} />
       <section className="hero hero-product">
         <div className="container hero-layout">
           <div className="hero-copy">

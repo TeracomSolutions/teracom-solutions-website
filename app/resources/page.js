@@ -1,14 +1,16 @@
+import { pageMetadata } from '@/lib/seo';
 import Link from 'next/link';
 import { resourcesSections } from '@/lib/resourcesSections';
 
-export const metadata = {
+export const metadata = pageMetadata({
   title: 'Resources | Teracom Solutions',
   description: 'Help centre, FAQs, user manuals, datasheets, product videos and downloads for Teracom Solutions products and services.',
-};
+  path: '/resources',
+});
 
 export default function Resources() {
   return (
-    <main>
+    <main id="main-content">
       <section className="hero hero-product">
         <div className="container hero-layout">
           <div className="hero-copy">

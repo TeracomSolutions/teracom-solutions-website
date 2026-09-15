@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 export default function Cancel() {
   return (
-    <main className="section">
+    <main id="main-content" className="section">
       <div className="container">
         <span className="eyebrow">Checkout cancelled</span>
         <h1>No payment was taken.</h1>

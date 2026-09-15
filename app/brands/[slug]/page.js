@@ -3,6 +3,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { brands, findBrand } from '@/lib/brands';
 import CategoryIcon from '@/components/CategoryIcon';
+import Breadcrumbs from '@/components/Breadcrumbs';
+import { pageMetadata } from '@/lib/seo';
 
 const THEME_FALLBACKS = { 'cctv': '/assets/brand-fallback-cctv.svg', 'access-control': '/assets/brand-fallback-access.svg', 'audio': '/assets/brand-fallback-audio.svg', 'power': '/assets/brand-fallback-power.svg', 'networking': '/assets/brand-fallback-network.svg', 'accessories': '/assets/brand-fallback-accessories.svg' };
 
@@ -13,10 +15,11 @@ export function generateStaticParams() {
 export function generateMetadata({ params }) {
   const brand = findBrand(params.slug);
   if (!brand) return {};
-  return {
+  return pageMetadata({
     title: `${brand.name} | Teracom Solutions`,
     description: brand.tagline,
-  };
+    path: `/brands/${brand.slug}`,
+  });
 }
 
 export default function BrandPage({ params }) {
@@ -26,15 +29,11 @@ export default function BrandPage({ params }) {
   const paragraphs = brand.body.split('\n\n');
 
   return (
-    <main>
+    <main id="main-content">
       <section className="hero hero-product hero-shallow">
         <div className="container hero-layout">
           <div className="hero-copy">
-            <span className="eyebrow">
-              <Link href="/brands" style={{ color: 'inherit' }}>
-                &larr; Brands
-              </Link>
-            </span>
+            <Breadcrumbs items={[{ name: 'Brands', href: '/brands' }]} current={brand.name} />
             <div className="brand-hero-heading">
               <h1>{brand.name}</h1>
               {brand.logoFile && (

@@ -2,6 +2,8 @@ import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { aiCapabilities, findAiCapability } from '@/lib/aiCapabilities';
+import Breadcrumbs from '@/components/Breadcrumbs';
+import { pageMetadata } from '@/lib/seo';
 
 export function generateStaticParams() {
   return aiCapabilities.map((c) => ({ capability: c.slug }));
@@ -10,10 +12,11 @@ export function generateStaticParams() {
 export function generateMetadata({ params }) {
   const capability = findAiCapability(params.capability);
   if (!capability) return {};
-  return {
+  return pageMetadata({
     title: `${capability.title} | Teracom AI`,
     description: capability.summary,
-  };
+    path: `/securityos-ai/${capability.slug}`,
+  });
 }
 
 export default function CapabilityPage({ params }) {
@@ -21,15 +24,14 @@ export default function CapabilityPage({ params }) {
   if (!capability) notFound();
 
   return (
-    <main>
+    <main id="main-content">
       <section className="hero hero-product hero-shallow">
         <div className="container hero-layout">
           <div className="hero-copy">
-            <span className="eyebrow">
-              <Link href="/securityos-ai" style={{ color: 'inherit' }}>
-                &larr; Teracom AI
-              </Link>
-            </span>
+            <Breadcrumbs
+              items={[{ name: 'Teracom AI', href: '/securityos-ai' }]}
+              current={capability.title}
+            />
             <h1>{capability.title}</h1>
             <p className="lead">{capability.summary}</p>
           </div>

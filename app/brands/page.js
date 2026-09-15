@@ -1,15 +1,17 @@
+import { pageMetadata } from '@/lib/seo';
 import Image from 'next/image';
 import Link from 'next/link';
 import { brands } from '@/lib/brands';
 
-export const metadata = {
+export const metadata = pageMetadata({
   title: 'Brands We Work With | Teracom Solutions',
   description: 'The manufacturers and product lines Teracom Solutions works with, installs and supports -- access control, CCTV, intrusion, networking, audio and power protection.',
-};
+  path: '/brands',
+});
 
 export default function Brands() {
   return (
-    <main>
+    <main id="main-content">
       <section className="hero hero-product hero-shallow hero-centered">
         <div className="container hero-layout">
           <div className="hero-copy">
