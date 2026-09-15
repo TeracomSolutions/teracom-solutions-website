@@ -37,7 +37,7 @@ export default function CartPage() {
 
   if (lines.length === 0) {
     return (
-      <main className="section">
+      <main id="main-content" className="section">
         <div className="container">
           <span className="eyebrow">Your Cart</span>
           <h1>Your cart is empty.</h1>
@@ -51,7 +51,7 @@ export default function CartPage() {
   }
 
   return (
-    <main className="section">
+    <main id="main-content" className="section">
       <div className="container">
         <span className="eyebrow">Your Cart</span>
         <h1>Review your order.</h1>

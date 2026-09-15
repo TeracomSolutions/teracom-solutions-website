@@ -28,7 +28,7 @@ export default async function AdminCatalogPage() {
   }
 
   return (
-    <main>
+    <main id="main-content">
       <section className="section section-spacious">
         <div className="container">
           <h1>Store Catalog</h1>

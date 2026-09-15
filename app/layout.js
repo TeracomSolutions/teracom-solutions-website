@@ -1,33 +1,84 @@
+import { Inter } from 'next/font/google';
+
 import './globals.css';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { CartProvider } from '@/lib/cart-context';
 import StructuredData from '@/components/StructuredData';
+import { SITE_ORIGIN } from '@/lib/seo';
+
+// globals.css has always asked for `font-family: Inter, ...` but Inter was
+// never actually loaded -- no next/font, no @font-face, no stylesheet link --
+// so every visitor without Inter installed locally silently got the
+// system-ui fallback. Loading it through next/font self-hosts the file,
+// preloads it, and attaches a `font-display: swap` fallback with matching
+// metrics, which means the intended typeface renders without adding a
+// render-blocking request or a layout shift (CLS) when it arrives.
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-inter',
+});
+
+const DEFAULT_TITLE = 'Teracom Solutions | Electronic Security, AI & Technology Australia';
+const DEFAULT_DESCRIPTION =
+  'Australian-owned electronic security and AI specialists. Access control, CCTV, intrusion and intercom design, technical consulting, and the Teracom AI platform. Melbourne and Sydney.';
 
 export const metadata = {
-  title: 'Teracom Solutions | AI, Security & Technical Solutions',
-  description: 'Teracom Solutions combines electronic security expertise with AI, technical consulting, security system design, software innovation and the Teracom AI platform.',
-  metadataBase: new URL('https://www.teracomsolutions.com.au'),
+  // Deliberately NOT a title.template. Several pages already ship their own
+  // fully-branded titles (e.g. 'About Us | Teracom Solutions'), and a template
+  // would append the brand a second time. Each page owns its complete title
+  // instead, which also keeps it inside the ~60-character budget Google
+  // renders before truncating.
+  title: DEFAULT_TITLE,
+  description: DEFAULT_DESCRIPTION,
+  metadataBase: new URL(SITE_ORIGIN),
+  applicationName: 'Teracom Solutions',
+  alternates: { canonical: '/' },
   openGraph: {
-    title: 'Teracom Solutions | AI, Security & Technical Solutions',
-    description: 'Teracom Solutions combines electronic security expertise with AI, technical consulting, security system design, software innovation and the Teracom AI platform.',
-    url: 'https://www.teracomsolutions.com.au',
+    title: DEFAULT_TITLE,
+    description: DEFAULT_DESCRIPTION,
+    url: SITE_ORIGIN,
     siteName: 'Teracom Solutions',
     locale: 'en_AU',
-    type: 'website'
+    type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Teracom Solutions | AI, Security & Technical Solutions',
-    description: 'Teracom Solutions combines electronic security expertise with AI, technical consulting, security system design, software innovation and the Teracom AI platform.'
-  }
+    title: DEFAULT_TITLE,
+    description: DEFAULT_DESCRIPTION,
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      // Allows full-length text snippets, large image previews and full video
+      // previews in search results rather than Google's conservative
+      // defaults. More surface area in the SERP means a higher click-through
+      // rate for the same ranking position.
+      'max-snippet': -1,
+      'max-image-preview': 'large',
+      'max-video-preview': -1,
+    },
+  },
 };
 
 export default function MarketingRootLayout({ children }) {
   return (
-    <html lang="en">
+    // en-AU rather than plain en: it is the accurate regional signal for an
+    // Australian business and it matches the og:locale already declared above.
+    <html lang="en-AU" className={inter.variable}>
       <body>
         <StructuredData />
+        {/* Keyboard and screen-reader users otherwise have to tab through the
+            entire header nav, the resources dropdown and the cart on every
+            single page before reaching content (WCAG 2.4.1 Bypass Blocks).
+            Visually hidden until focused. */}
+        <a className="skip-link" href="#main-content">
+          Skip to main content
+        </a>
         <CartProvider>
           <Header />
           {children}

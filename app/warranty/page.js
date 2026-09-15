@@ -1,7 +1,9 @@
-export const metadata = {
+import { pageMetadata } from '@/lib/seo';
+export const metadata = pageMetadata({
   title: 'Warranty & Returns | Teracom Solutions',
   description: 'Teracom Solutions warranty and product returns information, including manufacturer warranty links for the brands we supply.',
-};
+  path: '/warranty',
+});
 
 const manufacturerWarranties = [
   {
@@ -36,4 +38,4 @@ const manufacturerWarranties = [
   },
 ];
 
-export default function Warranty(){return <main><section className="hero hero-product"><div className="container hero-layout"><div className="hero-copy"><span className="eyebrow">Warranty & Returns</span><h1>Warranty & Product Returns</h1><p className="lead">Please take care to package your return carefully. Teracom Solutions is not responsible for damage or a lost product caused by shipping -- damage related to inappropriate packaging will result in additional charges for repair.</p></div></div></section><section className="section section-spacious"><div className="container"><div className="section-heading"><span className="eyebrow">Manufacturer warranties</span><h2>Warranty terms by brand.</h2><p>Many of the products we supply carry their own manufacturer warranty, separate to our own returns process. Current terms for the brands we supply most often:</p></div><div className="feature-grid">{manufacturerWarranties.map(w=><article key={w.brand}><h3>{w.brand}</h3><p>{w.text}</p><a className="btn btn-secondary" href={w.url} target="_blank" rel="noopener noreferrer" style={{marginTop:'12px'}}>View {w.brand} warranty ↗</a></article>)}</div></div></section></main>}
+export default function Warranty(){return <main id="main-content"><section className="hero hero-product"><div className="container hero-layout"><div className="hero-copy"><span className="eyebrow">Warranty & Returns</span><h1>Warranty & Product Returns</h1><p className="lead">Please take care to package your return carefully. Teracom Solutions is not responsible for damage or a lost product caused by shipping -- damage related to inappropriate packaging will result in additional charges for repair.</p></div></div></section><section className="section section-spacious"><div className="container"><div className="section-heading"><span className="eyebrow">Manufacturer warranties</span><h2>Warranty terms by brand.</h2><p>Many of the products we supply carry their own manufacturer warranty, separate to our own returns process. Current terms for the brands we supply most often:</p></div><div className="feature-grid">{manufacturerWarranties.map(w=><article key={w.brand}><h3>{w.brand}</h3><p>{w.text}</p><a className="btn btn-secondary" href={w.url} target="_blank" rel="noopener noreferrer" style={{marginTop:'12px'}}>View {w.brand} warranty ↗</a></article>)}</div></div></section></main>}

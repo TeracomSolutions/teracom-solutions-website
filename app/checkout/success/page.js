@@ -3,7 +3,7 @@ import ClearCartOnMount from '@/components/ClearCartOnMount';
 
 export default function Success() {
   return (
-    <main className="section">
+    <main id="main-content" className="section">
       <ClearCartOnMount />
       <div className="container">
         <span className="eyebrow">Payment successful</span>

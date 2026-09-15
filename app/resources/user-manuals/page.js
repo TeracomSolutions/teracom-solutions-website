@@ -1,24 +1,26 @@
+import { pageMetadata } from '@/lib/seo';
 import Link from 'next/link';
 import ResourcesSubNav from '@/components/ResourcesSubNav';
+import Breadcrumbs from '@/components/Breadcrumbs';
 import DocumentList from '@/components/DocumentList';
 import { manuals } from '@/lib/resourceDocuments';
 
-export const metadata = {
+export const metadata = pageMetadata({
   title: 'User Manuals | Teracom Solutions',
   description: 'Product manuals for the systems and equipment Teracom Solutions supplies and installs.',
-};
+  path: '/resources/user-manuals',
+});
 
 export default function UserManuals() {
   return (
-    <main>
+    <main id="main-content">
       <section className="hero hero-product hero-shallow">
         <div className="container hero-layout">
           <div className="hero-copy">
-            <span className="eyebrow">
-              <Link href="/resources" style={{ color: 'inherit' }}>
-                &larr; Resources
-              </Link>
-            </span>
+            <Breadcrumbs
+              items={[{ name: 'Resources', href: '/resources' }]}
+              current={'User Manuals'}
+            />
             <h1>User Manuals</h1>
             <p className="lead">Product manuals for the systems and equipment we supply and install.</p>
           </div>

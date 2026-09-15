@@ -1,24 +1,26 @@
+import { pageMetadata } from '@/lib/seo';
 import Link from 'next/link';
 import ResourcesSubNav from '@/components/ResourcesSubNav';
+import Breadcrumbs from '@/components/Breadcrumbs';
 import DocumentList from '@/components/DocumentList';
 import { datasheets } from '@/lib/resourceDocuments';
 
-export const metadata = {
+export const metadata = pageMetadata({
   title: 'Datasheets | Teracom Solutions',
   description: 'Technical specification sheets for the Teracom Solutions product range.',
-};
+  path: '/resources/datasheets',
+});
 
 export default function Datasheets() {
   return (
-    <main>
+    <main id="main-content">
       <section className="hero hero-product hero-shallow">
         <div className="container hero-layout">
           <div className="hero-copy">
-            <span className="eyebrow">
-              <Link href="/resources" style={{ color: 'inherit' }}>
-                &larr; Resources
-              </Link>
-            </span>
+            <Breadcrumbs
+              items={[{ name: 'Resources', href: '/resources' }]}
+              current={'Datasheets'}
+            />
             <h1>Datasheets</h1>
             <p className="lead">Technical specification sheets for our product range.</p>
           </div>
