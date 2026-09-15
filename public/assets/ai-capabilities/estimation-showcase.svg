@@ -1,0 +1,57 @@
+<svg viewBox="0 0 900 1300" width="900" height="1300" xmlns="http://www.w3.org/2000/svg">
+  <rect width="900" height="1300" fill="#050505"/>
+  <g stroke="rgba(255,255,255,.045)" stroke-width="1">
+    <path d="M0,140 H900 M0,280 H900 M0,420 H900 M0,560 H900 M0,700 H900 M0,840 H900 M0,980 H900 M0,1120 H900"/>
+    <path d="M120,0 V1300 M300,0 V1300 M480,0 V1300 M660,0 V1300 M780,0 V1300"/>
+  </g>
+
+  <!-- central estimator hub -->
+  <g transform="translate(450,420)">
+    <circle r="150" fill="none" stroke="rgba(255,75,75,.12)" stroke-width="1.5"/>
+    <circle r="108" fill="none" stroke="rgba(255,75,75,.18)" stroke-width="1.5"/>
+    <g transform="translate(-60,-70)">
+      <rect width="120" height="140" rx="10" fill="#0a0a0a" stroke="#ff4b4b" stroke-width="3"/>
+      <path d="M14,26 h92 M14,44 h92 M14,62 h60" stroke="rgba(255,255,255,.4)" stroke-width="4" stroke-linecap="round"/>
+      <path d="M14,86 h30 M52,86 h30 M90,86 h16" stroke="rgba(255,75,75,.5)" stroke-width="4" stroke-linecap="round"/>
+      <path d="M14,104 h30 M52,104 h30" stroke="rgba(255,75,75,.5)" stroke-width="4" stroke-linecap="round"/>
+      <text x="60" y="128" text-anchor="middle" fill="#ff1717" font-family="Arial, sans-serif" font-size="26" font-weight="900">$</text>
+    </g>
+    <text x="0" y="150" text-anchor="middle" fill="rgba(255,255,255,.7)" font-family="Arial, sans-serif" font-size="20" font-weight="800" letter-spacing="2">ESTIMATION ASSISTANCE</text>
+    <text x="0" y="175" text-anchor="middle" fill="rgba(255,255,255,.35)" font-family="Arial, sans-serif" font-size="14" letter-spacing="1">REQUIREMENTS TO READY-TO-PRICE</text>
+  </g>
+
+  <g stroke="#ff4b4b" stroke-width="2.5" fill="none" stroke-linecap="round" opacity="0.85">
+    <path d="M150,420 L300,420" marker-end="url(#arrow)"/>
+    <path d="M600,420 L750,420" marker-end="url(#arrow)"/>
+  </g>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#ff4b4b"/>
+    </marker>
+  </defs>
+
+  <g font-family="Arial, sans-serif">
+    <g transform="translate(40,370)">
+      <rect width="150" height="100" rx="12" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
+      <path d="M25,25 q40,-10 20,25 q-25,15 40,10" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="3" stroke-linecap="round"/>
+      <text x="75" y="80" text-anchor="middle" fill="rgba(255,255,255,.6)" font-size="13" letter-spacing="1">RAW BRIEF</text>
+    </g>
+    <g transform="translate(710,370)">
+      <rect width="150" height="100" rx="12" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
+      <path d="M25,30 h100 M25,48 h100 M25,66 h70" stroke="rgba(255,75,75,.55)" stroke-width="4" stroke-linecap="round"/>
+      <text x="75" y="90" text-anchor="middle" fill="rgba(255,255,255,.6)" font-size="13" letter-spacing="1">READY TO PRICE</text>
+    </g>
+  </g>
+
+  <g transform="translate(150,900)" font-family="Arial, sans-serif">
+    <rect width="600" height="280" rx="20" fill="rgba(255,255,255,.045)" stroke="rgba(255,255,255,.16)" stroke-width="2"/>
+    <text x="40" y="58" fill="rgba(255,255,255,.85)" font-size="26" font-weight="800">Less interpreting. More pricing.</text>
+    <text x="40" y="92" fill="rgba(255,255,255,.4)" font-size="15">Requirements turned into an estimate-ready summary.</text>
+    <g stroke="rgba(255,255,255,.14)" stroke-width="1">
+      <path d="M40,120 H560"/>
+    </g>
+    <text x="40" y="160" fill="rgba(255,255,255,.7)" font-size="16">— Less time interpreting requirements before pricing starts</text>
+    <text x="40" y="196" fill="rgba(255,255,255,.7)" font-size="16">— Consistent estimate structure across jobs and estimators</text>
+    <text x="40" y="232" fill="rgba(255,255,255,.7)" font-size="16">— Clearer handover from scoping to pricing</text>
+  </g>
+</svg>

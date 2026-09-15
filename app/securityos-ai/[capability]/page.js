@@ -48,8 +48,18 @@ export default function CapabilityPage({ params }) {
               View Plans
             </Link>
           </div>
-          <div className="showcase-image">
-            <Image src="/assets/securityos-dashboard.svg" alt="Teracom AI dashboard concept" width={1200} height={760} />
+          <div className="showcase-image capability-showcase-image">
+            {capability.imageFile ? (
+              <Image
+                src={`/assets/ai-capabilities/${capability.imageFile}`}
+                alt={`${capability.title} illustration`}
+                fill
+                style={{ objectFit: 'cover' }}
+                sizes="(max-width: 980px) 100vw, 45vw"
+              />
+            ) : (
+              <Image src="/assets/securityos-dashboard.svg" alt="Teracom AI dashboard concept" width={1200} height={760} />
+            )}
           </div>
         </div>
       </section>

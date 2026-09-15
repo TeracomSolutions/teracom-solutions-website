@@ -151,6 +151,52 @@ const paths = {
       <path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" />
     </>
   ),
+  'ai-agent': (
+    <>
+      <path d="M12 3v3M9 3.8l1 2.6M15 3.8l-1 2.6" />
+      <rect x="5" y="7" width="14" height="11" rx="4" />
+      <circle cx="9.5" cy="12.5" r="1.3" fill="currentColor" stroke="none" />
+      <circle cx="14.5" cy="12.5" r="1.3" fill="currentColor" stroke="none" />
+      <path d="M9 16h6" />
+    </>
+  ),
+  'scope-of-works': (
+    <>
+      <path d="M7 3.5h7l3 3v14a1 1 0 01-1 1H7a1 1 0 01-1-1v-16a1 1 0 011-1z" />
+      <path d="M14 3.5V7h3.5" />
+      <path d="M8.5 12.3l1.6 1.6 3.4-3.6M8.5 17h4" />
+    </>
+  ),
+  estimation: (
+    <>
+      <rect x="5" y="3.5" width="14" height="17" rx="2" />
+      <path d="M8.5 7.5h7" />
+      <path d="M8.3 11h1.6M11.4 11h1.6M14.5 11h1.6M8.3 14h1.6M11.4 14h1.6M14.5 14h1.6M8.3 17h1.6M11.4 17h1.6" />
+    </>
+  ),
+  'tender-response': (
+    <>
+      <path d="M6.5 3.5h9l2 2.4V20a1 1 0 01-1 1h-10a1 1 0 01-1-1V4.5a1 1 0 011-1z" />
+      <path d="M9 9h6M9 12.3h6M9 15.6h3.5" />
+      <circle cx="16.3" cy="17.3" r="3" />
+      <path d="M16.3 15.8v1.5l1 .8" />
+    </>
+  ),
+  'technical-design': (
+    <>
+      <path d="M4 19l6.5-13 3 6h6.5" />
+      <circle cx="10.5" cy="6" r="1.6" fill="currentColor" stroke="none" />
+      <circle cx="19" cy="12" r="1.6" fill="currentColor" stroke="none" />
+      <circle cx="6.3" cy="17.8" r="1.6" fill="currentColor" stroke="none" />
+      <path d="M13.3 12h2.2" />
+    </>
+  ),
+  'training-knowledge': (
+    <>
+      <path d="M12 6.5C10.3 5 8 4.3 5 4.5v13c3 -.2 5.3.5 7 2 1.7-1.5 4-2.2 7-2v-13c-3-.2-5.3.5-7 2z" />
+      <path d="M12 6.5v13" />
+    </>
+  ),
   help: (
     <>
       <path d="M4 5.5A2.5 2.5 0 016.5 3h11A2.5 2.5 0 0120 5.5v9a2.5 2.5 0 01-2.5 2.5H10l-4.5 4v-4H6.5A2.5 2.5 0 014 14.5v-9z" />
