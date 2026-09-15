@@ -1,0 +1,60 @@
+<svg viewBox="0 0 900 1300" width="900" height="1300" xmlns="http://www.w3.org/2000/svg">
+  <rect width="900" height="1300" fill="#050505"/>
+  <g stroke="rgba(255,255,255,.045)" stroke-width="1">
+    <path d="M0,140 H900 M0,280 H900 M0,420 H900 M0,560 H900 M0,700 H900 M0,840 H900 M0,980 H900 M0,1120 H900"/>
+    <path d="M120,0 V1300 M300,0 V1300 M480,0 V1300 M660,0 V1300 M780,0 V1300"/>
+  </g>
+
+  <!-- central document hub -->
+  <g transform="translate(450,420)">
+    <circle r="150" fill="none" stroke="rgba(255,75,75,.12)" stroke-width="1.5"/>
+    <circle r="108" fill="none" stroke="rgba(255,75,75,.18)" stroke-width="1.5"/>
+    <g transform="translate(-52,-78)">
+      <path d="M0,0 H70 L92,22 V150 A8,8 0 0184,158 H8 A8,8 0 010,150 Z" fill="#0a0a0a" stroke="#ff4b4b" stroke-width="3"/>
+      <path d="M70,0 V22 H92" fill="none" stroke="#ff4b4b" stroke-width="3"/>
+      <path d="M18,50 h56 M18,70 h56 M18,90 h38" stroke="rgba(255,255,255,.5)" stroke-width="4" stroke-linecap="round"/>
+      <path d="M18,116 l14,14 26,-30" fill="none" stroke="#ff1717" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+    <text x="0" y="150" text-anchor="middle" fill="rgba(255,255,255,.7)" font-family="Arial, sans-serif" font-size="20" font-weight="800" letter-spacing="2">SCOPE OF WORKS</text>
+    <text x="0" y="175" text-anchor="middle" fill="rgba(255,255,255,.35)" font-family="Arial, sans-serif" font-size="14" letter-spacing="1">STRUCTURED, EVERY TIME</text>
+  </g>
+
+  <g stroke="#ff4b4b" stroke-width="2" fill="none" stroke-dasharray="2 8" stroke-linecap="round" opacity="0.7">
+    <path d="M330,340 L170,200"/>
+    <path d="M570,340 L730,200"/>
+    <path d="M330,500 L170,640"/>
+    <path d="M570,500 L730,640"/>
+  </g>
+
+  <g font-family="Arial, sans-serif">
+    <g transform="translate(60,160)">
+      <rect width="220" height="60" rx="12" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
+      <text x="110" y="37" text-anchor="middle" fill="rgba(255,255,255,.75)" font-size="16" font-weight="700" letter-spacing="1">INCLUSIONS</text>
+    </g>
+    <g transform="translate(620,160)">
+      <rect width="220" height="60" rx="12" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
+      <text x="110" y="37" text-anchor="middle" fill="rgba(255,255,255,.75)" font-size="16" font-weight="700" letter-spacing="1">EXCLUSIONS</text>
+    </g>
+    <g transform="translate(60,610)">
+      <rect width="220" height="60" rx="12" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
+      <text x="110" y="37" text-anchor="middle" fill="rgba(255,255,255,.75)" font-size="16" font-weight="700" letter-spacing="1">TECHNICAL DETAIL</text>
+    </g>
+    <g transform="translate(620,610)">
+      <rect width="220" height="60" rx="12" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
+      <text x="110" y="30" text-anchor="middle" fill="rgba(255,255,255,.75)" font-size="16" font-weight="700" letter-spacing="1">SOLUTION</text>
+      <text x="110" y="48" text-anchor="middle" fill="rgba(255,255,255,.75)" font-size="16" font-weight="700" letter-spacing="1">DESCRIPTION</text>
+    </g>
+  </g>
+
+  <g transform="translate(150,900)" font-family="Arial, sans-serif">
+    <rect width="600" height="280" rx="20" fill="rgba(255,255,255,.045)" stroke="rgba(255,255,255,.16)" stroke-width="2"/>
+    <text x="40" y="58" fill="rgba(255,255,255,.85)" font-size="26" font-weight="800">Consistent, whoever writes it.</text>
+    <text x="40" y="92" fill="rgba(255,255,255,.4)" font-size="15">Client brief in, properly structured scope out.</text>
+    <g stroke="rgba(255,255,255,.14)" stroke-width="1">
+      <path d="M40,120 H560"/>
+    </g>
+    <text x="40" y="160" fill="rgba(255,255,255,.7)" font-size="16">— Consistent scope documents across the whole team</text>
+    <text x="40" y="196" fill="rgba(255,255,255,.7)" font-size="16">— Fewer missed inclusions that turn into disputes later</text>
+    <text x="40" y="232" fill="rgba(255,255,255,.7)" font-size="16">— A faster path from client brief to a sendable document</text>
+  </g>
+</svg>

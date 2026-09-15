@@ -1,0 +1,64 @@
+<svg viewBox="0 0 900 1300" width="900" height="1300" xmlns="http://www.w3.org/2000/svg">
+  <rect width="900" height="1300" fill="#050505"/>
+  <g stroke="rgba(255,255,255,.045)" stroke-width="1">
+    <path d="M0,140 H900 M0,280 H900 M0,420 H900 M0,560 H900 M0,700 H900 M0,840 H900 M0,980 H900 M0,1120 H900"/>
+    <path d="M120,0 V1300 M300,0 V1300 M480,0 V1300 M660,0 V1300 M780,0 V1300"/>
+  </g>
+
+  <!-- central document stack with seal and clock -->
+  <g transform="translate(450,420)">
+    <circle r="150" fill="none" stroke="rgba(255,75,75,.12)" stroke-width="1.5"/>
+    <circle r="108" fill="none" stroke="rgba(255,75,75,.18)" stroke-width="1.5"/>
+    <g transform="translate(-72,-90)">
+      <rect x="16" y="16" width="96" height="130" rx="8" fill="#111" stroke="rgba(255,255,255,.2)" stroke-width="2"/>
+      <rect x="8" y="8" width="96" height="130" rx="8" fill="#0a0a0a" stroke="rgba(255,255,255,.3)" stroke-width="2"/>
+      <path d="M22,30 h64 M22,46 h64 M22,62 h44" stroke="rgba(255,255,255,.4)" stroke-width="4" stroke-linecap="round"/>
+    </g>
+    <g transform="translate(28,20)">
+      <circle r="42" fill="#0a0a0a" stroke="#ff4b4b" stroke-width="3.5"/>
+      <path d="M-18,2 l12,12 24,-28" fill="none" stroke="#ff1717" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+    <text x="0" y="150" text-anchor="middle" fill="rgba(255,255,255,.7)" font-family="Arial, sans-serif" font-size="20" font-weight="800" letter-spacing="2">TENDER RESPONSE</text>
+    <text x="0" y="175" text-anchor="middle" fill="rgba(255,255,255,.35)" font-family="Arial, sans-serif" font-size="14" letter-spacing="1">CONSISTENT, ON DEADLINE</text>
+  </g>
+
+  <g stroke="#ff4b4b" stroke-width="2" fill="none" stroke-dasharray="2 8" stroke-linecap="round" opacity="0.7">
+    <path d="M330,330 L170,200"/>
+    <path d="M570,330 L730,200"/>
+    <path d="M330,520 L170,660"/>
+    <path d="M570,520 L730,660"/>
+  </g>
+
+  <g font-family="Arial, sans-serif">
+    <g transform="translate(60,160)">
+      <rect width="220" height="60" rx="12" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
+      <text x="110" y="37" text-anchor="middle" fill="rgba(255,255,255,.75)" font-size="16" font-weight="700" letter-spacing="1">COMPLIANCE CONTENT</text>
+    </g>
+    <g transform="translate(620,160)">
+      <rect width="220" height="60" rx="12" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
+      <text x="110" y="37" text-anchor="middle" fill="rgba(255,255,255,.75)" font-size="16" font-weight="700" letter-spacing="1">TECHNICAL NARRATIVE</text>
+    </g>
+    <g transform="translate(60,630)">
+      <rect width="220" height="60" rx="12" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
+      <text x="110" y="37" text-anchor="middle" fill="rgba(255,255,255,.75)" font-size="16" font-weight="700" letter-spacing="1">PROJECT DOCS</text>
+    </g>
+    <g transform="translate(620,630)">
+      <rect width="220" height="60" rx="12" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
+      <circle cx="40" cy="30" r="16" fill="none" stroke="#ff4b4b" stroke-width="2.5"/>
+      <path d="M40,20 v10 l7,5" stroke="#ff4b4b" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+      <text x="130" y="37" text-anchor="middle" fill="rgba(255,255,255,.75)" font-size="16" font-weight="700" letter-spacing="1">DEADLINE</text>
+    </g>
+  </g>
+
+  <g transform="translate(150,900)" font-family="Arial, sans-serif">
+    <rect width="600" height="280" rx="20" fill="rgba(255,255,255,.045)" stroke="rgba(255,255,255,.16)" stroke-width="2"/>
+    <text x="40" y="58" fill="rgba(255,255,255,.85)" font-size="26" font-weight="800">Less blank page. More strategy.</text>
+    <text x="40" y="92" fill="rgba(255,255,255,.4)" font-size="15">Similar compliance requirements, different project each time.</text>
+    <g stroke="rgba(255,255,255,.14)" stroke-width="1">
+      <path d="M40,120 H560"/>
+    </g>
+    <text x="40" y="160" fill="rgba(255,255,255,.7)" font-size="16">— Faster first drafts of technical response content</text>
+    <text x="40" y="196" fill="rgba(255,255,255,.7)" font-size="16">— Consistent quality across simultaneous submissions</text>
+    <text x="40" y="232" fill="rgba(255,255,255,.7)" font-size="16">— More deadline time spent on strategy, not typing</text>
+  </g>
+</svg>
