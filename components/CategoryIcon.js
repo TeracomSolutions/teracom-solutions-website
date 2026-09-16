@@ -197,6 +197,13 @@ const paths = {
       <path d="M12 6.5v13" />
     </>
   ),
+  'it-equipment': (
+    <>
+      <rect x="6" y="3" width="12" height="18" rx="1.5" />
+      <path d="M9 7h6M9 10.5h6" />
+      <circle cx="9.5" cy="16" r="1" fill="currentColor" stroke="none" />
+    </>
+  ),
   help: (
     <>
       <path d="M4 5.5A2.5 2.5 0 016.5 3h11A2.5 2.5 0 0120 5.5v9a2.5 2.5 0 01-2.5 2.5H10l-4.5 4v-4H6.5A2.5 2.5 0 014 14.5v-9z" />
