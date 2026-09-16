@@ -1,14 +1,12 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
+import { categories } from '@/lib/categories';
+import CategoryIcon from './CategoryIcon';
 
 export default function DocumentList({ documents, emptyMessage }) {
-  const brands = useMemo(
-    () => [...new Set(documents.map((d) => d.brand).filter(Boolean))].sort(),
-    [documents]
-  );
-  const [activeBrand, setActiveBrand] = useState('All');
+  const [activeCategory, setActiveCategory] = useState('all');
 
   if (documents.length === 0) {
     return (
@@ -18,23 +16,44 @@ export default function DocumentList({ documents, emptyMessage }) {
     );
   }
 
-  const visible = activeBrand === 'All' ? documents : documents.filter((d) => d.brand === activeBrand);
+  // Get unique category slugs from documents, maintaining order from categories.js
+  const documentCategories = [...new Set(documents.map((d) => d.category))];
+  
+  // Build tabs list with titles and icons from categories.js, preserving order
+  const tabs = [
+    { slug: 'all', title: 'All' },
+    ...documentCategories
+      .map(slug => {
+        const category = categories.find(c => c.slug === slug);
+        if (!category) return null;
+
+        return {
+          slug,
+          title: category.title,
+          icon: slug,
+        };
+      })
+      .filter(Boolean)
+  ];
+
+  const visible = activeCategory === 'all' ? documents : documents.filter((d) => d.category === activeCategory);
 
   return (
     <>
-      {brands.length > 1 && (
-        <div className="brand-tabs" role="tablist" aria-label="Filter by brand">
-          <button type="button" className={activeBrand === 'All' ? 'brand-tab active' : 'brand-tab'} onClick={() => setActiveBrand('All')}>
-            All
-          </button>
-          {brands.map((brand) => (
+      {tabs.length > 1 && (
+        <div className="brand-tabs" role="tablist" aria-label="Filter by category">
+          {tabs.map((tab) => (
             <button
-              key={brand}
-              type="button"
-              className={activeBrand === brand ? 'brand-tab active' : 'brand-tab'}
-              onClick={() => setActiveBrand(brand)}
+              key={tab.slug}
+              className={`brand-tab ${activeCategory === tab.slug ? 'active' : ''}`}
+              onClick={() => setActiveCategory(tab.slug)}
+              role="tab"
+              aria-selected={activeCategory === tab.slug}
             >
-              {brand}
+              {tab.icon && (
+                <CategoryIcon slug={tab.icon} />
+              )}
+              {tab.title}
             </button>
           ))}
         </div>
