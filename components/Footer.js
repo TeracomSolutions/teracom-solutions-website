@@ -120,7 +120,10 @@ export default function Footer() {
         </address>
       </div>
       <div className="container footer-bottom">
-        <AdminEntryPoint />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '18px' }}>
+          <AdminEntryPoint />
+          <span>Website built by Teracom AI</span>
+        </div>
         <Link href="#top">Back to top ↑</Link>
       </div>
     </footer>
