@@ -1,4 +1,10 @@
 const paths = {
+  'new-arrivals': (
+    <>
+      <path d="M12 4v4M12 16v4M4 12h4M16 12h4" />
+      <path d="M6.5 6.5l2.8 2.8M14.7 14.7l2.8 2.8M17.5 6.5l-2.8 2.8M9.3 14.7l-2.8 2.8" />
+    </>
+  ),
   cctv: (
     <>
       <path d="M3 8l11-3v10L3 12V8z" />
