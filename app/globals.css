@@ -390,7 +390,7 @@ a {
   margin:0;
 }
 .brand-card-logo {
-  flex:none;max-height:30px;max-width:110px;width:auto;height:auto;object-fit:contain;background:#f4f4f2;border-radius:8px;padding:5px 8px;
+  flex:none;max-height:30px;max-width:110px;width:auto;height:auto;object-fit:contain;filter:brightness(0) invert(1);opacity:.85;
 }
 .brand-hero-heading {
   display:flex;align-items:center;gap:22px;flex-wrap:wrap;
