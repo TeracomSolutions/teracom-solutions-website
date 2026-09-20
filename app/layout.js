@@ -4,6 +4,7 @@ import './globals.css';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { CartProvider } from '@/lib/cart-context';
+import AskJericoWidget from '@/components/AskJericoWidget';
 import StructuredData from '@/components/StructuredData';
 import { SITE_ORIGIN } from '@/lib/seo';
 
@@ -83,6 +84,7 @@ export default function MarketingRootLayout({ children }) {
           <Header />
           {children}
           <Footer />
+          <AskJericoWidget />
         </CartProvider>
       </body>
     </html>
