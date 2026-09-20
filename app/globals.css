@@ -312,7 +312,6 @@ a {
 }
 
 .logo-tile-image { position:relative;width:100%;height:56px; }
-.logo-tile-image-light { background:#fff;border-radius:8px;padding:8px 12px; }
 .logo-mono { filter:brightness(0) invert(1);opacity:.8;transition:opacity .2s; }
 .logo-chip:hover .logo-mono { opacity:1; }
 .about-layout {
