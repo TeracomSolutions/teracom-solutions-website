@@ -7,15 +7,15 @@
 
   <!-- modular panel stack: base panel + add-on expansion modules -->
   <g transform="translate(230,140)" font-family="Arial, sans-serif">
-    <rect width="440" height="150" rx="12" fill="rgba(255,23,23,.1)" stroke="#ff4b4b" stroke-width="3"/>
-    <text x="30" y="45" fill="rgba(255,255,255,.85)" font-size="24" font-weight="800">CHALLENGER PANEL</text>
-    <text x="30" y="72" fill="rgba(255,255,255,.4)" font-size="14">Base controller</text>
-    <circle cx="400" cy="40" r="9" fill="#ff1717"/>
+    <rect width="440" height="150" rx="12" fill="rgba(0,118,192,.1)" stroke="#0076c0" stroke-width="3"/>
+    <text x="30" y="45" fill="rgba(255,255,255,.85)" font-size="24" font-weight="800">ARITECH PANEL</text>
+    <text x="30" y="72" fill="rgba(255,255,255,.4)" font-size="14">Intrusion detection controller</text>
+    <circle cx="400" cy="40" r="9" fill="#14a0e8"/>
     <g stroke="rgba(255,255,255,.14)" stroke-width="1"><path d="M30,95 H410"/></g>
     <text x="30" y="120" fill="rgba(255,255,255,.5)" font-size="13">Intrusion + access + video, one interface</text>
   </g>
 
-  <g stroke="#ff4b4b" stroke-width="2" fill="none" stroke-dasharray="2 8" stroke-linecap="round" opacity="0.7">
+  <g stroke="#0076c0" stroke-width="2" fill="none" stroke-dasharray="2 8" stroke-linecap="round" opacity="0.7">
     <path d="M450,290 L230,380"/>
     <path d="M450,290 L450,380"/>
     <path d="M450,290 L670,380"/>
@@ -24,51 +24,51 @@
   <g font-family="Arial, sans-serif" fill="rgba(255,255,255,.16)">
     <g transform="translate(140,380)">
       <rect width="180" height="110" rx="10" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
-      <text x="20" y="35" fill="rgba(255,255,255,.7)" font-size="15" font-weight="700">Door Controller</text>
+      <text x="20" y="35" fill="rgba(255,255,255,.7)" font-size="15" font-weight="700">Wireless Sensors</text>
       <text x="20" y="58" fill="rgba(255,255,255,.35)" font-size="12">Add as you grow</text>
-      <circle cx="150" cy="90" r="6" fill="#ff4b4b"/>
+      <circle cx="150" cy="90" r="6" fill="#0076c0"/>
     </g>
     <g transform="translate(360,380)">
       <rect width="180" height="110" rx="10" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
-      <text x="20" y="35" fill="rgba(255,255,255,.7)" font-size="15" font-weight="700">I/O Expander</text>
-      <text x="20" y="58" fill="rgba(255,255,255,.35)" font-size="12">Scales with the site</text>
-      <circle cx="150" cy="90" r="6" fill="#ff4b4b"/>
+      <text x="20" y="35" fill="rgba(255,255,255,.7)" font-size="15" font-weight="700">Keypad</text>
+      <text x="20" y="58" fill="rgba(255,255,255,.35)" font-size="12">Arm and disarm on site</text>
+      <circle cx="150" cy="90" r="6" fill="#0076c0"/>
     </g>
     <g transform="translate(580,380)">
       <rect width="180" height="110" rx="10" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
-      <text x="20" y="35" fill="rgba(255,255,255,.7)" font-size="15" font-weight="700">LAN Device</text>
-      <text x="20" y="58" fill="rgba(255,255,255,.35)" font-size="12">Multi-panel linking</text>
-      <circle cx="150" cy="90" r="6" fill="#ff4b4b"/>
+      <text x="20" y="35" fill="rgba(255,255,255,.7)" font-size="15" font-weight="700">IP Module</text>
+      <text x="20" y="58" fill="rgba(255,255,255,.35)" font-size="12">Remote access over IP</text>
+      <circle cx="150" cy="90" r="6" fill="#0076c0"/>
     </g>
   </g>
 
-  <!-- since 1989 timeline strip -->
+  <!-- generic milestone timeline strip -->
   <g transform="translate(150,620)" font-family="Arial, sans-serif">
-    <path d="M0,40 H600" stroke="rgba(255,75,75,.35)" stroke-width="2" stroke-dasharray="2 8"/>
-    <circle cx="0" cy="40" r="8" fill="#ff1717"/>
-    <text x="0" y="20" fill="rgba(255,255,255,.5)" font-size="13">1989</text>
-    <text x="0" y="70" fill="rgba(255,255,255,.3)" font-size="12">Challenger launched</text>
-    <circle cx="300" cy="40" r="8" fill="#ff4b4b"/>
-    <text x="270" y="20" fill="rgba(255,255,255,.5)" font-size="13">ChallengerPlus</text>
-    <circle cx="600" cy="40" r="10" fill="#ff1717"/>
-    <text x="530" y="20" fill="rgba(255,255,255,.6)" font-size="13">Discovery, today</text>
+    <path d="M0,40 H600" stroke="rgba(0,118,192,.35)" stroke-width="2" stroke-dasharray="2 8"/>
+    <circle cx="0" cy="40" r="8" fill="#14a0e8"/>
+    <text x="0" y="20" fill="rgba(255,255,255,.5)" font-size="13">Motion detection</text>
+    <circle cx="300" cy="40" r="8" fill="#0076c0"/>
+    <text x="270" y="20" fill="rgba(255,255,255,.5)" font-size="13">Wireless</text>
+    <circle cx="600" cy="40" r="10" fill="#14a0e8"/>
+    <text x="530" y="20" fill="rgba(255,255,255,.6)" font-size="13">IP-connected</text>
   </g>
 
   <!-- lower stats panel -->
   <g transform="translate(150,900)" font-family="Arial, sans-serif">
     <rect width="600" height="260" rx="20" fill="rgba(255,255,255,.045)" stroke="rgba(255,255,255,.16)" stroke-width="2"/>
-    <text x="40" y="58" fill="rgba(255,255,255,.85)" font-size="26" font-weight="800">Designed and made in Australia.</text>
-    <g stroke="rgba(255,255,255,.14)" stroke-width="1"><path d="M40,88 H560"/></g>
+    <text x="40" y="54" fill="rgba(255,255,255,.85)" font-size="24" font-weight="800">Intrusion detection hardware,</text>
+    <text x="40" y="84" fill="rgba(255,255,255,.85)" font-size="24" font-weight="800">built for reliability.</text>
+    <g stroke="rgba(255,255,255,.14)" stroke-width="1"><path d="M40,104 H560"/></g>
     <g fill="rgba(255,255,255,.85)" font-size="30" font-weight="900">
       <text x="40" y="150">50+</text>
-      <text x="340" y="150">35+</text>
+      <text x="340" y="150">3</text>
     </g>
     <g fill="rgba(255,255,255,.4)" font-size="13" letter-spacing=".05em">
       <text x="40" y="174">YEARS IN THE FIELD</text>
-      <text x="340" y="174">YEARS OF CHALLENGER</text>
+      <text x="340" y="174">HARDWARE TIERS</text>
     </g>
     <g fill="rgba(255,255,255,.5)" font-size="14">
-      <text x="40" y="220">Tecom / Forcefield -- one platform, every layer</text>
+      <text x="40" y="220">Aritech -- intrusion detection and access control hardware</text>
     </g>
   </g>
 </svg>
