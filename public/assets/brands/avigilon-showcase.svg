@@ -1,0 +1,73 @@
+<svg viewBox="0 0 900 1300" width="900" height="1300" xmlns="http://www.w3.org/2000/svg">
+  <rect width="900" height="1300" fill="#050505"/>
+  <g stroke="rgba(255,255,255,.045)" stroke-width="1">
+    <path d="M0,140 H900 M0,280 H900 M0,420 H900 M0,560 H900 M0,700 H900 M0,840 H900 M0,980 H900 M0,1120 H900"/>
+    <path d="M120,0 V1300 M300,0 V1300 M480,0 V1300 M660,0 V1300 M780,0 V1300"/>
+  </g>
+
+  <!-- AI camera dome with built-in analytics, and its two deployment platforms -->
+  <g transform="translate(450,360)" font-family="Arial, sans-serif">
+    <circle r="150" fill="none" stroke="rgba(0,130,255,.35)" stroke-width="2" stroke-dasharray="2 8" stroke-linecap="round"/>
+    <circle r="110" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
+    <circle r="56" fill="rgba(0,130,255,.1)" stroke="#0082ff" stroke-width="3"/>
+    <circle r="12" fill="#00b2ff"/>
+    <g stroke="rgba(0,130,255,.35)" stroke-width="2" fill="none" stroke-dasharray="2 8" stroke-linecap="round">
+      <path d="M-190,-60 H-137"/>
+      <path d="M137,-60 H190"/>
+      <path d="M-40,150 L-130,190"/>
+      <path d="M40,150 L130,190"/>
+    </g>
+    <g fill="#00b2ff">
+      <circle cx="0" cy="-150" r="5"/>
+      <circle cx="-137" cy="-60" r="5"/>
+      <circle cx="137" cy="-60" r="5"/>
+    </g>
+    <g fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.18)" stroke-width="1.5">
+      <rect x="-80" y="-196" width="160" height="30" rx="15"/>
+      <rect x="-330" y="-75" width="140" height="30" rx="15"/>
+      <rect x="190" y="-75" width="140" height="30" rx="15"/>
+    </g>
+    <g fill="rgba(255,255,255,.8)" font-size="13" text-anchor="middle">
+      <text x="0" y="-176">Appearance search</text>
+      <text x="-260" y="-55">Licence plates</text>
+      <text x="260" y="-55">Unusual motion</text>
+    </g>
+    <g transform="translate(-230,190)">
+      <rect width="200" height="76" rx="10" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
+      <text x="100" y="33" text-anchor="middle" fill="rgba(255,255,255,.8)" font-size="15" font-weight="700">Avigilon Unity</text>
+      <text x="100" y="55" text-anchor="middle" fill="rgba(255,255,255,.4)" font-size="13">On-premises</text>
+    </g>
+    <g transform="translate(30,190)">
+      <rect width="200" height="76" rx="10" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
+      <text x="100" y="33" text-anchor="middle" fill="rgba(255,255,255,.8)" font-size="15" font-weight="700">Avigilon Alta</text>
+      <text x="100" y="55" text-anchor="middle" fill="rgba(255,255,255,.4)" font-size="13">Cloud-native</text>
+    </g>
+  </g>
+
+  <text x="450" y="680" text-anchor="middle" fill="rgba(255,255,255,.4)" font-family="Arial, sans-serif" font-size="13" letter-spacing="1">SELF-LEARNING AI, BUILT IN</text>
+
+  <!-- lower stats panel -->
+  <g transform="translate(150,730)" font-family="Arial, sans-serif">
+    <rect width="600" height="320" rx="20" fill="rgba(255,255,255,.045)" stroke="rgba(255,255,255,.16)" stroke-width="2"/>
+    <text x="40" y="58" fill="rgba(255,255,255,.85)" font-size="24" font-weight="800">AI-powered video security.</text>
+    <g stroke="rgba(255,255,255,.14)" stroke-width="1"><path d="M40,88 H560"/></g>
+    
+    <!-- Stats values and labels -->
+    <g fill="rgba(255,255,255,.85)" font-size="26" font-weight="900">
+      <text x="40" y="150">2018</text>
+      <text x="290" y="150">2</text>
+    </g>
+    
+    <g fill="rgba(255,255,255,.4)" font-size="13" letter-spacing=".04em">
+      <text x="40" y="174">JOINED MOTOROLA SOLUTIONS</text>
+      <text x="290" y="174">PLATFORMS: UNITY + ALTA</text>
+    </g>
+    
+    <!-- Second divider -->
+    <g stroke="rgba(255,255,255,.14)" stroke-width="1"><path d="M40,210 H560"/></g>
+    
+    <!-- Footer lines -->
+    <text x="40" y="244" fill="rgba(255,255,255,.5)" font-size="14">Appearance search, LPR, facial matching</text>
+    <text x="40" y="274" fill="rgba(255,255,255,.5)" font-size="14">Integrates with Motorola radio and dispatch</text>
+  </g>
+</svg>

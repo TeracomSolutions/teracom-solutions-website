@@ -1,0 +1,71 @@
+<svg viewBox="0 0 900 1300" width="900" height="1300" xmlns="http://www.w3.org/2000/svg">
+  <rect width="900" height="1300" fill="#050505"/>
+  <g stroke="rgba(255,255,255,.045)" stroke-width="1">
+    <path d="M0,140 H900 M0,280 H900 M0,420 H900 M0,560 H900 M0,700 H900 M0,840 H900 M0,980 H900 M0,1120 H900"/>
+    <path d="M120,0 V1300 M300,0 V1300 M480,0 V1300 M660,0 V1300 M780,0 V1300"/>
+  </g>
+
+  <!-- top illustration area -->
+  <g transform="translate(450,385)" font-family="Arial, sans-serif">
+    <!-- Door frame edge -->
+    <rect x="-20" y="-170" width="40" height="340" rx="4" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
+    
+    <!-- Electric strike plate -->
+    <rect x="-10" y="-30" width="20" height="60" rx="2" fill="#e83020" stroke="#e83020" stroke-width="2"/>
+    
+    <!-- Strike keeper cut-out -->
+    <rect x="-5" y="-15" width="10" height="10" rx="1" fill="#050505"/>
+    
+    <!-- Card reader box to the left -->
+    <g transform="translate(-120,0)">
+      <rect x="0" y="-30" width="60" height="60" rx="4" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
+      <text x="30" y="50" text-anchor="middle" fill="rgba(255,255,255,.8)" font-size="13">Card reader</text>
+    </g>
+    
+    <!-- Dashed line connecting card reader to strike -->
+    <path d="M-60,0 L-20,0" stroke="#e83020" stroke-width="2" fill="none" stroke-dasharray="2 8" stroke-linecap="round" opacity="0.7"/>
+    
+    <!-- ES8100 V-Lock box to the right -->
+    <path d="M20,-58 L70,-58 M20,6 L70,6" stroke="rgba(232,48,32,.35)" stroke-width="2" fill="none" stroke-dasharray="2 8" stroke-linecap="round"/>
+    <g transform="translate(70,-80)">
+      <rect x="0" y="0" width="170" height="44" rx="8" fill="rgba(232,48,32,.1)" stroke="#e83020" stroke-width="2"/>
+      <text x="85" y="27" text-anchor="middle" fill="rgba(255,255,255,.8)" font-size="14" font-weight="700">ES8100 V-Lock</text>
+    </g>
+    
+    <!-- ES2000 stainless box to the right -->
+    <g transform="translate(70,-16)">
+      <rect x="0" y="0" width="170" height="44" rx="8" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
+      <text x="85" y="27" text-anchor="middle" fill="rgba(255,255,255,.8)" font-size="14" font-weight="700">ES2000 stainless</text>
+    </g>
+  </g>
+
+  <!-- top caption line -->
+  <text x="450" y="680" text-anchor="middle" fill="rgba(255,255,255,.4)" font-family="Arial, sans-serif" font-size="13" letter-spacing="1">DESIGNED AND ASSEMBLED IN AUSTRALIA</text>
+
+  <!-- lower stats panel -->
+  <g transform="translate(150,730)" font-family="Arial, sans-serif">
+    <rect width="600" height="400" rx="20" fill="rgba(255,255,255,.045)" stroke="rgba(255,255,255,.16)" stroke-width="2"/>
+    <text x="40" y="58" fill="rgba(255,255,255,.85)" font-size="24" font-weight="800">The strike behind the card reader.</text>
+    <g stroke="rgba(255,255,255,.14)" stroke-width="1"><path d="M40,88 H560"/></g>
+    
+    <!-- Stats grid (2x2) -->
+    <g fill="rgba(255,255,255,.85)" font-size="26" font-weight="900">
+      <text x="40" y="150">100kg</text>
+      <text x="300" y="150">850kg</text>
+      <text x="40" y="222">1M</text>
+      <text x="300" y="222">IP53</text>
+    </g>
+    
+    <g fill="rgba(255,255,255,.4)" font-size="13" letter-spacing=".04em">
+      <text x="40" y="174">PRE-LOAD RATING</text>
+      <text x="300" y="174">HOLDING FORCE</text>
+      <text x="40" y="246">CYCLE ENDURANCE RATING</text>
+      <text x="300" y="246">RATED FOR EXTERNAL DOORS</text>
+    </g>
+    
+    <g stroke="rgba(255,255,255,.14)" stroke-width="1"><path d="M40,282 H560"/></g>
+    
+    <text x="40" y="316" fill="rgba(255,255,255,.5)" font-size="14">Founded in Australia, ASSA ABLOY since 2000</text>
+    <text x="40" y="346" fill="rgba(255,255,255,.5)" font-size="14">Fail-safe / fail-secure set on site</text>
+  </g>
+</svg>

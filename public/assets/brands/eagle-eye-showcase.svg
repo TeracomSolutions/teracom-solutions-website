@@ -1,0 +1,69 @@
+<svg viewBox="0 0 900 1300" width="900" height="1300" xmlns="http://www.w3.org/2000/svg">
+  <rect width="900" height="1300" fill="#050505"/>
+  <g stroke="rgba(255,255,255,.045)" stroke-width="1">
+    <path d="M0,140 H900 M0,280 H900 M0,420 H900 M0,560 H900 M0,700 H900 M0,840 H900 M0,980 H900 M0,1120 H900"/>
+    <path d="M120,0 V1300 M300,0 V1300 M480,0 V1300 M660,0 V1300 M780,0 V1300"/>
+  </g>
+
+  <!-- top illustration area -->
+  <g font-family="Arial, sans-serif">
+    <!-- Existing IP cameras (left) -->
+    <g transform="translate(150,320)">
+      <rect width="70" height="80" rx="8" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
+      <rect x="10" y="20" width="50" height="40" rx="3" fill="none" stroke="rgba(0,144,216,.4)" stroke-width="2"/>
+      <text x="45" y="100" text-anchor="middle" fill="rgba(255,255,255,.8)" font-size="13">Existing IP cameras</text>
+    </g>
+    
+    <!-- Connector line to Eagle Eye Bridge -->
+    <g stroke="rgba(0,144,216,.35)" stroke-width="2" fill="none" stroke-dasharray="2 8" opacity="0.7" stroke-linecap="round">
+      <path d="M220,360 L320,360"/>
+    </g>
+    
+    <!-- Eagle Eye Bridge (middle) -->
+    <g transform="translate(340,310)">
+      <rect width="120" height="100" rx="8" fill="rgba(0,144,216,.1)" stroke="#0090d8" stroke-width="2"/>
+      <text x="60" y="50" text-anchor="middle" fill="rgba(255,255,255,.8)" font-size="13">Eagle Eye Bridge</text>
+      <text x="60" y="70" text-anchor="middle" fill="rgba(255,255,255,.4)" font-size="11">Encrypt + buffer</text>
+    </g>
+    
+    <!-- Connector line to Eagle Eye Cloud -->
+    <g stroke="rgba(0,144,216,.35)" stroke-width="2" fill="none" stroke-dasharray="2 8" opacity="0.7" stroke-linecap="round">
+      <path d="M460,360 L560,360"/>
+    </g>
+    
+    <!-- Eagle Eye Cloud (right) -->
+    <g transform="translate(580,260)">
+      <circle r="100" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.2)" stroke-width="2"/>
+      <circle r="50" fill="#0a0a0a" stroke="#0090d8" stroke-width="3"/>
+      <circle r="16" fill="#20b5ff"/>
+      <text x="0" y="140" text-anchor="middle" fill="rgba(255,255,255,.4)" font-size="13">Eagle Eye Cloud</text>
+    </g>
+  </g>
+
+  <!-- Caption line -->
+  <text x="450" y="680" text-anchor="middle" fill="rgba(255,255,255,.4)" font-family="Arial, sans-serif" font-size="13" letter-spacing="1">NO ON-PREMISES NVR TO MAINTAIN</text>
+
+  <!-- lower stats panel -->
+  <g transform="translate(150,730)" font-family="Arial, sans-serif">
+    <rect width="600" height="320" rx="20" fill="rgba(255,255,255,.045)" stroke="rgba(255,255,255,.16)" stroke-width="2"/>
+    <text x="40" y="58" fill="rgba(255,255,255,.85)" font-size="24" font-weight="800">A true cloud VMS.</text>
+    <g stroke="rgba(255,255,255,.14)" stroke-width="1"><path d="M40,88 H560"/></g>
+    
+    <!-- First row stats -->
+    <g fill="rgba(255,255,255,.85)" font-size="26" font-weight="900">
+      <text x="40" y="150">2025</text>
+      <text x="290" y="150">0</text>
+    </g>
+    <g fill="rgba(255,255,255,.4)" font-size="13" letter-spacing=".04em">
+      <text x="40" y="174">MERGED WITH BRIVO</text>
+      <text x="290" y="174">ON-SITE NVRS TO PATCH</text>
+    </g>
+    
+    <!-- Second divider -->
+    <g stroke="rgba(255,255,255,.14)" stroke-width="1"><path d="M40,210 H560"/></g>
+    
+    <!-- Footer lines -->
+    <text x="40" y="244" fill="rgba(255,255,255,.5)" font-size="14">AI natural-language and appearance search</text>
+    <text x="40" y="274" fill="rgba(255,255,255,.5)" font-size="14">Open, documented REST API</text>
+  </g>
+</svg>

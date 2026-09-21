@@ -1,0 +1,64 @@
+<svg viewBox="0 0 900 1300" width="900" height="1300" xmlns="http://www.w3.org/2000/svg">
+  <rect width="900" height="1300" fill="#050505"/>
+  <g stroke="rgba(255,255,255,.045)" stroke-width="1">
+    <path d="M0,140 H900 M0,280 H900 M0,420 H900 M0,560 H900 M0,700 H900 M0,840 H900 M0,980 H900 M0,1120 H900"/>
+    <path d="M120,0 V1300 M300,0 V1300 M480,0 V1300 M660,0 V1300 M780,0 V1300"/>
+  </g>
+
+  <!-- Lockwood motif: mortice lock body with timeline -->
+  <g transform="translate(450,385)" font-family="Arial, sans-serif">
+    <!-- Lock case (tall rounded rectangle) -->
+    <rect x="-120" y="-170" width="240" height="340" rx="20" fill="rgba(200,48,56,.1)" stroke="#c83038" stroke-width="3"/>
+    
+    <!-- Cylinder (circle) -->
+    <circle cx="100" cy="-30" r="30" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
+    
+    <!-- Bolt (rectangular sticking out right edge) -->
+    <rect x="120" y="-40" width="70" height="20" rx="4" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
+    
+    <!-- Lever handle (outline) -->
+    <path d="M-100,-100 A30,30 0 0,1 -100,100 L-120,100 A30,30 0 0,0 -120,-100 Z" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
+    
+    <!-- Timeline with dots and labels -->
+    <g stroke="rgba(200,48,56,.35)" stroke-width="2" fill="none" stroke-dasharray="2 8" stroke-linecap="round" opacity="0.7">
+      <path d="M-240,210 H240"/>
+    </g>
+    
+    <!-- Timeline dots and labels -->
+    <circle cx="-240" cy="210" r="8" fill="#c83038"/>
+    <text x="-240" y="240" text-anchor="middle" fill="rgba(255,255,255,.4)" font-size="13">1934 -- Ogden Industries</text>
+    
+    <circle cx="0" cy="210" r="8" fill="#da656b"/>
+    <text x="0" y="240" text-anchor="middle" fill="rgba(255,255,255,.4)" font-size="13">ASSA ABLOY group</text>
+    
+    <circle cx="240" cy="210" r="10" fill="#c83038"/>
+    <text x="240" y="240" text-anchor="middle" fill="rgba(255,255,255,.4)" font-size="13">Today</text>
+  </g>
+
+  <!-- Caption line -->
+  <text x="450" y="680" text-anchor="middle" fill="rgba(255,255,255,.4)" font-family="Arial, sans-serif" font-size="13" letter-spacing="1">DESIGNED AND TESTED FOR AUSTRALIAN CONDITIONS</text>
+
+  <!-- Stats panel -->
+  <g transform="translate(150,730)" font-family="Arial, sans-serif">
+    <rect width="600" height="320" rx="20" fill="rgba(255,255,255,.045)" stroke="rgba(255,255,255,.16)" stroke-width="2"/>
+    <text x="40" y="58" fill="rgba(255,255,255,.85)" font-size="24" font-weight="800">Australia's benchmark lock brand.</text>
+    <g stroke="rgba(255,255,255,.14)" stroke-width="1"><path d="M40,88 H560"/></g>
+    
+    <!-- Stats values and labels -->
+    <g fill="rgba(255,255,255,.85)" font-size="26" font-weight="900">
+      <text x="40" y="150">1934</text>
+      <text x="290" y="150">90+</text>
+    </g>
+    <g fill="rgba(255,255,255,.4)" font-size="13" letter-spacing=".04em">
+      <text x="40" y="174">IN AUSTRALIA SINCE</text>
+      <text x="290" y="174">YEARS OF LOCKWOOD</text>
+    </g>
+    
+    <!-- Second divider -->
+    <g stroke="rgba(255,255,255,.14)" stroke-width="1"><path d="M40,210 H560"/></g>
+    
+    <!-- Footer lines -->
+    <text x="40" y="244" fill="rgba(255,255,255,.5)" font-size="14">Deadbolts, mortice locks, cylinders, padlocks</text>
+    <text x="40" y="274" fill="rgba(255,255,255,.5)" font-size="14">Retrofit access control onto existing hardware</text>
+  </g>
+</svg>

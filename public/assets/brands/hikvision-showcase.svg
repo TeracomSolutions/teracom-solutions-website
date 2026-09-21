@@ -1,0 +1,85 @@
+<svg viewBox="0 0 900 1300" width="900" height="1300" xmlns="http://www.w3.org/2000/svg">
+  <rect width="900" height="1300" fill="#050505"/>
+  <g stroke="rgba(255,255,255,.045)" stroke-width="1">
+    <path d="M0,140 H900 M0,280 H900 M0,420 H900 M0,560 H900 M0,700 H900 M0,840 H900 M0,980 H900 M0,1120 H900"/>
+    <path d="M120,0 V1300 M300,0 V1300 M480,0 V1300 M660,0 V1300 M780,0 V1300"/>
+  </g>
+
+  <!-- Hikvision AIoT motif -->
+  <g transform="translate(450,380)" font-family="Arial, sans-serif">
+    <!-- Central hexagon -->
+    <polygon points="0,-60 52,-25 52,25 0,60 -52,25 -52,-25" fill="rgba(208,24,32,.1)" stroke="#d01820" stroke-width="2"/>
+    <text x="0" y="10" text-anchor="middle" fill="rgba(255,255,255,.85)" font-size="14" font-weight="700">AIoT</text>
+
+    <!-- Surrounding tiles -->
+    <g transform="translate(-160,-100)">
+      <rect width="80" height="60" rx="8" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
+      <text x="40" y="35" text-anchor="middle" fill="rgba(255,255,255,.85)" font-size="13">Cameras</text>
+    </g>
+    <g transform="translate(80,-100)">
+      <rect width="80" height="60" rx="8" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
+      <text x="40" y="35" text-anchor="middle" fill="rgba(255,255,255,.85)" font-size="13">Thermal</text>
+    </g>
+    <g transform="translate(160,0)">
+      <rect width="80" height="60" rx="8" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
+      <text x="40" y="35" text-anchor="middle" fill="rgba(255,255,255,.85)" font-size="13">VMS</text>
+    </g>
+    <g transform="translate(80,100)">
+      <rect width="80" height="60" rx="8" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
+      <text x="40" y="35" text-anchor="middle" fill="rgba(255,255,255,.85)" font-size="13">Access control</text>
+    </g>
+    <g transform="translate(-160,100)">
+      <rect width="80" height="60" rx="8" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
+      <text x="40" y="35" text-anchor="middle" fill="rgba(255,255,255,.85)" font-size="13">Intercom</text>
+    </g>
+    <g transform="translate(-80,160)">
+      <rect width="80" height="60" rx="8" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
+      <text x="40" y="35" text-anchor="middle" fill="rgba(255,255,255,.85)" font-size="13">Alarm</text>
+    </g>
+
+    <!-- Connecting dashed lines -->
+    <g stroke="rgba(208,24,32,.35)" stroke-width="2" fill="none" stroke-dasharray="2 8" stroke-linecap="round">
+      <line x1="-160" y1="-100" x2="0" y2="-60" />
+      <line x1="80" y1="-100" x2="0" y2="-60" />
+      <line x1="160" y1="0" x2="0" y2="-60" />
+      <line x1="80" y1="100" x2="0" y2="60" />
+      <line x1="-160" y1="100" x2="0" y2="60" />
+      <line x1="-80" y1="160" x2="0" y2="60" />
+    </g>
+
+    <!-- Highlights/dots -->
+    <circle cx="-160" cy="-100" r="4" fill="#d01820"/>
+    <circle cx="80" cy="-100" r="4" fill="#ea464d"/>
+    <circle cx="160" cy="0" r="4" fill="#d01820"/>
+    <circle cx="80" cy="100" r="4" fill="#ea464d"/>
+    <circle cx="-160" cy="100" r="4" fill="#d01820"/>
+    <circle cx="-80" cy="160" r="4" fill="#ea464d"/>
+  </g>
+
+  <!-- Caption line -->
+  <text x="450" y="680" text-anchor="middle" fill="rgba(255,255,255,.4)" font-family="Arial, sans-serif" font-size="13" letter-spacing="1">AIoT -- VIDEO AS ONE INPUT</text>
+
+  <!-- lower stats panel -->
+  <g transform="translate(150,730)" font-family="Arial, sans-serif">
+    <rect width="600" height="320" rx="20" fill="rgba(255,255,255,.045)" stroke="rgba(255,255,255,.16)" stroke-width="2"/>
+    <text x="40" y="58" fill="rgba(255,255,255,.85)" font-size="24" font-weight="800">The world's largest by revenue.</text>
+    <g stroke="rgba(255,255,255,.14)" stroke-width="1"><path d="M40,88 H560"/></g>
+    
+    <!-- First row of stats -->
+    <g fill="rgba(255,255,255,.85)" font-size="26" font-weight="900">
+      <text x="40" y="150">#1</text>
+      <text x="290" y="150">2022</text>
+    </g>
+    <g fill="rgba(255,255,255,.4)" font-size="13" letter-spacing=".04em">
+      <text x="40" y="174">VIDEO SURVEILLANCE MAKER</text>
+      <text x="290" y="174">REPOSITIONED AS AIoT</text>
+    </g>
+
+    <!-- Second divider -->
+    <g stroke="rgba(255,255,255,.14)" stroke-width="1"><path d="M40,210 H560"/></g>
+    
+    <!-- Footer lines -->
+    <text x="40" y="244" fill="rgba(255,255,255,.5)" font-size="14">Cameras, thermal, VMS, access and intercom</text>
+    <text x="40" y="274" fill="rgba(255,255,255,.5)" font-size="14">Strong price-to-feature on commercial jobs</text>
+  </g>
+</svg>
