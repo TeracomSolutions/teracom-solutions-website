@@ -8,7 +8,7 @@ import JsonLd from '@/components/JsonLd';
 import { helpCenterTopics } from '@/lib/helpCenterTopics';
 
 export const metadata = pageMetadata({
-  title: 'Help Centre & FAQs | Teracom Solutions',
+  title: 'CCTV & Security Help Centre, FAQs | Teracom Solutions',
   description: 'Technical help articles covering the camera, recorder and app technology behind Teracom Solutions systems.',
   path: '/resources/help-centre',
 });

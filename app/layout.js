@@ -84,7 +84,10 @@ export default function MarketingRootLayout({ children }) {
           <Header />
           {children}
           <Footer />
-          <AskJericoWidget />
+          {/* Hidden until the Jerico backend is connected -- the stub route only ever
+              replies "not connected yet", which reads as broken on every page.
+              Set NEXT_PUBLIC_ASK_JERICO_ENABLED=true in Vercel to bring it back. */}
+          {process.env.NEXT_PUBLIC_ASK_JERICO_ENABLED === 'true' && <AskJericoWidget />}
         </CartProvider>
       </body>
     </html>

@@ -1,6 +1,6 @@
 import { pageMetadata } from '@/lib/seo';
 export const metadata = pageMetadata({
-  title: 'About Us | Teracom Solutions',
+  title: 'About Teracom Solutions | Security & AI, Carrum Downs VIC',
   description: 'Teracom Solutions are leaders in electronic security, AI and technology solutions in Australia -- Australian owned and operated, with offices in Melbourne and Sydney.',
   path: '/about',
 });

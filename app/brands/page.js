@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { brands } from '@/lib/brands';
 
 export const metadata = pageMetadata({
-  title: 'Brands We Work With | Teracom Solutions',
+  title: 'Security & Technology Brands We Supply | Teracom Solutions',
   description: 'The manufacturers and product lines Teracom Solutions works with, installs and supports -- access control, CCTV, intrusion, networking, audio and power protection.',
   path: '/brands',
 });

@@ -6,7 +6,7 @@ import DocumentList from '@/components/DocumentList';
 import { manuals } from '@/lib/resourceDocuments';
 
 export const metadata = pageMetadata({
-  title: 'User Manuals | Teracom Solutions',
+  title: 'Security System User Manuals | Teracom Solutions',
   description: 'Product manuals for the systems and equipment Teracom Solutions supplies and installs.',
   path: '/resources/user-manuals',
 });

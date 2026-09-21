@@ -6,7 +6,7 @@ import DocumentList from '@/components/DocumentList';
 import { datasheets } from '@/lib/resourceDocuments';
 
 export const metadata = pageMetadata({
-  title: 'Datasheets | Teracom Solutions',
+  title: 'Security Product Datasheets | Teracom Solutions',
   description: 'Technical specification sheets for the Teracom Solutions product range.',
   path: '/resources/datasheets',
 });

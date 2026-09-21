@@ -15,8 +15,16 @@ export function generateStaticParams() {
 export function generateMetadata({ params }) {
   const brand = findBrand(params.slug);
   if (!brand) return {};
+  // Search-result title only (not rendered on the page). Says what Teracom does
+  // with the brand and where, which is what someone searching the brand name
+  // plus "supplier"/"installer" is looking for.
+  const role = brand.isOwnBrand
+    ? null
+    : ['access-control', 'cctv'].includes(brand.theme)
+      ? 'Supplier & Installer'
+      : 'Supplier';
   return pageMetadata({
-    title: `${brand.name} | Teracom Solutions`,
+    title: role ? `${brand.name} ${role}, Melbourne | Teracom` : `${brand.name} | Teracom Solutions, Melbourne`,
     description: brand.tagline,
     path: `/brands/${brand.slug}`,
   });

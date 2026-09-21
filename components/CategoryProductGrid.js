@@ -5,7 +5,7 @@ import CheckoutButton from '@/components/CheckoutButton';
 import AddToCartButton from '@/components/AddToCartButton';
 import { formatMoney } from '@/lib/products';
 
-export default function CategoryProductGrid({ products }) {
+export default function CategoryProductGrid({ products, isSignedIn = false }) {
   const brands = useMemo(
     () => [...new Set(products.map((p) => p.brand).filter(Boolean))].sort(),
     [products]
@@ -54,9 +54,15 @@ export default function CategoryProductGrid({ products }) {
               ) : (
                 <>
                   <p className="price">
+                    {p.type === 'subscription' ? null : <span className="price-gst-note">RRP </span>}
                     {formatMoney(p.priceCents)}
-                    <span className="price-gst-note"> inc. GST</span>
+                    <span className="price-gst-note"> inc. GST{p.type === 'subscription' ? ' / month' : ''}</span>
                   </p>
+                  {!isSignedIn && p.type !== 'subscription' && (
+                    <p className="form-note">
+                      <a href="/account/signup">Create a free account</a> for additional member discounts.
+                    </p>
+                  )}
                   {p.type === 'subscription' ? (
                     <CheckoutButton productId={p.id} label="Subscribe" />
                   ) : (

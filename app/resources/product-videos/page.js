@@ -5,7 +5,7 @@ import Breadcrumbs from '@/components/Breadcrumbs';
 import VideoGrid from '@/components/VideoGrid';
 
 export const metadata = pageMetadata({
-  title: 'Product Videos | Teracom Solutions',
+  title: 'Security Product Videos & Tutorials | Teracom Solutions',
   description: 'Installation, configuration and product overview videos from Teracom Solutions.',
   path: '/resources/product-videos',
 });
