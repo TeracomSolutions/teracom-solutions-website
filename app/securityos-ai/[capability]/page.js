@@ -13,7 +13,7 @@ export function generateMetadata({ params }) {
   const capability = findAiCapability(params.capability);
   if (!capability) return {};
   return pageMetadata({
-    title: `${capability.title} | Teracom AI`,
+    title: `${capability.title} for Security Teams | Teracom AI`,
     description: capability.summary,
     path: `/securityos-ai/${capability.slug}`,
   });

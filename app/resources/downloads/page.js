@@ -6,7 +6,7 @@ import DocumentList from '@/components/DocumentList';
 import { downloads } from '@/lib/resourceDocuments';
 
 export const metadata = pageMetadata({
-  title: 'Downloads | Teracom Solutions',
+  title: 'Software, Firmware & Downloads | Teracom Solutions',
   description: 'Software, firmware and supporting documents from Teracom Solutions.',
   path: '/resources/downloads',
 });

@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { resourcesSections } from '@/lib/resourcesSections';
 
 export const metadata = pageMetadata({
-  title: 'Resources | Teracom Solutions',
+  title: 'Security Resources, Manuals & Support | Teracom Solutions',
   description: 'Help centre, FAQs, user manuals, datasheets, product videos and downloads for Teracom Solutions products and services.',
   path: '/resources',
 });

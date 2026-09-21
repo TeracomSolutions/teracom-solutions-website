@@ -1,0 +1,19 @@
+# Teracom Solutions
+
+> Australian-owned electronic security, AI and technology company based at 1B Yazaki Way, Carrum Downs VIC 3201, with offices in Melbourne and Sydney. Teracom designs, supplies, installs and supports access control, CCTV and video surveillance, intrusion detection, intercom, audio visual, electrical and automation systems, provides independent security design and consulting, and builds Teracom AI -- an AI platform for security technicians, engineers, estimators and project teams.
+
+## Main pages
+
+- [Home](https://www.teracomsolutions.com.au/): overview of Teracom's security expertise, consulting, hardware supply, installation and support.
+- [Teracom AI](https://www.teracomsolutions.com.au/securityos-ai): AI support agents, scope of works generation, estimation assistance, tender response support, technical design guidance, and training and knowledge tools.
+- [Brands](https://www.teracomsolutions.com.au/brands): the security and technology manufacturers Teracom supplies and works with, including Gallagher, Inner Range, Genetec, Milestone, HID, Axis, Hikvision, Hanwha Vision, Avigilon, Bosch, ASSA ABLOY and Tecom Challenger.
+- [Teracom Store](https://www.teracomsolutions.com.au/store): security products, digital resources, consulting services and Teracom AI subscriptions. Prices shown are RRP including GST; account holders receive additional member discounts.
+- [Resources](https://www.teracomsolutions.com.au/resources): help centre and FAQs, user manuals, datasheets, product videos and downloads.
+- [About](https://www.teracomsolutions.com.au/about): company background, showroom address and opening hours.
+
+## Contact
+
+- Phone: +61 3 9708 2685
+- Sales: sales@teracomsolutions.com.au
+- Accounts: accounts@teracomsolutions.com.au
+- Showroom: 1B Yazaki Way, Carrum Downs VIC 3201, Australia (weekdays 8am to 4:30pm)
