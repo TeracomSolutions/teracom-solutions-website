@@ -1,0 +1,76 @@
+<svg viewBox="0 0 900 1300" width="900" height="1300" xmlns="http://www.w3.org/2000/svg">
+  <rect width="900" height="1300" fill="#050505"/>
+  <g stroke="rgba(255,255,255,.045)" stroke-width="1">
+    <path d="M0,140 H900 M0,280 H900 M0,420 H900 M0,560 H900 M0,700 H900 M0,840 H900 M0,980 H900 M0,1120 H900"/>
+    <path d="M120,0 V1300 M300,0 V1300 M480,0 V1300 M660,0 V1300 M780,0 V1300"/>
+  </g>
+
+  <!-- Digiplex EVO: intrusion zones and doors in one panel, IP150+ out to the Insite Gold app -->
+  <g transform="translate(450,330)" font-family="Arial, sans-serif">
+    <rect x="-220" y="-160" width="440" height="280" rx="20" fill="rgba(0,96,255,.1)" stroke="#0060ff" stroke-width="3"/>
+    <text x="0" y="-110" text-anchor="middle" fill="rgba(255,255,255,.85)" font-size="24" font-weight="800">DIGIPLEX EVO</text>
+    <g stroke="rgba(255,255,255,.14)" stroke-width="1"><path d="M-190,-85 H190"/><path d="M0,-60 V20"/></g>
+    <g fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.18)" stroke-width="2">
+      <rect x="-190" y="-50" width="44" height="32" rx="6"/>
+      <rect x="-136" y="-50" width="44" height="32" rx="6"/>
+      <rect x="-82" y="-50" width="44" height="32" rx="6"/>
+      <rect x="44" y="-60" width="22" height="52" rx="3"/>
+      <rect x="76" y="-60" width="22" height="52" rx="3"/>
+      <rect x="108" y="-60" width="22" height="52" rx="3"/>
+      <rect x="140" y="-60" width="22" height="52" rx="3"/>
+    </g>
+    <g fill="none" stroke="#0060ff" stroke-width="2">
+      <circle cx="-168" cy="-34" r="7"/>
+      <circle cx="-114" cy="-34" r="7"/>
+      <circle cx="-60" cy="-34" r="7"/>
+    </g>
+    <g fill="#478dff">
+      <circle cx="60" cy="-34" r="3"/>
+      <circle cx="92" cy="-34" r="3"/>
+      <circle cx="124" cy="-34" r="3"/>
+      <circle cx="156" cy="-34" r="3"/>
+    </g>
+    <text x="-114" y="20" text-anchor="middle" fill="rgba(255,255,255,.5)" font-size="13">Intrusion zones</text>
+    <text x="103" y="20" text-anchor="middle" fill="rgba(255,255,255,.5)" font-size="13">Up to 32 doors</text>
+    <circle cx="0" cy="75" r="9" fill="#478dff"/>
+  </g>
+
+  <g stroke="#0060ff" stroke-width="2" fill="none" stroke-dasharray="2 8" stroke-linecap="round" opacity="0.7">
+    <path d="M450,450 V520"/>
+    <path d="M530,545 H600"/>
+  </g>
+  <g font-family="Arial, sans-serif">
+    <rect x="370" y="520" width="160" height="50" rx="10" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
+    <text x="450" y="550" text-anchor="middle" fill="rgba(255,255,255,.7)" font-size="14" font-weight="700">IP150+ module</text>
+    <rect x="600" y="490" width="60" height="104" rx="10" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
+    <rect x="611" y="504" width="38" height="66" rx="4" fill="none" stroke="#0060ff" stroke-width="2"/>
+    <circle cx="630" cy="582" r="4" fill="#478dff"/>
+    <text x="630" y="620" text-anchor="middle" fill="rgba(255,255,255,.5)" font-size="13">Insite Gold app</text>
+  </g>
+
+  <text x="450" y="680" text-anchor="middle" fill="rgba(255,255,255,.4)" font-family="Arial, sans-serif" font-size="13" letter-spacing="1">INTRUSION + ACCESS IN ONE PANEL</text>
+
+  <!-- lower stats panel -->
+  <g transform="translate(150,730)" font-family="Arial, sans-serif">
+    <rect width="600" height="320" rx="20" fill="rgba(255,255,255,.045)" stroke="rgba(255,255,255,.16)" stroke-width="2"/>
+    <text x="40" y="58" fill="rgba(255,255,255,.85)" font-size="24" font-weight="800">One panel for alarms and doors.</text>
+    <g stroke="rgba(255,255,255,.14)" stroke-width="1"><path d="M40,88 H560"/></g>
+    
+    <!-- first row stats -->
+    <g fill="rgba(255,255,255,.85)" font-size="26" font-weight="900">
+      <text x="40" y="150">1989</text>
+      <text x="290" y="150">32</text>
+    </g>
+    <g fill="rgba(255,255,255,.4)" font-size="13" letter-spacing=".04em">
+      <text x="40" y="174">DESIGNING IN MONTREAL</text>
+      <text x="290" y="174">DOORS PER PANEL</text>
+    </g>
+    
+    <!-- second divider -->
+    <g stroke="rgba(255,255,255,.14)" stroke-width="1"><path d="M40,210 H560"/></g>
+    
+    <!-- footer lines -->
+    <text x="40" y="244" fill="rgba(255,255,255,.5)" font-size="14">IP150+ module with SSL/HTTPS encryption</text>
+    <text x="40" y="274" fill="rgba(255,255,255,.5)" font-size="14">Manufacturer-only -- neutral to monitoring centres</text>
+  </g>
+</svg>

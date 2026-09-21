@@ -1,0 +1,80 @@
+<svg viewBox="0 0 900 1300" width="900" height="1300" xmlns="http://www.w3.org/2000/svg">
+  <rect width="900" height="1300" fill="#050505"/>
+  <g stroke="rgba(255,255,255,.045)" stroke-width="1">
+    <path d="M0,140 H900 M0,280 H900 M0,420 H900 M0,560 H900 M0,700 H900 M0,840 H900 M0,980 H900 M0,1120 H900"/>
+    <path d="M120,0 V1300 M300,0 V1300 M480,0 V1300 M660,0 V1300 M780,0 V1300"/>
+  </g>
+
+  <!-- top illustration area with three camera boxes and server box -->
+  <g font-family="Arial, sans-serif">
+    <!-- First camera box -->
+    <g transform="translate(150,300)">
+      <rect width="120" height="160" rx="10" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
+      <rect x="20" y="30" width="80" height="40" rx="4" fill="none" stroke="#0075ff" stroke-width="2"/>
+      <text x="60" y="45" text-anchor="middle" fill="rgba(255,255,255,.8)" font-size="13">REC</text>
+      <text x="60" y="60" text-anchor="middle" fill="rgba(255,255,255,.8)" font-size="13">AI</text>
+    </g>
+
+    <!-- Second camera box -->
+    <g transform="translate(390,300)">
+      <rect width="120" height="160" rx="10" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
+      <rect x="20" y="30" width="80" height="40" rx="4" fill="none" stroke="#0075ff" stroke-width="2"/>
+      <text x="60" y="45" text-anchor="middle" fill="rgba(255,255,255,.8)" font-size="13">REC</text>
+      <text x="60" y="60" text-anchor="middle" fill="rgba(255,255,255,.8)" font-size="13">AI</text>
+    </g>
+
+    <!-- Third camera box -->
+    <g transform="translate(630,300)">
+      <rect width="120" height="160" rx="10" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
+      <rect x="20" y="30" width="80" height="40" rx="4" fill="none" stroke="#0075ff" stroke-width="2"/>
+      <text x="60" y="45" text-anchor="middle" fill="rgba(255,255,255,.8)" font-size="13">REC</text>
+      <text x="60" y="60" text-anchor="middle" fill="rgba(255,255,255,.8)" font-size="13">AI</text>
+    </g>
+
+    <!-- Server box with diagonal line -->
+    <g transform="translate(450,520)">
+      <rect x="-90" y="-50" width="180" height="100" rx="10" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
+      <line x1="-90" y1="-50" x2="90" y2="50" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
+      <text x="0" y="78" text-anchor="middle" fill="rgba(255,255,255,.4)" font-size="13">No central VMS server</text>
+    </g>
+
+    <!-- Connectors from cameras to server -->
+    <g stroke="#0075ff" stroke-width="2" fill="none" stroke-dasharray="2 8" opacity="0.7" stroke-linecap="round">
+      <path d="M210,460 L450,470"/>
+      <path d="M450,460 L450,470"/>
+      <path d="M690,460 L450,470"/>
+    </g>
+
+    <!-- Highlights on camera boxes -->
+    <g transform="translate(150,300)">
+      <circle cx="90" cy="20" r="8" fill="#479cff"/>
+    </g>
+    <g transform="translate(390,300)">
+      <circle cx="90" cy="20" r="8" fill="#479cff"/>
+    </g>
+    <g transform="translate(630,300)">
+      <circle cx="90" cy="20" r="8" fill="#479cff"/>
+    </g>
+  </g>
+
+  <!-- Caption line -->
+  <text x="450" y="680" text-anchor="middle" fill="rgba(255,255,255,.4)" font-family="Arial, sans-serif" font-size="13" letter-spacing="1">DECENTRALISED -- EVERY CAMERA IS A COMPUTER</text>
+
+  <!-- lower stats panel -->
+  <g transform="translate(150,730)" font-family="Arial, sans-serif">
+    <rect width="600" height="320" rx="20" fill="rgba(255,255,255,.045)" stroke="rgba(255,255,255,.16)" stroke-width="2"/>
+    <text x="40" y="58" fill="rgba(255,255,255,.85)" font-size="24" font-weight="800">Decentralised by design.</text>
+    <g stroke="rgba(255,255,255,.14)" stroke-width="1"><path d="M40,88 H560"/></g>
+    <g fill="rgba(255,255,255,.85)" font-size="26" font-weight="900">
+      <text x="40" y="150">1999</text>
+      <text x="290" y="150">0</text>
+    </g>
+    <g fill="rgba(255,255,255,.4)" font-size="13" letter-spacing=".04em">
+      <text x="40" y="174">FIRST MOBOTIX CAMERA</text>
+      <text x="290" y="174">MOVING PARTS</text>
+    </g>
+    <g stroke="rgba(255,255,255,.14)" stroke-width="1"><path d="M40,210 H560"/></g>
+    <text x="40" y="244" fill="rgba(255,255,255,.5)" font-size="14">Recording and AI analytics on-camera</text>
+    <text x="40" y="274" fill="rgba(255,255,255,.5)" font-size="14">Designed and made in Germany</text>
+  </g>
+</svg>

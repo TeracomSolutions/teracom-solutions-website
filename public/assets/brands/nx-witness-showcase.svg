@@ -1,0 +1,70 @@
+<svg viewBox="0 0 900 1300" width="900" height="1300" xmlns="http://www.w3.org/2000/svg">
+  <rect width="900" height="1300" fill="#050505"/>
+  <g stroke="rgba(255,255,255,.045)" stroke-width="1">
+    <path d="M0,140 H900 M0,280 H900 M0,420 H900 M0,560 H900 M0,700 H900 M0,840 H900 M0,980 H900 M0,1120 H900"/>
+    <path d="M120,0 V1300 M300,0 V1300 M480,0 V1300 M660,0 V1300 M780,0 V1300"/>
+  </g>
+
+  <!-- server hive: every server syncs with its peers; an offline server's cameras move to its neighbours -->
+  <g stroke="rgba(64,126,201,.35)" stroke-width="2" fill="none" stroke-dasharray="2 8" stroke-linecap="round">
+    <path d="M450,210 L350,518 M450,210 L550,518 M288,327 L550,518 M350,518 L550,518 M288,327 L450,210 M288,327 L350,518"/>
+  </g>
+  <g stroke="rgba(255,255,255,.12)" stroke-width="2" fill="none" stroke-dasharray="2 8" stroke-linecap="round">
+    <path d="M612,327 L450,210 M612,327 L550,518 M612,327 L350,518 M612,327 L288,327"/>
+  </g>
+  <g font-family="Arial, sans-serif">
+    <g fill="#0a0a0a" stroke="#407ec9" stroke-width="2">
+      <rect x="410" y="185" width="80" height="50" rx="6"/>
+      <rect x="510" y="493" width="80" height="50" rx="6"/>
+      <rect x="310" y="493" width="80" height="50" rx="6"/>
+      <rect x="248" y="302" width="80" height="50" rx="6"/>
+    </g>
+    <g stroke="rgba(255,255,255,.18)" stroke-width="2">
+      <path d="M424,203 H464 M424,217 H464 M524,511 H564 M524,525 H564 M324,511 H364 M324,525 H364 M262,320 H302 M262,334 H302"/>
+    </g>
+    <g fill="#2fa2db">
+      <circle cx="476" cy="210" r="4"/>
+      <circle cx="576" cy="518" r="4"/>
+      <circle cx="376" cy="518" r="4"/>
+      <circle cx="314" cy="327" r="4"/>
+    </g>
+    <rect x="572" y="302" width="80" height="50" rx="6" fill="#0a0a0a" stroke="rgba(255,255,255,.18)" stroke-width="2" stroke-dasharray="4 4"/>
+    <text x="612" y="332" text-anchor="middle" fill="rgba(255,255,255,.4)" font-size="13">Offline</text>
+    <g stroke="#2fa2db" stroke-width="2" fill="none" stroke-dasharray="2 8" stroke-linecap="round" opacity="0.8">
+      <path d="M720,300 L490,222"/>
+      <path d="M720,354 L590,505"/>
+    </g>
+    <g fill="#407ec9">
+      <circle cx="720" cy="300" r="6"/>
+      <circle cx="720" cy="354" r="6"/>
+    </g>
+    <text x="760" y="265" text-anchor="middle" fill="rgba(255,255,255,.5)" font-size="13">Cameras picked up by peers</text>
+  </g>
+
+  <text x="450" y="680" text-anchor="middle" fill="rgba(255,255,255,.4)" font-family="Arial, sans-serif" font-size="13" letter-spacing="1">SELF-HEALING MULTI-SERVER FAILOVER</text>
+
+  <!-- lower stats panel -->
+  <g transform="translate(150,730)" font-family="Arial, sans-serif">
+    <rect width="600" height="320" rx="20" fill="rgba(255,255,255,.045)" stroke="rgba(255,255,255,.16)" stroke-width="2"/>
+    <text x="40" y="58" fill="rgba(255,255,255,.85)" font-size="24" font-weight="800">A VMS that heals itself.</text>
+    <g stroke="rgba(255,255,255,.14)" stroke-width="1"><path d="M40,88 H560"/></g>
+    <g fill="rgba(255,255,255,.85)" font-size="26" font-weight="900">
+      <text x="40" y="150">4</text>
+      <text x="290" y="150">0</text>
+    </g>
+    <g fill="rgba(255,255,255,.4)" font-size="13" letter-spacing=".04em">
+      <text x="40" y="174">STORAGE OPTIONS</text>
+      <text x="290" y="174">FAILOVER APPLIANCES NEEDED</text>
+    </g>
+    <g stroke="rgba(255,255,255,.14)" stroke-width="1"><path d="M40,210 H560"/></g>
+    <text x="40" y="244" fill="rgba(255,255,255,.5)" font-size="14">Local, NAS, SAN/iSCSI or cloud storage</text>
+    <text x="40" y="274" fill="rgba(255,255,255,.5)" font-size="14">Made by Network Optix</text>
+  </g>
+
+  <!-- Arrowhead marker definition -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#407ec9" />
+    </marker>
+  </defs>
+</svg>
