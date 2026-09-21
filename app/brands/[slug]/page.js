@@ -27,6 +27,7 @@ export function generateMetadata({ params }) {
     title: role ? `${brand.name} ${role}, Melbourne | Teracom` : `${brand.name} | Teracom Solutions, Melbourne`,
     description: brand.tagline,
     path: `/brands/${brand.slug}`,
+    images: [{ url: `/brands/${brand.slug}/opengraph-image`, width: 1200, height: 630, alt: brand.name }]
   });
 }
 
