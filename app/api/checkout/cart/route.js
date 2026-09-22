@@ -114,6 +114,8 @@ export async function POST(req) {
         },
         quantity: item.quantity,
       })),
+      // Lets customers enter promotion codes created in the Stripe dashboard.
+      allow_promotion_codes: true,
       success_url: `${siteUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${siteUrl}/checkout/cancel`,
       // Flags this session for app/api/webhooks/stripe/route.js to itemize
