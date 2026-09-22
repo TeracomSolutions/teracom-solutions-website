@@ -1,6 +1,7 @@
 import { pageMetadata } from '@/lib/seo';
 import Link from 'next/link';
 import ResourcesSubNav from '@/components/ResourcesSubNav';
+import { resourcesIntros } from '@/lib/resourcesIntros';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import DocumentList from '@/components/DocumentList';
 import { datasheets } from '@/lib/resourceDocuments';
@@ -28,6 +29,11 @@ export default function Datasheets() {
       </section>
       <section className="section section-spacious">
         <div className="container">
+          <div className="copy-block">
+            {resourcesIntros['datasheets'].map((p, i) => (
+              <p key={i}>{p}</p>
+            ))}
+          </div>
           <ResourcesSubNav />
           <DocumentList documents={datasheets} emptyMessage="Datasheets are being added here." />
         </div>

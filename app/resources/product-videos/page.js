@@ -1,6 +1,7 @@
 import { pageMetadata } from '@/lib/seo';
 import Link from 'next/link';
 import ResourcesSubNav from '@/components/ResourcesSubNav';
+import { resourcesIntros } from '@/lib/resourcesIntros';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import VideoGrid from '@/components/VideoGrid';
 
@@ -27,6 +28,11 @@ export default function ProductVideos() {
       </section>
       <section className="section section-spacious">
         <div className="container">
+          <div className="copy-block">
+            {resourcesIntros['product-videos'].map((p, i) => (
+              <p key={i}>{p}</p>
+            ))}
+          </div>
           <ResourcesSubNav />
           <VideoGrid />
         </div>
