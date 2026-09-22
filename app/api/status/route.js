@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { BACKEND_API_URL } from '@/lib/config';
 import { GA_MEASUREMENT_ID, GOOGLE_SITE_VERIFICATION } from '@/lib/analytics';
-import { NEWS_SOURCES, getSourceNews } from '@/lib/industryNews';
+import { FEED_HEADERS, NEWS_SOURCES, getSourceNews } from '@/lib/industryNews';
 import { BUSINESS, SITE_ORIGIN } from '@/lib/seo';
 import { services } from '@/lib/services';
 import { brands } from '@/lib/brands';
@@ -34,13 +34,27 @@ async function checkBackend() {
   }
 }
 
+// For a feed that came back empty, ask the publisher directly (uncached) so
+// the status shows why -- e.g. a firewall answering 403 to cloud servers.
+async function probeFeed(feed) {
+  try {
+    const res = await fetch(feed, { cache: 'no-store', headers: FEED_HEADERS, signal: AbortSignal.timeout(6000) });
+    return { httpStatus: res.status, contentType: res.headers.get('content-type'), server: res.headers.get('server') };
+  } catch (error) {
+    return { httpStatus: null, error: error?.name || 'fetch failed' };
+  }
+}
+
 async function checkFeeds() {
   const lists = await Promise.all(NEWS_SOURCES.map((s) => getSourceNews(s, 20)));
-  return NEWS_SOURCES.map((s, i) => {
-    const items = lists[i];
-    const newest = items.map((it) => it.date).filter(Boolean).sort().pop() || null;
-    return { id: s.id, industry: s.label, source: s.source, feed: s.feed, ok: items.length > 0, items: items.length, newest };
-  });
+  return Promise.all(
+    NEWS_SOURCES.map(async (s, i) => {
+      const items = lists[i];
+      const newest = items.map((it) => it.date).filter(Boolean).sort().pop() || null;
+      const entry = { id: s.id, industry: s.label, source: s.source, feed: s.feed, ok: items.length > 0, items: items.length, newest };
+      return items.length ? entry : { ...entry, probe: await probeFeed(s.feed) };
+    })
+  );
 }
 
 export async function GET() {
