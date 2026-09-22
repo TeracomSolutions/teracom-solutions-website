@@ -6,9 +6,9 @@ import { toolGroups, tools } from '@/lib/tools';
 import { pageMetadata } from '@/lib/seo';
 
 export const metadata = pageMetadata({
-  title: 'Free Security Installer Calculators | Teracom Solutions',
+  title: 'Free Calculators & Tools for the Industry | Teracom Solutions',
   description:
-    'Free CCTV, power, cabling, network, audio and projector calculators for security installers and integrators -- storage, lens, bandwidth, RAID, PoE, PSU, battery, voltage drop, UPS, subnet and more.',
+    'Free CCTV, power, cabling, network, audio and projector calculators for engineers, technicians, installers, AV specialists and customers -- storage, lens, bandwidth, RAID, PoE, PSU, battery, voltage drop, UPS, subnet and more.',
   path: '/tools',
 });
 
@@ -20,10 +20,10 @@ export default function Tools() {
           <div className="hero-copy">
             <Breadcrumbs items={[]} current={'Tools'} />
             <span className="eyebrow">Free tools</span>
-            <h1>Calculators for security installers.</h1>
+            <h1>Tools for the industry.</h1>
             <p className="lead">
-              {tools.length} free calculators for the numbers you check on every job -- cameras, storage, power, cabling,
-              networks and AV.
+              {tools.length} free calculators for engineers, technicians, installers, AV specialists and customers -- the numbers
+              you check on every job, from cameras and storage to power, cabling, networks and AV.
             </p>
           </div>
           <div className="tool-hero-art" aria-hidden="true">

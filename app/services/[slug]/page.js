@@ -1,21 +1,18 @@
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import { findService, services } from '@/lib/services';
-import { findBrand } from '@/lib/brands';
-import { findCategory } from '@/lib/categories';
+import { ArrowRight, Check } from 'lucide-react';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import JsonLd from '@/components/JsonLd';
+import ProcessSteps from '@/components/ProcessSteps';
+import ServiceCard from '@/components/ServiceCard';
+import ServiceIcon from '@/components/ServiceIcon';
+import { findService, serviceGroups, services } from '@/lib/services';
+import { findBrand } from '@/lib/brands';
+import { findCategory } from '@/lib/categories';
 import { SITE_ORIGIN, absoluteUrl, pageMetadata } from '@/lib/seo';
 
-// Same five steps as the homepage's "How we deliver" section (app/page.js).
-const HOW_WE_DELIVER = [
-  { title: 'Consultancy & Design', text: 'Independent advice on system selection, architecture and technical design before a single product is ordered.' },
-  { title: 'Software Development', text: 'The Teracom AI platform and custom software tools, built in-house by our own development team.' },
-  { title: 'Hardware Supply', text: 'Access control, CCTV, intrusion, networking and audio hardware from the manufacturers we work with directly.' },
-  { title: 'Installation & Service', text: 'Licensed technicians and electricians handling installation, commissioning and ongoing maintenance on-site.' },
-  { title: 'Ongoing Support', text: 'Monitoring, technical support and account management for the life of the system, not just the install.' },
-];
+export const dynamicParams = false;
 
 export function generateStaticParams() {
   return services.map((service) => ({ slug: service.slug }));
@@ -36,12 +33,12 @@ export default function ServicePage({ params }) {
   const service = findService(params.slug);
   if (!service) notFound();
 
+  const group = serviceGroups.find((g) => g.id === service.group);
   const category = service.storeCategory ? findCategory(service.storeCategory) : null;
-
-  // Get brand objects for the service brands, filtering out those without logoFile or not in lib/brands.js
   const serviceBrands = service.brandSlugs
-    .map(slug => findBrand(slug))
-    .filter(brand => brand && brand.logoFile);
+    .map((slug) => findBrand(slug))
+    .filter((brand) => brand && brand.logoFile);
+  const related = services.filter((s) => s.group === service.group && s.slug !== service.slug);
 
   const SERVICE_SCHEMA = {
     '@type': 'Service',
@@ -59,54 +56,88 @@ export default function ServicePage({ params }) {
   return (
     <main id="main-content">
       <JsonLd schema={SERVICE_SCHEMA} />
-      <section className="hero hero-product hero-shallow">
-        <div className="container hero-layout">
+      <section className="hero hero-product hero-shallow tool-hero">
+        <div className="container hero-layout tool-hero-layout">
           <div className="hero-copy">
             <Breadcrumbs items={[{ name: 'Services', href: '/services' }]} current={service.title} />
+            {group ? <span className="eyebrow">{group.eyebrow}</span> : null}
             <h1>{service.title}</h1>
             <p className="lead">{service.lead}</p>
+            {service.tags?.length ? (
+              <p className="service-tags service-tags-hero">
+                {service.tags.map((tag) => (
+                  <span key={tag}>{tag}</span>
+                ))}
+              </p>
+            ) : null}
+          </div>
+          <div className="tool-hero-art" aria-hidden="true">
+            <span className="tool-hero-ring">
+              <ServiceIcon slug={service.slug} size={96} strokeWidth={1.3} />
+            </span>
           </div>
         </div>
       </section>
 
       <section className="section section-spacious">
-        <div className="container">
+        <div className="container service-intro">
           <div className="copy-block">
-            {service.intro.map((p, i) => (
-              <p key={i}>{p}</p>
+            {service.intro.map((p) => (
+              <p key={p.slice(0, 40)}>{p}</p>
             ))}
+            <div className="hero-actions">
+              <Link className="btn btn-primary" href="/contact">Talk to us</Link>
+              {category ? (
+                <Link className="btn btn-secondary" href={`/store/${category.slug}`}>Shop {category.title}</Link>
+              ) : null}
+            </div>
           </div>
+          {service.image ? (
+            <div className="showcase-image service-image">
+              <Image src={service.image} alt="" width={1536} height={1024} sizes="(max-width: 980px) 100vw, 45vw" />
+            </div>
+          ) : (
+            <div className="service-art" aria-hidden="true">
+              <ServiceIcon slug={service.slug} size={150} strokeWidth={1} />
+            </div>
+          )}
         </div>
       </section>
 
-      <section className="section section-spacious alt">
-        <div className="container">
-          <div className="section-heading">
-            <h2>What&apos;s included</h2>
+      <section className="tool-stage">
+        <div className="tool-backdrop" aria-hidden="true">
+          <span className="tool-backdrop-main">
+            <ServiceIcon slug={service.slug} size={520} strokeWidth={0.6} />
+          </span>
+        </div>
+        <div className="tool-stage-inner section section-spacious">
+          <div className="container">
+            <div className="section-heading left tools-group-heading">
+              <span className="eyebrow">What&apos;s included</span>
+              <h2>Everything from first plan to ongoing support.</h2>
+            </div>
+            <ul className="include-grid">
+              {service.includes.map((item) => (
+                <li key={item}>
+                  <span className="include-check">
+                    <Check size={18} strokeWidth={2.4} aria-hidden="true" focusable="false" />
+                  </span>
+                  {item}
+                </li>
+              ))}
+            </ul>
           </div>
-          <ul className="tick-list">
-            {service.includes.map((item, i) => (
-              <li key={i}>{item}</li>
-            ))}
-          </ul>
         </div>
       </section>
 
       <section className="section section-spacious">
         <div className="container">
           <div className="section-heading">
-            <h2>How we deliver</h2>
-            <p>One team across the whole journey -- not a different contractor at every stage.</p>
+            <span className="eyebrow">How we deliver</span>
+            <h2>One team across the whole journey.</h2>
+            <p>Not a different contractor at every stage.</p>
           </div>
-          <div className="feature-grid">
-            {HOW_WE_DELIVER.map((item, i) => (
-              <article key={item.title}>
-                <span style={{ color: 'var(--red)', fontWeight: 900, fontSize: '14px', letterSpacing: '.08em' }}>{String(i + 1).padStart(2, '0')}</span>
-                <h3>{item.title}</h3>
-                <p>{item.text}</p>
-              </article>
-            ))}
-          </div>
+          <ProcessSteps />
         </div>
       </section>
 
@@ -114,6 +145,7 @@ export default function ServicePage({ params }) {
         <section className="section section-spacious alt">
           <div className="container">
             <div className="section-heading">
+              <span className="eyebrow">Brands</span>
               <h2>Brands we work with</h2>
               <p>Manufacturers we supply and work with directly.</p>
             </div>
@@ -130,25 +162,34 @@ export default function ServicePage({ params }) {
         </section>
       )}
 
-      {category && (
+      {related.length > 0 && (
         <section className="section section-spacious">
           <div className="container">
-            <div className="section-heading">
-              <h2>Products</h2>
-              <p>Browse our selection of {service.title} in the Teracom Store.</p>
+            <div className="section-heading left tools-group-heading">
+              <span className="eyebrow">{group ? group.eyebrow : 'Related services'}</span>
+              <h2>Often delivered together.</h2>
             </div>
-            <p><Link className="btn btn-primary" href={`/store/${category.slug}`}>Browse {service.title} products in the Teracom Store</Link></p>
+            <div className="tools-grid service-grid" data-count={related.length}>
+              {related.map((s) => (
+                <ServiceCard service={s} key={s.slug} />
+              ))}
+            </div>
           </div>
         </section>
       )}
 
-      <section className="section section-spacious alt">
+      <section className="section cta-band-section">
         <div className="container">
-          <div className="section-heading">
-            <h2>Talk to us about your project.</h2>
-            <p>Tell us about your site and what you need -- we usually reply within one business day.</p>
+          <div className="cta-band">
+            <div>
+              <span className="eyebrow">{service.title}</span>
+              <h2>Talk to us about your project.</h2>
+              <p>Tell us about your site and what you need -- we usually reply within one business day.</p>
+            </div>
+            <Link className="btn btn-primary" href="/contact">
+              Contact us <ArrowRight size={18} strokeWidth={2} aria-hidden="true" />
+            </Link>
           </div>
-          <p><Link className="btn btn-primary" href="/contact">Contact us</Link></p>
         </div>
       </section>
     </main>
