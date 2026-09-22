@@ -38,8 +38,8 @@ export default function BrandPage({ params }) {
   const paragraphs = brand.body.split('\n\n');
 
   return (
-    <main id="main-content">
-      <section className="hero hero-product hero-shallow">
+    <main id="main-content" style={{ '--brand-accent': brand.accent || '#9fb0c8' }}>
+      <section className="hero hero-product hero-shallow brand-hero">
         <div className="container hero-layout">
           <div className="hero-copy">
             <Breadcrumbs items={[{ name: 'Brands', href: '/brands' }]} current={brand.name} />
