@@ -30,6 +30,12 @@ const INTEREST_TO_INQUIRY_TYPE = {
 };
 
 export async function POST(req) {
+  const form = await req.formData();
+  const lead = Object.fromEntries(form.entries());
+
+  // Read return_to first (before rate-limit check)
+  const returnPath = lead.return_to === '/contact' ? '/contact' : '/';
+
   const rateLimitKey = `leads:${clientIpFromRequest(req)}`;
   const rateLimit = checkRateLimit(rateLimitKey, {
     maxAttempts: LEADS_RATE_LIMIT_MAX_ATTEMPTS,
@@ -41,11 +47,8 @@ export async function POST(req) {
     // logged distinctly server-side so the two cases stay distinguishable
     // in the logs even though the visitor sees the same generic message.
     console.warn('Lead submission rate limited', rateLimitKey, `retry after ${rateLimit.retryAfterSeconds}s`);
-    return NextResponse.redirect(new URL('/?lead=error#contact', req.url), 303);
+    return NextResponse.redirect(new URL(`${returnPath}?lead=error#contact`, req.url), 303);
   }
-
-  const form = await req.formData();
-  const lead = Object.fromEntries(form.entries());
 
   const inquiryType = INTEREST_TO_INQUIRY_TYPE[lead.interest] || 'platform_question';
 
@@ -63,8 +66,8 @@ export async function POST(req) {
     // homepage renders an honest "something went wrong" state for it.
     const status = error instanceof ApiError ? error.status : 0;
     console.error('Lead submission failed', status, error instanceof Error ? error.message : error);
-    return NextResponse.redirect(new URL('/?lead=error#contact', req.url), 303);
+    return NextResponse.redirect(new URL(`${returnPath}?lead=error#contact`, req.url), 303);
   }
 
-  return NextResponse.redirect(new URL('/?lead=received#contact', req.url), 303);
+  return NextResponse.redirect(new URL(`${returnPath}?lead=received#contact`, req.url), 303);
 }
