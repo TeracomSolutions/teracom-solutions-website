@@ -6,6 +6,7 @@ import HelpCenterAccordion from '@/components/HelpCenterAccordion';
 import CategoryIcon from '@/components/CategoryIcon';
 import JsonLd from '@/components/JsonLd';
 import { helpCenterTopics } from '@/lib/helpCenterTopics';
+import { resourcesIntros } from '@/lib/resourcesIntros';
 
 export const metadata = pageMetadata({
   title: 'CCTV & Security Help Centre, FAQs | Teracom Solutions',
@@ -47,7 +48,7 @@ export default function HelpCentre() {
         <div className="container help-hero-row">
           <div className="hero-copy">
             <Breadcrumbs
-              items={[{ name: 'Resources', href: '/resources' }]}
+              items={[{ name: 'Resources', href: '/resources' }]} 
               current={'Help Centre & FAQs'}
             />
             <h1>Help Centre & FAQs</h1>
@@ -67,6 +68,10 @@ export default function HelpCentre() {
       </section>
       <section className="section section-spacious">
         <div className="container">
+          <div className="copy-block">
+            <p>{resourcesIntros['help-centre'][0]}</p>
+            <p>{resourcesIntros['help-centre'][1]}</p>
+          </div>
           <ResourcesSubNav />
           <HelpCenterAccordion />
         </div>

@@ -1,6 +1,7 @@
 import { pageMetadata } from '@/lib/seo';
 import Link from 'next/link';
 import { resourcesSections } from '@/lib/resourcesSections';
+import { resourcesIntros } from '@/lib/resourcesIntros';
 
 export const metadata = pageMetadata({
   title: 'Security Resources, Manuals & Support | Teracom Solutions',
@@ -20,6 +21,15 @@ export default function Resources() {
               We know that finding the right information can be difficult and time consuming -- this page brings it
               together in one place.
             </p>
+          </div>
+        </div>
+      </section>
+      <section className="section section-spacious">
+        <div className="container">
+          <div className="copy-block">
+            {resourcesIntros.index.map((p, i) => (
+              <p key={i}>{p}</p>
+            ))}
           </div>
         </div>
       </section>
