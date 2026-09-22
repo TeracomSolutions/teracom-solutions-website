@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { helpCenterTopics } from '@/lib/helpCenterTopics';
 
@@ -21,8 +21,21 @@ function HelpCenterTopic({ topic, forceOpen }) {
   const [open, setOpen] = useState(false);
   const isOpen = forceOpen || open;
 
+  // Site search links to /resources/help-centre#<slug>: open and show that topic.
+  useEffect(() => {
+    const openFromHash = () => {
+      if (window.location.hash === `#${topic.slug}`) {
+        setOpen(true);
+        document.getElementById(topic.slug)?.scrollIntoView({ block: 'start' });
+      }
+    };
+    openFromHash();
+    window.addEventListener('hashchange', openFromHash);
+    return () => window.removeEventListener('hashchange', openFromHash);
+  }, [topic.slug]);
+
   return (
-    <article className="help-topic">
+    <article className="help-topic" id={topic.slug}>
       <button
         type="button"
         className="help-topic-toggle"

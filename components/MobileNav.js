@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useSearchSubmit } from './HeaderSearch';
 import { useCart } from '@/lib/cart-context';
 import { resourcesSections } from '@/lib/resourcesSections';
 
@@ -10,6 +11,7 @@ export default function MobileNav() {
   const { totalItems } = useCart();
   // Links navigate client-side, so the panel has to close itself on click.
   const close = () => setOpen(false);
+  const onSearch = useSearchSubmit(close);
 
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -44,6 +46,11 @@ export default function MobileNav() {
 
       {open && (
         <nav className="mobile-nav-panel">
+          <form className="search-form mobile-nav-search" action="/search" role="search" onSubmit={onSearch}>
+            <label htmlFor="mobile-search-input" className="visually-hidden">Search Teracom Solutions</label>
+            <input id="mobile-search-input" type="search" name="q" placeholder="Search the site…" autoComplete="off" />
+            <button type="submit" className="btn btn-primary">Search</button>
+          </form>
           <ul className="mobile-nav-links">
             <li><Link href="/services" onClick={close}>What We Do</Link></li>
             <li><Link href="/securityos-ai" onClick={close}>Teracom AI</Link></li>

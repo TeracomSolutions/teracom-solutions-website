@@ -101,10 +101,12 @@ export default function StructuredData() {
       name: SITE_NAME,
       publisher: { '@id': ORGANISATION_ID },
       inLanguage: 'en-AU',
-      // No 'potentialAction'/SearchAction here on purpose: the site has no
-      // search route, and declaring a sitelinks search box that resolves to
-      // nothing is a structured-data error, not a free win. Add it when a real
-      // /search page exists.
+      // Sitelinks search box: /search takes ?q= (app/search/page.js).
+      potentialAction: {
+        '@type': 'SearchAction',
+        target: { '@type': 'EntryPoint', urlTemplate: `${SITE_ORIGIN}/search?q={search_term_string}` },
+        'query-input': 'required name=search_term_string',
+      },
     },
   ];
 
