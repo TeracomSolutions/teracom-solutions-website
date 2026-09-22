@@ -27,12 +27,12 @@ export default function Tools() {
 
       <section className="section section-spacious">
         <div className="container">
-          <div className="feature-grid">
+          <div className="tools-grid">
             {tools.map((tool) => (
               <article key={tool.slug}>
                 <h3>{tool.title}</h3>
                 <p>{tool.description}</p>
-                <p><Link href={`/tools/${tool.slug}`} className="btn btn-primary">Use calculator</Link></p>
+                <p className="tools-card-action"><Link href={`/tools/${tool.slug}`} className="btn btn-primary">Use calculator</Link></p>
               </article>
             ))}
           </div>

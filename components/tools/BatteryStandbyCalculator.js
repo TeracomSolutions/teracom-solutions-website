@@ -49,7 +49,7 @@ export default function BatteryStandbyCalculator() {
             type="number"
             min="0"
             value={standbyHours}
-            onChange={(e) => setStandbyHours(Math.max(0, parseInt(e.target.value) || 0))}
+            onChange={(e) => setStandbyHours(Math.max(0, parseFloat(e.target.value) || 0))}
           />
         </div>
 
@@ -71,8 +71,9 @@ export default function BatteryStandbyCalculator() {
             id="alarmHours"
             type="number"
             min="0"
+            step="0.1"
             value={alarmHours}
-            onChange={(e) => setAlarmHours(Math.max(0, parseInt(e.target.value) || 0))}
+            onChange={(e) => setAlarmHours(Math.max(0, parseFloat(e.target.value) || 0))}
           />
         </div>
 

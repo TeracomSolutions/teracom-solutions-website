@@ -1022,3 +1022,12 @@ a {
 
 /* Store: RRP shown struck through above the member price for signed-in customers. */
 .price-rrp-struck { margin: 0; font-size: 13px; color: rgba(255, 255, 255, .5); }
+
+/* /tools index: cards size to their content with the button pinned to the bottom
+   (the shared .feature-grid cards have a fixed height that clipped longer titles). */
+.tools-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:22px; }
+.tools-grid article { display:flex; flex-direction:column; gap:12px; border:1px solid var(--line); background:rgba(255,255,255,.04); border-radius:28px; padding:30px; }
+.tools-grid h3 { font-size:24px; letter-spacing:-.03em; margin:0; }
+.tools-grid p { color:var(--muted); margin:0; }
+.tools-grid .tools-card-action { margin-top:auto; padding-top:8px; }
+@media (max-width:760px) { .tools-grid { grid-template-columns:1fr; } }

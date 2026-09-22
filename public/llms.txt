@@ -10,7 +10,7 @@
 - [Teracom Store](https://www.teracomsolutions.com.au/store): security products, digital resources, consulting services and Teracom AI subscriptions. Prices shown are RRP including GST; account holders receive additional member discounts.
 - [Resources](https://www.teracomsolutions.com.au/resources): help centre and FAQs, user manuals, datasheets, product videos and downloads.
 - [Services](https://www.teracomsolutions.com.au/services): access control, CCTV, intrusion alarms, intercoms, audio visual, electrical, automation, networking, security design and consulting, and maintenance and support.
-- [Free tools](https://www.teracomsolutions.com.au/tools): CCTV storage, PoE power budget and battery standby calculators for installers.
+- [Free tools](https://www.teracomsolutions.com.au/tools): CCTV storage, PoE power budget, battery standby and cable voltage drop calculators for installers.
 - [Industry news](https://www.teracomsolutions.com.au/resources/industry-news): the latest Australian security industry headlines from SEN.news.
 - [About](https://www.teracomsolutions.com.au/about): company background, showroom address and opening hours.
 - [Contact](https://www.teracomsolutions.com.au/contact): enquiry form, phone, email and showroom location.
