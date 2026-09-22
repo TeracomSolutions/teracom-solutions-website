@@ -448,6 +448,21 @@ a {
 .brand-hero-logo {
   flex:none;max-height:48px;max-width:180px;width:auto;height:auto;object-fit:contain;filter:brightness(0) invert(1);opacity:.85;
 }
+/* Brand pages: swap the hero's red glow (and the showcase image's red shadow)
+   for the manufacturer's own colour (--brand-accent on <main>, from
+   lib/brands.js) plus a thin accent rule under the hero, so
+   third-party brand pages read as distinct from Teracom's own red. Browsers
+   without color-mix() keep the default red glow. */
+.brand-hero {
+  border-bottom: 2px solid color-mix(in srgb, var(--brand-accent) 60%, transparent);
+}
+.brand-showcase-image {
+  box-shadow: 0 35px 100px color-mix(in srgb, var(--brand-accent) 16%, transparent);
+}
+.brand-hero:before {
+  background: radial-gradient(circle at 80% 18%, color-mix(in srgb, var(--brand-accent) 34%, transparent), transparent 40%),
+    radial-gradient(circle at 15% 65%, rgba(255,255,255,.08), transparent 32%);
+}
 .badge {
   display:inline-flex;width:fit-content;border-radius:999px;background:rgba(255,23,23,.15);color:var(--red2);padding:7px 11px;font-size:11px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;margin-bottom:16px;
 }
