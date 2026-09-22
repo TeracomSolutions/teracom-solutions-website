@@ -52,7 +52,7 @@ export default async function ContactPage(props) {
       </section>
 
       <section id="contact" className="section contact-section">
-        <div className="container contact-card">
+        <div className="container contact-card contact-card-stretch">
           <div>
             {leadStatus === 'received' && (
               <p className="form-note-banner" role="status">Thanks — we&apos;ve received your enquiry and will be in touch shortly.</p>
@@ -61,6 +61,13 @@ export default async function ContactPage(props) {
               <p className="form-error" role="alert">Something went wrong submitting your enquiry. Please try again, or email us directly.</p>
             )}
 
+            <Image
+              className="contact-logo"
+              src="/assets/teracom-logo.png"
+              alt="Teracom Solutions"
+              width={260}
+              height={101}
+            />
             <address className="contact-address">
               {BUSINESS.streetAddress}, {BUSINESS.addressLocality}<br />
               {BUSINESS.addressRegion} {BUSINESS.postalCode}, Australia<br />
