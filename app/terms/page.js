@@ -1,3 +1,5 @@
+import { Scale } from 'lucide-react';
+import LegalDocument from '@/components/LegalDocument';
 import { pageMetadata } from '@/lib/seo';
 export const metadata = pageMetadata({
   title: 'Terms & Conditions | Teracom Solutions',
@@ -116,4 +118,13 @@ const sections = [
   },
 ];
 
-export default function Terms(){return <main id="main-content"><section className="hero hero-product"><div className="container hero-layout"><div className="hero-copy"><span className="eyebrow">Legal</span><h1>Terms & Conditions</h1><p className="lead">Teracom Solutions Pty Ltd (ABN 49 107 979 546) — Terms and Conditions of Trade.</p></div></div></section><section className="section section-spacious"><div className="container copy-block" style={{maxWidth:'860px'}}>{sections.map((s)=><div key={s.title} style={{marginBottom:'44px'}}><h3>{s.title}</h3>{s.body.map((line,i)=><p key={i} style={{fontSize:'15px'}}>{line}</p>)}</div>)}</div></section></main>}
+export default function Terms() {
+  return (
+    <LegalDocument
+      icon={Scale}
+      title="Terms & Conditions"
+      lead="Teracom Solutions Pty Ltd (ABN 49 107 979 546) — Terms and Conditions of Trade."
+      sections={sections}
+    />
+  );
+}
