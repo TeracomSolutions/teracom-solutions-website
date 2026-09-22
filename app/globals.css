@@ -1392,3 +1392,21 @@ a {
   .footer-mascot img { transition:none; }
   .footer-mascot img:hover { transform:none; }
 }
+
+/* Hero picture that melts into the page instead of sitting in a framed box:
+   no frame or shadow, edges feathered to transparent on all four sides, and a
+   soft red glow behind it that joins the hero's own glow. */
+.hero-image.hero-blend {
+  position:relative; isolation:isolate; border-radius:0; overflow:visible; box-shadow:none;
+}
+.hero-image.hero-blend::before {
+  content:""; position:absolute; inset:10% 8%; z-index:-1; pointer-events:none; filter:blur(40px);
+  background:radial-gradient(ellipse at center,rgba(255,23,23,.28),transparent 70%);
+}
+.hero-image.hero-blend img {
+  -webkit-mask-image:linear-gradient(to right,transparent,#000 16%,#000 84%,transparent),linear-gradient(to bottom,transparent,#000 14%,#000 86%,transparent);
+  -webkit-mask-composite:source-in;
+  mask-image:linear-gradient(to right,transparent,#000 16%,#000 84%,transparent),linear-gradient(to bottom,transparent,#000 14%,#000 86%,transparent);
+  mask-composite:intersect;
+}
+
