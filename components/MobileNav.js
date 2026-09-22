@@ -42,7 +42,7 @@ export default function MobileNav() {
       {open && (
         <nav className="mobile-nav-panel">
           <ul className="mobile-nav-links">
-            <li><a href="/#what-we-do">What We Do</a></li>
+            <li><a href="/services">What We Do</a></li>
             <li><a href="/securityos-ai">Teracom AI</a></li>
             <li><a href="/brands">Brands</a></li>
             <li><a href="/store">Store</a></li>
@@ -52,8 +52,10 @@ export default function MobileNav() {
                 {resourcesSections.map((s) => (
                   <li key={s.slug}><a href={`/resources/${s.slug}`}>{s.title}</a></li>
                 ))}
+                <li><a href="/tools">Free Tools</a></li>
               </ul>
             </li>
+            <li><a href="/contact">Contact</a></li>
             <li><a href="/cart">Cart{totalItems > 0 ? ` (${totalItems})` : ''}</a></li>
           </ul>
         </nav>
