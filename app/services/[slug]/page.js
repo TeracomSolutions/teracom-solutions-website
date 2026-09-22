@@ -95,7 +95,7 @@ export default async function ServicePage(props) {
             </div>
           </div>
           {service.image ? (
-            <div className="showcase-image service-image">
+            <div className="showcase-image service-image hero-blend">
               <Image src={service.image} alt="" width={1536} height={1024} sizes="(max-width: 980px) 100vw, 45vw" />
             </div>
           ) : (
