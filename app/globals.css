@@ -1031,3 +1031,10 @@ a {
 .tools-grid p { color:var(--muted); margin:0; }
 .tools-grid .tools-card-action { margin-top:auto; padding-top:8px; }
 @media (max-width:760px) { .tools-grid { grid-template-columns:1fr; } }
+
+/* Homepage "How we deliver": on-site picture beside the section heading. */
+.deliver-intro { display:grid; grid-template-columns:minmax(0,1.35fr) minmax(0,.65fr); gap:48px; align-items:center; margin-bottom:48px; }
+.deliver-image { border-radius:28px; overflow:hidden; border:1px solid var(--line); box-shadow:0 35px 100px rgba(255,23,23,.14); }
+.deliver-image img { display:block; width:100%; height:auto; }
+@media (max-width:980px) { .deliver-intro { grid-template-columns:1fr; gap:28px; } }
+
