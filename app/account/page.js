@@ -4,6 +4,8 @@ import { redirect } from 'next/navigation';
 import { CUSTOMER_ACCESS_TOKEN_COOKIE } from '@/lib/customerSession';
 import { getCurrentCustomer } from '@/lib/api/customerAuth';
 import { ApiError } from '@/lib/api/client';
+import AuthShell from '@/components/AuthShell';
+import { BadgePercent, CircleUserRound, ReceiptText, ShoppingCart } from 'lucide-react';
 
 export default async function CustomerAccountPage() {
   const token = (await cookies()).get(CUSTOMER_ACCESS_TOKEN_COOKIE)?.value;
@@ -25,11 +27,17 @@ export default async function CustomerAccountPage() {
   }
 
   return (
-    <main id="main-content">
-      <section className="section section-spacious">
-        <div className="container" style={{ maxWidth: '420px' }}>
-          <h1>Account</h1>
-          
+    <AuthShell
+      eyebrow="Account"
+      title="Your account."
+      icon={CircleUserRound}
+      badges={[BadgePercent, ShoppingCart, ReceiptText]}
+      benefits={[
+        { icon: BadgePercent, text: 'Member pricing is applied at checkout' },
+        { icon: ShoppingCart, text: 'Your cart is kept on this device' },
+      ]}
+    >
+      
           {customer ? (
             <>
               <p className="lead">Welcome, {customer.email}!</p>
@@ -41,11 +49,9 @@ export default async function CustomerAccountPage() {
                 </button>
               </form>
             </>
-          ) : (
-            <p>Unable to load account details.</p>
-          )}
-        </div>
-      </section>
-    </main>
+      ) : (
+        <p>Unable to load account details.</p>
+      )}
+    </AuthShell>
   );
 }
