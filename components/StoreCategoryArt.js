@@ -76,6 +76,11 @@ const ART = {
   projectors: [Projector, Presentation, Sun, Film],
   zwave: [HouseWifi, Lightbulb, Thermometer, Lock],
   'it-equipment': [Laptop, Server, Keyboard, Mouse],
+  // Product-only groupings: these have no category listing of their own,
+  // but their product pages still need a hero emblem.
+  software: [Sparkles, Cloud, Server, Zap],
+  digital: [Database, Cloud, Boxes, Tag],
+  services: [UserCheck, ShieldCheck, Ruler, Network],
 };
 
 export default function StoreCategoryArt({ slug }) {

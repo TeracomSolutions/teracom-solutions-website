@@ -3,7 +3,9 @@
 import { useMemo, useState } from 'react';
 import CheckoutButton from '@/components/CheckoutButton';
 import AddToCartButton from '@/components/AddToCartButton';
-import { formatMoney, memberPriceCents } from '@/lib/products';
+import Link from 'next/link';
+
+import { formatMoney, memberPriceCents, productPath } from '@/lib/products';
 
 export default function CategoryProductGrid({ products, isSignedIn = false }) {
   const brands = useMemo(
@@ -42,7 +44,9 @@ export default function CategoryProductGrid({ products, isSignedIn = false }) {
           <article className="product-card" key={p.id}>
             <div>
               <span className="badge">{p.type}</span>
-              <h3>{p.name}</h3>
+              <h3>
+                <Link href={productPath(p)}>{p.name}</Link>
+              </h3>
               <p>{p.description}</p>
             </div>
             <div>
