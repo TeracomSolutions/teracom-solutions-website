@@ -31,7 +31,7 @@ export default function ContactForm({ preselectedInterest = '', returnTo = '/' }
         <textarea id="lead-message" name="message" rows={4}></textarea>
       </div>
       <button className="btn btn-primary" type="submit">Get In Touch</button>
-      <p className="form-note">We usually reply within one business day. Weekdays 8am &ndash; 4:30pm AEST.</p>
+      <p className="form-note">We usually reply within one business day. Weekdays 9am &ndash; 4:30pm AEST.</p>
     </form>
   );
 }
