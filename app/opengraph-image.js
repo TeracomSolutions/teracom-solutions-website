@@ -1,6 +1,6 @@
 import { ImageResponse } from 'next/og';
 
-export const alt = 'Teracom Solutions -- electronic security, AI and technology';
+export const alt = 'Teracom Solutions -- technology, security and AI';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
@@ -58,7 +58,7 @@ export default function OGImage() {
               marginBottom: '40px',
             }}
           >
-            Electronic security, AI & technology
+            Technology, security & AI
           </p>
           
           <p

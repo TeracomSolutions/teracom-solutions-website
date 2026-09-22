@@ -380,6 +380,7 @@ a {
 }
 .category-icon-badge {
   flex:none;display:flex;align-items:center;justify-content:center;width:52px;height:52px;border-radius:14px;background:rgba(255,23,23,.12);color:var(--red2);
+  border:1px solid rgba(255,23,23,.35);box-shadow:0 0 28px rgba(255,23,23,.18);transition:box-shadow .25s ease;
 }
 .category-heading-row h2, .category-heading-row h3 {
   margin:0;
@@ -1233,9 +1234,9 @@ a {
 .service-tags-hero { margin:22px 0 0; }
 .service-tags-hero span { font-size:13px; padding:6px 14px; border-color:rgba(255,23,23,.35); background:rgba(255,23,23,.08); color:#ffd0d0; }
 
-.process-steps { position:relative; list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(5,1fr); gap:22px; }
+.process-steps { position:relative; list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(var(--steps,5),1fr); gap:22px; }
 .process-steps::before {
-  content:""; position:absolute; top:34px; left:10%; right:10%; height:1px;
+  content:""; position:absolute; top:34px; left:calc(50% / var(--steps,5)); right:calc(50% / var(--steps,5)); height:1px;
   background:linear-gradient(90deg,transparent,rgba(255,23,23,.55) 15%,rgba(255,23,23,.55) 85%,transparent);
 }
 .process-step { position:relative; text-align:center; }
@@ -1334,4 +1335,39 @@ a {
   .brand img { width:150px; }
   .nav-wrap > .btn-primary { display:none; }
   .nav-signin-status { white-space:nowrap; }
+}
+
+/* Card grids site-wide (store categories, brands, resources, brand highlights,
+   contact) share the tool/service card finish: glassy gradient, and on linked
+   cards a lift, red glow, light sweep and glowing top edge. On /brands the
+   glow takes each brand's own accent colour. */
+.feature-grid article {
+  position:relative; isolation:isolate;
+  background:linear-gradient(160deg,rgba(255,255,255,.055),rgba(255,255,255,.012));
+  transition:border-color .25s ease, transform .25s ease, box-shadow .25s ease;
+}
+.feature-grid > a { display:block; border-radius:28px; color:inherit; text-decoration:none; }
+.feature-grid > a > article::before {
+  content:""; position:absolute; inset:0; z-index:-1; pointer-events:none;
+  background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.07) 48%,rgba(255,255,255,.02) 56%,transparent 70%);
+  transform:translateX(-110%); transition:transform .8s ease;
+}
+.feature-grid > a > article::after {
+  content:""; position:absolute; top:0; left:14%; right:14%; height:1px; pointer-events:none; opacity:0; transition:opacity .3s ease;
+  background:linear-gradient(90deg,transparent,var(--card-accent,#ff4b4b),transparent);
+}
+.feature-grid > a:hover > article, .feature-grid > a:focus-visible > article {
+  border-color:rgba(255,23,23,.55); transform:translateY(-3px); box-shadow:0 22px 60px rgba(255,23,23,.12);
+}
+.feature-grid > a:hover > article::before, .feature-grid > a:focus-visible > article::before { transform:translateX(110%); }
+.feature-grid > a:hover > article::after, .feature-grid > a:focus-visible > article::after { opacity:1; }
+.feature-grid > a:hover .category-icon-badge { box-shadow:0 0 40px rgba(255,23,23,.38); }
+.brands-grid > a:hover > article, .brands-grid > a:focus-visible > article {
+  border-color:var(--card-accent,rgba(255,23,23,.55));
+  box-shadow:0 22px 60px color-mix(in srgb,var(--card-accent,#ff1717) 20%,transparent);
+}
+@media (prefers-reduced-motion:reduce) {
+  .feature-grid article, .feature-grid > a > article::before, .feature-grid > a > article::after { transition:none; }
+  .feature-grid > a:hover > article { transform:none; }
+  .feature-grid > a:hover > article::before { transform:translateX(-110%); }
 }

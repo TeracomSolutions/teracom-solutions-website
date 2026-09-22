@@ -21,9 +21,9 @@ const inter = Inter({
   variable: '--font-inter',
 });
 
-const DEFAULT_TITLE = 'Teracom Solutions | Electronic Security, AI & Technology Australia';
+const DEFAULT_TITLE = 'Teracom Solutions | Technology, Security & AI Solutions Australia';
 const DEFAULT_DESCRIPTION =
-  'Australian-owned electronic security and AI specialists. Access control, CCTV, intrusion and intercom design, technical consulting, and the Teracom AI platform. Melbourne and Sydney.';
+  'Australian-owned technology specialists. Security systems, audio visual, electrical, automation, networking, software and systems integration, technical consulting, and the Teracom AI platform. Melbourne and Sydney.';
 
 export const metadata = {
   // Deliberately NOT a title.template. Several pages already ship their own

@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { brands } from '@/lib/brands';
 
 export const metadata = pageMetadata({
-  title: 'Security & Technology Brands We Supply | Teracom Solutions',
+  title: 'Technology & Security Brands We Supply | Teracom Solutions',
   description: 'The manufacturers and product lines Teracom Solutions works with, installs and supports -- access control, CCTV, intrusion, networking, audio and power protection.',
   path: '/brands',
 });
@@ -26,9 +26,9 @@ export default function Brands() {
       </section>
       <section className="section section-spacious">
         <div className="container">
-          <div className="feature-grid">
+          <div className="feature-grid brands-grid">
             {brands.map((b) => (
-              <Link href={`/brands/${b.slug}`} key={b.slug} style={{ textDecoration: 'none', color: 'inherit' }}>
+              <Link href={`/brands/${b.slug}`} key={b.slug} style={b.accent ? { '--card-accent': b.accent } : undefined}>
                 <article>
                   <div className="brand-card-heading">
                     <h3>{b.name}</h3>
