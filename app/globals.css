@@ -1542,3 +1542,17 @@ a {
 }
 .google-reviews-link svg { color:#fbbc04; }
 .google-reviews-link:hover, .google-reviews-link:focus-visible { border-color:rgba(251,188,4,.55); background:rgba(251,188,4,.08); }
+
+/* /contact: company logo above the address. */
+.contact-logo { display:block; width:240px; height:auto; margin:0 0 24px; }
+@media (max-width:640px) { .contact-logo { width:190px; } }
+/* /contact: the map grows so its bottom lines up with the Get In Touch
+   button (the form note below the button sets the bottom gap). */
+@media (min-width:981px) {
+  .contact-card-stretch { align-items:stretch; }
+  .contact-card-stretch > div:first-child { display:flex; flex-direction:column; }
+  .contact-card-stretch .contact-map { flex:1; display:flex; min-height:220px; margin-bottom:var(--map-gap,62px); }
+  .contact-card-stretch .contact-map iframe { flex:1; height:auto; min-height:220px; }
+}
+
+.contact-logo + .contact-address { margin-top:0; }
