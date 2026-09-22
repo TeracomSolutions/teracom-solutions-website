@@ -69,7 +69,7 @@ export default async function ContactPage(props) {
               Accounts: <a href={`mailto:${BUSINESS.accountsEmail}`}>{BUSINESS.accountsEmail}</a>
             </address>
 
-            <p>Weekdays 8am &ndash; 4:30pm, weekends closed</p>
+            <p>Weekdays 9am &ndash; 4:30pm, weekends closed</p>
             <p>
               <a className="google-reviews-link" href={BUSINESS.googleBusinessUrl} target="_blank" rel="noopener noreferrer">
                 <Star size={16} strokeWidth={2} fill="currentColor" aria-hidden="true" /> Read our reviews on Google
