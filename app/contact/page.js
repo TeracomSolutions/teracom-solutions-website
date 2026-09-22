@@ -1,13 +1,21 @@
 import Image from 'next/image';
 import ContactForm from '@/components/ContactForm';
+import ProcessSteps from '@/components/ProcessSteps';
+import { MailCheck, MessagesSquare, Signpost } from 'lucide-react';
 import JsonLd from '@/components/JsonLd';
 import { BUSINESS, SITE_ORIGIN, absoluteUrl, pageMetadata } from '@/lib/seo';
 
 export const metadata = pageMetadata({
   title: 'Contact Teracom Solutions | Carrum Downs, Melbourne',
-  description: 'Contact Teracom Solutions for security system design, supply, installation and support, or Teracom AI. Showroom at 1B Yazaki Way, Carrum Downs VIC. Phone +61 3 9708 2685.',
+  description: 'Contact Teracom Solutions for technology design, supply, installation and support, software and integration, or Teracom AI. Showroom at 1B Yazaki Way, Carrum Downs VIC. Phone +61 3 9708 2685.',
   path: '/contact',
 });
+
+const NEXT_STEPS = [
+  { icon: MailCheck, title: 'We reply within one business day', text: 'Your enquiry goes straight to our team, and we usually reply within one business day.' },
+  { icon: MessagesSquare, title: 'We talk through your requirements', text: "We'll discuss your site, the systems you have today and what you need them to do." },
+  { icon: Signpost, title: 'We recommend the right next step', text: 'That might be a site visit, a design review, a quote or a Teracom AI demo -- whatever moves your project forward.' },
+];
 
 export default function ContactPage({ searchParams }) {
   const leadStatus = searchParams?.lead;
@@ -27,7 +35,7 @@ export default function ContactPage({ searchParams }) {
           <div className="hero-copy">
             <span className="eyebrow">Contact</span>
             <h1>Talk to the Teracom team.</h1>
-            <p className="lead">Security system design, supply, installation and support, technical consulting, the Teracom Store or Teracom AI -- tell us what you&apos;re working on.</p>
+            <p className="lead">Technology design, supply, installation and support, software and integration, technical consulting, the Teracom Store or Teracom AI -- tell us what you&apos;re working on.</p>
           </div>
           <div className="hero-mascot">
             <Image
@@ -83,20 +91,7 @@ export default function ContactPage({ searchParams }) {
             <h2>From first conversation to next steps.</h2>
           </div>
 
-          <div className="feature-grid">
-            <article>
-              <h3>We reply within one business day</h3>
-              <p>Your enquiry goes straight to our team, and we usually reply within one business day.</p>
-            </article>
-            <article>
-              <h3>We talk through your requirements</h3>
-              <p>We&apos;ll discuss your site, the systems you have today and what you need them to do.</p>
-            </article>
-            <article>
-              <h3>We recommend the right next step</h3>
-              <p>That might be a site visit, a design review, a quote or a Teracom AI demo -- whatever moves your project forward.</p>
-            </article>
-          </div>
+          <ProcessSteps steps={NEXT_STEPS} />
         </div>
       </section>
     </main>

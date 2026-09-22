@@ -64,7 +64,7 @@ export default function Footer() {
           />
           <p>AI.Technology</p>
           <p className="muted">
-            Building smarter solutions for the electronic security industry.
+            Building smarter technology solutions, end to end.
           </p>
           <Link
             className="btn btn-primary"
