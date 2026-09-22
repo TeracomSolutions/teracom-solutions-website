@@ -1,5 +1,6 @@
 import { brands } from '@/lib/brands';
 import { categories } from '@/lib/categories';
+import { products } from '@/lib/products';
 import { aiCapabilities } from '@/lib/aiCapabilities';
 import { resourcesSections } from '@/lib/resourcesSections';
 import { services } from '@/lib/services';
@@ -56,12 +57,19 @@ export default function sitemap() {
       priority: 0.6,
     })),
 
-    // Store category listings -- the main commercial long-tail surface until
-    // per-product pages exist.
+    // Store category listings.
     ...categories.map((category) => ({
       path: `/store/${category.slug}`,
       changeFrequency: 'weekly',
       priority: 0.8,
+    })),
+
+    // Per-product pages. Part-number searches are how trade buyers find a
+    // supplier, so these are the store's highest-intent surface.
+    ...products.map((product) => ({
+      path: `/store/product/${product.id}`,
+      changeFrequency: 'weekly',
+      priority: 0.7,
     })),
 
     // Brand/manufacturer pages -- high relevance for "<brand> distributor

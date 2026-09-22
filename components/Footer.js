@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import AdminEntryPoint from './AdminEntryPoint';
+import { BUSINESS } from '@/lib/seo';
 
 const socialLinks = [
   {
@@ -125,10 +126,30 @@ export default function Footer() {
           <Link href="/warranty">Warranty & Returns</Link>
         </div>
         <address className="footer-contact">
+          {BUSINESS.legalName}<br/>
           1B Yazaki Way, Carrum Downs<br/>
           VIC 3201, Australia<br/>
           <a href="tel:+61397082685">+61 3 9708 2685</a><br/>
           <a href="mailto:sales@teracomsolutions.com.au">sales@teracomsolutions.com.au</a>
+          {/* A business buyer must withhold 47% of a payment over $75 ex GST
+              to a supplier who hasn't quoted an ABN, so a visible, verifiable
+              ABN removes a real obstacle rather than just looking reputable. */}
+          <span className="footer-abn">
+            ABN{' '}
+            <a
+              href={`https://abr.business.gov.au/ABN/View?abn=${BUSINESS.abn.replace(/\s/g, '')}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {BUSINESS.abn}
+            </a>
+            {BUSINESS.securityLicences.map((licence) => (
+              <span key={licence.state}>
+                <br/>
+                {licence.state} security licence {licence.number}
+              </span>
+            ))}
+          </span>
         </address>
       </div>
       <div className="container footer-bottom">

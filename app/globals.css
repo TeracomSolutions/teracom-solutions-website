@@ -1734,3 +1734,30 @@ a {
 @media (max-width:1180px) { .auth-layout { grid-template-columns:minmax(0,1fr) 420px; } .auth-art { display:none; } }
 @media (max-width:860px) { .auth-layout { grid-template-columns:1fr; gap:32px; } .auth-card { order:-1; } }
 
+/* Product detail pages. */
+.product-buy { margin-top: 28px; }
+.product-price { margin: 0; }
+/* Secondary by design: the GST-inclusive figure has to stay the prominent
+   one on a page a consumer can land on, even though trade buyers read this. */
+.price-ex-gst { margin: 2px 0 0; font-size: 14px; color: var(--muted); }
+.product-buy-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 22px; align-items: center; }
+.product-stock-note { display: flex; align-items: center; gap: 8px; margin-top: 18px; }
+.product-detail-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 48px; }
+.product-detail-grid h2 { margin-top: 0; }
+.product-spec-list { margin: 0; display: grid; gap: 0; }
+.product-spec-list > div {
+  display: grid; grid-template-columns: 150px 1fr; gap: 16px;
+  padding: 14px 0; border-bottom: 1px solid var(--line);
+}
+.product-spec-list dt { margin: 0; font-size: 13px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.product-spec-list dd { margin: 0; }
+.product-assurances { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 22px; }
+.product-assurances li { display: flex; align-items: center; gap: 14px; color: #d6d6d6; font-size: 15px; }
+.product-assurances .tool-card-icon { width: 44px; height: 44px; border-radius: 13px; flex: none; }
+.product-card h3 a { color: inherit; text-decoration: none; }
+.product-card h3 a:hover { text-decoration: underline; }
+.footer-abn { display: block; margin-top: 14px; font-size: 13px; color: var(--soft); font-style: normal; }
+.footer-abn a { color: inherit; }
+@media (max-width: 520px) {
+  .product-spec-list > div { grid-template-columns: 1fr; gap: 4px; }
+}
