@@ -1544,3 +1544,12 @@ a {
   .search-result, .search-result-arrow { transition:none; }
   .search-result:hover { transform:none; }
 }
+
+/* /contact: link to the Google Business Profile reviews. */
+.google-reviews-link {
+  display:inline-flex; align-items:center; gap:8px; padding:8px 16px; border:1px solid var(--line); border-radius:999px;
+  font-size:14px; font-weight:700; color:#fff; text-decoration:none; background:rgba(255,255,255,.04);
+  transition:border-color .2s ease, background .2s ease;
+}
+.google-reviews-link svg { color:#fbbc04; }
+.google-reviews-link:hover, .google-reviews-link:focus-visible { border-color:rgba(251,188,4,.55); background:rgba(251,188,4,.08); }

@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import ContactForm from '@/components/ContactForm';
 import ProcessSteps from '@/components/ProcessSteps';
-import { MailCheck, MessagesSquare, Signpost } from 'lucide-react';
+import { MailCheck, MessagesSquare, Signpost, Star } from 'lucide-react';
 import JsonLd from '@/components/JsonLd';
 import { BUSINESS, SITE_ORIGIN, absoluteUrl, pageMetadata } from '@/lib/seo';
 
@@ -70,6 +70,11 @@ export default async function ContactPage(props) {
             </address>
 
             <p>Weekdays 8am &ndash; 4:30pm, weekends closed</p>
+            <p>
+              <a className="google-reviews-link" href={BUSINESS.googleBusinessUrl} target="_blank" rel="noopener noreferrer">
+                <Star size={16} strokeWidth={2} fill="currentColor" aria-hidden="true" /> Read our reviews on Google
+              </a>
+            </p>
 
             <div className="contact-map">
               <iframe 
