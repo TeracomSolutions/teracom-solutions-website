@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { safeNextPath } from '@/lib/safeNext';
 
 export default function CustomerSignupPage() {
   const router = useRouter();
@@ -69,7 +70,7 @@ export default function CustomerSignupPage() {
         return;
       }
 
-      router.push('/account');
+      router.push(safeNextPath(new URLSearchParams(window.location.search).get('next')));
       router.refresh();
     } catch {
       setError('Unable to reach the signup service.');

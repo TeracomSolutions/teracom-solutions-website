@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { safeNextPath } from '@/lib/safeNext';
 
 export default function CustomerLoginPage() {
   const router = useRouter();
@@ -28,7 +29,7 @@ export default function CustomerLoginPage() {
         return;
       }
 
-      router.push('/account');
+      router.push(safeNextPath(new URLSearchParams(window.location.search).get('next')));
       router.refresh();
     } catch {
       setError('Unable to reach the login service.');
