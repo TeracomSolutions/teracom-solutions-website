@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import ContactForm from '@/components/ContactForm';
 import JsonLd from '@/components/JsonLd';
 import { BUSINESS, SITE_ORIGIN, absoluteUrl, pageMetadata } from '@/lib/seo';
@@ -22,11 +23,21 @@ export default function ContactPage({ searchParams }) {
       }} />
 
       <section className="hero hero-product hero-shallow">
-        <div className="container hero-layout">
+        <div className="container hero-layout contact-hero">
           <div className="hero-copy">
             <span className="eyebrow">Contact</span>
             <h1>Talk to the Teracom team.</h1>
             <p className="lead">Security system design, supply, installation and support, technical consulting, the Teracom Store or Teracom AI -- tell us what you&apos;re working on.</p>
+          </div>
+          <div className="contact-mascot">
+            <Image
+              src="/assets/teracom-mascot-contact.webp"
+              alt="Teracom mascot giving a thumbs up while holding a tablet"
+              width={1024}
+              height={1536}
+              sizes="(max-width: 760px) 150px, 260px"
+              priority
+            />
           </div>
         </div>
       </section>
