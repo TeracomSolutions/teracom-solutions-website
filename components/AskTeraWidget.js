@@ -1,14 +1,15 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 
-export default function AskJericoWidget() {
+export default function AskTeraWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([
     {
       id: 1,
       type: 'assistant',
-      text: "Hi, I'm Jerico. Ask me anything about Teracom's products or Teracom AI.",
+      text: "Hi, I'm Tera. Ask me anything about Teracom's products or Teracom AI.",
     },
   ]);
   const [inputValue, setInputValue] = useState('');
@@ -38,12 +39,12 @@ export default function AskJericoWidget() {
     setMessages((prev) => [
       ...prev,
       newUserMessage,
-      { id: placeholderId, type: 'assistant', text: 'Jerico is thinking...' },
+      { id: placeholderId, type: 'assistant', text: 'Tera is thinking...' },
     ]);
     setInputValue('');
 
     try {
-      const response = await fetch('/api/jerico/chat', {
+      const response = await fetch('/api/tera/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -71,21 +72,21 @@ export default function AskJericoWidget() {
     <>
       {/* Chat Toggle Button */}
       <button
-        className="jerico-toggle-button"
+        className="tera-toggle-button"
         onClick={toggleChat}
-        aria-label={isOpen ? "Close chat with Jerico" : "Open chat with Jerico"}
+        aria-label={isOpen ? "Close chat with Tera" : "Open chat with Tera"}
       >
-        {isOpen ? '✕' : 'Ask Jerico'}
+        {isOpen ? '✕' : <Image src="/assets/tera-avatar.webp" alt="" width={60} height={60} className="tera-toggle-avatar" />}
       </button>
 
       {/* Chat Panel */}
       {isOpen && (
-        <div className="jerico-panel">
-          <div className="jerico-header">
-            <div className="jerico-avatar-badge">J</div>
-            <h3>Ask Jerico</h3>
+        <div className="tera-panel">
+          <div className="tera-header">
+            <Image src="/assets/tera-avatar.webp" alt="" width={36} height={36} className="tera-avatar-badge" />
+            <h3>Ask Tera</h3>
             <button 
-              className="jerico-close-button"
+              className="tera-close-button"
               onClick={toggleChat}
               aria-label="Close chat"
             >
@@ -93,21 +94,21 @@ export default function AskJericoWidget() {
             </button>
           </div>
           
-          <div className="jerico-messages">
+          <div className="tera-messages">
             {messages.map((message) => (
               <div 
                 key={message.id} 
-                className={`jerico-message ${message.type === 'user' ? 'jerico-message-user' : 'jerico-message-assistant'}`}
+                className={`tera-message ${message.type === 'user' ? 'tera-message-user' : 'tera-message-assistant'}`}
               >
                 {message.text}
               </div>
             ))}
           </div>
           
-          <form className="jerico-input-row" onSubmit={handleSend}>
+          <form className="tera-input-row" onSubmit={handleSend}>
             <input
               type="text"
-              className="jerico-input"
+              className="tera-input"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               placeholder="Type your message..."
@@ -115,7 +116,7 @@ export default function AskJericoWidget() {
             />
             <button 
               type="submit" 
-              className="jerico-send-button"
+              className="tera-send-button"
               aria-label="Send message"
             >
               Send

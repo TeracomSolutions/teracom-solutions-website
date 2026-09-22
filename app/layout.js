@@ -4,7 +4,7 @@ import './globals.css';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { CartProvider } from '@/lib/cart-context';
-import AskJericoWidget from '@/components/AskJericoWidget';
+import AskTeraWidget from '@/components/AskTeraWidget';
 import StructuredData from '@/components/StructuredData';
 import { SITE_ORIGIN } from '@/lib/seo';
 
@@ -84,10 +84,10 @@ export default function MarketingRootLayout({ children }) {
           <Header />
           {children}
           <Footer />
-          {/* Hidden until the Jerico backend is connected -- the stub route only ever
+          {/* Ask Tera chat: hidden until its backend is connected -- the stub route only ever
               replies "not connected yet", which reads as broken on every page.
-              Set NEXT_PUBLIC_ASK_JERICO_ENABLED=true in Vercel to bring it back. */}
-          {process.env.NEXT_PUBLIC_ASK_JERICO_ENABLED === 'true' && <AskJericoWidget />}
+              Set NEXT_PUBLIC_ASK_TERA_ENABLED=true in Vercel to switch it on. */}
+          {process.env.NEXT_PUBLIC_ASK_TERA_ENABLED === 'true' && <AskTeraWidget />}
         </CartProvider>
       </body>
     </html>
