@@ -33,20 +33,31 @@ export default async function IndustryNews() {
           <ResourcesSubNav />
           
           {newsItems.length > 0 ? (
-            <ul className="tick-list tick-list-links">
+            <div className="news-grid">
               {newsItems.map((item, index) => (
-                <li key={index}>
-                  <a href={item.link} target="_blank" rel="noopener noreferrer">{item.title}</a>
-                  <span className="form-note">
-                    {item.date ? new Date(item.date).toLocaleDateString('en-AU', { 
-                      day: 'numeric', 
-                      month: 'short', 
-                      year: 'numeric' 
-                    }) : 'Date unavailable'}
+                <a 
+                  className={index === 0 ? 'news-card news-card-featured' : 'news-card'} 
+                  href={item.link} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  key={item.link}
+                >
+                  <span className="news-meta">
+                    {item.date 
+                      ? new Date(item.date).toLocaleDateString('en-AU', { 
+                          day: 'numeric', 
+                          month: 'short', 
+                          year: 'numeric' 
+                        }) + ' · SEN.news'
+                      : 'SEN.news'
+                    }
                   </span>
-                </li>
+                  <h3>{item.title}</h3>
+                  {item.excerpt ? <p>{item.excerpt}</p> : null}
+                  <span className="news-read">Read on SEN.news →</span>
+                </a>
               ))}
-            </ul>
+            </div>
           ) : (
             <div className="form-note-banner" role="status">
               Industry headlines are temporarily unavailable. Please check back soon.
