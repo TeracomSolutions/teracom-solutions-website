@@ -1583,3 +1583,30 @@ a {
   .store-art-ring, .store-art-orbit, .store-art-badge > span { animation:none; }
 }
 
+/* Industry news: one colour per industry, industry tabs, per-industry rows. */
+[data-topic="security"] { --topic:#ff4b4b; }
+[data-topic="electrical"] { --topic:#f5c518; }
+[data-topic="plumbing"] { --topic:#38bdf8; }
+[data-topic="construction"] { --topic:#fb923c; }
+[data-topic="av"] { --topic:#a78bfa; }
+[data-topic="it"] { --topic:#22d3ee; }
+[data-topic="ai"] { --topic:#34d399; }
+[data-topic="marketing"] { --topic:#f472b6; }
+[data-topic="smart-home"] { --topic:#a3e635; }
+.news-tabs { display:flex; flex-wrap:wrap; gap:8px; margin:0 0 26px; }
+.news-tabs a {
+  display:inline-flex; align-items:center; gap:8px; padding:8px 15px; border:1px solid var(--line); border-radius:999px;
+  font-size:14px; font-weight:700; color:#d6d6d6; text-decoration:none; background:rgba(255,255,255,.035);
+  transition:border-color .2s ease, background .2s ease, color .2s ease;
+}
+.news-tabs a[data-topic]::before { content:""; width:8px; height:8px; border-radius:50%; background:var(--topic); box-shadow:0 0 10px var(--topic); }
+.news-tabs a:hover, .news-tabs a:focus-visible { border-color:rgba(255,255,255,.28); color:#fff; }
+.news-tabs a[aria-current="page"] { border-color:rgba(255,23,23,.6); background:rgba(255,23,23,.14); color:#fff; }
+.news-industry { margin-top:56px; }
+.news-industry-head { display:flex; align-items:baseline; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+.news-industry-head .news-section-title { display:flex; align-items:center; gap:12px; }
+.news-industry-head small { font-size:13px; font-weight:600; letter-spacing:0; text-transform:none; color:var(--soft); }
+.news-industry-dot { width:12px; height:12px; border-radius:50%; background:var(--topic); box-shadow:0 0 14px var(--topic); flex:none; }
+.news-industry-more { font-size:14px; font-weight:800; color:#fff; text-decoration:none; }
+.news-industry-more:hover { color:#ff4b4b; }
+
