@@ -7,7 +7,7 @@ import { ACCESS_TOKEN_COOKIE } from '@/lib/adminSession';
 import AdminCatalogManager from '@/components/AdminCatalogManager';
 
 export default async function AdminCatalogPage() {
-  const token = cookies().get(ACCESS_TOKEN_COOKIE)?.value;
+  const token = (await cookies()).get(ACCESS_TOKEN_COOKIE)?.value;
 
   if (!token) {
     redirect('/admin/login');

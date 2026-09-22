@@ -13,7 +13,8 @@ export function generateStaticParams() {
   return categories.map((c) => ({ category: c.slug }));
 }
 
-export function generateMetadata({ params }) {
+export async function generateMetadata(props) {
+  const params = await props.params;
   const category = findCategory(params.category);
   if (!category) return {};
   // Canonical matters most here: a category listing is the natural target for
@@ -26,11 +27,12 @@ export function generateMetadata({ params }) {
   });
 }
 
-export default function CategoryPage({ params }) {
+export default async function CategoryPage(props) {
+  const params = await props.params;
   const category = findCategory(params.category);
   if (!category) notFound();
 
-  const token = cookies().get(CUSTOMER_ACCESS_TOKEN_COOKIE)?.value;
+  const token = (await cookies()).get(CUSTOMER_ACCESS_TOKEN_COOKIE)?.value;
   
   let products = category.isDynamic
     ? getNewArrivals()

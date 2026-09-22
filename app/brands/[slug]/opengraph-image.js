@@ -5,7 +5,8 @@ export const alt = 'Teracom Solutions -- electronic security, AI and technology'
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
-export default function OGImage({ params }) {
+export default async function OGImage(props) {
+  const params = await props.params;
   const brand = findBrand(params.slug);
   
   return new ImageResponse(

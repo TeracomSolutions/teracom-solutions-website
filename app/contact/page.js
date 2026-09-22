@@ -17,7 +17,8 @@ const NEXT_STEPS = [
   { icon: Signpost, title: 'We recommend the right next step', text: 'That might be a site visit, a design review, a quote or a Teracom AI demo -- whatever moves your project forward.' },
 ];
 
-export default function ContactPage({ searchParams }) {
+export default async function ContactPage(props) {
+  const searchParams = await props.searchParams;
   const leadStatus = searchParams?.lead;
   const preselectedInterest = typeof searchParams?.interest === 'string' ? searchParams.interest : '';
 

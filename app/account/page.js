@@ -6,7 +6,7 @@ import { getCurrentCustomer } from '@/lib/api/customerAuth';
 import { ApiError } from '@/lib/api/client';
 
 export default async function CustomerAccountPage() {
-  const token = cookies().get(CUSTOMER_ACCESS_TOKEN_COOKIE)?.value;
+  const token = (await cookies()).get(CUSTOMER_ACCESS_TOKEN_COOKIE)?.value;
   
   if (!token) {
     redirect('/account/login');

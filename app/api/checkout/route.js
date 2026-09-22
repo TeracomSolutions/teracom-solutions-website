@@ -42,7 +42,7 @@ export async function POST(req) {
   }
 
   // Server-side login check - must be done after rate limit but before zod parse
-  const token = cookies().get(CUSTOMER_ACCESS_TOKEN_COOKIE)?.value;
+  const token = (await cookies()).get(CUSTOMER_ACCESS_TOKEN_COOKIE)?.value;
   if (!token) {
     return NextResponse.json({ error: 'Sign in to complete checkout.' }, { status: 401 });
   }

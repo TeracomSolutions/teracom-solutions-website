@@ -23,7 +23,7 @@ const FeedRow = z.object({
 const ImportRequest = z.array(FeedRow);
 
 export async function POST(req) {
-  const token = cookies().get(ACCESS_TOKEN_COOKIE)?.value;
+  const token = (await cookies()).get(ACCESS_TOKEN_COOKIE)?.value;
 
   if (!token) {
     return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
