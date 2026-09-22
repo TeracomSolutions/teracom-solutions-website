@@ -51,8 +51,11 @@ async function checkFeeds() {
     NEWS_SOURCES.map(async (s, i) => {
       const items = lists[i];
       const newest = items.map((it) => it.date).filter(Boolean).sort().pop() || null;
-      const entry = { id: s.id, industry: s.label, source: s.source, feed: s.feed, ok: items.length > 0, items: items.length, newest };
-      return items.length ? entry : { ...entry, probe: await probeFeed(s.feed) };
+      const sourceUsed = items[0]?.source || null;
+      const usingFallback = Boolean(sourceUsed && sourceUsed !== s.source);
+      const entry = { id: s.id, industry: s.label, source: s.source, feed: s.feed, ok: items.length > 0, items: items.length, newest, sourceUsed, usingFallback };
+      // Probe the primary whenever it isn't the one serving stories.
+      return items.length && !usingFallback ? entry : { ...entry, probe: await probeFeed(s.feed) };
     })
   );
 }

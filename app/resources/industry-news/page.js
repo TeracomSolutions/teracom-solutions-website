@@ -20,7 +20,7 @@ import {
 } from 'lucide-react';
 import ResourceHero from '@/components/ResourceHero';
 import ResourcesSubNav from '@/components/ResourcesSubNav';
-import { NEWS_SOURCES, categoriseHeadline, findNewsSource, getAllIndustryNews } from '@/lib/industryNews';
+import { NEWS_PUBLISHERS, NEWS_SOURCES, categoriseHeadline, findNewsSource, getAllIndustryNews } from '@/lib/industryNews';
 import { pageMetadata } from '@/lib/seo';
 
 // Feeds are re-fetched at most once an hour (see lib/industryNews.js).
@@ -236,7 +236,7 @@ export default async function IndustryNews(props) {
                           <h2 id={`news-${s.id}`} className="news-section-title">
                             <span className="news-industry-dot" data-topic={s.id} />
                             {s.label}
-                            <small>{s.source}</small>
+                            <small>{bySource[s.id][0]?.source || s.source}</small>
                           </h2>
                           <Link href={`/resources/industry-news?industry=${s.id}`} className="news-industry-more">
                             All {s.label.toLowerCase()} news &rarr;
@@ -256,10 +256,10 @@ export default async function IndustryNews(props) {
 
           <p className="form-note news-attribution">
             Headlines courtesy of{' '}
-            {NEWS_SOURCES.map((s, i) => (
-              <span key={s.id}>
-                <a href={s.site} target="_blank" rel="noopener noreferrer">{s.source}</a>
-                {i < NEWS_SOURCES.length - 2 ? ', ' : i === NEWS_SOURCES.length - 2 ? ' and ' : ''}
+            {NEWS_PUBLISHERS.map((p, i) => (
+              <span key={p.source}>
+                <a href={p.site} target="_blank" rel="noopener noreferrer">{p.source}</a>
+                {i < NEWS_PUBLISHERS.length - 2 ? ', ' : i === NEWS_PUBLISHERS.length - 2 ? ' and ' : ''}
               </span>
             ))}
             , refreshed hourly. Every article opens on the publisher&apos;s own site.
