@@ -3,6 +3,9 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { safeNextPath } from '@/lib/safeNext';
+import Link from 'next/link';
+import AuthShell from '@/components/AuthShell';
+import { BadgePercent, LockKeyhole, ReceiptText, ShoppingCart, Zap } from 'lucide-react';
 
 export default function CustomerLoginPage() {
   const router = useRouter();
@@ -39,13 +42,20 @@ export default function CustomerLoginPage() {
   }
 
   return (
-    <main id="main-content">
-      <section className="section section-spacious">
-        <div className="container" style={{ maxWidth: '420px' }}>
-          <h1>Sign in</h1>
-          <p className="lead">Access your account to view pricing and use the store.</p>
-
-          <form onSubmit={handleSubmit} style={{ marginTop: '24px' }}>
+    <AuthShell
+      eyebrow="Account"
+      title="Sign in."
+      lead="Sign in for member pricing and to check out in the Teracom Store."
+      icon={LockKeyhole}
+      badges={[BadgePercent, ShoppingCart, ReceiptText]}
+      benefits={[
+        { icon: BadgePercent, text: 'Member pricing on store items' },
+        { icon: Zap, text: 'Faster checkout -- your details are already there' },
+        { icon: ReceiptText, text: 'Order confirmations and invoices by email' },
+      ]}
+    >
+      <h2>Sign in</h2>
+      <form className="auth-form" onSubmit={handleSubmit}>
             <div style={{ marginBottom: '16px' }}>
               <label htmlFor="email">Email</label>
               <input
@@ -83,11 +93,9 @@ export default function CustomerLoginPage() {
             </button>
           </form>
 
-          <p style={{ marginTop: '24px', textAlign: 'center' }}>
-            Don&apos;t have an account? <a href="/account/signup">Sign up</a>
-          </p>
-        </div>
-      </section>
-    </main>
+      <p className="auth-aside">
+        Don&apos;t have an account? <Link href="/account/signup">Create a free account</Link>
+      </p>
+    </AuthShell>
   );
 }

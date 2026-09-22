@@ -3,6 +3,9 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { safeNextPath } from '@/lib/safeNext';
+import Link from 'next/link';
+import AuthShell from '@/components/AuthShell';
+import { BadgePercent, ReceiptText, ShieldCheck, ShoppingCart, UserPlus } from 'lucide-react';
 
 export default function CustomerSignupPage() {
   const router = useRouter();
@@ -80,13 +83,20 @@ export default function CustomerSignupPage() {
   }
 
   return (
-    <main id="main-content">
-      <section className="section section-spacious">
-        <div className="container" style={{ maxWidth: '420px' }}>
-          <h1>Create your account</h1>
-          <p className="lead">Sign up to view pricing and use the store.</p>
-
-          <form onSubmit={handleSubmit} style={{ marginTop: '24px' }}>
+    <AuthShell
+      eyebrow="Account"
+      title="Create a free account."
+      lead="It takes a couple of minutes, and unlocks member pricing across the store."
+      icon={UserPlus}
+      badges={[BadgePercent, ShoppingCart, ShieldCheck]}
+      benefits={[
+        { icon: BadgePercent, text: 'Member pricing on store items' },
+        { icon: ShoppingCart, text: 'Check out without re-entering your details' },
+        { icon: ReceiptText, text: 'Order confirmations and invoices by email' },
+      ]}
+    >
+      <h2>Create account</h2>
+      <form className="auth-form" onSubmit={handleSubmit}>
             <div style={{ marginBottom: '16px' }}>
               <label htmlFor="email">Email</label>
               <input
@@ -227,11 +237,9 @@ export default function CustomerSignupPage() {
             </button>
           </form>
 
-          <p style={{ marginTop: '24px', textAlign: 'center' }}>
-            Already have an account? <a href="/account/login">Sign in</a>
-          </p>
-        </div>
-      </section>
-    </main>
+      <p className="auth-aside">
+        Already have an account? <Link href="/account/login">Sign in</Link>
+      </p>
+    </AuthShell>
   );
 }
