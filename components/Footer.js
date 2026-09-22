@@ -105,9 +105,14 @@ export default function Footer() {
         <div className="footer-links">
           <Link href="/">Home</Link>
           <Link href="/about">About</Link>
+          <Link href="/services">Services</Link>
           <Link href="/securityos-ai">Teracom AI</Link>
+          <Link href="/brands">Brands</Link>
           <Link href="/store">Teracom Store</Link>
           <Link href="/resources">Resources</Link>
+          <Link href="/resources/industry-news">Industry News</Link>
+          <Link href="/tools">Free Tools</Link>
+          <Link href="/contact">Contact</Link>
           <Link href="/warranty">Warranty & Returns</Link>
           <Link href="/terms">Terms & Conditions</Link>
         </div>

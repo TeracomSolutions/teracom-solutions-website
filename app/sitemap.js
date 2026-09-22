@@ -2,6 +2,8 @@ import { brands } from '@/lib/brands';
 import { categories } from '@/lib/categories';
 import { aiCapabilities } from '@/lib/aiCapabilities';
 import { resourcesSections } from '@/lib/resourcesSections';
+import { services } from '@/lib/services';
+import { tools } from '@/lib/tools';
 import { absoluteUrl } from '@/lib/seo';
 
 // Next's native App Router sitemap convention (no next-sitemap dependency --
@@ -33,6 +35,9 @@ const staticRoutes = [
   { path: '/securityos-ai', changeFrequency: 'weekly', priority: 0.9 },
   { path: '/store', changeFrequency: 'weekly', priority: 0.9 },
   { path: '/brands', changeFrequency: 'monthly', priority: 0.8 },
+  { path: '/services', changeFrequency: 'monthly', priority: 0.9 },
+  { path: '/contact', changeFrequency: 'yearly', priority: 0.7 },
+  { path: '/tools', changeFrequency: 'monthly', priority: 0.6 },
   { path: '/about', changeFrequency: 'monthly', priority: 0.7 },
   { path: '/resources', changeFrequency: 'monthly', priority: 0.7 },
   { path: '/warranty', changeFrequency: 'yearly', priority: 0.4 },
@@ -64,6 +69,19 @@ export default function sitemap() {
       path: `/brands/${brand.slug}`,
       changeFrequency: 'monthly',
       priority: 0.7,
+    })),
+
+    // Service pages -- the main target for "<service> installation <city>" searches.
+    ...services.map((service) => ({
+      path: `/services/${service.slug}`,
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    })),
+
+    ...tools.map((tool) => ({
+      path: `/tools/${tool.slug}`,
+      changeFrequency: 'yearly',
+      priority: 0.6,
     })),
 
     ...aiCapabilities.map((capability) => ({
