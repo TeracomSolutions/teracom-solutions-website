@@ -1,0 +1,72 @@
+<svg viewBox="0 0 900 1300" width="900" height="1300" xmlns="http://www.w3.org/2000/svg">
+  <rect width="900" height="1300" fill="#050505"/>
+  <g stroke="rgba(255,255,255,.045)" stroke-width="1">
+    <path d="M0,140 H900 M0,280 H900 M0,420 H900 M0,560 H900 M0,700 H900 M0,840 H900 M0,980 H900 M0,1120 H900"/>
+    <path d="M120,0 V1300 M300,0 V1300 M480,0 V1300 M660,0 V1300 M780,0 V1300"/>
+  </g>
+
+  <!-- top illustration area -->
+  <g transform="translate(0,130)" font-family="Arial, sans-serif">
+    <!-- On-site VMS / NVR box -->
+    <g transform="translate(150,200)">
+      <rect width="180" height="120" rx="10" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
+      <text x="90" y="56" text-anchor="middle" fill="rgba(255,255,255,.85)" font-size="15">On-site VMS / NVR</text>
+      <text x="90" y="78" text-anchor="middle" fill="rgba(255,255,255,.4)" font-size="13">Recent footage</text>
+    </g>
+
+    <!-- Connector to Bridge software -->
+    <g stroke="rgba(0,206,62,.35)" stroke-width="2" fill="none" stroke-dasharray="2 8" opacity="0.7">
+      <path d="M330,260 L400,260"/>
+    </g>
+
+    <!-- Bridge software box -->
+    <g transform="translate(400,200)">
+      <rect width="150" height="120" rx="10" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
+      <text x="75" y="66" text-anchor="middle" fill="rgba(255,255,255,.85)" font-size="15">Bridge software</text>
+    </g>
+
+    <!-- Connector to Wasabi Cloud -->
+    <g stroke="rgba(0,206,62,.35)" stroke-width="2" fill="none" stroke-dasharray="2 8" opacity="0.7">
+      <path d="M550,260 L630,260"/>
+    </g>
+
+    <!-- Wasabi Surveillance Cloud box -->
+    <g transform="translate(630,170)">
+      <rect width="190" height="180" rx="10" fill="rgba(0,206,62,.1)" stroke="#00ce3e" stroke-width="2"/>
+      <text x="95" y="76" text-anchor="middle" fill="rgba(255,255,255,.85)" font-size="16" font-weight="700">Wasabi</text>
+      <text x="95" y="98" text-anchor="middle" fill="rgba(255,255,255,.85)" font-size="15">Surveillance Cloud</text>
+      <text x="95" y="124" text-anchor="middle" fill="rgba(255,255,255,.4)" font-size="13">Older footage</text>
+    </g>
+
+    <!-- Small tags below the flow -->
+    <g transform="translate(265,400)">
+      <rect width="140" height="40" rx="20" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
+      <text x="70" y="25" text-anchor="middle" fill="rgba(255,255,255,.85)" font-size="13">Immutable buckets</text>
+    </g>
+    <g transform="translate(415,400)">
+      <rect width="140" height="40" rx="20" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.18)" stroke-width="2"/>
+      <text x="70" y="25" text-anchor="middle" fill="rgba(255,255,255,.85)" font-size="13">No egress fees</text>
+    </g>
+  </g>
+
+  <!-- Caption line -->
+  <text x="450" y="680" text-anchor="middle" fill="rgba(255,255,255,.4)" font-family="Arial, sans-serif" font-size="13" letter-spacing="1">HYBRID RETENTION -- RECENT ON SITE, OLDER IN THE CLOUD</text>
+
+  <!-- lower stats panel -->
+  <g transform="translate(150,730)" font-family="Arial, sans-serif">
+    <rect width="600" height="320" rx="20" fill="rgba(255,255,255,.045)" stroke="rgba(255,255,255,.16)" stroke-width="2"/>
+    <text x="40" y="58" fill="rgba(255,255,255,.85)" font-size="24" font-weight="800">Surveillance storage in the cloud.</text>
+    <g stroke="rgba(255,255,255,.14)" stroke-width="1"><path d="M40,88 H560"/></g>
+    <g fill="rgba(255,255,255,.85)" font-size="26" font-weight="900">
+      <text x="40" y="150">2017</text>
+      <text x="290" y="150">0</text>
+    </g>
+    <g fill="rgba(255,255,255,.4)" font-size="13" letter-spacing=".04em">
+      <text x="40" y="174">FOUNDED IN BOSTON</text>
+      <text x="290" y="174">EGRESS OR API FEES</text>
+    </g>
+    <g stroke="rgba(255,255,255,.14)" stroke-width="1"><path d="M40,210 H560"/></g>
+    <text x="40" y="244" fill="rgba(255,255,255,.5)" font-size="14">S3-compatible hot cloud storage</text>
+    <text x="40" y="274" fill="rgba(255,255,255,.5)" font-size="14">Australian storage region hosted in Sydney</text>
+  </g>
+</svg>
