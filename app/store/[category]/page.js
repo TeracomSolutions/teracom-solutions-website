@@ -6,6 +6,7 @@ import { getProductsByCategory, getNewArrivals } from '@/lib/products';
 import CategoryProductGrid from '@/components/CategoryProductGrid';
 import { CUSTOMER_ACCESS_TOKEN_COOKIE } from '@/lib/customerSession';
 import Breadcrumbs from '@/components/Breadcrumbs';
+import StoreCategoryArt from '@/components/StoreCategoryArt';
 import { pageMetadata } from '@/lib/seo';
 import { getCategoryContent } from '@/lib/categoryContent';
 
@@ -42,7 +43,7 @@ export default async function CategoryPage(props) {
   
   const content = getCategoryContent(category.slug);
 
-  return <main id="main-content"><section className="hero hero-product hero-shallow"><div className="container hero-layout"><div className="hero-copy"><Breadcrumbs items={[{ name: 'Teracom Store', href: '/store' }]} current={category.title} /><h1>{category.title}</h1><p className="lead">{category.description}</p></div></div></section>{content && (<>
+  return <main id="main-content"><section className="hero hero-product hero-shallow tool-hero"><div className="container hero-layout tool-hero-layout"><div className="hero-copy"><Breadcrumbs items={[{ name: 'Teracom Store', href: '/store' }]} current={category.title} /><span className="eyebrow">Teracom Store</span><h1>{category.title}</h1><p className="lead">{category.description}</p></div><StoreCategoryArt slug={category.slug} /></div></section>{content && (<>
     <section className="section section-spacious">
       <div className="container">
         <div className="copy-block">
