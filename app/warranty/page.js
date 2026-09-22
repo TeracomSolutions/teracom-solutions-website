@@ -1,41 +1,138 @@
+import Image from 'next/image';
+import Link from 'next/link';
+import { ArrowRight, ArrowUpRight, MessageSquareText, PackageCheck, PackageOpen, RotateCcw, ShieldCheck, Truck } from 'lucide-react';
+import Breadcrumbs from '@/components/Breadcrumbs';
+import ProcessSteps from '@/components/ProcessSteps';
+import { warrantyEntries } from '@/lib/warranties';
 import { pageMetadata } from '@/lib/seo';
+
 export const metadata = pageMetadata({
   title: 'Warranty & Returns | Teracom Solutions',
-  description: 'Teracom Solutions warranty and product returns information, including manufacturer warranty links for the brands we supply.',
+  description:
+    'How to return a product to Teracom Solutions, and links to the manufacturer warranty terms for every brand we supply.',
   path: '/warranty',
 });
 
-const manufacturerWarranties = [
+const RETURN_STEPS = [
   {
-    brand: 'Everki',
-    text: 'EVERKI products carry a lifetime warranty. We warrant, to the original owner, our products against defects in materials or workmanship; should any such defect arise, we will repair or replace the product at our discretion. This warranty does not cover incidental or consequential damage, and does not apply to normal wear and tear, accidental damage, abuse, misuse, alterations or cosmetic damage. To start a warranty claim, contact us -- you will be responsible for return shipping to our Melbourne facility.',
-    url: 'https://www.everki.com/au_en/warranty',
+    icon: MessageSquareText,
+    title: 'Contact us first',
+    text: 'Tell us the product, where and when you bought it, and what is wrong with it.',
   },
   {
-    brand: 'Seagate',
-    text: 'Applies to Seagate, Maxtor and LaCie branded products (other than Business Storage/NAS products, which have their own policy).',
-    url: 'https://www.seagate.com/au/en/support/warranty-and-replacements/limited-consumer-warranty/',
+    icon: PackageOpen,
+    title: 'Pack it carefully',
+    text: 'Teracom Solutions is not responsible for damage or loss caused by shipping -- damage from inappropriate packaging will result in additional repair charges.',
   },
   {
-    brand: 'Ubiquiti',
-    text: 'Ubiquiti offers product warranties to end users only on products purchased from an authorised Ubiquiti distributor or reseller, accompanied by a Return Materials Authorisation (RMA). Products from unauthorised sellers do not carry a Ubiquiti warranty.',
-    url: 'https://www.ui.com/support/warranty/',
-  },
-  {
-    brand: 'Synology',
-    text: 'Current support status and warranty terms for all Synology products and accessories.',
-    url: 'https://www.synology.com/en-au/company/legal/warranty',
-  },
-  {
-    brand: 'Power Shield',
-    text: 'Power Shield encourages customers to register their products -- failure to do so does not diminish warranty rights.',
-    url: 'https://powershield.com.au/support-menu/warranty-registration/',
-  },
-  {
-    brand: 'BenQ',
-    text: 'Warranty information for BenQ projectors, monitors and interactive flat panels.',
-    url: 'https://www.benq.com/en-au/support/registration-warranty/warranty-information.html',
+    icon: Truck,
+    title: 'Send it back',
+    text: 'We will confirm where to send it and let you know the next steps.',
   },
 ];
 
-export default function Warranty(){return <main id="main-content"><section className="hero hero-product"><div className="container hero-layout"><div className="hero-copy"><span className="eyebrow">Warranty & Returns</span><h1>Warranty & Product Returns</h1><p className="lead">Please take care to package your return carefully. Teracom Solutions is not responsible for damage or a lost product caused by shipping -- damage related to inappropriate packaging will result in additional charges for repair.</p></div></div></section><section className="section section-spacious"><div className="container"><div className="section-heading"><span className="eyebrow">Manufacturer warranties</span><h2>Warranty terms by brand.</h2><p>Many of the products we supply carry their own manufacturer warranty, separate to our own returns process. Current terms for the brands we supply most often:</p></div><div className="feature-grid">{manufacturerWarranties.map(w=><article key={w.brand}><h3>{w.brand}</h3><p>{w.text}</p><a className="btn btn-secondary" href={w.url} target="_blank" rel="noopener noreferrer" style={{marginTop:'12px'}}>View {w.brand} warranty ↗</a></article>)}</div></div></section></main>}
+export default function Warranty() {
+  return (
+    <main id="main-content">
+      <section className="hero hero-product hero-shallow tool-hero">
+        <div className="container hero-layout tool-hero-layout">
+          <div className="hero-copy">
+            <Breadcrumbs items={[]} current="Warranty & Returns" />
+            <span className="eyebrow">Warranty & Returns</span>
+            <h1>Warranty & Product Returns</h1>
+            <p className="lead">
+              How to send a product back to us, and the manufacturer warranty terms for every brand we supply.
+            </p>
+          </div>
+          <div className="tool-hero-art warranty-emblem" aria-hidden="true">
+            <span className="tool-hero-ring">
+              <PackageCheck size={96} strokeWidth={1.3} aria-hidden="true" focusable="false" />
+            </span>
+            <span className="warranty-sat warranty-sat-1"><ShieldCheck size={22} strokeWidth={1.8} /></span>
+            <span className="warranty-sat warranty-sat-2"><RotateCcw size={22} strokeWidth={1.8} /></span>
+            <span className="warranty-sat warranty-sat-3"><Truck size={22} strokeWidth={1.8} /></span>
+          </div>
+        </div>
+      </section>
+
+      <section className="section section-spacious">
+        <div className="container">
+          <div className="section-heading">
+            <span className="eyebrow">Returns</span>
+            <h2>Returning a product.</h2>
+            <p>Talk to us before sending anything back, so we can get it to the right place quickly.</p>
+          </div>
+          <ProcessSteps steps={RETURN_STEPS} />
+          <p className="warranty-cta">
+            <Link className="btn btn-primary" href="/contact">
+              Start a return <ArrowRight size={18} strokeWidth={2} aria-hidden="true" />
+            </Link>
+          </p>
+        </div>
+      </section>
+
+      <section className="section section-spacious alt" id="brands">
+        <div className="container">
+          <div className="section-heading">
+            <span className="eyebrow">Manufacturer warranties</span>
+            <h2>Warranties by brand.</h2>
+            <p>
+              Most products we supply carry the manufacturer&apos;s own warranty, separate to our returns process.
+              Select a brand to read its current warranty terms.
+            </p>
+          </div>
+          <div className="feature-grid brands-grid warranty-grid">
+            {warrantyEntries.map((w) => {
+              const card = (
+                <article>
+                  <div className="brand-card-heading">
+                    <h3>{w.name}</h3>
+                    {w.logoFile && (
+                      <Image
+                        className="brand-card-logo"
+                        src={`/assets/logos/${w.logoFile}`}
+                        alt={`${w.name} logo`}
+                        width={110}
+                        height={30}
+                      />
+                    )}
+                  </div>
+                  <p>{w.note}</p>
+                  <span className="warranty-link">
+                    {w.external ? 'View warranty' : 'Contact us'}{' '}
+                    {w.external ? (
+                      <ArrowUpRight size={16} strokeWidth={2} aria-hidden="true" />
+                    ) : (
+                      <ArrowRight size={16} strokeWidth={2} aria-hidden="true" />
+                    )}
+                  </span>
+                </article>
+              );
+              const style = w.accent ? { '--card-accent': w.accent } : undefined;
+              return w.external ? (
+                <a
+                  key={w.slug}
+                  href={w.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={style}
+                  aria-label={`${w.name} warranty terms (opens the manufacturer's website)`}
+                >
+                  {card}
+                </a>
+              ) : (
+                <Link key={w.slug} href={w.url} style={style} aria-label={`${w.name} warranty -- contact Teracom`}>
+                  {card}
+                </Link>
+              );
+            })}
+          </div>
+          <p className="form-note warranty-footnote">
+            Manufacturer warranty terms are set by each manufacturer and can change -- the linked page is always the
+            current version. Your rights under the Australian Consumer Law are not affected.
+          </p>
+        </div>
+      </section>
+    </main>
+  );
+}
