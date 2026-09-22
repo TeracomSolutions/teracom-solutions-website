@@ -72,8 +72,7 @@ export default async function ContactPage(props) {
               {BUSINESS.streetAddress}, {BUSINESS.addressLocality}<br />
               {BUSINESS.addressRegion} {BUSINESS.postalCode}, Australia<br />
               <a href={`tel:${BUSINESS.telephone}`}>{BUSINESS.telephoneDisplay}</a><br />
-              Sales: <a href={`mailto:${BUSINESS.salesEmail}`}>{BUSINESS.salesEmail}</a><br />
-              Accounts: <a href={`mailto:${BUSINESS.accountsEmail}`}>{BUSINESS.accountsEmail}</a>
+              Sales: <a href={`mailto:${BUSINESS.salesEmail}`}>{BUSINESS.salesEmail}</a>
             </address>
 
             <p>Weekdays 9am &ndash; 4:30pm, weekends closed</p>

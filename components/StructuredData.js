@@ -65,13 +65,6 @@ export default function StructuredData() {
           areaServed: 'AU',
           availableLanguage: 'en-AU',
         },
-        {
-          '@type': 'ContactPoint',
-          contactType: 'billing support',
-          email: BUSINESS.accountsEmail,
-          areaServed: 'AU',
-          availableLanguage: 'en-AU',
-        },
       ],
     },
     {
