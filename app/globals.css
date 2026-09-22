@@ -957,3 +957,23 @@ a {
 .jerico-send-button:hover {
   background: var(--red2);
 }
+
+/* Free tools (/tools): calculator inputs reuse the contact form's field look;
+   PoE device rows sit in a responsive grid; results get their own panel. */
+.calculator-section { padding-top: 48px; }
+.calculator { display: grid; gap: 13px; max-width: 760px; }
+.calculator input, .calculator select {
+  width: 100%; background: #0b0b0b; border: 1px solid var(--line); border-radius: 18px;
+  padding: 14px 18px; color: #fff; font: inherit;
+}
+.calculator h2 { margin: 18px 0 4px; }
+.calculator-row {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 13px; align-items: end;
+  padding: 18px; border: 1px solid var(--line); border-radius: 22px;
+}
+.calculator-results {
+  margin-top: 18px; padding: 24px; border: 1px solid var(--line); border-radius: 22px;
+  background: rgba(255, 255, 255, .03);
+}
+.calculator-results p { margin: 0 0 8px; }
+.calculator-results strong { color: #fff; font-size: 1.2em; }
