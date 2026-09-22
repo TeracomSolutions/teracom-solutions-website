@@ -203,7 +203,9 @@ export default async function IndustryNews(props) {
 
           <nav className="news-tabs" aria-label="Industries">
             <Link href="/resources/industry-news" aria-current={selected ? undefined : 'page'}>All industries</Link>
-            {NEWS_SOURCES.map((s) => (
+            {/* Industries whose feed is currently unreachable are left out of the
+                tabs until it comes back (a direct link still explains why). */}
+            {NEWS_SOURCES.filter((s) => bySource[s.id].length > 0 || selected?.id === s.id).map((s) => (
               <Link
                 key={s.id}
                 href={`/resources/industry-news?industry=${s.id}`}
