@@ -65,7 +65,7 @@ export default function SecurityOSAI() {
               </Link>
             </div>
           </div>
-          <div className="hero-image">
+          <div className="hero-image hero-blend">
             <Image
               src="/assets/teracom-ai-ask-tera.webp"
               alt="Ask Tera -- the Teracom AI mascot at a laptop with options to find a product, get technical support, create a scope, get a quote or tender assistance"
