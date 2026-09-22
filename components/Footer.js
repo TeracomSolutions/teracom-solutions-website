@@ -102,6 +102,15 @@ export default function Footer() {
             ))}
           </div>
         </div>
+        <div className="footer-mascot" aria-hidden="true">
+          <Image
+            src="/assets/teracom-mascot-footer.webp"
+            alt=""
+            width={640}
+            height={675}
+            sizes="(max-width: 640px) 170px, 250px"
+          />
+        </div>
         <div className="footer-links">
           <Link href="/">Home</Link>
           <Link href="/about">About</Link>

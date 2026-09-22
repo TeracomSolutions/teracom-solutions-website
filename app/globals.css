@@ -593,7 +593,7 @@ a {
   border-top:1px solid var(--line);padding:70px 0 30px;background:#050505;
 }
 .footer-main {
-  display:grid;grid-template-columns:1fr auto auto;gap:60px;align-items:start;
+  display:grid;grid-template-columns:auto 1fr auto auto;gap:60px;align-items:start;
 }
 .footer-contact {
   font-style:normal;color:var(--muted);font-size:14px;line-height:1.9;
@@ -1370,4 +1370,25 @@ a {
   .feature-grid article, .feature-grid > a > article::before, .feature-grid > a > article::after { transition:none; }
   .feature-grid > a:hover > article { transform:none; }
   .feature-grid > a:hover > article::before { transform:translateX(-110%); }
+}
+
+/* Footer: Tera badge between the brand block and the links, with a soft red
+   glow that lifts on hover. */
+.footer-mascot { justify-self:center; align-self:center; }
+.footer-mascot img {
+  display:block; width:250px; height:auto;
+  filter:drop-shadow(0 0 28px rgba(255,23,23,.28));
+  transition:transform .35s ease, filter .35s ease;
+}
+.footer-mascot img:hover { transform:translateY(-4px) rotate(-2deg); filter:drop-shadow(0 0 42px rgba(255,23,23,.5)); }
+@media (max-width:980px) {
+  .footer-mascot { justify-self:start; }
+  .footer-mascot img { width:200px; }
+}
+@media (max-width:640px) {
+  .footer-mascot img { width:170px; }
+}
+@media (prefers-reduced-motion:reduce) {
+  .footer-mascot img { transition:none; }
+  .footer-mascot img:hover { transform:none; }
 }
