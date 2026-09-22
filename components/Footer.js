@@ -123,7 +123,6 @@ export default function Footer() {
           <Link href="/tools">Free Tools</Link>
           <Link href="/contact">Contact</Link>
           <Link href="/warranty">Warranty & Returns</Link>
-          <Link href="/terms">Terms & Conditions</Link>
         </div>
         <address className="footer-contact">
           1B Yazaki Way, Carrum Downs<br/>
@@ -134,8 +133,12 @@ export default function Footer() {
         </address>
       </div>
       <div className="container footer-bottom">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '18px' }}>
+        <div className="footer-bottom-left">
           <AdminEntryPoint />
+          <nav className="footer-legal" aria-label="Legal">
+            <Link href="/privacy">Privacy Policy</Link>
+            <Link href="/terms">Terms & Conditions</Link>
+          </nav>
           <span>Website built by Teracom AI</span>
         </div>
         <Link href="#top">Back to top ↑</Link>
