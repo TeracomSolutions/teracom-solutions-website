@@ -54,7 +54,7 @@ export default function HeroBanner({ slides }) {
             )}
           </div>
         </div>
-        <div className="hero-image">
+        <div className="hero-image hero-blend">
           {/* The hero image is the homepage's Largest Contentful Paint
               element. Without `priority` Next lazy-loads it, so the browser
               only discovers it after hydration -- a direct, measurable LCP

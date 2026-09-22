@@ -42,7 +42,7 @@ export default function Services() {
               ))}
             </nav>
           </div>
-          <div className="hero-image">
+          <div className="hero-image hero-blend">
             <Image
               src="/assets/teracom-on-site.webp"
               alt="Tera, the Teracom mascot, on site with plans -- plan, install, support, evolve"
@@ -87,7 +87,7 @@ export default function Services() {
 
       <section className="section product-showcase">
         <div className="container showcase-grid">
-          <div className="showcase-image">
+          <div className="showcase-image hero-blend">
             <Image
               src="/assets/teracom-ai-ask-tera.webp"
               alt="Tera, the Teracom AI mascot, at a laptop with the Ask Tera assistant"
