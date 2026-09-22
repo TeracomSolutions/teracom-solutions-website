@@ -1,6 +1,6 @@
-import { BellRing, Cctv, Cpu, KeyRound, Newspaper } from 'lucide-react';
+import { BellRing, Cctv, Cpu, Globe, KeyRound, Newspaper, Radio, Rss } from 'lucide-react';
+import ResourceHero from '@/components/ResourceHero';
 import ResourcesSubNav from '@/components/ResourcesSubNav';
-import Breadcrumbs from '@/components/Breadcrumbs';
 import { getSenNews, categoriseHeadline } from '@/lib/industryNews';
 import { pageMetadata } from '@/lib/seo';
 
@@ -55,15 +55,9 @@ export default async function IndustryNews() {
 
   return (
     <main id="main-content">
-      <section className="hero hero-product hero-shallow">
-        <div className="container hero-layout">
-          <div className="hero-copy">
-            <Breadcrumbs items={[{ name: 'Resources', href: '/resources' }]} current={'Industry News'} />
-            <h1>Industry News</h1>
-            <p className="lead">The latest Australian security industry headlines, updated automatically.</p>
-          </div>
-        </div>
-      </section>
+      <ResourceHero title="Industry News" icon={Newspaper} badges={[Radio, Rss, Globe]}>
+        <p className="lead">The latest Australian security industry headlines, updated automatically.</p>
+      </ResourceHero>
 
       <section className="section news-section">
         <div className="container">

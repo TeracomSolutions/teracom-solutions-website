@@ -1,9 +1,9 @@
+import { CircleHelp, LifeBuoy, MessagesSquare, Search } from 'lucide-react';
+import ResourceHero from '@/components/ResourceHero';
 import { pageMetadata } from '@/lib/seo';
 import Link from 'next/link';
 import ResourcesSubNav from '@/components/ResourcesSubNav';
-import Breadcrumbs from '@/components/Breadcrumbs';
 import HelpCenterAccordion from '@/components/HelpCenterAccordion';
-import CategoryIcon from '@/components/CategoryIcon';
 import JsonLd from '@/components/JsonLd';
 import { helpCenterTopics } from '@/lib/helpCenterTopics';
 import { resourcesIntros } from '@/lib/resourcesIntros';
@@ -44,28 +44,16 @@ export default function HelpCentre() {
   return (
     <main id="main-content">
       <JsonLd schema={FAQ_SCHEMA} />
-      <section className="hero hero-product hero-shallow">
-        <div className="container help-hero-row">
-          <div className="hero-copy">
-            <Breadcrumbs
-              items={[{ name: 'Resources', href: '/resources' }]} 
-              current={'Help Centre & FAQs'}
-            />
-            <h1>Help Centre & FAQs</h1>
-            <p className="lead">
-              We know that finding the right information can be difficult and time consuming. Below are our technical
-              help articles -- if you can&apos;t find what you&apos;re after,{' '}
-              <Link href="/#contact" style={{ color: 'var(--text)', textDecoration: 'underline' }}>
-                contact us
-              </Link>{' '}
-              and we&apos;ll deal with your query promptly.
-            </p>
-          </div>
-          <div className="help-hero-graphic" aria-hidden="true">
-            <CategoryIcon slug="help" />
-          </div>
-        </div>
-      </section>
+      <ResourceHero title="Help Centre & FAQs" icon={LifeBuoy} badges={[CircleHelp, MessagesSquare, Search]}>
+        <p className="lead">
+          We know that finding the right information can be difficult and time consuming. Below are our technical
+          help articles -- if you can&apos;t find what you&apos;re after,{' '}
+          <Link href="/#contact" style={{ color: 'var(--text)', textDecoration: 'underline' }}>
+            contact us
+          </Link>{' '}
+          and we&apos;ll deal with your query promptly.
+        </p>
+      </ResourceHero>
       <section className="section section-spacious">
         <div className="container">
           <div className="copy-block">
