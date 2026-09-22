@@ -6,6 +6,8 @@ import Footer from '@/components/Footer';
 import { CartProvider } from '@/lib/cart-context';
 import AskTeraWidget from '@/components/AskTeraWidget';
 import StructuredData from '@/components/StructuredData';
+import GoogleAnalytics from '@/components/GoogleAnalytics';
+import { GOOGLE_SITE_VERIFICATION } from '@/lib/analytics';
 import { SITE_ORIGIN } from '@/lib/seo';
 
 // globals.css has always asked for `font-family: Inter, ...` but Inter was
@@ -49,6 +51,7 @@ export const metadata = {
     title: DEFAULT_TITLE,
     description: DEFAULT_DESCRIPTION,
   },
+  ...(GOOGLE_SITE_VERIFICATION ? { verification: { google: GOOGLE_SITE_VERIFICATION } } : {}),
   robots: {
     index: true,
     follow: true,
@@ -73,6 +76,7 @@ export default function MarketingRootLayout({ children }) {
     <html lang="en-AU" className={inter.variable}>
       <body>
         <StructuredData />
+        <GoogleAnalytics />
         {/* Keyboard and screen-reader users otherwise have to tab through the
             entire header nav, the resources dropdown and the cart on every
             single page before reaching content (WCAG 2.4.1 Bypass Blocks).
