@@ -3,7 +3,7 @@
 import { useMemo, useState } from 'react';
 import CheckoutButton from '@/components/CheckoutButton';
 import AddToCartButton from '@/components/AddToCartButton';
-import { formatMoney } from '@/lib/products';
+import { formatMoney, memberPriceCents } from '@/lib/products';
 
 export default function CategoryProductGrid({ products, isSignedIn = false }) {
   const brands = useMemo(
@@ -53,11 +53,22 @@ export default function CategoryProductGrid({ products, isSignedIn = false }) {
                 </>
               ) : (
                 <>
-                  <p className="price">
-                    {p.type === 'subscription' ? null : <span className="price-gst-note">RRP </span>}
-                    {formatMoney(p.priceCents)}
-                    <span className="price-gst-note"> inc. GST{p.type === 'subscription' ? ' / month' : ''}</span>
-                  </p>
+                  {isSignedIn && p.type !== 'subscription' ? (
+                    <>
+                      <p className="price-rrp-struck">RRP <s>{formatMoney(p.priceCents)}</s></p>
+                      <p className="price">
+                        <span className="price-gst-note">Member price </span>
+                        {formatMoney(memberPriceCents(p))}
+                        <span className="price-gst-note"> inc. GST</span>
+                      </p>
+                    </>
+                  ) : (
+                    <p className="price">
+                      {p.type === 'subscription' ? null : <span className="price-gst-note">RRP </span>}
+                      {formatMoney(p.priceCents)}
+                      <span className="price-gst-note"> inc. GST{p.type === 'subscription' ? ' / month' : ''}</span>
+                    </p>
+                  )}
                   {!isSignedIn && p.type !== 'subscription' && (
                     <p className="form-note">
                       <a href="/account/signup">Create a free account</a> for additional member discounts.

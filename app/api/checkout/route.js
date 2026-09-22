@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { stripe } from '@/lib/stripe';
-import { findProduct } from '@/lib/products';
+import { findProduct, memberPriceCents } from '@/lib/products';
 import { SITE_URL } from '@/lib/config';
 import { checkRateLimit, clientIpFromRequest, rateLimitResponse } from '@/lib/rateLimit';
 import { cookies } from 'next/headers';
@@ -97,7 +97,8 @@ export async function POST(req) {
               description: product.description,
               metadata: { sku: product.sku, productType: product.type },
             },
-            unit_amount: product.priceCents,
+            // Only verified signed-in customers get this far, so they pay the member price.
+            unit_amount: memberPriceCents(product),
             ...(isSubscription ? { recurring: { interval: 'month' } } : {}),
           },
           quantity: parsed.data.quantity,

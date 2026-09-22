@@ -1019,3 +1019,6 @@ a {
 .news-card-featured h3 { font-size: 28px; }
 @media (max-width: 760px) { .news-grid { grid-template-columns: 1fr; } .news-card-featured h3 { font-size: 22px; } }
 @media (prefers-reduced-motion: reduce) { .news-card { transition: none; } .news-card:hover { transform: none; } }
+
+/* Store: RRP shown struck through above the member price for signed-in customers. */
+.price-rrp-struck { margin: 0; font-size: 13px; color: rgba(255, 255, 255, .5); }

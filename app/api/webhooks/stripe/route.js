@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { stripe } from '@/lib/stripe';
-import { findProduct } from '@/lib/products';
+import { findProduct, memberPriceCents } from '@/lib/products';
 import { createZohoContact, createZohoInvoice, findZohoContactByEmail } from '@/lib/zoho';
 import { linkLicenceBillingReference } from '@/lib/api/commerceLicensing';
 
@@ -109,7 +109,7 @@ async function handleCheckoutSessionCompleted(session) {
             customerId,
             referenceNumber: session.id,
             lineItems: [
-              { name: product.name, description: product.description, rate: product.priceCents / 100, quantity: 1 },
+              { name: product.name, description: product.description, rate: memberPriceCents(product) / 100, quantity: 1 },
             ],
           });
         }
