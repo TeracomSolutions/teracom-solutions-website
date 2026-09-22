@@ -6,6 +6,6 @@ export async function POST(request) {
   const { message } = await request.json();
   
   return NextResponse.json({ 
-    reply: "Thanks for your message! Jerico's full AI backend isn't connected yet -- check back soon, or contact us directly in the meantime."
+    reply: "Thanks for your message! Tera's full AI backend isn't connected yet -- check back soon, or contact us directly in the meantime."
   });
 }
