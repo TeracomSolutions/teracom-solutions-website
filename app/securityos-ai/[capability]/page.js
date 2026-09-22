@@ -9,7 +9,8 @@ export function generateStaticParams() {
   return aiCapabilities.map((c) => ({ capability: c.slug }));
 }
 
-export function generateMetadata({ params }) {
+export async function generateMetadata(props) {
+  const params = await props.params;
   const capability = findAiCapability(params.capability);
   if (!capability) return {};
   return pageMetadata({
@@ -19,7 +20,8 @@ export function generateMetadata({ params }) {
   });
 }
 
-export default function CapabilityPage({ params }) {
+export default async function CapabilityPage(props) {
+  const params = await props.params;
   const capability = findAiCapability(params.capability);
   if (!capability) notFound();
 

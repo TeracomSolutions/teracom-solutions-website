@@ -1,12 +1,15 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { useCart } from '@/lib/cart-context';
 import { resourcesSections } from '@/lib/resourcesSections';
 
 export default function MobileNav() {
   const [open, setOpen] = useState(false);
   const { totalItems } = useCart();
+  // Links navigate client-side, so the panel has to close itself on click.
+  const close = () => setOpen(false);
 
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -42,21 +45,21 @@ export default function MobileNav() {
       {open && (
         <nav className="mobile-nav-panel">
           <ul className="mobile-nav-links">
-            <li><a href="/services">What We Do</a></li>
-            <li><a href="/securityos-ai">Teracom AI</a></li>
-            <li><a href="/brands">Brands</a></li>
-            <li><a href="/store">Store</a></li>
+            <li><Link href="/services" onClick={close}>What We Do</Link></li>
+            <li><Link href="/securityos-ai" onClick={close}>Teracom AI</Link></li>
+            <li><Link href="/brands" onClick={close}>Brands</Link></li>
+            <li><Link href="/store" onClick={close}>Store</Link></li>
             <li>
-              <a href="/resources">Resources</a>
+              <Link href="/resources" onClick={close}>Resources</Link>
               <ul className="mobile-nav-sublinks">
                 {resourcesSections.map((s) => (
-                  <li key={s.slug}><a href={`/resources/${s.slug}`}>{s.title}</a></li>
+                  <li key={s.slug}><Link href={`/resources/${s.slug}`} onClick={close}>{s.title}</Link></li>
                 ))}
-                <li><a href="/tools">Free Tools</a></li>
+                <li><Link href="/tools" onClick={close}>Free Tools</Link></li>
               </ul>
             </li>
-            <li><a href="/contact">Contact</a></li>
-            <li><a href="/cart">Cart{totalItems > 0 ? ` (${totalItems})` : ''}</a></li>
+            <li><Link href="/contact" onClick={close}>Contact</Link></li>
+            <li><Link href="/cart" onClick={close}>Cart{totalItems > 0 ? ` (${totalItems})` : ''}</Link></li>
           </ul>
         </nav>
       )}

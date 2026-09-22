@@ -27,7 +27,8 @@ export function generateStaticParams() {
   return tools.map((t) => ({ slug: t.slug }));
 }
 
-export function generateMetadata({ params }) {
+export async function generateMetadata(props) {
+  const params = await props.params;
   const tool = findTool(params.slug);
   if (!tool) return {};
   return pageMetadata({
@@ -37,7 +38,8 @@ export function generateMetadata({ params }) {
   });
 }
 
-export default function ToolPage({ params }) {
+export default async function ToolPage(props) {
+  const params = await props.params;
   const tool = findTool(params.slug);
   if (!tool) notFound();
   const Custom = CUSTOM_CALCULATORS[tool.slug];

@@ -18,7 +18,8 @@ export function generateStaticParams() {
   return services.map((service) => ({ slug: service.slug }));
 }
 
-export function generateMetadata({ params }) {
+export async function generateMetadata(props) {
+  const params = await props.params;
   const service = findService(params.slug);
   if (!service) return {};
 
@@ -29,7 +30,8 @@ export function generateMetadata({ params }) {
   });
 }
 
-export default function ServicePage({ params }) {
+export default async function ServicePage(props) {
+  const params = await props.params;
   const service = findService(params.slug);
   if (!service) notFound();
 

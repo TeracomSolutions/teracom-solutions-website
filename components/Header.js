@@ -11,7 +11,7 @@ import { getCurrentCustomer } from '@/lib/api/customerAuth';
 import { ApiError } from '@/lib/api/client';
 
 export default async function Header(){
-  const token = cookies().get(CUSTOMER_ACCESS_TOKEN_COOKIE)?.value;
+  const token = (await cookies()).get(CUSTOMER_ACCESS_TOKEN_COOKIE)?.value;
   let customer = null;
   if (token) {
     try {

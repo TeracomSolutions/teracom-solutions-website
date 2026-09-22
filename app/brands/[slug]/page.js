@@ -12,7 +12,8 @@ export function generateStaticParams() {
   return brands.map((b) => ({ slug: b.slug }));
 }
 
-export function generateMetadata({ params }) {
+export async function generateMetadata(props) {
+  const params = await props.params;
   const brand = findBrand(params.slug);
   if (!brand) return {};
   // Search-result title only (not rendered on the page). Says what Teracom does
@@ -31,7 +32,8 @@ export function generateMetadata({ params }) {
   });
 }
 
-export default function BrandPage({ params }) {
+export default async function BrandPage(props) {
+  const params = await props.params;
   const brand = findBrand(params.slug);
   if (!brand) notFound();
 

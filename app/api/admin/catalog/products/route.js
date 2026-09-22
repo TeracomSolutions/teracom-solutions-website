@@ -6,7 +6,7 @@ import { ApiError } from '@/lib/api/client';
 import { ACCESS_TOKEN_COOKIE } from '@/lib/adminSession';
 
 export async function GET(req) {
-  const token = cookies().get(ACCESS_TOKEN_COOKIE)?.value;
+  const token = (await cookies()).get(ACCESS_TOKEN_COOKIE)?.value;
 
   if (!token) {
     return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
