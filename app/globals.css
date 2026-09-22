@@ -1030,14 +1030,6 @@ a {
 /* Store: RRP shown struck through above the member price for signed-in customers. */
 .price-rrp-struck { margin: 0; font-size: 13px; color: rgba(255, 255, 255, .5); }
 
-/* /tools index: cards size to their content with the button pinned to the bottom
-   (the shared .feature-grid cards have a fixed height that clipped longer titles). */
-.tools-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:22px; }
-.tools-grid article { display:flex; flex-direction:column; gap:12px; border:1px solid var(--line); background:rgba(255,255,255,.04); border-radius:28px; padding:30px; }
-.tools-grid h3 { font-size:24px; letter-spacing:-.03em; margin:0; }
-.tools-grid p { color:var(--muted); margin:0; }
-.tools-grid .tools-card-action { margin-top:auto; padding-top:8px; }
-@media (max-width:760px) { .tools-grid { grid-template-columns:1fr; } }
 
 /* Homepage "How we deliver": on-site picture beside the section heading. */
 .deliver-intro { display:grid; grid-template-columns:minmax(0,1.35fr) minmax(0,.65fr); gap:48px; align-items:center; margin-bottom:48px; }
@@ -1045,3 +1037,69 @@ a {
 .deliver-image img { display:block; width:100%; height:auto; }
 @media (max-width:980px) { .deliver-intro { grid-template-columns:1fr; gap:28px; } }
 
+/* ---- Free tools (/tools and /tools/[slug]) ----
+   Index: grouped cards with an icon badge, a faint icon watermark and a hover
+   glow. Calculator pages: a glowing icon emblem in the hero, then the
+   calculator on a glass panel over a faint pattern of related icons. */
+.tools-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:22px; }
+.section-heading.left.tools-group-heading { margin-bottom:36px; }
+.tool-card {
+  position:relative; overflow:hidden; isolation:isolate; display:flex; flex-direction:column; gap:12px; min-height:280px;
+  padding:30px; border:1px solid var(--line); border-radius:28px;
+  background:linear-gradient(160deg,rgba(255,255,255,.055),rgba(255,255,255,.012));
+  color:inherit; text-decoration:none; transition:border-color .25s ease, transform .25s ease, box-shadow .25s ease;
+}
+.tool-card:hover, .tool-card:focus-visible { border-color:rgba(255,23,23,.55); transform:translateY(-3px); box-shadow:0 22px 60px rgba(255,23,23,.12); }
+.tool-card-icon {
+  width:56px; height:56px; border-radius:16px; display:grid; place-items:center; color:#ff4b4b;
+  background:rgba(255,23,23,.1); border:1px solid rgba(255,23,23,.35); box-shadow:0 0 28px rgba(255,23,23,.18);
+}
+.tool-card h3 { margin:6px 0 0; font-size:22px; letter-spacing:-.02em; }
+.tool-card p { margin:0; color:var(--muted); }
+.tool-card-cta { margin-top:auto; padding-top:8px; display:inline-flex; align-items:center; gap:8px; font-weight:800; font-size:14px; color:#fff; transition:color .25s ease; }
+.tool-card:hover .tool-card-cta { color:#ff4b4b; }
+.tool-card-watermark {
+  position:absolute; right:-26px; bottom:-26px; z-index:-1; color:rgba(255,255,255,.035); pointer-events:none;
+  transition:color .25s ease, transform .25s ease;
+}
+.tool-card:hover .tool-card-watermark { color:rgba(255,23,23,.09); transform:rotate(-6deg) scale(1.04); }
+
+.hero-shallow .tool-hero-layout { grid-template-columns:1fr auto; align-items:center; gap:48px; }
+.tool-hero-art { padding:48px; }
+.tool-hero-ring {
+  position:relative; display:grid; place-items:center; width:220px; height:220px; border-radius:50%; color:#ff4b4b;
+  background:radial-gradient(circle,rgba(255,23,23,.2) 0%,rgba(255,23,23,.05) 55%,transparent 72%);
+  border:1px solid rgba(255,23,23,.4); box-shadow:0 0 90px rgba(255,23,23,.22), inset 0 0 50px rgba(255,23,23,.12);
+}
+.tool-hero-ring svg { filter:drop-shadow(0 0 16px rgba(255,23,23,.55)); }
+.tool-hero-ring::before, .tool-hero-ring::after { content:""; position:absolute; border-radius:50%; pointer-events:none; }
+.tool-hero-ring::before { inset:-26px; border:1px dashed rgba(255,255,255,.14); }
+.tool-hero-ring::after { inset:-56px; border:1px solid rgba(255,255,255,.05); }
+
+.tool-stage {
+  position:relative; overflow:hidden; border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+  background:radial-gradient(ellipse at 85% 30%,rgba(255,23,23,.09),transparent 55%),linear-gradient(180deg,#070707,#0c0c0c);
+}
+.tool-backdrop { position:absolute; inset:0; pointer-events:none; }
+.tool-backdrop-main { position:absolute; right:-4%; top:50%; transform:translateY(-50%) rotate(-8deg); color:rgba(255,255,255,.035); }
+.tool-backdrop-icon { position:absolute; color:rgba(255,255,255,.055); }
+.tool-backdrop-icon:nth-child(3n) { color:rgba(255,23,23,.12); }
+.tool-stage-inner { position:relative; z-index:1; }
+.tool-stage .calculator {
+  background:rgba(8,8,8,.8); border:1px solid var(--line); border-radius:28px; padding:34px;
+  backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); box-shadow:0 30px 80px rgba(0,0,0,.5);
+}
+@media (max-width:980px) {
+  .tool-backdrop-icon { display:none; }
+  .tool-backdrop-main svg { width:320px; height:320px; }
+}
+@media (max-width:760px) {
+  .hero-shallow .tool-hero-layout { grid-template-columns:1fr; }
+  .tool-hero-art { display:none; }
+  .tool-stage .calculator { padding:22px; border-radius:22px; }
+}
+@media (prefers-reduced-motion:reduce) {
+  .tool-card, .tool-card-watermark, .tool-card-cta { transition:none; }
+  .tool-card:hover { transform:none; }
+  .tool-card:hover .tool-card-watermark { transform:none; }
+}
