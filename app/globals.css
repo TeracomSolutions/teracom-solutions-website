@@ -224,6 +224,13 @@ a {
 .hero-image {
   border-radius:44px;overflow:hidden;box-shadow:var(--shadow);
 }
+/* Photos/renders in the generic hero and showcase frames keep their proportions
+   (next/image sets fixed width/height attributes; without height:auto a
+   narrower column stretches them). Fill-mode images and the homepage
+   carousel override this with their own rules. */
+.hero-image img, .showcase-image img {
+  display:block;width:100%;height:auto;
+}
 .section {
   padding:88px 0;
 }

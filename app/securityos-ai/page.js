@@ -66,7 +66,14 @@ export default function SecurityOSAI() {
             </div>
           </div>
           <div className="hero-image">
-            <Image src="/assets/teracom-ai-mascot.png" alt="Teracom AI mascot" width={700} height={700} />
+            <Image
+              src="/assets/teracom-ai-ask-tera.webp"
+              alt="Ask Tera -- the Teracom AI mascot at a laptop with options to find a product, get technical support, create a scope, get a quote or tender assistance"
+              width={1536}
+              height={1024}
+              sizes="(max-width: 980px) 100vw, 55vw"
+              priority
+            />
           </div>
         </div>
       </section>
