@@ -94,6 +94,16 @@ export default function CustomerLoginPage() {
           </form>
 
       <p className="auth-aside">
+        <Link href="/account/forgot-password">Forgot your password?</Link>
+      </p>
+
+      <p className="auth-aside">
+        Had an account on our previous store?{' '}
+        <Link href="/account/forgot-password">Set your password here</Link> -- your details have
+        carried across.
+      </p>
+
+      <p className="auth-aside">
         Don&apos;t have an account? <Link href="/account/signup">Create a free account</Link>
       </p>
     </AuthShell>
