@@ -116,8 +116,9 @@ export default function RequestForm({ form }) {
         </span>
         <h2>Thanks &mdash; we have your request.</h2>
         <p>
-          We will be in touch to confirm a time. If it is urgent, call us on{' '}
-          <a href="tel:+61397082685">+61 3 9708 2685</a> rather than waiting.
+          We will be in touch to confirm a time. If anything changes in the meantime, email{' '}
+          <a href="mailto:support@teracomsolutions.com.au">support@teracomsolutions.com.au</a> and quote your site
+          address.
         </p>
       </div>
     );
@@ -158,9 +159,9 @@ export default function RequestForm({ form }) {
             <TriangleAlert size={18} strokeWidth={1.9} aria-hidden="true" focusable="false" /> {error}
           </p>
           <p>
-            Nothing you typed has been lost. Call us on <a href="tel:+61397082685">+61 3 9708 2685</a>, or copy the
-            summary below into an email to{' '}
-            <a href="mailto:sales@teracomsolutions.com.au">sales@teracomsolutions.com.au</a>.
+            Nothing you typed has been lost. Copy the summary below into an email to{' '}
+            <a href="mailto:support@teracomsolutions.com.au">support@teracomsolutions.com.au</a> and we will pick it
+            up from there.
           </p>
           <textarea
             className="request-recovery"

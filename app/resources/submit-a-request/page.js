@@ -1,8 +1,7 @@
 import Link from 'next/link';
-import { ClipboardList, FileSignature, KeyRound, Phone, Wrench } from 'lucide-react';
+import { ArrowLeft, ClipboardList, FileSignature, KeyRound, Mail, Wrench } from 'lucide-react';
 
 import ResourceHero from '@/components/ResourceHero';
-import ResourcesSubNav from '@/components/ResourcesSubNav';
 import { pageMetadata, BUSINESS } from '@/lib/seo';
 import { requestForms } from '@/lib/requestForms';
 
@@ -24,8 +23,6 @@ export default function SubmitARequestPage() {
         </p>
       </ResourceHero>
 
-      <ResourcesSubNav />
-
       <section className="section section-spacious">
         <div className="container">
           <div className="copy-block">
@@ -34,9 +31,8 @@ export default function SubmitARequestPage() {
               know before they ring you back &mdash; which usually saves a call and sometimes saves a visit.
             </p>
             <p>
-              If it is urgent, ring us on{' '}
-              <a href={`tel:${BUSINESS.telephone}`}>{BUSINESS.telephoneDisplay}</a> rather than filling anything in. A
-              form is better than a voicemail, but worse than a conversation when something is down.
+              Filling one in takes a couple of minutes and gets the details down in one go, rather than being
+              repeated over the phone. We will come back to you to confirm.
             </p>
           </div>
 
@@ -69,12 +65,21 @@ export default function SubmitARequestPage() {
                 <h3>Trade account application</h3>
               </div>
               <p>
-                30-day credit or trade cash accounts. Call us on{' '}
-                <a href={`tel:${BUSINESS.telephone}`}>{BUSINESS.telephoneDisplay}</a> and we will send you the
+                30-day credit or trade cash accounts. Email{' '}
+                <a href={`mailto:${BUSINESS.salesEmail}`}>{BUSINESS.salesEmail}</a> and we will send you the
                 application &mdash; online applications are coming.
               </p>
             </article>
           </div>
+        </div>
+      </section>
+
+      <section className="section section-tight">
+        <div className="container">
+          <p className="form-note request-back">
+            <ArrowLeft size={16} strokeWidth={1.9} aria-hidden="true" focusable="false" />{' '}
+            <Link href="/resources">Back to all resources</Link>
+          </p>
         </div>
       </section>
 
@@ -88,9 +93,9 @@ export default function SubmitARequestPage() {
             <Link className="btn btn-primary" href="/contact">
               Get in touch
             </Link>
-            <a className="btn btn-secondary" href={`tel:${BUSINESS.telephone}`}>
-              <Phone size={18} strokeWidth={1.9} aria-hidden="true" focusable="false" />
-              Call {BUSINESS.telephoneDisplay}
+            <a className="btn btn-secondary" href={`mailto:${BUSINESS.supportEmail}`}>
+              <Mail size={18} strokeWidth={1.9} aria-hidden="true" focusable="false" />
+              Email support
             </a>
           </div>
         </div>

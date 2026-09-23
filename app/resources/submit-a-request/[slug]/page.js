@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { ClipboardList, KeyRound, Phone, ShieldCheck, Wrench } from 'lucide-react';
+import { ArrowLeft, ClipboardList, KeyRound, Mail, ShieldCheck, Wrench } from 'lucide-react';
 
 import Breadcrumbs from '@/components/Breadcrumbs';
 import RequestForm from '@/components/RequestForm';
@@ -86,13 +86,13 @@ export default async function RequestFormPage(props) {
               with you before chargeable work starts.
             </p>
 
-            <p className="form-note">
-              Urgent? Call <a href={`tel:${BUSINESS.telephone}`}>{BUSINESS.telephoneDisplay}</a>,{' '}
-              {BUSINESS.openingHours.opens}&ndash;{BUSINESS.openingHours.closes} Monday to Friday.
+            <p className="form-note request-assurance">
+              <Mail size={16} strokeWidth={1.8} aria-hidden="true" focusable="false" /> Something we have not asked
+              about? Email <a href={`mailto:${BUSINESS.supportEmail}`}>{BUSINESS.supportEmail}</a>.
             </p>
 
-            <p className="form-note">
-              <Phone size={16} strokeWidth={1.8} aria-hidden="true" focusable="false" />{' '}
+            <p className="form-note request-assurance">
+              <ArrowLeft size={16} strokeWidth={1.8} aria-hidden="true" focusable="false" />{' '}
               <Link href="/resources/submit-a-request">All request forms</Link>
             </p>
           </aside>
