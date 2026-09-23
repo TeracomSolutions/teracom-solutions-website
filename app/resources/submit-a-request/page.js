@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowLeft, ClipboardList, FileSignature, KeyRound, Mail, Wrench } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ClipboardList, FileSignature, KeyRound, Mail, Wrench } from 'lucide-react';
 
 import ResourceHero from '@/components/ResourceHero';
 import { pageMetadata, BUSINESS } from '@/lib/seo';
@@ -36,40 +36,49 @@ export default function SubmitARequestPage() {
             </p>
           </div>
 
-          <div className="feature-grid request-grid">
+          <div className="tools-grid request-grid">
             {requestForms.map((form) => {
               const Icon = ICONS[form.icon] || ClipboardList;
               return (
-                <Link href={`/resources/submit-a-request/${form.slug}`} key={form.slug}>
-                  <article>
-                    <div className="category-heading-row">
-                      <div className="category-icon-badge">
-                        <Icon size={26} strokeWidth={1.75} aria-hidden="true" focusable="false" />
-                      </div>
-                      <h3>{form.title}</h3>
-                    </div>
-                    <p>{form.lead}</p>
-                  </article>
+                <Link
+                  href={`/resources/submit-a-request/${form.slug}`}
+                  className="tool-card request-card"
+                  key={form.slug}
+                >
+                  <span className="tool-card-icon">
+                    <Icon size={26} strokeWidth={1.75} aria-hidden="true" focusable="false" />
+                  </span>
+                  <h3>{form.title}</h3>
+                  <p>{form.lead}</p>
+                  <span className="tool-card-cta">
+                    Start this request <ArrowRight size={16} strokeWidth={2} aria-hidden="true" />
+                  </span>
+                  <span className="tool-card-watermark" aria-hidden="true">
+                    <Icon size={170} strokeWidth={1} />
+                  </span>
                 </Link>
               );
             })}
 
-            {/* Deliberately a phone call for now: a trade account application
-                includes a personal guarantee, and that is not something to
-                collect through a form nobody has had a solicitor read. */}
-            <article>
-              <div className="category-heading-row">
-                <div className="category-icon-badge">
-                  <FileSignature size={26} strokeWidth={1.75} aria-hidden="true" focusable="false" />
-                </div>
-                <h3>Trade account application</h3>
-              </div>
+            {/* Not a link, and not a form: a trade account application
+                includes a personal guarantee, which is not something to
+                collect through a form no solicitor has read. */}
+            <div className="tool-card request-card request-card-static">
+              <span className="tool-card-icon">
+                <FileSignature size={26} strokeWidth={1.75} aria-hidden="true" focusable="false" />
+              </span>
+              <h3>Trade account application</h3>
               <p>
-                30-day credit or trade cash accounts. Email{' '}
-                <a href={`mailto:${BUSINESS.salesEmail}`}>{BUSINESS.salesEmail}</a> and we will send you the
-                application &mdash; online applications are coming.
+                30-day credit or trade cash accounts, for the gear you buy regularly.
               </p>
-            </article>
+              <span className="tool-card-cta request-card-note">
+                <Mail size={16} strokeWidth={1.9} aria-hidden="true" focusable="false" />
+                <a href={`mailto:${BUSINESS.salesEmail}`}>{BUSINESS.salesEmail}</a>
+              </span>
+              <span className="tool-card-watermark" aria-hidden="true">
+                <FileSignature size={170} strokeWidth={1} />
+              </span>
+            </div>
           </div>
         </div>
       </section>
