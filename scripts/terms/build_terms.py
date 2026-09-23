@@ -29,7 +29,20 @@ def slugify(text):
     return re.sub(r'[^a-z0-9]+', '-', text.lower()).strip('-')
 
 
+COVER = re.compile(r'Version\s+([\d.]+)\s*\|\s*Effective\s+(.+?)\s*$')
+
+
+def read_cover(text):
+    """Version and effective date, taken from the document's own cover line."""
+    flat = re.sub(r'\s+', ' ', text.replace('|', '|')).strip()
+    match = COVER.search(flat)
+    if not match:
+        return {}
+    return {'version': match.group(1), 'effective': match.group(2).strip()}
+
+
 def parse(paragraphs):
+    cover = {}
     parts = []
     part = None
     section = None
@@ -101,9 +114,14 @@ def parse(paragraphs):
             # is already the page's heading. Repeating it as body copy just
             # makes the reader scroll past the same three lines twice.
             lowered = text.lower()
-            if lowered.startswith('terms and conditions of trade') or (
-                'version' in lowered and 'effective' in lowered and len(text) < 120
-            ):
+            if lowered.startswith('terms and conditions of trade'):
+                continue
+            if 'version' in lowered and 'effective' in lowered and len(text) < 120:
+                # The cover line is also where the version and effective date
+                # come from. Reading them here rather than hardcoding them is
+                # the point of generating this file: a generator that states
+                # its own version will eventually state the wrong one.
+                cover.update(read_cover(text))
                 continue
             preamble.append(block)
             continue
@@ -132,7 +150,7 @@ def parse(paragraphs):
         section['blocks'].append(block)
 
     annexure = pair_up(annexure_cells)
-    return parts, preamble, annexure, version_history
+    return parts, preamble, annexure, version_history, cover
 
 
 PART_TITLES = {
@@ -181,7 +199,16 @@ def pair_up(cells):
 
 
 def main():
-    parts, preamble, annexure, version_history = parse(docx_paragraphs(DOCX))
+    parts, preamble, annexure, version_history, cover = parse(docx_paragraphs(DOCX))
+
+    # Fail loudly rather than publish a document that misstates its own
+    # version. If the cover line changes shape, that is a document problem to
+    # fix in the document, not something to paper over here.
+    if not cover.get('version') or not cover.get('effective'):
+        raise SystemExit(
+            'Could not read the version and effective date from the document cover line. '
+            'Expected something like "ABN ... | Version 3.1 | Effective 1 October 2026".'
+        )
 
     # The hash covers the document's own text, not the rendered page.
     # Hashing the published HTML would change on every deploy, because the
@@ -194,7 +221,7 @@ def main():
     )
     content_hash = hashlib.sha256(canonical.encode('utf-8')).hexdigest()
 
-    header = '''// Terms and Conditions of Trade v3.0.
+    header = '''// Teracom Solutions Terms and Conditions of Trade.
 //
 // GENERATED -- do not edit by hand. Produced by scratchpad/build_terms.py from
 // "Teracom Terms and Conditions v3.0.docx" on the Z: drive, which is the
@@ -206,11 +233,11 @@ def main():
 // every stored acceptance record point at them, so an id that has been
 // published must not be renamed or reused.
 
-export const TERMS_VERSION = '3.0';
-export const TERMS_EFFECTIVE = '1 October 2026';
+export const TERMS_VERSION = '__VERSION__';
+export const TERMS_EFFECTIVE = '__EFFECTIVE__';
 export const TERMS_ABN = '49 107 979 546';
-export const TERMS_PDF = '/legal/Teracom-Terms-and-Conditions-v3.0.pdf';
-export const TERMS_PDF_NAME = 'Teracom-Terms-and-Conditions-v3.0.pdf';
+export const TERMS_PDF = '/legal/__PDF_NAME__';
+export const TERMS_PDF_NAME = '__PDF_NAME__';
 
 // sha256 of the document's own text, not of the rendered page. This is what
 // an acceptance record stores to prove WHAT the customer was shown, so it has
@@ -230,6 +257,9 @@ export const TERMS_SOURCE_FILE = '__SOURCE_FILE__';
         '}\n'
     )
 
+    header = header.replace('__VERSION__', cover['version'])
+    header = header.replace('__EFFECTIVE__', cover['effective'])
+    header = header.replace('__PDF_NAME__', f"Teracom-Terms-and-Conditions-v{cover['version']}.pdf")
     header = header.replace('__CONTENT_HASH__', content_hash)
     header = header.replace('__SOURCE_FILE__', Path(DOCX).name)
     OUT.write_text(header + body, encoding='utf-8')
