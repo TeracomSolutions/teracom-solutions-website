@@ -8,6 +8,7 @@ import JsonLd from '@/components/JsonLd';
 import AddToCartButton from '@/components/AddToCartButton';
 import CheckoutButton from '@/components/CheckoutButton';
 import StoreCategoryArt from '@/components/StoreCategoryArt';
+import ProductViewed from '@/components/ProductViewed';
 import { CUSTOMER_ACCESS_TOKEN_COOKIE } from '@/lib/customerSession';
 import {
   artSlugForProduct,
@@ -101,6 +102,7 @@ export default async function ProductPage(props) {
   return (
     <main id="main-content">
       <JsonLd schema={schema} />
+      <ProductViewed product={product} priceCents={price} />
       <section className="hero hero-product hero-shallow tool-hero">
         <div className="container hero-layout tool-hero-layout">
           <div className="hero-copy">

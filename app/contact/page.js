@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import LeadSubmitted from '@/components/LeadSubmitted';
 import ContactForm from '@/components/ContactForm';
 import ProcessSteps from '@/components/ProcessSteps';
 import { MailCheck, MessagesSquare, Signpost, Star } from 'lucide-react';
@@ -23,7 +24,7 @@ export default async function ContactPage(props) {
   const preselectedInterest = typeof searchParams?.interest === 'string' ? searchParams.interest : '';
 
   return (
-    <main id="main-content">
+    <main id="main-content"><LeadSubmitted source="contact_form" />
       <JsonLd schema={{
         '@type': 'ContactPage',
         name: 'Contact Teracom Solutions',
