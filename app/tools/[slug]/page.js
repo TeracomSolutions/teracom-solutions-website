@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
 import ShopTheParts from '@/components/ShopTheParts';
+import CalculatorUsage from '@/components/CalculatorUsage';
 import Link from 'next/link';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import ConfigCalculator from '@/components/tools/ConfigCalculator';
@@ -78,6 +79,7 @@ export default async function ToolPage(props) {
         </div>
       </section>
 
+      <CalculatorUsage slug={tool.slug} group={tool.group} />
       <ShopTheParts toolSlug={tool.slug} />
     </main>
   );

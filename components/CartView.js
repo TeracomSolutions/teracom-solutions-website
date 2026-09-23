@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { AUD, track, toGaItem } from '@/lib/gtag';
 import Link from 'next/link';
 import {
   ArrowLeft,
@@ -94,6 +95,11 @@ export default function CartView({ isMember = false, shippingCents = 1500 }) {
   async function handleCheckout() {
     setError('');
     setLoading(true);
+    track('begin_checkout', {
+      currency: AUD,
+      value: Number((totalCents / 100).toFixed(2)),
+      items: lines.map((l) => toGaItem(l.product, l.quantity)),
+    });
     try {
       const res = await fetch('/api/checkout/cart', {
         method: 'POST',
