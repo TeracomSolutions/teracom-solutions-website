@@ -48,7 +48,21 @@ export default function HeroBanner({ slides }) {
           <h1>{currentSlide.headline}</h1>
           <p className="lead">{currentSlide.body}</p>
           <div className="hero-actions">
-            <Link className="btn btn-primary" href={currentSlide.ctaHref}>{currentSlide.ctaLabel}</Link>
+            {/* A news slide's CTA is the publisher's own article. next/link
+                would try to client-side navigate to an external origin, and
+                an off-site link opened in place loses the visitor. */}
+            {currentSlide.ctaExternal ? (
+              <a
+                className="btn btn-primary"
+                href={currentSlide.ctaHref}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {currentSlide.ctaLabel}
+              </a>
+            ) : (
+              <Link className="btn btn-primary" href={currentSlide.ctaHref}>{currentSlide.ctaLabel}</Link>
+            )}
             {currentSlide.secondaryHref && currentSlide.secondaryLabel && (
               <Link className="btn btn-secondary" href={currentSlide.secondaryHref}>{currentSlide.secondaryLabel}</Link>
             )}
