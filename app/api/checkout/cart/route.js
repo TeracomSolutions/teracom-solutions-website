@@ -114,10 +114,33 @@ export async function POST(req) {
         },
         quantity: item.quantity,
       })),
+      // Payment happens on our own page rather than on Stripe's. The
+      // visitor stays on teracomsolutions.com.au, which matters when
+      // someone is deciding whether to put a few thousand dollars on a
+      // card -- and it removes the analytics blind spot the redirect
+      // created, where every sale looked like it came from Stripe rather
+      // than from whatever actually brought the customer in.
+      ui_mode: 'embedded',
+      return_url: `${siteUrl}/checkout/complete?session_id={CHECKOUT_SESSION_ID}`,
       // Lets customers enter promotion codes created in the Stripe dashboard.
       allow_promotion_codes: true,
-      success_url: `${siteUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${siteUrl}/checkout/cancel`,
+      // An installer needs the job reference on the invoice, and a business
+      // buyer needs its ABN on it -- chasing either afterwards is the most
+      // tedious part of trade bookkeeping. Optional: a consumer buying one
+      // camera has neither.
+      custom_fields: [
+        {
+          key: 'purchase_order',
+          label: { type: 'custom', custom: 'Purchase order or job reference' },
+          type: 'text',
+          optional: true,
+          text: { maximum_length: 120 },
+        },
+      ],
+      // Collects an ABN. Required on a tax invoice for sales of $1,000 or
+      // more, and it is the buyer who suffers if it is missing.
+      tax_id_collection: { enabled: true },
+      billing_address_collection: 'required',
       // Flags this session for app/api/webhooks/stripe/route.js to itemize
       // via stripe.checkout.sessions.listLineItems at webhook time, rather
       // than trying to cram every cart line into session metadata (Stripe
@@ -147,5 +170,6 @@ export async function POST(req) {
     return NextResponse.json({ error: 'Unable to start checkout right now. Please try again shortly.' }, { status: 502 });
   }
 
-  return NextResponse.json({ url: session.url });
+  // The client secret, not a URL: the payment form mounts on our page.
+  return NextResponse.json({ clientSecret: session.client_secret });
 }

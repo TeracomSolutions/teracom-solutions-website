@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { AUD, track, toGaItem } from '@/lib/gtag';
 import Link from 'next/link';
 import {
   ArrowLeft,
@@ -95,30 +94,10 @@ export default function CartView({ isMember = false, shippingCents = 1500 }) {
   async function handleCheckout() {
     setError('');
     setLoading(true);
-    track('begin_checkout', {
-      currency: AUD,
-      value: Number((totalCents / 100).toFixed(2)),
-      items: lines.map((l) => toGaItem(l.product, l.quantity)),
-    });
-    try {
-      const res = await fetch('/api/checkout/cart', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          items: lines.map((l) => ({ productId: l.productId, quantity: l.quantity })),
-        }),
-      });
-      // A non-JSON response (e.g. a platform-level 502/504 HTML error page)
-      // must not crash this with a confusing "Unexpected end of JSON
-      // input" -- fall back to a generic message instead.
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data.error || 'Checkout failed');
-      if (data.url) window.location.href = data.url;
-    } catch (e) {
-      setError(e.message || 'Checkout failed');
-    } finally {
-      setLoading(false);
-    }
+    // The Stripe session is created by the checkout page itself now, so
+    // this is a plain navigation. begin_checkout fires there, once, rather
+    // than here and again on arrival.
+    window.location.href = '/checkout';
   }
 
   if (lines.length === 0) {
