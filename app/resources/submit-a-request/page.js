@@ -1,9 +1,10 @@
 import Link from 'next/link';
-import { ArrowLeft, ArrowRight, ClipboardList, FileSignature, KeyRound, Mail, Wrench } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ClipboardList, KeyRound, Mail, Wallet, Wrench } from 'lucide-react';
 
 import ResourceHero from '@/components/ResourceHero';
 import { pageMetadata, BUSINESS } from '@/lib/seo';
 import { requestForms } from '@/lib/requestForms';
+import { accountApplication } from '@/lib/accountApplication';
 
 export const metadata = pageMetadata({
   title: 'Submit a Request | Teracom Solutions',
@@ -12,12 +13,17 @@ export const metadata = pageMetadata({
   path: '/resources/submit-a-request',
 });
 
-const ICONS = { wrench: Wrench, key: KeyRound };
+const ICONS = { wrench: Wrench, key: KeyRound, account: Wallet };
+
+// The account application is not one of the simple request forms -- it
+// branches on entity and account type -- but on this page it is just
+// another card.
+const CARDS = [...requestForms, accountApplication];
 
 export default function SubmitARequestPage() {
   return (
     <main id="main-content">
-      <ResourceHero title="Submit a request" icon={ClipboardList} badges={[Wrench, KeyRound, FileSignature]}>
+      <ResourceHero title="Submit a request" icon={ClipboardList} badges={[Wrench, KeyRound, Wallet]}>
         <p className="lead">
           Book a job, get a recorder unlocked, or open an account. These go straight to the team who does the work.
         </p>
@@ -37,7 +43,7 @@ export default function SubmitARequestPage() {
           </div>
 
           <div className="tools-grid request-grid">
-            {requestForms.map((form) => {
+            {CARDS.map((form) => {
               const Icon = ICONS[form.icon] || ClipboardList;
               return (
                 <Link
@@ -60,25 +66,6 @@ export default function SubmitARequestPage() {
               );
             })}
 
-            {/* Not a link, and not a form: a trade account application
-                includes a personal guarantee, which is not something to
-                collect through a form no solicitor has read. */}
-            <div className="tool-card request-card request-card-static">
-              <span className="tool-card-icon">
-                <FileSignature size={26} strokeWidth={1.75} aria-hidden="true" focusable="false" />
-              </span>
-              <h3>Trade account application</h3>
-              <p>
-                30-day credit or trade cash accounts, for the gear you buy regularly.
-              </p>
-              <span className="tool-card-cta request-card-note">
-                <Mail size={16} strokeWidth={1.9} aria-hidden="true" focusable="false" />
-                <a href={`mailto:${BUSINESS.salesEmail}`}>{BUSINESS.salesEmail}</a>
-              </span>
-              <span className="tool-card-watermark" aria-hidden="true">
-                <FileSignature size={170} strokeWidth={1} />
-              </span>
-            </div>
           </div>
         </div>
       </section>
