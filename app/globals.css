@@ -1895,3 +1895,19 @@ a {
 .section-tight { padding:0 0 18px; }
 .request-back { display:flex; align-items:center; gap:8px; }
 
+/* Submit a request cards. Taller and wider than a tool card: three of them
+   sit on one row on a desktop, and the headings are long enough that they
+   need the full width rather than sharing a line with the icon. */
+.request-grid { grid-template-columns:repeat(auto-fit, minmax(310px, 1fr)); }
+.request-card { min-height:320px; padding:34px; gap:14px; }
+.request-card h3 { font-size:25px; line-height:1.15; }
+.request-card p { font-size:15.5px; line-height:1.6; }
+.request-card .tool-card-icon { width:64px; height:64px; border-radius:19px; }
+/* The static card is information, not a destination -- so it does not lift
+   or glow on hover the way the two real links do. */
+.request-card-static { cursor:default; }
+.request-card-static:hover { border-color:var(--line); transform:none; box-shadow:none; }
+.request-card-note { gap:9px; font-weight:600; }
+.request-card-note a { color:#fff; }
+.request-card-static:hover .tool-card-watermark { color:rgba(255,255,255,.035); transform:none; }
+
