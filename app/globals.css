@@ -1787,3 +1787,14 @@ a {
    82px runs to four lines and pushes itself up behind the header. */
 .hero-home h1.hero-news-headline { font-size: clamp(30px, 3.4vw, 50px); line-height: 1.04; letter-spacing: -.035em; }
 
+/* A store category with no listings yet: a quote offer, not an apology. */
+.category-quote-band {
+  padding: 40px 44px; border-radius: 28px; border: 1px solid var(--line);
+  background: radial-gradient(ellipse at 100% 0%, rgba(255,23,23,.16), transparent 55%), linear-gradient(160deg, rgba(255,255,255,.05), rgba(255,255,255,.012));
+}
+.category-quote-band h2 { margin: 0 0 10px; font-size: clamp(24px, 2.8vw, 34px); line-height: 1.08; letter-spacing: -.03em; }
+.category-quote-band p { margin: 0; color: var(--muted); max-width: 62ch; }
+.category-quote-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 26px; }
+.shop-the-parts-note { display: flex; align-items: center; gap: 8px; margin-top: 26px; }
+@media (max-width: 560px) { .category-quote-band { padding: 28px 24px; } }
+

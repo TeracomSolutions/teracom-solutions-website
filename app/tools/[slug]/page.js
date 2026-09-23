@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation';
+import ShopTheParts from '@/components/ShopTheParts';
 import Link from 'next/link';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import ConfigCalculator from '@/components/tools/ConfigCalculator';
@@ -76,6 +77,8 @@ export default async function ToolPage(props) {
           </p>
         </div>
       </section>
+
+      <ShopTheParts toolSlug={tool.slug} />
     </main>
   );
 }
