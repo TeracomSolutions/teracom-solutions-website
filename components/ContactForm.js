@@ -21,6 +21,7 @@ export default function ContactForm({ preselectedInterest = '', returnTo = '/' }
           <option>Talk to Sales</option>
           <option>Request Demo</option>
           <option>Teracom AI</option>
+          <option>Monitoring</option>
           <option>Technical Consulting</option>
           <option>Teracom Store</option>
           <option>Partnership</option>
