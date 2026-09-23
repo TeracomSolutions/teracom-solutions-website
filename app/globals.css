@@ -27,7 +27,7 @@ a {
   position:sticky;top:0;z-index:50;background:rgba(5,5,5,.8);backdrop-filter:blur(22px);border-bottom:1px solid var(--line);
 }
 .nav-wrap {
-  height:86px;display:flex;align-items:center;justify-content:space-between;gap:28px;
+  height:74px;display:flex;align-items:center;justify-content:space-between;gap:28px;
 }
 .brand img {
   width:245px;height:auto;
@@ -1797,4 +1797,47 @@ a {
 .category-quote-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 26px; }
 .shop-the-parts-note { display: flex; align-items: center; gap: 8px; margin-top: 26px; }
 @media (max-width: 560px) { .category-quote-band { padding: 28px 24px; } }
+
+/* --- Header utility row -------------------------------------------------
+   Search, account and cart moved off the navigation line. The phone number
+   rides along, because for a trade buyer it is the most valuable link on the
+   site and it used to be two clicks away on every page. */
+.header-utility { border-bottom:1px solid var(--line); background:rgba(0,0,0,.35); }
+.header-utility-inner {
+  min-height:42px; display:flex; align-items:center; justify-content:space-between;
+  gap:20px; font-size:13px; color:var(--muted);
+}
+.header-utility-contact { display:flex; align-items:center; gap:20px; }
+.header-utility-contact a, .header-utility-hours { display:inline-flex; align-items:center; gap:7px; color:inherit; }
+.header-utility-contact a:hover { color:#fff; }
+.header-utility-actions { display:flex; align-items:center; gap:16px; }
+/* The cart button was sized for the tall nav row. */
+.header-utility-actions .cart-indicator { width:36px; height:36px; border-radius:10px; }
+
+/* --- Grouped "What We Do" panel ---------------------------------------- */
+.nav-dropdown-panel-wide { max-width:min(940px, calc(100vw - 48px)); }
+.nav-dropdown:hover .nav-dropdown-panel-wide,
+.nav-dropdown:focus-within .nav-dropdown-panel-wide { display:block; }
+.nav-dropdown-card {
+  display:grid; grid-template-columns:repeat(4, minmax(140px, 1fr)); gap:24px 30px;
+  background:#0d0d0d; border:1px solid var(--line); border-radius:18px; padding:24px 28px;
+  box-shadow:0 30px 70px rgba(0,0,0,.55);
+}
+.nav-dropdown-group { display:flex; flex-direction:column; gap:9px; }
+.nav-dropdown-heading {
+  font-size:11px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; color:var(--soft);
+}
+.nav-dropdown-card a {
+  white-space:normal; background:none; border:0; padding:0; border-radius:0;
+  color:#d7d7d7; opacity:.9!important; font-size:13.5px; line-height:1.35;
+}
+.nav-dropdown-card a:hover { background:none; color:#fff; }
+
+@media (max-width:1180px) { .header-utility-hours { display:none; } }
+@media (max-width:860px) {
+  /* MobileNav takes over the navigation; the utility row stays, because the
+     phone number matters most on a phone. */
+  .header-utility-inner { min-height:0; padding:8px 0; font-size:12px; }
+  .header-utility-actions { gap:12px; }
+}
 

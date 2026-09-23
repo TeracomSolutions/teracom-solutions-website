@@ -53,6 +53,7 @@ export default function MobileNav() {
           </form>
           <ul className="mobile-nav-links">
             <li><Link href="/services" onClick={close}>What We Do</Link></li>
+            <li><Link href="/monitoring" onClick={close}>Monitoring</Link></li>
             <li><Link href="/securityos-ai" onClick={close}>Teracom AI</Link></li>
             <li><Link href="/brands" onClick={close}>Brands</Link></li>
             <li><Link href="/store" onClick={close}>Store</Link></li>
