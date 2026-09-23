@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { ArrowLeft, ArrowRight, CircleCheckBig, Plus, Trash2, TriangleAlert } from 'lucide-react';
 
 import SignaturePad from '@/components/SignaturePad';
+import TurnstileWidget from '@/components/TurnstileWidget';
 import { track } from '@/lib/gtag';
 import {
   accountApplication,
@@ -82,6 +83,7 @@ export default function AccountApplicationForm() {
   const [values, setValues] = useState({});
   const [directors, setDirectors] = useState([{}]);
   const [index, setIndex] = useState(0);
+  const [turnstileToken, setTurnstileToken] = useState('');
   const [status, setStatus] = useState('idle');
   const [error, setError] = useState('');
 
@@ -130,7 +132,7 @@ export default function AccountApplicationForm() {
       const res = await fetch('/api/account-application', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ values, directors }),
+        body: JSON.stringify({ values, directors, turnstileToken }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || 'We could not send that just now.');
@@ -272,6 +274,10 @@ export default function AccountApplicationForm() {
             ) : null}
           </div>
         ) : null}
+
+        {/* Only on the last step: a token expires in minutes, and this
+            form takes longer than that to fill in. */}
+        {isLast ? <TurnstileWidget onToken={setTurnstileToken} /> : null}
 
         <div className="account-actions">
           {position > 0 ? (
