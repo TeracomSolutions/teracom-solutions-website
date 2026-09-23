@@ -1845,3 +1845,51 @@ a {
 .footer-hours { margin-top:10px; color:var(--soft); font-size:14px; }
 .footer-contact .footer-phone, .footer-contact .footer-hours { display:flex; }
 
+/* --- Request forms ------------------------------------------------------ */
+.request-layout { display:grid; grid-template-columns:320px minmax(0,1fr); gap:56px; align-items:start; }
+.request-aside { position:sticky; top:150px; }
+.request-aside .copy-block p { font-size:15px; }
+.request-assurance { display:flex; align-items:flex-start; gap:8px; }
+.request-assurance svg, .request-aside .form-note svg { flex:none; margin-top:3px; }
+.request-charges { margin-top:26px; padding:22px 24px; border:1px solid var(--line); border-radius:18px; }
+.request-charges h2 { margin:0 0 14px; font-size:13px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+.request-charges dl { margin:0; display:grid; gap:14px; }
+.request-charges dt { font-size:14px; color:#d7d7d7; }
+.request-charges dd { margin:2px 0 0; font-weight:700; }
+.request-form { display:grid; gap:20px; max-width:640px; }
+.request-form .field { margin:0; }
+.request-form .field-half { max-width:220px; }
+.request-form-heading {
+  margin:18px 0 0; padding-top:22px; border-top:1px solid var(--line);
+  font-size:13px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; color:var(--muted);
+}
+.request-form-heading:first-child { margin-top:0; padding-top:0; border-top:0; }
+.field-required { color:#ff4b4b; }
+.request-radios { display:grid; gap:10px; }
+.request-radio, .request-declaration { display:flex; align-items:flex-start; gap:12px; cursor:pointer; font-size:15px; color:#d6d6d6; line-height:1.5; }
+.request-radio input, .request-declaration input { margin-top:3px; flex:none; width:18px; height:18px; accent-color:#ff1717; }
+.request-declaration a { color:#fff; }
+.request-submit { justify-self:start; margin-top:6px; }
+.request-failed {
+  padding:20px 22px; border-radius:16px; border:1px solid rgba(255,23,23,.45);
+  background:rgba(255,23,23,.07); display:grid; gap:12px;
+}
+.request-failed p { margin:0; display:flex; align-items:flex-start; gap:9px; }
+.request-failed svg { flex:none; margin-top:3px; color:#ff4b4b; }
+.request-failed a { color:#fff; }
+/* Their own words, given back to them. Nobody should have to retype a fault
+   description because a server was down. */
+.request-recovery {
+  width:100%; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:12.5px; line-height:1.55;
+  padding:14px 16px; border-radius:12px; border:1px solid var(--line); background:rgba(0,0,0,.35); color:#d6d6d6;
+}
+.request-result { max-width:640px; padding:34px 36px; border:1px solid var(--line); border-radius:24px; background:rgba(255,255,255,.035); }
+.request-result-icon { display:inline-grid; place-items:center; width:52px; height:52px; border-radius:15px; color:#4ade80; border:1px solid rgba(74,222,128,.4); background:rgba(74,222,128,.08); }
+.request-result h2 { margin:20px 0 10px; font-size:26px; letter-spacing:-.02em; }
+.request-result p { margin:0; color:var(--muted); }
+.request-result a { color:#fff; }
+@media (max-width:980px) {
+  .request-layout { grid-template-columns:1fr; gap:34px; }
+  .request-aside { position:static; }
+}
+

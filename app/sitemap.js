@@ -5,6 +5,7 @@ import { aiCapabilities } from '@/lib/aiCapabilities';
 import { resourcesSections } from '@/lib/resourcesSections';
 import { services } from '@/lib/services';
 import { monitoringServices } from '@/lib/monitoring';
+import { requestForms } from '@/lib/requestForms';
 import { tools } from '@/lib/tools';
 import { absoluteUrl } from '@/lib/seo';
 
@@ -95,6 +96,12 @@ export default function sitemap() {
       path: `/monitoring/${service.slug}`,
       changeFrequency: 'monthly',
       priority: 0.8,
+    })),
+
+    ...requestForms.map((form) => ({
+      path: `/resources/submit-a-request/${form.slug}`,
+      changeFrequency: 'yearly',
+      priority: 0.6,
     })),
 
     ...tools.map((tool) => ({
