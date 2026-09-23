@@ -1782,3 +1782,8 @@ a {
 .faq-list details p { margin: 14px 0 0; color: var(--muted); }
 .cta-band-actions { display: flex; flex: none; flex-wrap: wrap; gap: 12px; }
 
+/* A news headline is not a marketing headline. The hero's display size is
+   built for six or seven chosen words; a real 70-character news title set at
+   82px runs to four lines and pushes itself up behind the header. */
+.hero-home h1.hero-news-headline { font-size: clamp(30px, 3.4vw, 50px); line-height: 1.04; letter-spacing: -.035em; }
+

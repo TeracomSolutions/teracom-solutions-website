@@ -45,7 +45,7 @@ export default function HeroBanner({ slides }) {
       <div className="container hero-layout">
         <div className="hero-copy">
           <div className="eyebrow">{currentSlide.eyebrow}</div>
-          <h1>{currentSlide.headline}</h1>
+          <h1 className={currentSlide.isNews ? 'hero-news-headline' : undefined}>{currentSlide.headline}</h1>
           <p className="lead">{currentSlide.body}</p>
           <div className="hero-actions">
             {/* A news slide's CTA is the publisher's own article. next/link
@@ -77,14 +77,30 @@ export default function HeroBanner({ slides }) {
               preloading all of them would compete for bandwidth with the one
               that actually counts. `sizes` stops the browser downloading a
               1400px-wide asset to fill a ~55% column on desktop. */}
-          <Image
-            src={currentSlide.image}
-            alt={currentSlide.imageAlt}
-            width={1400}
-            height={900}
-            priority={activeIndex === 0}
-            sizes="(max-width: 980px) 100vw, 55vw"
-          />
+          {currentSlide.imageExternal ? (
+            /* A news story's own image, served from the publisher's CDN.
+               next/image would need every one of those hosts enumerated in
+               next.config remotePatterns, and they change whenever a
+               publisher changes host. */
+            /* eslint-disable-next-line @next/next/no-img-element */
+            <img
+              src={currentSlide.image}
+              alt={currentSlide.imageAlt}
+              width={1400}
+              height={900}
+              loading={activeIndex === 0 ? 'eager' : 'lazy'}
+              decoding="async"
+            />
+          ) : (
+            <Image
+              src={currentSlide.image}
+              alt={currentSlide.imageAlt}
+              width={1400}
+              height={900}
+              priority={activeIndex === 0}
+              sizes="(max-width: 980px) 100vw, 55vw"
+            />
+          )}
         </div>
       </div>
       <div className="hero-controls">
