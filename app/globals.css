@@ -1949,4 +1949,5 @@ a {
 .signature-clear { padding:0; background:none; border:0; color:var(--soft); font-size:13px; cursor:pointer; }
 .signature-clear:hover:not(:disabled) { color:#ff4b4b; }
 .signature-clear:disabled { opacity:.4; cursor:default; }
+.turnstile-field { margin:4px 0; min-height:1px; }
 

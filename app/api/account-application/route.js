@@ -9,6 +9,7 @@ import {
   visibleDeclarations,
   visibleSteps,
 } from '@/lib/accountApplication';
+import { TURNSTILE_FAILED_MESSAGE, verifyTurnstile } from '@/lib/turnstile';
 
 // A trade account application.
 //
@@ -71,6 +72,12 @@ export async function POST(req) {
   const email = String(values.bizEmail || values.p1Email || values.acctEmail || '').trim();
   if (!email) {
     return NextResponse.json({ error: 'We need an email address to reply to.' }, { status: 400 });
+  }
+
+  const human = await verifyTurnstile(body?.turnstileToken, clientIpFromRequest(req));
+  if (!human.ok) {
+    console.warn('Account application failed Turnstile', human.reason);
+    return NextResponse.json({ error: TURNSTILE_FAILED_MESSAGE }, { status: 400 });
   }
 
   const message = formatApplication(values, directors);

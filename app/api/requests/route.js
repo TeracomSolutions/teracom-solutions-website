@@ -4,6 +4,7 @@ import { ApiError } from '@/lib/api/client';
 import { submitLead } from '@/lib/api/leads';
 import { checkRateLimit, clientIpFromRequest, rateLimitResponse } from '@/lib/rateLimit';
 import { findRequestForm, formatSubmission, valueFields } from '@/lib/requestForms';
+import { TURNSTILE_FAILED_MESSAGE, verifyTurnstile } from '@/lib/turnstile';
 
 // Service and password-reset requests.
 //
@@ -67,6 +68,12 @@ export async function POST(req) {
     const [first, ...rest] = parts;
     const error = `${first.charAt(0).toUpperCase()}${first.slice(1)}${rest.length ? `, and ${rest.join(', ')}` : ''}.`;
     return NextResponse.json({ error }, { status: 400 });
+  }
+
+  const human = await verifyTurnstile(body?.turnstileToken, clientIpFromRequest(req));
+  if (!human.ok) {
+    console.warn('Request failed Turnstile', form.slug, human.reason);
+    return NextResponse.json({ error: TURNSTILE_FAILED_MESSAGE }, { status: 400 });
   }
 
   const message = formatSubmission(form, values);

@@ -6,6 +6,7 @@ import { CircleCheckBig, TriangleAlert } from 'lucide-react';
 
 import { track } from '@/lib/gtag';
 import { formatSubmission, valueFields } from '@/lib/requestForms';
+import TurnstileWidget from '@/components/TurnstileWidget';
 
 // Renders any form described in lib/requestForms.js.
 //
@@ -77,6 +78,7 @@ function Field({ field, value, onChange }) {
 
 export default function RequestForm({ form }) {
   const [values, setValues] = useState({});
+  const [turnstileToken, setTurnstileToken] = useState('');
   const [status, setStatus] = useState('idle');
   const [error, setError] = useState('');
 
@@ -91,7 +93,7 @@ export default function RequestForm({ form }) {
       const res = await fetch('/api/requests', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ form: form.slug, values }),
+        body: JSON.stringify({ form: form.slug, values, turnstileToken }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || 'We could not send that just now.');
@@ -172,6 +174,8 @@ export default function RequestForm({ form }) {
           />
         </div>
       ) : null}
+
+      <TurnstileWidget onToken={setTurnstileToken} />
 
       <button type="submit" className="btn btn-primary request-submit" disabled={status === 'sending'}>
         {status === 'sending' ? 'Sending…' : `Send ${form.title.toLowerCase()}`}
