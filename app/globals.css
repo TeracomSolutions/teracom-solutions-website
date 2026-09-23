@@ -1807,9 +1807,8 @@ a {
   min-height:42px; display:flex; align-items:center; justify-content:space-between;
   gap:20px; font-size:13px; color:var(--muted);
 }
-.header-utility-contact { display:flex; align-items:center; gap:20px; }
-.header-utility-contact a, .header-utility-hours { display:inline-flex; align-items:center; gap:7px; color:inherit; }
-.header-utility-contact a:hover { color:#fff; }
+/* Only the account controls live up here now. */
+.header-utility-inner { justify-content:flex-end; }
 .header-utility-actions { display:flex; align-items:center; gap:16px; }
 /* The cart button was sized for the tall nav row. */
 .header-utility-actions .cart-indicator { width:36px; height:36px; border-radius:10px; }
@@ -1833,11 +1832,16 @@ a {
 }
 .nav-dropdown-card a:hover { background:none; color:#fff; }
 
-@media (max-width:1180px) { .header-utility-hours { display:none; } }
 @media (max-width:860px) {
   /* MobileNav takes over the navigation; the utility row stays, because the
      phone number matters most on a phone. */
   .header-utility-inner { min-height:0; padding:8px 0; font-size:12px; }
   .header-utility-actions { gap:12px; }
 }
+
+/* Phone and opening hours, with the address and ABN. */
+.footer-phone, .footer-hours { display:inline-flex; align-items:center; gap:8px; }
+.footer-phone svg, .footer-hours svg { flex:none; opacity:.75; }
+.footer-hours { margin-top:10px; color:var(--soft); font-size:14px; }
+.footer-contact .footer-phone, .footer-contact .footer-hours { display:flex; }
 
