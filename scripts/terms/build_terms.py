@@ -4,6 +4,7 @@ Legal text is not retyped. The document on Z: is the source of truth, and
 this script is how it reaches the site, so a reviewer can re-run it against a
 new version rather than diffing prose by hand.
 """
+import hashlib
 import json
 import re
 import sys
@@ -182,6 +183,17 @@ def pair_up(cells):
 def main():
     parts, preamble, annexure, version_history = parse(docx_paragraphs(DOCX))
 
+    # The hash covers the document's own text, not the rendered page.
+    # Hashing the published HTML would change on every deploy, because the
+    # page carries the site header, footer and asset fingerprints -- so an
+    # acceptance record would appear to point at a different document every
+    # time an unrelated part of the site shipped.
+    canonical = json.dumps(
+        {'preamble': preamble, 'parts': parts, 'annexure': annexure, 'history': version_history},
+        ensure_ascii=False, sort_keys=True, separators=(',', ':'),
+    )
+    content_hash = hashlib.sha256(canonical.encode('utf-8')).hexdigest()
+
     header = '''// Terms and Conditions of Trade v3.0.
 //
 // GENERATED -- do not edit by hand. Produced by scratchpad/build_terms.py from
@@ -200,6 +212,12 @@ export const TERMS_ABN = '49 107 979 546';
 export const TERMS_PDF = '/legal/Teracom-Terms-and-Conditions-v3.0.pdf';
 export const TERMS_PDF_NAME = 'Teracom-Terms-and-Conditions-v3.0.pdf';
 
+// sha256 of the document's own text, not of the rendered page. This is what
+// an acceptance record stores to prove WHAT the customer was shown, so it has
+// to change when and only when the wording changes.
+export const TERMS_CONTENT_SHA256 = '__CONTENT_HASH__';
+export const TERMS_SOURCE_FILE = '__SOURCE_FILE__';
+
 '''
 
     body = (
@@ -212,6 +230,8 @@ export const TERMS_PDF_NAME = 'Teracom-Terms-and-Conditions-v3.0.pdf';
         '}\n'
     )
 
+    header = header.replace('__CONTENT_HASH__', content_hash)
+    header = header.replace('__SOURCE_FILE__', Path(DOCX).name)
     OUT.write_text(header + body, encoding='utf-8')
     print(f'{OUT}: {len(parts)} parts, {sum(len(p["sections"]) for p in parts)} sections, '
           f'{len(annexure)} acceptance-record rows')
