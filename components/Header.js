@@ -1,15 +1,12 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { cookies } from 'next/headers';
-import { Clock, Phone } from 'lucide-react';
-
 import MobileNav from './MobileNav';
 import CartIndicator from './CartIndicator';
 import HeaderSearch from './HeaderSearch';
 import { resourcesSections } from '@/lib/resourcesSections';
 import { monitoringServices } from '@/lib/monitoring';
 import { services, serviceGroups } from '@/lib/services';
-import { BUSINESS } from '@/lib/seo';
 
 import { CUSTOMER_ACCESS_TOKEN_COOKIE } from '@/lib/customerSession';
 import { getCurrentCustomer } from '@/lib/api/customerAuth';
@@ -19,10 +16,11 @@ import { ApiError } from '@/lib/api/client';
 //
 // Everything used to sit on a single line: seven nav items plus search, cart,
 // sign-in and a button, and adding Monitoring pushed it past the point where
-// it reads as navigation. Splitting the account and search controls into a
-// slim utility row leaves the main row for navigation alone, and buys space
-// for the phone number -- which for a trade business is the highest-value
-// link on the site and was previously only reachable via /contact.
+// it reads as navigation. Splitting the account controls into a slim utility
+// row leaves the main row for navigation alone.
+//
+// The phone number and opening hours were briefly up here too; Robert moved
+// them to the footer on 2026-09-23, where they sit with the address and ABN.
 
 export default async function Header() {
   const token = (await cookies()).get(CUSTOMER_ACCESS_TOKEN_COOKIE)?.value;
@@ -43,16 +41,6 @@ export default async function Header() {
     <header className="site-header">
       <div className="header-utility">
         <div className="container header-utility-inner">
-          <div className="header-utility-contact">
-            <a href={`tel:${BUSINESS.telephone}`}>
-              <Phone size={14} strokeWidth={1.9} aria-hidden="true" focusable="false" />
-              {BUSINESS.telephoneDisplay}
-            </a>
-            <span className="header-utility-hours">
-              <Clock size={14} strokeWidth={1.9} aria-hidden="true" focusable="false" />
-              Mon&ndash;Fri {BUSINESS.openingHours.opens}&ndash;{BUSINESS.openingHours.closes}
-            </span>
-          </div>
           <div className="header-utility-actions">
             <HeaderSearch />
             {customer ? (

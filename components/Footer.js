@@ -1,5 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import { Clock, Phone } from 'lucide-react';
+
 import AdminEntryPoint from './AdminEntryPoint';
 import { BUSINESS } from '@/lib/seo';
 
@@ -130,8 +132,15 @@ export default function Footer() {
           {BUSINESS.legalName}<br/>
           1B Yazaki Way, Carrum Downs<br/>
           VIC 3201, Australia<br/>
-          <a href="tel:+61397082685">+61 3 9708 2685</a><br/>
+          <a className="footer-phone" href={`tel:${BUSINESS.telephone}`}>
+            <Phone size={15} strokeWidth={1.9} aria-hidden="true" focusable="false" />
+            {BUSINESS.telephoneDisplay}
+          </a>
           <a href="mailto:sales@teracomsolutions.com.au">sales@teracomsolutions.com.au</a>
+          <span className="footer-hours">
+            <Clock size={15} strokeWidth={1.9} aria-hidden="true" focusable="false" />
+            Mon&ndash;Fri {BUSINESS.openingHours.opens}&ndash;{BUSINESS.openingHours.closes}
+          </span>
           {/* A business buyer must withhold 47% of a payment over $75 ex GST
               to a supplier who hasn't quoted an ABN, so a visible, verifiable
               ABN removes a real obstacle rather than just looking reputable. */}
