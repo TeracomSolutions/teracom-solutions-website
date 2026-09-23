@@ -1911,3 +1911,42 @@ a {
 .request-card-note a { color:#fff; }
 .request-card-static:hover .tool-card-watermark { color:rgba(255,255,255,.035); transform:none; }
 
+/* --- Trade account application ------------------------------------------ */
+.account-progress { margin-bottom:34px; flex-wrap:wrap; }
+.account-application .request-form { max-width:680px; }
+.account-actions { display:flex; flex-wrap:wrap; gap:12px; align-items:center; margin-top:8px; }
+.account-actions .btn { display:inline-flex; align-items:center; gap:9px; }
+.account-guarantee-note {
+  padding:16px 18px; border-radius:14px; border:1px solid var(--line);
+  background:rgba(255,255,255,.03); line-height:1.6;
+}
+.director-list { display:grid; gap:18px; }
+.director {
+  position:relative; margin:0; padding:22px 24px; border:1px solid var(--line); border-radius:18px;
+  display:grid; gap:16px; background:rgba(255,255,255,.02);
+}
+.director legend {
+  padding:0 8px; font-size:12px; font-weight:800; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--muted);
+}
+.director-remove {
+  justify-self:start; display:inline-flex; align-items:center; gap:7px; padding:0;
+  background:none; border:0; color:var(--soft); font-size:13px; cursor:pointer;
+}
+.director-remove:hover { color:#ff4b4b; }
+
+/* Signature pad. touch-action is load-bearing: without it a phone scrolls
+   the page instead of drawing. */
+.signature-field { display:grid; gap:10px; }
+.signature-label { font-size:13px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
+.signature-canvas {
+  width:100%; height:170px; touch-action:none; cursor:crosshair; border-radius:14px;
+  border:1px dashed var(--line); background:rgba(0,0,0,.35);
+}
+.signature-canvas:hover { border-color:rgba(255,23,23,.45); }
+.signature-actions { display:flex; align-items:center; justify-content:space-between; gap:14px; }
+.signature-actions .form-note { margin:0; }
+.signature-clear { padding:0; background:none; border:0; color:var(--soft); font-size:13px; cursor:pointer; }
+.signature-clear:hover:not(:disabled) { color:#ff4b4b; }
+.signature-clear:disabled { opacity:.4; cursor:default; }
+
