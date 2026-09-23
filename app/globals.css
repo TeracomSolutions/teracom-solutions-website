@@ -1761,3 +1761,24 @@ a {
 @media (max-width: 520px) {
   .product-spec-list > div { grid-template-columns: 1fr; gap: 4px; }
 }
+
+/* Monitoring: connection paths and the FAQ list. */
+.monitoring-paths { margin: 0; display: grid; gap: 0; }
+.monitoring-paths > div { padding: 22px 0; border-bottom: 1px solid var(--line); }
+.monitoring-paths > div:first-child { padding-top: 0; }
+.monitoring-paths dt { margin: 0 0 8px; font-size: 18px; font-weight: 700; letter-spacing: -.01em; }
+.monitoring-paths dd { margin: 0; color: var(--muted); }
+.faq-list { display: grid; gap: 14px; }
+.faq-list details {
+  border: 1px solid var(--line); border-radius: 18px; padding: 20px 24px;
+  background: linear-gradient(160deg, rgba(255,255,255,.05), rgba(255,255,255,.012));
+  transition: border-color .25s ease;
+}
+.faq-list details[open] { border-color: rgba(255,23,23,.35); }
+.faq-list summary { cursor: pointer; font-weight: 700; font-size: 17px; letter-spacing: -.01em; list-style: none; }
+.faq-list summary::-webkit-details-marker { display: none; }
+.faq-list summary::after { content: "+"; float: right; color: #ff4b4b; font-weight: 400; font-size: 22px; line-height: 1; }
+.faq-list details[open] summary::after { content: "\2212"; }
+.faq-list details p { margin: 14px 0 0; color: var(--muted); }
+.cta-band-actions { display: flex; flex: none; flex-wrap: wrap; gap: 12px; }
+

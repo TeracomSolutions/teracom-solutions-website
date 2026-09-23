@@ -4,6 +4,7 @@ import { products } from '@/lib/products';
 import { aiCapabilities } from '@/lib/aiCapabilities';
 import { resourcesSections } from '@/lib/resourcesSections';
 import { services } from '@/lib/services';
+import { monitoringServices } from '@/lib/monitoring';
 import { tools } from '@/lib/tools';
 import { absoluteUrl } from '@/lib/seo';
 
@@ -37,6 +38,7 @@ const staticRoutes = [
   { path: '/store', changeFrequency: 'weekly', priority: 0.9 },
   { path: '/brands', changeFrequency: 'monthly', priority: 0.8 },
   { path: '/services', changeFrequency: 'monthly', priority: 0.9 },
+  { path: '/monitoring', changeFrequency: 'monthly', priority: 0.9 },
   { path: '/contact', changeFrequency: 'yearly', priority: 0.7 },
   { path: '/tools', changeFrequency: 'monthly', priority: 0.6 },
   { path: '/about', changeFrequency: 'monthly', priority: 0.7 },
@@ -83,6 +85,14 @@ export default function sitemap() {
     // Service pages -- the main target for "<service> installation <city>" searches.
     ...services.map((service) => ({
       path: `/services/${service.slug}`,
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    })),
+
+    // Monitoring services -- the target for "alarm monitoring <city>" and
+    // "back to base monitoring" searches.
+    ...monitoringServices.map((service) => ({
+      path: `/monitoring/${service.slug}`,
       changeFrequency: 'monthly',
       priority: 0.8,
     })),

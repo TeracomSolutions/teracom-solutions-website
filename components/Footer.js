@@ -116,6 +116,7 @@ export default function Footer() {
           <Link href="/">Home</Link>
           <Link href="/about">About</Link>
           <Link href="/services">Services</Link>
+          <Link href="/monitoring">Monitoring</Link>
           <Link href="/securityos-ai">Teracom AI</Link>
           <Link href="/brands">Brands</Link>
           <Link href="/store">Teracom Store</Link>
