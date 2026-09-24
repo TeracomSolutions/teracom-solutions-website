@@ -49,14 +49,14 @@ export default async function CheckoutCompletePage(props) {
             <p className="lead">
               {session
                 ? 'Your payment was not completed, so nothing has been charged and your cart is still here.'
-                : 'We could not find that order. If you have been charged, nothing is lost -- call us and we will sort it out.'}
+                : 'We could not find that order. If you have been charged, nothing is lost -- email sales@teracomsolutions.com.au and we will sort it out.'}
             </p>
             <p className="cart-empty-cta">
               <Link className="btn btn-primary" href="/cart">
                 Back to your cart <ArrowRight size={18} strokeWidth={2} aria-hidden="true" />
               </Link>{' '}
-              <a className="btn btn-secondary" href="tel:+61397082685">
-                Call +61 3 9708 2685
+              <a className="btn btn-secondary" href="mailto:sales@teracomsolutions.com.au">
+                Email sales@teracomsolutions.com.au
               </a>
             </p>
             <p className="form-note checkout-assurance">

@@ -46,7 +46,7 @@ export default function StructuredData() {
       },
       address: postalAddress,
       email: BUSINESS.salesEmail,
-      telephone: BUSINESS.telephone,
+      ...(BUSINESS.telephone ? { telephone: BUSINESS.telephone } : {}),
       // Links this site's entity to its verified social profiles -- one of the
       // few signals that reliably helps Google consolidate a brand's identity
       // into a single Knowledge Panel rather than several partial ones.
@@ -60,7 +60,7 @@ export default function StructuredData() {
         {
           '@type': 'ContactPoint',
           contactType: 'sales',
-          telephone: BUSINESS.telephone,
+          ...(BUSINESS.telephone ? { telephone: BUSINESS.telephone } : {}),
           email: BUSINESS.salesEmail,
           areaServed: 'AU',
           availableLanguage: 'en-AU',
@@ -74,7 +74,7 @@ export default function StructuredData() {
       url: SITE_ORIGIN,
       image: absoluteUrl('/assets/teracom-logo.png'),
       address: postalAddress,
-      telephone: BUSINESS.telephone,
+      ...(BUSINESS.telephone ? { telephone: BUSINESS.telephone } : {}),
       email: BUSINESS.salesEmail,
       sameAs: BUSINESS.sameAs,
       parentOrganization: { '@id': ORGANISATION_ID },

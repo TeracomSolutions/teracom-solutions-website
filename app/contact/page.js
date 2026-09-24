@@ -8,7 +8,7 @@ import { BUSINESS, SITE_ORIGIN, absoluteUrl, pageMetadata } from '@/lib/seo';
 
 export const metadata = pageMetadata({
   title: 'Contact Teracom Solutions | Carrum Downs, Melbourne',
-  description: 'Contact Teracom Solutions for technology design, supply, installation and support, software and integration, or Teracom AI. Showroom at 1B Yazaki Way, Carrum Downs VIC. Phone +61 3 9708 2685.',
+  description: 'Contact Teracom Solutions for technology design, supply, installation and support, software and integration, or Teracom AI. Showroom at 1B Yazaki Way, Carrum Downs VIC. Email sales@teracomsolutions.com.au.',
   path: '/contact',
 });
 
@@ -72,7 +72,6 @@ export default async function ContactPage(props) {
             <address className="contact-address">
               {BUSINESS.streetAddress}, {BUSINESS.addressLocality}<br />
               {BUSINESS.addressRegion} {BUSINESS.postalCode}, Australia<br />
-              <a href={`tel:${BUSINESS.telephone}`}>{BUSINESS.telephoneDisplay}</a><br />
               Sales: <a href={`mailto:${BUSINESS.salesEmail}`}>{BUSINESS.salesEmail}</a>
             </address>
 
