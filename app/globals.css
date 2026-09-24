@@ -1954,4 +1954,17 @@ a {
 .auth-sent { background: rgba(34,197,94,.08); border: 1px solid rgba(34,197,94,.35);
   border-radius: 10px; padding: 14px 16px; margin: 0 0 18px; }
 .field-hint { display: block; color: var(--muted); margin-top: 6px; font-size: .85rem; }
+.coupon-form { margin:18px 0 4px; }
+.coupon-form label { display:block; font-size:.85rem; color:var(--muted); margin-bottom:6px; }
+.coupon-row { display:flex; gap:8px; }
+.coupon-row input { flex:1; min-width:0; text-transform:uppercase; }
+.coupon-apply { white-space:nowrap; padding-inline:18px; }
+.coupon-error { color:#fca5a5; font-size:.85rem; margin:8px 0 0; }
+.coupon-applied { display:flex; align-items:center; gap:9px; margin:18px 0 4px;
+  padding:11px 13px; border:1px solid rgba(34,197,94,.35);
+  background:rgba(34,197,94,.08); border-radius:10px; font-size:.9rem; }
+.coupon-applied-text { flex:1; min-width:0; }
+.coupon-remove { background:none; border:0; color:var(--muted); cursor:pointer;
+  padding:4px; line-height:0; border-radius:6px; }
+.coupon-remove:hover { color:var(--text); background:rgba(255,255,255,.07); }
 

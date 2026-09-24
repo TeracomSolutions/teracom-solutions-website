@@ -24,6 +24,7 @@ import {
   Wrench,
 } from 'lucide-react';
 import { useCart } from '@/lib/cart-context';
+import CouponField from '@/components/CouponField';
 import { formatMoney, memberPriceCents } from '@/lib/products';
 import StripeTrustBadge from '@/components/StripeTrustBadge';
 
@@ -78,7 +79,7 @@ function Progress({ current }) {
 }
 
 export default function CartView({ isMember = false, shippingCents = 1500 }) {
-  const { lines, totalItems, totalCents: rrpTotalCents, updateQuantity, removeItem } = useCart();
+  const { lines, totalItems, totalCents: rrpTotalCents, updateQuantity, removeItem, coupon } = useCart();
   // Signed-in customers see the member price they'll actually be charged at
   // checkout; everyone else sees RRP (the cookie is only a display hint --
   // /api/checkout/cart verifies the session before charging).
@@ -86,7 +87,14 @@ export default function CartView({ isMember = false, shippingCents = 1500 }) {
   const subtotalCents = lines.reduce((sum, l) => sum + l.quantity * unitCents(l.product), 0);
   const savingsCents = isMember ? rrpTotalCents - subtotalCents : 0;
   const needsShipping = lines.some((l) => l.product.type === 'hardware');
-  const totalCents = subtotalCents + (needsShipping ? shippingCents : 0);
+  // Capped at the goods value: a discount must not eat into the shipping
+  // line or produce a negative total. The checkout route applies the same
+  // cap server-side, which is the one that counts.
+  // Members only, matching the field below: a code left in storage from a
+  // previous session must not put a discount line on a guest cart that has
+  // no way to apply or remove it.
+  const discountCents = isMember && coupon ? Math.min(coupon.discountCents || 0, subtotalCents) : 0;
+  const totalCents = subtotalCents - discountCents + (needsShipping ? shippingCents : 0);
   const gstCents = Math.round(totalCents / 11);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -200,6 +208,12 @@ export default function CartView({ isMember = false, shippingCents = 1500 }) {
                     <dd>−{formatMoney(savingsCents)}</dd>
                   </div>
                 ) : null}
+                {discountCents > 0 ? (
+                  <div className="cart-savings">
+                    <dt>{coupon.code}</dt>
+                    <dd>−{formatMoney(discountCents)}</dd>
+                  </div>
+                ) : null}
                 <div>
                   <dt>Shipping</dt>
                   <dd>{needsShipping ? `${formatMoney(shippingCents)} flat rate` : 'Not required'}</dd>
@@ -210,6 +224,11 @@ export default function CartView({ isMember = false, shippingCents = 1500 }) {
                 </div>
               </dl>
               <p className="cart-gst">Includes GST of {formatMoney(gstCents)}. Prices in AUD.</p>
+
+              {/* Members only: a guest cannot check out, and the discount is
+                  computed against the member price they would be charged,
+                  which is not the RRP a guest's cart is showing. */}
+              {isMember ? <CouponField /> : null}
 
               {!isMember ? (
                 <div className="cart-member-note">
@@ -236,7 +255,6 @@ export default function CartView({ isMember = false, shippingCents = 1500 }) {
                 </>
               )}
 
-              <p className="cart-promo">Have a promo code? Enter it on the secure payment page.</p>
 
               <ul className="cart-assurances">
                 <li><ShieldCheck size={17} strokeWidth={1.8} aria-hidden="true" /> Secure payment by Stripe</li>

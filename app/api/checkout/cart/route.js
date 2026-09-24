@@ -7,6 +7,7 @@ import { checkRateLimit, clientIpFromRequest, rateLimitResponse } from '@/lib/ra
 import { cookies } from 'next/headers';
 import { CUSTOMER_ACCESS_TOKEN_COOKIE } from '@/lib/customerSession';
 import { getCurrentCustomer } from '@/lib/api/customerAuth';
+import { validateCoupon } from '@/lib/api/coupons';
 import { ApiError } from '@/lib/api/client';
 
 // Same card-testing rationale as app/api/checkout/route.js -- reuses the
@@ -35,6 +36,10 @@ const CartCheckoutRequest = z.object({
     )
     .min(1)
     .max(20),
+  // Only the code travels from the browser. What it is worth is decided
+  // here, from the catalogue -- a discount amount sent by a client is a
+  // suggestion, not a fact.
+  couponCode: z.string().max(40).optional(),
 });
 
 export async function POST(req) {
@@ -92,6 +97,68 @@ export async function POST(req) {
   const siteUrl = SITE_URL;
   const hasPhysicalItem = lines.some(({ product }) => product.type === 'hardware');
 
+  // --- discount code -------------------------------------------------------
+  // Revalidated here even though the cart already checked it: the cart's
+  // answer is minutes old, the code may have expired, hit its redemption
+  // limit or been switched off since, and the cart contents may have changed
+  // underneath it. The amount is recomputed from the subtotal we just built
+  // out of verified member prices.
+  let discount = null;
+  if (parsed.data.couponCode) {
+    const subtotal = lines.reduce(
+      (sum, { item, product }) => sum + memberPriceCents(product) * item.quantity,
+      0
+    );
+    try {
+      const result = await validateCoupon({
+        code: parsed.data.couponCode,
+        subtotalCents: subtotal,
+        customerId: customer?.id || null,
+        clientIp: clientIpFromRequest(req),
+      });
+      if (result?.valid && result.discount_cents > 0) {
+        discount = { code: result.code, label: result.label, cents: result.discount_cents };
+      } else if (result?.reason) {
+        // Stop rather than quietly charging full price. Someone who typed a
+        // code expects it applied, and finding out afterwards on the receipt
+        // is how a chargeback starts.
+        return NextResponse.json({ error: result.reason }, { status: 400 });
+      }
+    } catch (err) {
+      console.error('Coupon revalidation failed at checkout', err instanceof ApiError ? err.status : err);
+      return NextResponse.json(
+        { error: 'We could not apply that discount code just now. Please remove it or try again shortly.' },
+        { status: 502 }
+      );
+    }
+  }
+
+  // A one-off Stripe coupon carrying the amount our own rules produced.
+  // Stripe does the arithmetic on the session and shows the discount on the
+  // receipt; it never holds the rule. Short-lived and single-use so an
+  // abandoned checkout does not leave a live coupon lying in the account.
+  let stripeCouponId = null;
+  if (discount) {
+    try {
+      const created = await stripe.coupons.create({
+        amount_off: discount.cents,
+        currency: 'aud',
+        duration: 'once',
+        name: discount.label?.slice(0, 40) || discount.code,
+        max_redemptions: 1,
+        redeem_by: Math.floor(Date.now() / 1000) + 24 * 60 * 60,
+        metadata: { teracomCouponCode: discount.code },
+      });
+      stripeCouponId = created.id;
+    } catch (err) {
+      console.error('Could not create the Stripe coupon', err);
+      return NextResponse.json(
+        { error: 'We could not apply that discount code just now. Please remove it or try again shortly.' },
+        { status: 502 }
+      );
+    }
+  }
+
   // Stripe throwing here (bad/missing API key, network error, etc.) must
   // never reach the client as a body-less 500 -- Next's default error
   // handler for an uncaught route exception returns no JSON body, and the
@@ -122,8 +189,13 @@ export async function POST(req) {
       // than from whatever actually brought the customer in.
       ui_mode: 'embedded',
       return_url: `${siteUrl}/checkout/complete?session_id={CHECKOUT_SESSION_ID}`,
-      // Lets customers enter promotion codes created in the Stripe dashboard.
-      allow_promotion_codes: true,
+      // Deliberately NOT allow_promotion_codes. That field puts the codes in
+      // Stripe's dashboard, where nothing else can reason about them -- not
+      // the customer they were issued to, not a trade tier, not Teracom AI.
+      // Our codes live in our own database and Stripe is handed only the
+      // resulting amount. The two settings are mutually exclusive in any
+      // case.
+      ...(stripeCouponId ? { discounts: [{ coupon: stripeCouponId }] } : {}),
       // An installer needs the job reference on the invoice, and a business
       // buyer needs its ABN on it -- chasing either afterwards is the most
       // tedious part of trade bookkeeping. Optional: a consumer buying one
@@ -145,7 +217,24 @@ export async function POST(req) {
       // via stripe.checkout.sessions.listLineItems at webhook time, rather
       // than trying to cram every cart line into session metadata (Stripe
       // caps each metadata value at 500 characters).
-      metadata: { cartCheckout: 'true' },
+      metadata: {
+        cartCheckout: 'true',
+        // Everything the webhook needs to record the redemption without
+        // recomputing the cart. A redemption is written only once Stripe
+        // confirms payment -- a validated code that never becomes a sale
+        // must not consume one, or a single-use code could be burned by
+        // someone who merely opened the checkout page.
+        ...(discount
+          ? {
+              couponCode: discount.code,
+              couponDiscountCents: String(discount.cents),
+              couponSubtotalCents: String(
+                lines.reduce((sum, { item, product }) => sum + memberPriceCents(product) * item.quantity, 0)
+              ),
+            }
+          : {}),
+        ...(customer?.id ? { teracomCustomerId: String(customer.id) } : {}),
+      },
       ...(hasPhysicalItem
         ? {
             shipping_address_collection: { allowed_countries: ['AU'] },
