@@ -49,7 +49,7 @@ export default async function MonitoringServicePage(props) {
       '@type': 'Organization',
       name: SITE_NAME,
       legalName: BUSINESS.legalName,
-      telephone: BUSINESS.telephone,
+      ...(BUSINESS.telephone ? { telephone: BUSINESS.telephone } : {}),
       url: absoluteUrl('/'),
     },
   };
@@ -154,7 +154,7 @@ export default async function MonitoringServicePage(props) {
             <Link className="btn btn-primary" href="/contact?interest=Monitoring">
               Get in touch
             </Link>
-            <a className="btn btn-secondary" href={`tel:${BUSINESS.telephone}`}>
+            <a className="btn btn-secondary" href={`mailto:${BUSINESS.salesEmail}`}>
               Call {BUSINESS.telephoneDisplay}
             </a>
           </div>

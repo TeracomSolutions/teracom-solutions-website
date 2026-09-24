@@ -94,7 +94,7 @@ export async function POST(req) {
     // than being shown a success page for something that never arrived.
     console.error('Request submission failed', form.slug, status, message);
     return NextResponse.json(
-      { error: 'We could not send that just now. Please call us and we will take the details.' },
+      { error: 'We could not send that just now. Please email sales@teracomsolutions.com.au and we will take the details.' },
       { status: 502 }
     );
   }

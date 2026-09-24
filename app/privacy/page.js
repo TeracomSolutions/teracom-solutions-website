@@ -91,7 +91,7 @@ const SECTIONS = [
       'Teracom Solutions Pty Ltd, 1B Yazaki Way, Carrum Downs VIC 3201, Australia.',
       <>
         Email <a href="mailto:sales@teracomsolutions.com.au">sales@teracomsolutions.com.au</a> or phone{' '}
-        <a href="tel:+61397082685">+61 3 9708 2685</a>. You can also use our <Link href="/contact">contact page</Link>.
+        <a href="mailto:support@teracomsolutions.com.au">support@teracomsolutions.com.au</a>. You can also use our <Link href="/contact">contact page</Link>.
       </>,
     ],
   },

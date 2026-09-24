@@ -64,7 +64,7 @@ export default function CheckoutEmbed() {
           available right now.
         </p>
         <p>
-          Call us on <a href="tel:+61397082685">+61 3 9708 2685</a> and we will take the order over the phone.
+          Email <a href="mailto:sales@teracomsolutions.com.au">sales@teracomsolutions.com.au</a> and we will take the order that way.
         </p>
       </div>
     );
@@ -78,7 +78,7 @@ export default function CheckoutEmbed() {
             <TriangleAlert size={18} strokeWidth={1.9} aria-hidden="true" focusable="false" /> {error}
           </p>
           <p>
-            Your cart has not been touched. Call <a href="tel:+61397082685">+61 3 9708 2685</a> if it keeps happening.
+            Your cart has not been touched. Email <a href="mailto:sales@teracomsolutions.com.au">sales@teracomsolutions.com.au</a> if it keeps happening.
           </p>
         </div>
       ) : (

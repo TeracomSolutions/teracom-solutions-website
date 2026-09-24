@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { Clock, Phone } from 'lucide-react';
+import { Clock, Mail, Phone } from 'lucide-react';
 
 import AdminEntryPoint from './AdminEntryPoint';
 import { BUSINESS } from '@/lib/seo';
@@ -132,11 +132,16 @@ export default function Footer() {
           {BUSINESS.legalName}<br/>
           1B Yazaki Way, Carrum Downs<br/>
           VIC 3201, Australia<br/>
-          <a className="footer-phone" href={`tel:${BUSINESS.telephone}`}>
-            <Phone size={15} strokeWidth={1.9} aria-hidden="true" focusable="false" />
-            {BUSINESS.telephoneDisplay}
+          {BUSINESS.telephone ? (
+            <a className="footer-phone" href={`tel:${BUSINESS.telephone}`}>
+              <Phone size={15} strokeWidth={1.9} aria-hidden="true" focusable="false" />
+              {BUSINESS.telephoneDisplay}
+            </a>
+          ) : null}
+          <a className="footer-phone" href={`mailto:${BUSINESS.salesEmail}`}>
+            <Mail size={15} strokeWidth={1.9} aria-hidden="true" focusable="false" />
+            {BUSINESS.salesEmail}
           </a>
-          <a href="mailto:sales@teracomsolutions.com.au">sales@teracomsolutions.com.au</a>
           <span className="footer-hours">
             <Clock size={15} strokeWidth={1.9} aria-hidden="true" focusable="false" />
             Mon&ndash;Fri {BUSINESS.openingHours.opens}&ndash;{BUSINESS.openingHours.closes}
