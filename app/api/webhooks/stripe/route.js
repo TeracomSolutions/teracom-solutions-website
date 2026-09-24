@@ -3,6 +3,7 @@ import { stripe } from '@/lib/stripe';
 import { findProduct, memberPriceCents } from '@/lib/products';
 import { createZohoContact, createZohoInvoice, findZohoContactByEmail } from '@/lib/zoho';
 import { linkLicenceBillingReference } from '@/lib/api/commerceLicensing';
+import { recordCouponRedemption } from '@/lib/api/coupons';
 
 export const runtime = 'nodejs';
 
@@ -91,8 +92,40 @@ async function syncCartCheckoutToZoho(session, email) {
   }
 }
 
+/**
+ * Mark a discount code as used, now that the money has actually moved.
+ *
+ * Deliberately not done when the code is applied in the cart: a code that is
+ * typed but never paid for must not consume a redemption, or a single-use
+ * code could be burned by anyone who opened the checkout page.
+ *
+ * The backend keys this on the Stripe session id, so a redelivered event --
+ * which Stripe makes no promise not to send -- records one redemption, not
+ * two. Failures here are logged and swallowed: the customer has paid, and
+ * throwing would make Stripe retry the whole handler and re-run the Zoho
+ * sync alongside it.
+ */
+async function recordCouponUse(session) {
+  const code = session.metadata?.couponCode;
+  if (!code) return;
+
+  try {
+    await recordCouponRedemption({
+      code,
+      stripeSessionId: session.id,
+      customerId: session.metadata?.teracomCustomerId || null,
+      discountCents: Number(session.metadata?.couponDiscountCents) || 0,
+      subtotalCents: Number(session.metadata?.couponSubtotalCents) || 0,
+    });
+  } catch (error) {
+    console.error('Could not record the coupon redemption for session', session.id, error);
+  }
+}
+
 async function handleCheckoutSessionCompleted(session) {
   const email = session.customer_details?.email;
+
+  await recordCouponUse(session);
 
   if (session.metadata?.cartCheckout === 'true') {
     await syncCartCheckoutToZoho(session, email);

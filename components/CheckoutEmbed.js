@@ -18,7 +18,7 @@ import { AUD, track, toGaItem } from '@/lib/gtag';
 // Stripe rather than from whatever actually brought the customer in.
 
 export default function CheckoutEmbed() {
-  const { lines, totalItems } = useCart();
+  const { lines, totalItems, coupon } = useCart();
   const [error, setError] = useState('');
   const stripePromise = getStripe();
 
@@ -28,6 +28,8 @@ export default function CheckoutEmbed() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         items: lines.map((line) => ({ productId: line.productId, quantity: line.quantity })),
+        // Only the code. The route decides what it is worth.
+        ...(coupon?.code ? { couponCode: coupon.code } : {}),
       }),
     });
     const data = await res.json().catch(() => ({}));
@@ -41,7 +43,7 @@ export default function CheckoutEmbed() {
       items: lines.map((line) => toGaItem(line.product, line.quantity)),
     });
     return data.clientSecret;
-  }, [lines]);
+  }, [lines, coupon]);
 
   if (totalItems === 0) {
     return (
