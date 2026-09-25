@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation';
 import { listCoupons } from '@/lib/api/adminCoupons';
 import { ACCESS_TOKEN_COOKIE } from '@/lib/adminSession';
 import AdminCouponManager from '@/components/AdminCouponManager';
+import AdminNav from '@/components/AdminNav';
 
 export const metadata = {
   title: 'Discount Codes|Teracom Solutions',
@@ -31,6 +32,7 @@ export default async function AdminCouponsPage() {
     <main id="main-content">
       <section className="section section-spacious">
         <div className="container">
+          <AdminNav />
           <h1>Discount codes</h1>
           <p className="lead">
             Create a code a customer can type in the cart. The discount is worked out here, not by

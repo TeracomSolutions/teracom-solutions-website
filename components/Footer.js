@@ -105,15 +105,7 @@ export default function Footer() {
             ))}
           </div>
         </div>
-        <div className="footer-mascot" aria-hidden="true">
-          <Image
-            src="/assets/teracom-mascot-footer.webp"
-            alt=""
-            width={640}
-            height={675}
-            sizes="(max-width: 640px) 170px, 250px"
-          />
-        </div>
+        <AdminEntryPoint />
         <div className="footer-links">
           <Link href="/">Home</Link>
           <Link href="/about">About</Link>
@@ -169,7 +161,7 @@ export default function Footer() {
       </div>
       <div className="container footer-bottom">
         <div className="footer-bottom-left">
-          <AdminEntryPoint />
+          <span>© {new Date().getFullYear()} Teracom Solutions</span>
           <nav className="footer-legal" aria-label="Legal">
             <Link href="/privacy">Privacy Policy</Link>
             <Link href="/terms">Terms & Conditions</Link>
