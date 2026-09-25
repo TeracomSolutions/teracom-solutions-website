@@ -1,10 +1,10 @@
 import Link from 'next/link';
-import { ClipboardList, FileSignature, KeyRound, Phone, Wrench } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ClipboardList, KeyRound, Mail, Wallet, Wrench } from 'lucide-react';
 
 import ResourceHero from '@/components/ResourceHero';
-import ResourcesSubNav from '@/components/ResourcesSubNav';
 import { pageMetadata, BUSINESS } from '@/lib/seo';
 import { requestForms } from '@/lib/requestForms';
+import { accountApplication } from '@/lib/accountApplication';
 
 export const metadata = pageMetadata({
   title: 'Submit a Request | Teracom Solutions',
@@ -13,18 +13,21 @@ export const metadata = pageMetadata({
   path: '/resources/submit-a-request',
 });
 
-const ICONS = { wrench: Wrench, key: KeyRound };
+const ICONS = { wrench: Wrench, key: KeyRound, account: Wallet };
+
+// The account application is not one of the simple request forms -- it
+// branches on entity and account type -- but on this page it is just
+// another card.
+const CARDS = [...requestForms, accountApplication];
 
 export default function SubmitARequestPage() {
   return (
     <main id="main-content">
-      <ResourceHero title="Submit a request" icon={ClipboardList} badges={[Wrench, KeyRound, FileSignature]}>
+      <ResourceHero title="Submit a request" icon={ClipboardList} badges={[Wrench, KeyRound, Wallet]}>
         <p className="lead">
           Book a job, get a recorder unlocked, or open an account. These go straight to the team who does the work.
         </p>
       </ResourceHero>
-
-      <ResourcesSubNav />
 
       <section className="section section-spacious">
         <div className="container">
@@ -34,47 +37,45 @@ export default function SubmitARequestPage() {
               know before they ring you back &mdash; which usually saves a call and sometimes saves a visit.
             </p>
             <p>
-              If it is urgent, ring us on{' '}
-              <a href={`tel:${BUSINESS.telephone}`}>{BUSINESS.telephoneDisplay}</a> rather than filling anything in. A
-              form is better than a voicemail, but worse than a conversation when something is down.
+              Filling one in takes a couple of minutes and gets the details down in one go, rather than being
+              repeated over the phone. We will come back to you to confirm.
             </p>
           </div>
 
-          <div className="feature-grid request-grid">
-            {requestForms.map((form) => {
+          <div className="tools-grid request-grid">
+            {CARDS.map((form) => {
               const Icon = ICONS[form.icon] || ClipboardList;
               return (
-                <Link href={`/resources/submit-a-request/${form.slug}`} key={form.slug}>
-                  <article>
-                    <div className="category-heading-row">
-                      <div className="category-icon-badge">
-                        <Icon size={26} strokeWidth={1.75} aria-hidden="true" focusable="false" />
-                      </div>
-                      <h3>{form.title}</h3>
-                    </div>
-                    <p>{form.lead}</p>
-                  </article>
+                <Link
+                  href={`/resources/submit-a-request/${form.slug}`}
+                  className="tool-card request-card"
+                  key={form.slug}
+                >
+                  <span className="tool-card-icon">
+                    <Icon size={26} strokeWidth={1.75} aria-hidden="true" focusable="false" />
+                  </span>
+                  <h3>{form.title}</h3>
+                  <p>{form.lead}</p>
+                  <span className="tool-card-cta">
+                    Start this request <ArrowRight size={16} strokeWidth={2} aria-hidden="true" />
+                  </span>
+                  <span className="tool-card-watermark" aria-hidden="true">
+                    <Icon size={170} strokeWidth={1} />
+                  </span>
                 </Link>
               );
             })}
 
-            {/* Deliberately a phone call for now: a trade account application
-                includes a personal guarantee, and that is not something to
-                collect through a form nobody has had a solicitor read. */}
-            <article>
-              <div className="category-heading-row">
-                <div className="category-icon-badge">
-                  <FileSignature size={26} strokeWidth={1.75} aria-hidden="true" focusable="false" />
-                </div>
-                <h3>Trade account application</h3>
-              </div>
-              <p>
-                30-day credit or trade cash accounts. Call us on{' '}
-                <a href={`tel:${BUSINESS.telephone}`}>{BUSINESS.telephoneDisplay}</a> and we will send you the
-                application &mdash; online applications are coming.
-              </p>
-            </article>
           </div>
+        </div>
+      </section>
+
+      <section className="section section-tight">
+        <div className="container">
+          <p className="form-note request-back">
+            <ArrowLeft size={16} strokeWidth={1.9} aria-hidden="true" focusable="false" />{' '}
+            <Link href="/resources">Back to all resources</Link>
+          </p>
         </div>
       </section>
 
@@ -88,9 +89,9 @@ export default function SubmitARequestPage() {
             <Link className="btn btn-primary" href="/contact">
               Get in touch
             </Link>
-            <a className="btn btn-secondary" href={`tel:${BUSINESS.telephone}`}>
-              <Phone size={18} strokeWidth={1.9} aria-hidden="true" focusable="false" />
-              Call {BUSINESS.telephoneDisplay}
+            <a className="btn btn-secondary" href={`mailto:${BUSINESS.supportEmail}`}>
+              <Mail size={18} strokeWidth={1.9} aria-hidden="true" focusable="false" />
+              Email support
             </a>
           </div>
         </div>

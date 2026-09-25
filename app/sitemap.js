@@ -99,7 +99,7 @@ export default function sitemap() {
       priority: 0.8,
     })),
 
-    ...requestForms.map((form) => ({
+    ...[...requestForms, { slug: 'account-application' }].map((form) => ({
       path: `/resources/submit-a-request/${form.slug}`,
       changeFrequency: 'yearly',
       priority: 0.6,

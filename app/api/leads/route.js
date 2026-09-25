@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 import { submitLead } from '@/lib/api/leads';
 import { ApiError } from '@/lib/api/client';
 import { checkRateLimit, clientIpFromRequest } from '@/lib/rateLimit';
+import { verifyTurnstile } from '@/lib/turnstile';
 
 // Spam/junk-CRM-data defence, not fraud defence (flagged in
 // Repository_Audit_Decision_Memo_V1.md item 6) -- a looser limit than
@@ -47,6 +48,14 @@ export async function POST(req) {
     // logged distinctly server-side so the two cases stay distinguishable
     // in the logs even though the visitor sees the same generic message.
     console.warn('Lead submission rate limited', rateLimitKey, `retry after ${rateLimit.retryAfterSeconds}s`);
+    return NextResponse.redirect(new URL(`${returnPath}?lead=error#contact`, req.url), 303);
+  }
+
+  // Checked before anything is written. A bot posting straight at this
+  // endpoint never loaded the widget, which is the whole point.
+  const human = await verifyTurnstile(lead['cf-turnstile-response'], clientIpFromRequest(req));
+  if (!human.ok) {
+    console.warn('Lead submission failed Turnstile', human.reason);
     return NextResponse.redirect(new URL(`${returnPath}?lead=error#contact`, req.url), 303);
   }
 

@@ -63,7 +63,7 @@ const SERVICE_SCHEMA = {
     '@type': 'Organization',
     name: SITE_NAME,
     legalName: BUSINESS.legalName,
-    telephone: BUSINESS.telephone,
+    ...(BUSINESS.telephone ? { telephone: BUSINESS.telephone } : {}),
     url: absoluteUrl('/'),
   },
   hasOfferCatalog: {
@@ -247,7 +247,7 @@ export default function MonitoringPage() {
             <Link className="btn btn-primary" href="/contact?interest=Monitoring">
               Ask about monitoring
             </Link>
-            <a className="btn btn-secondary" href={`tel:${BUSINESS.telephone}`}>
+            <a className="btn btn-secondary" href={`mailto:${BUSINESS.salesEmail}`}>
               Call {BUSINESS.telephoneDisplay}
             </a>
           </div>

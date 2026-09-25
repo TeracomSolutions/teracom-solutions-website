@@ -4,6 +4,7 @@ import { ApiError } from '@/lib/api/client';
 import { submitLead } from '@/lib/api/leads';
 import { checkRateLimit, clientIpFromRequest, rateLimitResponse } from '@/lib/rateLimit';
 import { findRequestForm, formatSubmission, valueFields } from '@/lib/requestForms';
+import { TURNSTILE_FAILED_MESSAGE, verifyTurnstile } from '@/lib/turnstile';
 
 // Service and password-reset requests.
 //
@@ -69,6 +70,12 @@ export async function POST(req) {
     return NextResponse.json({ error }, { status: 400 });
   }
 
+  const human = await verifyTurnstile(body?.turnstileToken, clientIpFromRequest(req));
+  if (!human.ok) {
+    console.warn('Request failed Turnstile', form.slug, human.reason);
+    return NextResponse.json({ error: TURNSTILE_FAILED_MESSAGE }, { status: 400 });
+  }
+
   const message = formatSubmission(form, values);
 
   try {
@@ -87,7 +94,7 @@ export async function POST(req) {
     // than being shown a success page for something that never arrived.
     console.error('Request submission failed', form.slug, status, message);
     return NextResponse.json(
-      { error: 'We could not send that just now. Please call us and we will take the details.' },
+      { error: 'We could not send that just now. Please email sales@teracomsolutions.com.au and we will take the details.' },
       { status: 502 }
     );
   }

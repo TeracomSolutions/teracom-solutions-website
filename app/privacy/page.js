@@ -28,6 +28,7 @@ const SECTIONS = [
       { label: 'Enquiries', text: 'When you use our contact form we collect your name, email address, company (optional), the area you are interested in and your message.' },
       { label: 'Customer accounts', text: 'When you create an account we collect your first and last name, email address, password and postal address.' },
       { label: 'Orders', text: 'When you buy from the Teracom Store we collect your name, email address, delivery details and what you ordered. Card payments are processed by Stripe; we never see or store your card details.' },
+      { label: 'Form security', text: 'When you submit a form we use Cloudflare Turnstile to check that the submission comes from a person rather than an automated script. Cloudflare receives your IP address and some technical information about your browser for that check. It does not use it to build an advertising profile of you.' },
       { label: 'Website use', text: 'We use Google Analytics to understand how the website is used -- for example the pages visited, how long visitors stay, the type of device and browser, the website that referred them and their approximate location (city or region). This information does not identify you by name.' },
     ],
   },
@@ -47,6 +48,7 @@ const SECTIONS = [
       { label: 'Google', text: 'Website analytics and embedded maps.' },
       { label: 'YouTube', text: 'Embedded product videos.' },
       { label: 'Vercel', text: 'Website hosting.' },
+      { label: 'Cloudflare', text: 'Checks that form submissions come from a person rather than a bot.' },
       'Some of these providers store or process information outside Australia. We may also disclose information where the law requires it.',
     ],
   },
@@ -89,7 +91,7 @@ const SECTIONS = [
       'Teracom Solutions Pty Ltd, 1B Yazaki Way, Carrum Downs VIC 3201, Australia.',
       <>
         Email <a href="mailto:sales@teracomsolutions.com.au">sales@teracomsolutions.com.au</a> or phone{' '}
-        <a href="tel:+61397082685">+61 3 9708 2685</a>. You can also use our <Link href="/contact">contact page</Link>.
+        <a href="mailto:support@teracomsolutions.com.au">support@teracomsolutions.com.au</a>. You can also use our <Link href="/contact">contact page</Link>.
       </>,
     ],
   },

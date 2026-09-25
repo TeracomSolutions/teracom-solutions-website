@@ -11,6 +11,8 @@
     "test": "node --test"
   },
   "dependencies": {
+    "@stripe/react-stripe-js": "^6.11.0",
+    "@stripe/stripe-js": "^9.17.0",
     "@types/node": "^22.15.21",
     "@types/react": "^19.0.0",
     "lucide-react": "^1.47.0",

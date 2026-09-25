@@ -1946,4 +1946,79 @@ a {
   .request-layout { grid-template-columns:1fr; gap:34px; }
   .request-aside { position:static; }
 }
+.section-tight { padding:0 0 18px; }
+.request-back { display:flex; align-items:center; gap:8px; }
+
+/* Submit a request cards. Taller and wider than a tool card: three of them
+   sit on one row on a desktop, and the headings are long enough that they
+   need the full width rather than sharing a line with the icon. */
+.request-grid { grid-template-columns:repeat(auto-fit, minmax(310px, 1fr)); }
+.request-card { min-height:320px; padding:34px; gap:14px; }
+.request-card h3 { font-size:25px; line-height:1.15; }
+.request-card p { font-size:15.5px; line-height:1.6; }
+.request-card .tool-card-icon { width:64px; height:64px; border-radius:19px; }
+/* The static card is information, not a destination -- so it does not lift
+   or glow on hover the way the two real links do. */
+.request-card-static { cursor:default; }
+.request-card-static:hover { border-color:var(--line); transform:none; box-shadow:none; }
+.request-card-note { gap:9px; font-weight:600; }
+.request-card-note a { color:#fff; }
+.request-card-static:hover .tool-card-watermark { color:rgba(255,255,255,.035); transform:none; }
+
+/* --- Trade account application ------------------------------------------ */
+.account-progress { margin-bottom:34px; flex-wrap:wrap; }
+.account-application .request-form { max-width:680px; }
+.account-actions { display:flex; flex-wrap:wrap; gap:12px; align-items:center; margin-top:8px; }
+.account-actions .btn { display:inline-flex; align-items:center; gap:9px; }
+.account-guarantee-note {
+  padding:16px 18px; border-radius:14px; border:1px solid var(--line);
+  background:rgba(255,255,255,.03); line-height:1.6;
+}
+.director-list { display:grid; gap:18px; }
+.director {
+  position:relative; margin:0; padding:22px 24px; border:1px solid var(--line); border-radius:18px;
+  display:grid; gap:16px; background:rgba(255,255,255,.02);
+}
+.director legend {
+  padding:0 8px; font-size:12px; font-weight:800; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--muted);
+}
+.director-remove {
+  justify-self:start; display:inline-flex; align-items:center; gap:7px; padding:0;
+  background:none; border:0; color:var(--soft); font-size:13px; cursor:pointer;
+}
+.director-remove:hover { color:#ff4b4b; }
+
+/* Signature pad. touch-action is load-bearing: without it a phone scrolls
+   the page instead of drawing. */
+.signature-field { display:grid; gap:10px; }
+.signature-label { font-size:13px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
+.signature-canvas {
+  width:100%; height:170px; touch-action:none; cursor:crosshair; border-radius:14px;
+  border:1px dashed var(--line); background:rgba(0,0,0,.35);
+}
+.signature-canvas:hover { border-color:rgba(255,23,23,.45); }
+.signature-actions { display:flex; align-items:center; justify-content:space-between; gap:14px; }
+.signature-actions .form-note { margin:0; }
+.signature-clear { padding:0; background:none; border:0; color:var(--soft); font-size:13px; cursor:pointer; }
+.signature-clear:hover:not(:disabled) { color:#ff4b4b; }
+.signature-clear:disabled { opacity:.4; cursor:default; }
+.turnstile-field { margin:4px 0; min-height:1px; }
+.auth-intro { color: var(--muted); margin: 0 0 18px; }
+.auth-sent { background: rgba(34,197,94,.08); border: 1px solid rgba(34,197,94,.35);
+  border-radius: 10px; padding: 14px 16px; margin: 0 0 18px; }
+.field-hint { display: block; color: var(--muted); margin-top: 6px; font-size: .85rem; }
+.coupon-form { margin:18px 0 4px; }
+.coupon-form label { display:block; font-size:.85rem; color:var(--muted); margin-bottom:6px; }
+.coupon-row { display:flex; gap:8px; }
+.coupon-row input { flex:1; min-width:0; text-transform:uppercase; }
+.coupon-apply { white-space:nowrap; padding-inline:18px; }
+.coupon-error { color:#fca5a5; font-size:.85rem; margin:8px 0 0; }
+.coupon-applied { display:flex; align-items:center; gap:9px; margin:18px 0 4px;
+  padding:11px 13px; border:1px solid rgba(34,197,94,.35);
+  background:rgba(34,197,94,.08); border-radius:10px; font-size:.9rem; }
+.coupon-applied-text { flex:1; min-width:0; }
+.coupon-remove { background:none; border:0; color:var(--muted); cursor:pointer;
+  padding:4px; line-height:0; border-radius:6px; }
+.coupon-remove:hover { color:var(--text); background:rgba(255,255,255,.07); }
 
