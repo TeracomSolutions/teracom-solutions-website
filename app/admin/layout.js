@@ -12,7 +12,7 @@ import { NOINDEX } from '@/lib/seo';
 // disallowed URL can still be indexed without a snippet if something links to
 // it. The page-level directive is what actually keeps it out of the index.
 export const metadata = {
-  title: 'Catalogue Administration|Teracom Solutions',
+  title: 'Administration|Teracom Solutions',
   ...NOINDEX,
 };
 
