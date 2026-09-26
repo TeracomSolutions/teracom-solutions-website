@@ -14,7 +14,7 @@ const CreateRequest = z.object({
   doc_types: z.array(z.enum(DOC_TYPES)).default([]),
   recurrence: z.enum(RECURRENCES).default('weekly'),
   follow_links: z.boolean().default(false),
-  max_pages: z.number().int().min(1).max(100).default(20),
+  max_pages: z.number().int().min(1).max(500).default(60),
 });
 
 export const GET = withAdminSession(async ({ token }) => {
