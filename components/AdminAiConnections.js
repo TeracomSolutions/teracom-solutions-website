@@ -11,29 +11,21 @@ export default function AdminAiConnections({ initialConnections, loadError, prov
   const [notice, setNotice] = useState('');
   const [busy, setBusy] = useState(false);
 
-  const [provider, setProvider] = useState('');
+  const allProviders = providers || [];
+  const { native, hosted, selfHosted: selfHostedProviders } = groupProviders(allProviders);
+  // Start on the first hosted provider that is not connected yet, so the
+  // form is ready to add something rather than re-showing one we have.
+  const [provider, setProvider] = useState(() => {
+    const first = [...hosted, ...allProviders].find((p) => providerStatus(p, initialConnections ?? []) !== 'connected');
+    return (first || allProviders[0] || { key: 'ollama' }).key;
+  });
   const [apiKey, setApiKey] = useState('');
   const [baseUrl, setBaseUrl] = useState('');
   const [defaultModel, setDefaultModel] = useState('');
 
-  // Initialize provider selection with the first available non-connected hosted provider or first provider
-  const allProviders = providers || [];
-  const { native, hosted, selfHosted } = groupProviders(allProviders);
-  
-  if (provider === '') {
-    // Find first non-connected hosted provider
-    const firstAvailable = [...hosted, ...allProviders].find(p => {
-      const status = providerStatus(p, connections);
-      return status !== 'connected';
-    });
-    if (firstAvailable) {
-      setProvider(firstAvailable.key);
-    } else if (allProviders.length > 0) {
-      setProvider(allProviders[0].key);
-    }
-  }
-
-  const selected = allProviders.find((p) => p.key === provider) || allProviders[0];
+  const selected = allProviders.find((p) => p.key === provider) || { key: provider, label: humanise(provider), kind: 'hosted' };
+  const selfHosted = selected.kind === 'self_hosted';
+  const providerLabel = (key) => allProviders.find((p) => p.key === key)?.label || humanise(key);
   const existing = connections.find((c) => c.provider === provider);
 
   async function reload() {
@@ -174,7 +166,7 @@ export default function AdminAiConnections({ initialConnections, loadError, prov
       </div>
 
       <h2>{existing ? 'Update a provider' : 'Add a provider'}</h2>
-      <form onSubmit={handleSubmit} className="admin-form admin-card">
+      <form id="ai-connection-form" onSubmit={handleSubmit} className="admin-form admin-card">
         <label>
           Provider
           <select value={provider} onChange={(event) => setProvider(event.target.value)}>
@@ -186,9 +178,9 @@ export default function AdminAiConnections({ initialConnections, loadError, prov
                 <option key={p.key} value={p.key}>{p.label}</option>
               ))}
             </optgroup>
-            {selfHosted.length > 0 && (
+            {selfHostedProviders.length > 0 && (
               <optgroup label="Self-hosted">
-                {selfHosted.map((p) => (
+                {selfHostedProviders.map((p) => (
                   <option key={p.key} value={p.key}>{p.label}</option>
                 ))}
               </optgroup>
@@ -196,7 +188,7 @@ export default function AdminAiConnections({ initialConnections, loadError, prov
           </select>
         </label>
 
-        {selected.selfHosted ? (
+        {selfHosted ? (
           <label>
             Host
             <input
@@ -259,7 +251,7 @@ export default function AdminAiConnections({ initialConnections, loadError, prov
           <tbody>
             {allProviders.length === 0 && (
               <tr>
-                <td colSpan={6} className="admin-muted">Loading providers...</td>
+                <td colSpan={6} className="admin-muted">The provider list could not be loaded. Refresh the page.</td>
               </tr>
             )}
             {allProviders.map((provider) => {
@@ -276,13 +268,12 @@ export default function AdminAiConnections({ initialConnections, loadError, prov
                     </span>
                   </td>
                   <td>
-                    <button 
-                      type="button" 
+                    <button
+                      type="button"
                       className="btn btn-secondary btn-sm"
                       onClick={() => {
                         setProvider(provider.key);
-                        // Scroll form into view
-                        document.getElementById('ai-connection-form').scrollIntoView({ behavior: 'smooth' });
+                        document.getElementById('ai-connection-form')?.scrollIntoView({ behavior: 'smooth' });
                       }}
                     >
                       {status === 'connected' ? 'Change' : 'Set up'}
