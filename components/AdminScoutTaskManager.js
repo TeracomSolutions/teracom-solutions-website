@@ -14,10 +14,10 @@ import { latestRun, lastCompleted, anyRunning } from '@/lib/scoutRunSummary';
 
 function RunStatus({ run }) {
   if (!run) return '—';
-  
+
   const label = humanise(run.status);
   const className = `admin-status is-${run.status}`;
-  
+
   if (run.status === 'needs_review') {
     return <Link href={`/admin/scout/review/${run.id}`} className={className}>Report ready → Review</Link>;
   } else if (run.status === 'running') {
@@ -70,17 +70,19 @@ export default function AdminScoutTaskManager({ section }) {
         setError('');
       }
       const activeTasksData = activeRes.ok ? await activeRes.json() : [];
+      const recurringTasksData = recurringRes.ok ? await recurringRes.json() : [];
+      const historyTasksData = historyRes.ok ? await historyRes.json() : [];
       setActiveTasks(activeTasksData);
-      setRecurringTasks(recurringRes.ok ? await recurringRes.json() : []);
-      setHistoryTasks(historyRes.ok ? await historyRes.json() : []);
+      setRecurringTasks(recurringTasksData);
+      setHistoryTasks(historyTasksData);
 
       // Combine all tasks to fetch runs for all of them
-      const allTasks = [...activeTasksData, ...recurringTasks, ...historyTasks];
-      
+      const allTasks = [...activeTasksData, ...recurringTasksData, ...historyTasksData];
+
       if (allTasks.length > 0) {
         // Create a set of unique task IDs to avoid duplicate requests
         const taskIds = [...new Set(allTasks.map(task => task.id))];
-        
+
         // Fetch runs for all tasks
         const runsResponses = await Promise.all(
           taskIds.map((taskId) => fetch(`/api/admin/scout-tasks/${taskId}/runs`))
@@ -102,7 +104,7 @@ export default function AdminScoutTaskManager({ section }) {
     } finally {
       setLoading(false);
     }
-  }, [section, recurringTasks, historyTasks]);
+  }, [section]);
 
   useEffect(() => {
     loadTasks();
@@ -114,7 +116,7 @@ export default function AdminScoutTaskManager({ section }) {
       const interval = setInterval(() => {
         loadTasks();
       }, 20000); // 20 seconds
-      
+
       return () => clearInterval(interval);
     }
   }, [latestRunsByTaskId, loadTasks]);
@@ -195,9 +197,23 @@ export default function AdminScoutTaskManager({ section }) {
     return <p className="admin-muted">Loading tasks…</p>;
   }
 
+  const completed = lastCompleted(latestRunsByTaskId, [...activeTasks, ...recurringTasks, ...historyTasks]);
+
   return (
     <div>
       <AdminAutoRefreshControl onRefresh={loadTasks} storageKey={`scout-refresh-${section}`} />
+
+      <p className="admin-card">
+        {completed ? (
+          <>
+            Last completed: <strong>{completed.task.title}</strong> on {formatDateTime(completed.run.updated_at || completed.run.created_at)}
+            {' · '}
+            <Link href={`/admin/scout/review/${completed.run.id}`} className="admin-link">Open the report</Link>
+          </>
+        ) : (
+          'No research has completed yet. Run research on an active task and its report appears in the Review Queue.'
+        )}
+      </p>
 
       {error && <p className="form-error" role="alert">{error}</p>}
 
@@ -249,6 +265,7 @@ export default function AdminScoutTaskManager({ section }) {
                 <th>Target</th>
                 <th>Recurrence</th>
                 <th>Status</th>
+                <th>Last run</th>
                 <th>Latest run</th>
               </tr>
             </thead>
@@ -259,6 +276,7 @@ export default function AdminScoutTaskManager({ section }) {
                   <td className="wrap">{task.target || '—'}</td>
                   <td>{humanise(task.recurrence)}</td>
                   <td>{humanise(task.status)}</td>
+                  <td>{formatDate(task.last_run_at, 'Never')}</td>
                   <td><RunStatus run={latestRunsByTaskId[task.id]} /></td>
                 </tr>
               ))}
@@ -279,6 +297,7 @@ export default function AdminScoutTaskManager({ section }) {
                 <th>Target</th>
                 <th>Recurrence</th>
                 <th>Status</th>
+                <th>Last run</th>
                 <th>Latest run</th>
               </tr>
             </thead>
@@ -289,6 +308,7 @@ export default function AdminScoutTaskManager({ section }) {
                   <td className="wrap">{task.target || '—'}</td>
                   <td>{humanise(task.recurrence)}</td>
                   <td>{humanise(task.status)}</td>
+                  <td>{formatDate(task.last_run_at, 'Never')}</td>
                   <td><RunStatus run={latestRunsByTaskId[task.id]} /></td>
                 </tr>
               ))}
