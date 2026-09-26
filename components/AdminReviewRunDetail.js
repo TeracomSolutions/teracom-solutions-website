@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { formatDateTime, humanise } from '@/lib/adminFormat';
 
 // One research run: the report, the critic's critique (or the error), and
-// Approve / Reject with optional notes. Copied from the Global Platform's
+// Approve / Reject with optional notes. Copied from the the previous platform's
 // app/(admin)/scout/review/[runId]/ReviewRunDetail.js.
 export default function AdminReviewRunDetail({ run }) {
   const [currentRun, setCurrentRun] = useState(run);

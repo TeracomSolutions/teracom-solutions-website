@@ -33,7 +33,7 @@ export default async function AdminAiConnectionsPage() {
           <h4>Keys</h4>
           <p>A key is stored encrypted and never shown again: the table shows only its last four characters so you can tell which key is in place. To change a key, choose the provider and enter the new one; leaving the field blank keeps the current key.</p>
           <h4>Ollama</h4>
-          <p>Ollama is self-hosted, so it takes a <strong>Host</strong> (for example http://10.0.0.241:11434) instead of a key. The host must be reachable from the website server, and the default model must already be pulled on it.</p>
+          <p>Ollama is self-hosted, so it takes a <strong>Host</strong> (for example http://your-ollama-host:11434) instead of a key. The host must be reachable from the website server, and the default model must already be pulled on it.</p>
           <h4>Enable / Disable / Remove</h4>
           <p><strong>Disable</strong> keeps the key but takes the provider out of the running order; <strong>Enable</strong> puts it back. <strong>Remove</strong> deletes the connection and its key. Every change is recorded in the audit log.</p>
         </AdminHelpIcon>

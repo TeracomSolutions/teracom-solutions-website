@@ -7,7 +7,7 @@ import AdminAutoRefreshControl from './AdminAutoRefreshControl';
 import { formatDateTime } from '@/lib/adminFormat';
 
 // Finished research runs waiting for a decision. Loads itself on first
-// render. Copied from the Global Platform's
+// render. Copied from the the previous platform's
 // app/(admin)/scout/review/ReviewQueueTable.js.
 export default function AdminReviewQueueTable() {
   const [runs, setRuns] = useState([]);
