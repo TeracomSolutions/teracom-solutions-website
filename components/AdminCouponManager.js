@@ -1,7 +1,7 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
-import { BadgePercent, Check, Plus, X } from 'lucide-react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { BadgePercent, Check, Pencil, Plus, X } from 'lucide-react';
 
 // Issuing a discount by hand.
 //
@@ -10,6 +10,8 @@ import { BadgePercent, Check, Plus, X } from 'lucide-react';
 // the backend can express is not on this form -- a screen with fifteen
 // optional fields is how someone accidentally creates a code with no expiry
 // and no limit.
+
+import { couponToForm, couponPatch } from '@/lib/couponEdit';
 
 const BLANK = {
   code: '',
@@ -39,8 +41,32 @@ export default function AdminCouponManager({ initialCoupons = [] }) {
   const [status, setStatus] = useState('idle');
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
+  const [editing, setEditing] = useState(null);
+  const formRef = useRef(null);
 
   const set = (field) => (event) => setForm((f) => ({ ...f, [field]: event.target.value }));
+
+  function startEdit(coupon) {
+    setError('');
+    setNotice('');
+    setEditing(coupon);
+    setForm({
+      ...BLANK,
+      code: coupon.code,
+      discount_type: coupon.discount_type,
+      discount_value: String(coupon.discount_type === 'percent' ? coupon.discount_value : (coupon.discount_value / 100).toFixed(2)),
+      restricted_to_tier: coupon.restricted_to_tier || '',
+      ...couponToForm(coupon)
+    });
+    formRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function cancelEdit() {
+    setEditing(null);
+    setForm(BLANK);
+    setError('');
+    setNotice('');
+  }
 
   const refresh = useCallback(async () => {
     try {
@@ -114,6 +140,40 @@ export default function AdminCouponManager({ initialCoupons = [] }) {
     }
   }
 
+  async function handleSave(event) {
+    event.preventDefault();
+    if (!editing) return handleCreate(event);
+
+    const patch = couponPatch(editing, form);
+    if (Object.keys(patch).length === 0) {
+      cancelEdit();
+      return;
+    }
+
+    setStatus('saving');
+    try {
+      const res = await fetch('/api/admin/coupons', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: editing.code, ...patch }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || 'Could not save that code.');
+        setStatus('idle');
+        return;
+      }
+      setNotice(`${editing.code} updated.`);
+      setEditing(null);
+      setForm(BLANK);
+      setStatus('idle');
+      refresh();
+    } catch {
+      setError('Could not reach the coupon service.');
+      setStatus('idle');
+    }
+  }
+
   async function toggle(coupon) {
     setError('');
     setNotice('');
@@ -137,9 +197,17 @@ export default function AdminCouponManager({ initialCoupons = [] }) {
 
   return (
     <>
-      <form className="coupon-admin-form" onSubmit={handleCreate}>
+      <form ref={formRef} className="coupon-admin-form" onSubmit={handleSave}>
         <h2>
-          <Plus size={18} strokeWidth={2} aria-hidden="true" /> New discount code
+          {editing ? (
+            <>
+              <Pencil size={18} strokeWidth={2} aria-hidden="true" /> Edit {editing.code}
+            </>
+          ) : (
+            <>
+              <Plus size={18} strokeWidth={2} aria-hidden="true" /> New discount code
+            </>
+          )}
         </h2>
 
         <div className="coupon-admin-grid">
@@ -152,8 +220,13 @@ export default function AdminCouponManager({ initialCoupons = [] }) {
               placeholder="SPRING25"
               autoCapitalize="characters"
               spellCheck="false"
+              disabled={!!editing}
             />
-            <small>Letters, numbers, hyphens. Not case sensitive.</small>
+            {editing ? (
+              <small>Cannot change on an existing code. Switch it off and create a new one instead.</small>
+            ) : (
+              <small>Letters, numbers, hyphens. Not case sensitive.</small>
+            )}
           </label>
 
           <label>
@@ -163,7 +236,7 @@ export default function AdminCouponManager({ initialCoupons = [] }) {
 
           <label>
             Type
-            <select value={form.discount_type} onChange={set('discount_type')}>
+            <select value={form.discount_type} onChange={set('discount_type')} disabled={!!editing}>
               <option value="percent">Percentage off</option>
               <option value="fixed">Fixed amount off</option>
             </select>
@@ -177,6 +250,7 @@ export default function AdminCouponManager({ initialCoupons = [] }) {
               value={form.discount_value}
               onChange={set('discount_value')}
               placeholder={form.discount_type === 'percent' ? '10' : '50'}
+              disabled={!!editing}
             />
           </label>
 
@@ -223,7 +297,7 @@ export default function AdminCouponManager({ initialCoupons = [] }) {
 
           <label>
             Only for a trade tier (optional)
-            <select value={form.restricted_to_tier} onChange={set('restricted_to_tier')}>
+            <select value={form.restricted_to_tier} onChange={set('restricted_to_tier')} disabled={!!editing}>
               <option value="">Anyone</option>
               <option value="Silver">Silver only</option>
               <option value="Gold">Gold only</option>
@@ -253,9 +327,18 @@ export default function AdminCouponManager({ initialCoupons = [] }) {
           </p>
         ) : null}
 
+        {editing ? (
+        <>
+          <button type="submit" className="btn btn-primary" disabled={status === 'saving'}>
+            {status === 'saving' ? 'Saving…' : 'Save changes'}
+          </button>
+          <button type="button" className="btn btn-secondary" onClick={cancelEdit}>Cancel</button>
+        </>
+      ) : (
         <button type="submit" className="btn btn-primary" disabled={status === 'saving'}>
           {status === 'saving' ? 'Creating…' : 'Create code'}
         </button>
+      )}
       </form>
 
       <h2 className="coupon-admin-list-heading">
@@ -299,6 +382,7 @@ export default function AdminCouponManager({ initialCoupons = [] }) {
                   <td>{c.redemptions}</td>
                   <td>{c.active ? 'Active' : 'Off'}</td>
                   <td>
+                    <button type="button" className="btn btn-secondary coupon-admin-toggle" onClick={() => startEdit(c)}><Pencil size={14} strokeWidth={2.2} aria-hidden="true" /> Edit</button>
                     <button type="button" className="btn btn-secondary coupon-admin-toggle" onClick={() => toggle(c)}>
                       {c.active ? (
                         <>
