@@ -1,12 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
-import { Folder } from 'lucide-react';
+import { Folder, Pencil } from 'lucide-react';
 
 import { formatDateTime, humanise } from '@/lib/adminFormat';
+import { changedFields, sourceFormDefaults } from '@/lib/resourceSourceFields';
 
 // The Resources page: the websites we watch and a form to add one.
 const DOC_TYPE_OPTIONS = [
@@ -42,14 +43,16 @@ async function send(url, method, body) {
   return data;
 }
 
-function AddSourceForm({ suppliers, onAdded }) {
-  const [open, setOpen] = useState(false);
-  const [name, setName] = useState('');
-  const [url, setUrl] = useState('');
-  const [supplierId, setSupplierId] = useState('');
-  const [docTypes, setDocTypes] = useState(['datasheet', 'user_manual', 'installer_manual']);
-  const [recurrence, setRecurrence] = useState('weekly');
-  const [followLinks, setFollowLinks] = useState(true);
+function SourceForm({ suppliers, initial, onSaved, onCancel }) {
+  const defaults = sourceFormDefaults();
+  const start = initial || defaults;
+  const [name, setName] = useState(start.name);
+  const [url, setUrl] = useState(start.url);
+  const [supplierId, setSupplierId] = useState(start.supplier_id || '');
+  const [docTypes, setDocTypes] = useState([...start.doc_types]);
+  const [recurrence, setRecurrence] = useState(start.recurrence);
+  const [followLinks, setFollowLinks] = useState(start.follow_links);
+  const [maxPages, setMaxPages] = useState(String(start.max_pages));
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
 
@@ -62,20 +65,29 @@ function AddSourceForm({ suppliers, onAdded }) {
     setBusy(true);
     setError('');
     try {
-      await send('/api/admin/resources/sources', 'POST', {
+      const dataToSubmit = {
         name,
         url,
         supplier_id: supplierId || null,
         doc_types: docTypes,
         recurrence,
         follow_links: followLinks,
-        max_pages: 20,
-      });
-      setName('');
-      setUrl('');
-      setSupplierId('');
-      setOpen(false);
-      onAdded();
+        max_pages: Number(maxPages) || defaults.max_pages,
+      };
+
+      if (initial) {
+        // Edit mode - calculate changed fields
+        const changes = changedFields(initial, dataToSubmit);
+        if (Object.keys(changes).length === 0) {
+          onCancel();
+          return;
+        }
+        await send(`/api/admin/resources/sources/${initial.id}`, 'PATCH', changes);
+      } else {
+        // Add mode
+        await send('/api/admin/resources/sources', 'POST', dataToSubmit);
+      }
+      onSaved();
     } catch (err) {
       setError(err.message);
     } finally {
@@ -83,16 +95,11 @@ function AddSourceForm({ suppliers, onAdded }) {
     }
   }
 
-  if (!open) {
-    return (
-      <button type="button" className="btn btn-primary btn-sm" onClick={() => setOpen(true)}>
-        Add a website to watch
-      </button>
-    );
-  }
+  const isEditMode = !!initial;
 
   return (
     <form onSubmit={handleSubmit} className="admin-form admin-card">
+      <h2>{isEditMode ? `Edit ${initial.name}` : 'Add a website to watch'}</h2>
       <label>
         Name
         <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Hikvision downloads" required />
@@ -127,20 +134,45 @@ function AddSourceForm({ suppliers, onAdded }) {
       </label>
       <label style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', fontWeight: 400, color: '#fff' }}>
         <input type="checkbox" checked={followLinks} onChange={(e) => setFollowLinks(e.target.checked)} style={{ width: 'auto' }} />
-        Also look at pages on the same site that this page links to (up to 20 pages)
+        Also follow links on the same site (document libraries, category pages, page 2, 3, ...) up to Max pages
+      </label>
+      <label>
+        Max pages
+        <input
+          type="number"
+          value={maxPages}
+          onChange={(e) => setMaxPages(e.target.value)}
+          min="1"
+          max="500"
+          step="1"
+        />
+        <small>How many pages of the site one check may read. A document library with 16 pages of listings needs about 20; 60 is a safe default.</small>
       </label>
       {error && <p className="form-error" role="alert">{error}</p>}
       <div className="admin-actions">
-        <button type="submit" className="btn btn-primary btn-sm" disabled={busy}>{busy ? 'Adding…' : 'Add and check now'}</button>
-        <button type="button" className="btn btn-secondary btn-sm" onClick={() => setOpen(false)}>Cancel</button>
+        <button type="submit" className="btn btn-primary btn-sm" disabled={busy}>{busy ? (isEditMode ? 'Saving…' : 'Adding…') : isEditMode ? 'Save changes' : 'Add and check now'}</button>
+        <button type="button" className="btn btn-secondary btn-sm" onClick={onCancel}>Cancel</button>
       </div>
     </form>
   );
 }
 
+function AddSource({ suppliers, onAdded }) {
+  const [open, setOpen] = useState(false);
+  if (!open) {
+    return (
+      <button type="button" className="btn btn-primary btn-sm" onClick={() => setOpen(true)}>
+        Add a website to watch
+      </button>
+    );
+  }
+  return <SourceForm suppliers={suppliers} onSaved={() => { setOpen(false); onAdded(); }} onCancel={() => setOpen(false)} />;
+}
+
 export default function AdminResourceSources({ sources, suppliers }) {
   const router = useRouter();
   const [busyId, setBusyId] = useState(null);
+  const [editingId, setEditingId] = useState(null);
   const [error, setError] = useState('');
 
   async function checkNow(source) {
@@ -212,52 +244,77 @@ export default function AdminResourceSources({ sources, suppliers }) {
             {sources.length === 0 && (
               <tr><td colSpan={8} className="admin-muted">No websites yet. Add a supplier or manufacturer downloads page below.</td></tr>
             )}
-            {sources.map((source) => (
-              <tr key={source.id} style={source.active ? undefined : { opacity: 0.55 }}>
-                <td className="wrap">
-                  <Link href={`/admin/resources/${source.id}`} className="admin-link">{source.name}</Link>
-                  <span className="admin-muted" style={{ display: 'block', fontSize: '12px', overflowWrap: 'anywhere' }}>{source.url}</span>
-                  {source.folder && (
-                    <Link href={`/admin/resources/${source.id}#files`} className="admin-tree-inline" title="Where its files are kept on the server">
-                      <Folder size={13} strokeWidth={1.8} aria-hidden="true" /> uploads/{source.folder}/
-                    </Link>
+            {sources.map((source) => {
+              const isEditing = editingId === source.id;
+              return (
+                <Fragment key={source.id}>
+                  <tr style={source.active ? undefined : { opacity: 0.55 }}>
+                    <td className="wrap">
+                      <Link href={`/admin/resources/${source.id}`} className="admin-link">{source.name}</Link>
+                      <span className="admin-muted" style={{ display: 'block', fontSize: '12px', overflowWrap: 'anywhere' }}>{source.url}</span>
+                      {source.folder && (
+                        <Link href={`/admin/resources/${source.id}#files`} className="admin-tree-inline" title="Where its files are kept on the server">
+                          <Folder size={13} strokeWidth={1.8} aria-hidden="true" /> uploads/{source.folder}/
+                        </Link>
+                      )}
+                    </td>
+                    <td className="wrap">{source.doc_types.length ? source.doc_types.map((t) => humanise(t)).join(', ') : 'All PDFs'}</td>
+                    <td>{source.recurrence === 'manual' ? 'Manual' : humanise(source.recurrence)}{source.follow_links ? ` · linked pages · ${source.max_pages} pages` : ''}</td>
+                    <td>{formatDateTime(source.last_checked_at, 'Never')}</td>
+                    <td>
+                      {!source.active && <span className="admin-status is-failed" style={{ marginRight: '6px' }}>Paused</span>}
+                      <span className={`admin-status ${statusClass(source.last_status)}`}>{humanise(source.last_status)}</span>
+                      {source.last_status === 'ok' && (
+                        <span className="admin-muted" style={{ display: 'block', fontSize: '12px' }}>
+                          {source.last_found} found · {source.last_new} new · {source.last_changed} changed
+                        </span>
+                      )}
+                      {source.last_error && <span className="admin-message" style={{ color: '#ff8a8a', display: 'block' }}>{source.last_error}</span>}
+                    </td>
+                    <td>{source.document_count}</td>
+                    <td>{source.active ? formatDateTime(source.next_check_at, source.recurrence === 'manual' ? 'Manual' : 'Soon') : 'Paused'}</td>
+                    <td>
+                      <div className="admin-actions">
+                        <button type="button" className="btn btn-primary btn-sm" onClick={() => checkNow(source)} disabled={busyId === source.id || source.last_status === 'running'}>
+                          {source.last_status === 'running' ? 'Checking…' : 'Check now'}
+                        </button>
+                        <button type="button" className="btn btn-secondary btn-sm" onClick={() => toggleActive(source)} disabled={busyId === source.id}>
+                          {source.active ? 'Pause checks' : 'Resume checks'}
+                        </button>
+                        <button
+                          type="button"
+                          className="btn btn-secondary btn-sm"
+                          onClick={() => setEditingId(isEditing ? null : source.id)}
+                          disabled={busyId === source.id}
+                        >
+                          <Pencil size={14} strokeWidth={2} aria-hidden="true" /> {isEditing ? 'Close' : 'Edit'}
+                        </button>
+                        <button type="button" className="btn btn-secondary btn-sm" onClick={() => remove(source)} disabled={busyId === source.id}>
+                          Remove
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  {isEditing && (
+                    <tr key={`${source.id}-edit`}>
+                      <td colSpan={8}>
+                        <SourceForm
+                          suppliers={suppliers}
+                          initial={source}
+                          onSaved={() => { setEditingId(null); router.refresh(); }}
+                          onCancel={() => setEditingId(null)}
+                        />
+                      </td>
+                    </tr>
                   )}
-                </td>
-                <td className="wrap">{source.doc_types.length ? source.doc_types.map((t) => humanise(t)).join(', ') : 'All PDFs'}</td>
-                <td>{source.recurrence === 'manual' ? 'Manual' : humanise(source.recurrence)}{source.follow_links ? ' · linked pages' : ''}</td>
-                <td>{formatDateTime(source.last_checked_at, 'Never')}</td>
-                <td>
-                  {!source.active && <span className="admin-status is-failed" style={{ marginRight: '6px' }}>Paused</span>}
-                  <span className={`admin-status ${statusClass(source.last_status)}`}>{humanise(source.last_status)}</span>
-                  {source.last_status === 'ok' && (
-                    <span className="admin-muted" style={{ display: 'block', fontSize: '12px' }}>
-                      {source.last_found} found · {source.last_new} new · {source.last_changed} changed
-                    </span>
-                  )}
-                  {source.last_error && <span className="admin-message" style={{ color: '#ff8a8a', display: 'block' }}>{source.last_error}</span>}
-                </td>
-                <td>{source.document_count}</td>
-                <td>{source.active ? formatDateTime(source.next_check_at, source.recurrence === 'manual' ? 'Manual' : 'Soon') : 'Paused'}</td>
-                <td>
-                  <div className="admin-actions">
-                    <button type="button" className="btn btn-primary btn-sm" onClick={() => checkNow(source)} disabled={busyId === source.id || source.last_status === 'running'}>
-                      {source.last_status === 'running' ? 'Checking…' : 'Check now'}
-                    </button>
-                    <button type="button" className="btn btn-secondary btn-sm" onClick={() => toggleActive(source)} disabled={busyId === source.id}>
-                      {source.active ? 'Pause checks' : 'Resume checks'}
-                    </button>
-                    <button type="button" className="btn btn-secondary btn-sm" onClick={() => remove(source)} disabled={busyId === source.id}>
-                      Remove
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
+                </Fragment>
+              );
+            })}
           </tbody>
         </table>
       </div>
 
-      <AddSourceForm suppliers={suppliers} onAdded={addedThenCheck} />
+      <AddSource suppliers={suppliers} onAdded={addedThenCheck} />
     </div>
   );
 }

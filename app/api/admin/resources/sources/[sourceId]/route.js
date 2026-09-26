@@ -15,7 +15,7 @@ const UpdateRequest = z
     doc_types: z.array(z.enum(DOC_TYPES)).optional(),
     recurrence: z.enum(RECURRENCES).optional(),
     follow_links: z.boolean().optional(),
-    max_pages: z.number().int().min(1).max(100).optional(),
+    max_pages: z.number().int().min(1).max(500).optional(),
     active: z.boolean().optional(),
   })
   .refine((data) => Object.keys(data).length > 0, { message: 'Nothing to change.' });
