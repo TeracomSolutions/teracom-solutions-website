@@ -1,12 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 import { Folder, Pencil } from 'lucide-react';
 
 import { formatDateTime, humanise } from '@/lib/adminFormat';
+import { changedFields, sourceFormDefaults } from '@/lib/resourceSourceFields';
 
 // The Resources page: the websites we watch and a form to add one.
 const DOC_TYPE_OPTIONS = [
@@ -43,13 +44,15 @@ async function send(url, method, body) {
 }
 
 function SourceForm({ suppliers, initial, onSaved, onCancel }) {
-  const [name, setName] = useState(initial ? initial.name : '');
-  const [url, setUrl] = useState(initial ? initial.url : '');
-  const [supplierId, setSupplierId] = useState(initial ? (initial.supplier_id || '') : '');
-  const [docTypes, setDocTypes] = useState(initial ? [...initial.doc_types] : ['datasheet', 'user_manual', 'installer_manual']);
-  const [recurrence, setRecurrence] = useState(initial ? initial.recurrence : 'weekly');
-  const [followLinks, setFollowLinks] = useState(initial ? initial.follow_links : true);
-  const [maxPages, setMaxPages] = useState(initial ? initial.max_pages : 60);
+  const defaults = sourceFormDefaults();
+  const start = initial || defaults;
+  const [name, setName] = useState(start.name);
+  const [url, setUrl] = useState(start.url);
+  const [supplierId, setSupplierId] = useState(start.supplier_id || '');
+  const [docTypes, setDocTypes] = useState([...start.doc_types]);
+  const [recurrence, setRecurrence] = useState(start.recurrence);
+  const [followLinks, setFollowLinks] = useState(start.follow_links);
+  const [maxPages, setMaxPages] = useState(String(start.max_pages));
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
 
@@ -69,12 +72,11 @@ function SourceForm({ suppliers, initial, onSaved, onCancel }) {
         doc_types: docTypes,
         recurrence,
         follow_links: followLinks,
-        max_pages: maxPages,
+        max_pages: Number(maxPages) || defaults.max_pages,
       };
 
       if (initial) {
         // Edit mode - calculate changed fields
-        const { changedFields } = await import('@/lib/resourceSourceFields');
         const changes = changedFields(initial, dataToSubmit);
         if (Object.keys(changes).length === 0) {
           onCancel();
@@ -136,13 +138,13 @@ function SourceForm({ suppliers, initial, onSaved, onCancel }) {
       </label>
       <label>
         Max pages
-        <input 
-          type="number" 
-          value={maxPages} 
-          onChange={(e) => setMaxPages(parseInt(e.target.value) || 1)} 
-          min="1" 
-          max="500" 
-          step="1" 
+        <input
+          type="number"
+          value={maxPages}
+          onChange={(e) => setMaxPages(e.target.value)}
+          min="1"
+          max="500"
+          step="1"
         />
         <small>How many pages of the site one check may read. A document library with 16 pages of listings needs about 20; 60 is a safe default.</small>
       </label>
@@ -153,6 +155,18 @@ function SourceForm({ suppliers, initial, onSaved, onCancel }) {
       </div>
     </form>
   );
+}
+
+function AddSource({ suppliers, onAdded }) {
+  const [open, setOpen] = useState(false);
+  if (!open) {
+    return (
+      <button type="button" className="btn btn-primary btn-sm" onClick={() => setOpen(true)}>
+        Add a website to watch
+      </button>
+    );
+  }
+  return <SourceForm suppliers={suppliers} onSaved={() => { setOpen(false); onAdded(); }} onCancel={() => setOpen(false)} />;
 }
 
 export default function AdminResourceSources({ sources, suppliers }) {
@@ -233,7 +247,7 @@ export default function AdminResourceSources({ sources, suppliers }) {
             {sources.map((source) => {
               const isEditing = editingId === source.id;
               return (
-                <tbody key={source.id}>
+                <Fragment key={source.id}>
                   <tr style={source.active ? undefined : { opacity: 0.55 }}>
                     <td className="wrap">
                       <Link href={`/admin/resources/${source.id}`} className="admin-link">{source.name}</Link>
@@ -267,13 +281,13 @@ export default function AdminResourceSources({ sources, suppliers }) {
                         <button type="button" className="btn btn-secondary btn-sm" onClick={() => toggleActive(source)} disabled={busyId === source.id}>
                           {source.active ? 'Pause checks' : 'Resume checks'}
                         </button>
-                        <button 
-                          type="button" 
-                          className="btn btn-secondary btn-sm" 
-                          onClick={() => setEditingId(isEditing ? null : source.id)} 
+                        <button
+                          type="button"
+                          className="btn btn-secondary btn-sm"
+                          onClick={() => setEditingId(isEditing ? null : source.id)}
                           disabled={busyId === source.id}
                         >
-                          <Pencil size={14} strokeWidth={2} />
+                          <Pencil size={14} strokeWidth={2} aria-hidden="true" /> {isEditing ? 'Close' : 'Edit'}
                         </button>
                         <button type="button" className="btn btn-secondary btn-sm" onClick={() => remove(source)} disabled={busyId === source.id}>
                           Remove
@@ -284,23 +298,23 @@ export default function AdminResourceSources({ sources, suppliers }) {
                   {isEditing && (
                     <tr key={`${source.id}-edit`}>
                       <td colSpan={8}>
-                        <SourceForm 
-                          suppliers={suppliers} 
-                          initial={source} 
-                          onSaved={() => { setEditingId(null); router.refresh(); }} 
-                          onCancel={() => setEditingId(null)} 
+                        <SourceForm
+                          suppliers={suppliers}
+                          initial={source}
+                          onSaved={() => { setEditingId(null); router.refresh(); }}
+                          onCancel={() => setEditingId(null)}
                         />
                       </td>
                     </tr>
                   )}
-                </tbody>
+                </Fragment>
               );
             })}
           </tbody>
         </table>
       </div>
 
-      {!editingId && <SourceForm suppliers={suppliers} onSaved={addedThenCheck} onCancel={() => {}} />}
+      <AddSource suppliers={suppliers} onAdded={addedThenCheck} />
     </div>
   );
 }
