@@ -42,7 +42,7 @@ export default function AdminLoginPage() {
       <section className="section section-spacious">
         <div className="container" style={{ maxWidth: '420px' }}>
           <h1>Staff Login</h1>
-          <p className="lead">Teracom Solutions internal admin access.</p>
+          <p className="lead">Teracom Solutions staff only. Sign in with your @teracomsolutions.com.au account.</p>
 
           <form onSubmit={handleSubmit} style={{ marginTop: '24px' }}>
             <div style={{ marginBottom: '16px' }}>

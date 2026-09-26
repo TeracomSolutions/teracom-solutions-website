@@ -6,7 +6,7 @@ import AdminHelpIcon from '@/components/AdminHelpIcon';
 import AdminRemoveButton from '@/components/AdminRemoveButton';
 import AdminShell from '@/components/AdminShell';
 import { fetchSuppliersForBusiness, findBusinessName } from '@/lib/api/adminSuppliers';
-import { formatDate, humanise } from '@/lib/adminFormat';
+import { formatDate, formatDateTime, humanise } from '@/lib/adminFormat';
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
 
 export const metadata = {
@@ -34,11 +34,12 @@ export default async function AdminBusinessSuppliersPage({ params }) {
       <h1 className="admin-heading">
         {businessName ? `${businessName} — Suppliers` : 'Suppliers'}
         <AdminHelpIcon>
-          <p>The product suppliers this business buys from, whose price-list files it receives. Click a supplier to upload its files and see what has been uploaded.</p>
-          <h4>Suppliers</h4>
+          <p>The product suppliers this business buys from, whose price lists it receives. Click a supplier to upload its price lists and import them into the store.</p>
+          <h4>Columns</h4>
           <ul>
-            <li><strong>Name</strong> - click it for its uploads.</li>
+            <li><strong>Name</strong> - click it for its price lists.</li>
             <li><strong>Type</strong> - Manufacturer (makes the products) or Distributor (resells them).</li>
+            <li><strong>Last import</strong> - when one of its price lists was last imported into the store; blank until the first import.</li>
             <li><strong>Created</strong> - when it was added.</li>
           </ul>
           <h4>Add / Remove</h4>
@@ -60,6 +61,7 @@ export default async function AdminBusinessSuppliersPage({ params }) {
               <tr>
                 <th>Name</th>
                 <th>Type</th>
+                <th>Last import</th>
                 <th>Created</th>
                 <th></th>
               </tr>
@@ -67,7 +69,7 @@ export default async function AdminBusinessSuppliersPage({ params }) {
             <tbody>
               {suppliers.length === 0 && (
                 <tr>
-                  <td colSpan={4} className="admin-muted">No suppliers yet.</td>
+                  <td colSpan={5} className="admin-muted">No suppliers yet.</td>
                 </tr>
               )}
               {suppliers.map((supplier) => (
@@ -82,6 +84,7 @@ export default async function AdminBusinessSuppliersPage({ params }) {
                       {humanise(supplier.supplier_type)}
                     </span>
                   </td>
+                  <td>{supplier.last_import_at ? formatDateTime(supplier.last_import_at) : <span className="admin-muted">Never</span>}</td>
                   <td>{formatDate(supplier.created_at)}</td>
                   <td>
                     <AdminRemoveButton

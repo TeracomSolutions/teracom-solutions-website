@@ -8,11 +8,12 @@ import { usePathname, useRouter } from 'next/navigation';
 export const ADMIN_AREAS = [
   { href: '/admin', label: 'Overview', exact: true },
   { href: '/admin/suppliers', label: 'Businesses & Suppliers' },
+  { href: '/admin/catalog', label: 'Store Catalog' },
+  { href: '/admin/pricing', label: 'Pricing' },
+  { href: '/admin/coupons', label: 'Coupons' },
   { href: '/admin/leads', label: 'Leads' },
   { href: '/admin/scout', label: 'Scout' },
   { href: '/admin/ai-connections', label: 'AI Connections' },
-  { href: '/admin/catalog', label: 'Store Catalog' },
-  { href: '/admin/coupons', label: 'Coupons' },
 ];
 
 export default function AdminNav() {
