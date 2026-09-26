@@ -39,6 +39,11 @@ const AREAS = [
     text: 'Enquiries from the contact form on this website, newest first, with Mark contacted.',
   },
   {
+    href: '/admin/website-data',
+    title: 'Website Data',
+    text: 'Visitors, page views, top pages, sources, countries and devices for the public website, from our own records.',
+  },
+  {
     href: '/admin/scout',
     title: 'Scout',
     text: 'Research tasks for the website: run an AI researcher and critic, then approve or reject the report.',

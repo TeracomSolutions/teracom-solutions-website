@@ -8,6 +8,7 @@ import AskTeraWidget from '@/components/AskTeraWidget';
 import StructuredData from '@/components/StructuredData';
 import GoogleAnalytics from '@/components/GoogleAnalytics';
 import AnalyticsEvents from '@/components/AnalyticsEvents';
+import VisitBeacon from '@/components/VisitBeacon';
 import { GOOGLE_SITE_VERIFICATION } from '@/lib/analytics';
 import { SITE_ORIGIN } from '@/lib/seo';
 
@@ -79,6 +80,7 @@ export default function MarketingRootLayout({ children }) {
         <StructuredData />
         <GoogleAnalytics />
         <AnalyticsEvents />
+        <VisitBeacon />
         {/* Keyboard and screen-reader users otherwise have to tab through the
             entire header nav, the resources dropdown and the cart on every
             single page before reaching content (WCAG 2.4.1 Bypass Blocks).
