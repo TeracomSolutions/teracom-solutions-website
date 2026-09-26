@@ -2145,3 +2145,17 @@ a.admin-status:hover { filter:brightness(1.15); }
 .admin-two-col { display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:14px; margin:0 0 22px; }
 .admin-share { display:inline-block; width:90px; height:6px; border-radius:999px; background:rgba(255,255,255,.08); vertical-align:middle; overflow:hidden; }
 .admin-share span { display:block; height:100%; background:#ff4b4b; border-radius:999px; }
+
+/* ---- Admin: Assistant ---- */
+.admin-assistant { display:grid; gap:14px; }
+.admin-assistant-log { display:grid; gap:12px; min-height:280px; max-height:60vh; overflow-y:auto; padding:18px; border:1px solid var(--line); border-radius:16px; background:rgba(255,255,255,.02); }
+.admin-assistant-empty { display:grid; gap:12px; }
+.admin-assistant-msg { display:flex; }
+.admin-assistant-msg.user { justify-content:flex-end; }
+.admin-assistant-bubble { max-width:min(720px, 92%); padding:12px 16px; border-radius:14px; background:rgba(255,255,255,.05); border:1px solid var(--line); font-size:14px; line-height:1.55; }
+.admin-assistant-msg.user .admin-assistant-bubble { background:rgba(255,23,23,.14); border-color:rgba(255,23,23,.35); }
+.admin-assistant-bubble p { margin:0 0 6px; }
+.admin-assistant-bubble p:last-child { margin-bottom:0; }
+.admin-assistant-actions { margin:10px 0 0; padding:8px 0 0 0; list-style:none; border-top:1px solid var(--line); color:#7ee29a; font-size:13px; }
+.admin-assistant-form { display:grid; gap:10px; }
+.admin-assistant-form textarea { width:100%; padding:12px 14px; border-radius:12px; border:1px solid var(--line); background:#0d0d0d; color:#fff; font:inherit; font-size:14px; resize:vertical; }
