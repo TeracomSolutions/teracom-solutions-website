@@ -2122,3 +2122,26 @@ a.admin-status:hover { filter:brightness(1.15); }
 .product-resource-text { display:grid; gap:2px; min-width:0; }
 .product-resource-text strong { font-size:15px; overflow-wrap:anywhere; }
 .product-resource-text small { color:var(--muted); font-size:12px; }
+
+/* ---- Admin: Website Data ---- */
+.admin-stats { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:14px; margin:0 0 22px; }
+.admin-stat { display:grid; gap:4px; padding:18px 20px; border:1px solid var(--line); border-radius:16px; background:rgba(255,255,255,.03); }
+.admin-stat-label { font-size:11px; font-weight:900; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); }
+.admin-stat-value { font-size:32px; font-weight:900; line-height:1.1; }
+.admin-stat-delta { font-size:12px; color:var(--muted); }
+.admin-stat-delta.up { color:#7ee29a; }
+.admin-stat-delta.down { color:#ff8a8a; }
+.admin-charts { display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:14px; margin:0 0 22px; }
+.admin-chart { padding:14px 18px 10px; }
+.admin-chart-head { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.admin-chart-head h3 { margin:0; font-size:15px; }
+.admin-chart-body { position:relative; }
+.admin-chart svg { width:100%; height:auto; display:block; }
+.admin-chart-grid { stroke:rgba(255,255,255,.08); stroke-width:1; }
+.admin-chart-tick { fill:var(--muted); font-size:11px; }
+.admin-chart-bar { fill:#ff4b4b; transition:fill .15s ease; }
+.admin-chart-bar.active { fill:#ff8a8a; }
+.admin-chart-tooltip { position:absolute; top:6px; transform:translateX(-50%); background:#111; border:1px solid var(--line); border-radius:8px; padding:6px 10px; font-size:12px; white-space:nowrap; pointer-events:none; color:#fff; }
+.admin-two-col { display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:14px; margin:0 0 22px; }
+.admin-share { display:inline-block; width:90px; height:6px; border-radius:999px; background:rgba(255,255,255,.08); vertical-align:middle; overflow:hidden; }
+.admin-share span { display:block; height:100%; background:#ff4b4b; border-radius:999px; }
