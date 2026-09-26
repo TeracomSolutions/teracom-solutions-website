@@ -222,8 +222,10 @@ export default function AdminCouponManager({ initialCoupons = [] }) {
               spellCheck="false"
               disabled={!!editing}
             />
-            {editing && (
+            {editing ? (
               <small>Cannot change on an existing code. Switch it off and create a new one instead.</small>
+            ) : (
+              <small>Letters, numbers, hyphens. Not case sensitive.</small>
             )}
           </label>
 
