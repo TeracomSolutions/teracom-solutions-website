@@ -35,7 +35,8 @@ export default async function AdminCatalogPage() {
           <AdminNav />
           <h1>Store Catalog</h1>
           <p className="lead">
-            Upload a supplier price-list feed (CSV, JSON, or XML) to update product pricing and stock.
+            Every product in the store catalogue. Supplier price lists come in through Businesses &amp; Suppliers
+            (upload, then Import into store); the form below is for a one-off pasted feed. Tier prices are set on the Pricing page.
           </p>
 
           <AdminCatalogManager initialProducts={initialData.products} initialTotal={initialData.total} />
