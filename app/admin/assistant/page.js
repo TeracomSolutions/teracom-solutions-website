@@ -27,7 +27,7 @@ export default async function AdminAssistantPage() {
             <li>Website data: visitor numbers and top pages for a period.</li>
           </ul>
           <h4>What it will not do</h4>
-          <p>It cannot delete anything, upload files, change AI keys or edit the website itself; those stay as clicks on their pages. It runs on the Anthropic connection under AI Connections.</p>
+          <p>It cannot delete anything, upload files, change AI keys or edit the website itself; those stay as clicks on their pages. It runs on the connections under AI Connections, trying Anthropic first, then OpenAI, then Groq, and says which one answered.</p>
         </AdminHelpIcon>
       </h1>
       <p className="lead">Tell the console what you want in plain English.</p>
