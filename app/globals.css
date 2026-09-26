@@ -2197,3 +2197,19 @@ a.admin-status:hover { filter:brightness(1.15); }
 .admin-margin.good { color:#7ee29a; }
 .admin-margin.thin { color:#ffd75e; }
 .admin-margin.bad { color:#ff8a8a; }
+
+/* ---- Admin: Resources folder tree ---- */
+.admin-tree { margin:0 0 22px; }
+.admin-tree-root { display:flex; gap:12px; align-items:flex-start; }
+.admin-tree-root > div { display:grid; gap:2px; min-width:0; }
+.admin-tree-path { display:block; font-size:12px; color:var(--muted); overflow-wrap:anywhere; }
+.admin-tree-level { list-style:none; margin:8px 0 0 10px; padding:0 0 0 14px; border-left:1px dashed rgba(255,255,255,.14); }
+.admin-tree-level li { margin:4px 0; }
+.admin-tree-node { display:flex; align-items:center; gap:8px; background:none; border:0; padding:4px 6px; border-radius:8px; color:#fff; font:inherit; font-size:14px; cursor:pointer; }
+.admin-tree-node:hover { background:rgba(255,255,255,.05); }
+.admin-tree-folder { color:#fbbf24; }
+.admin-tree-file { display:flex; flex-wrap:wrap; align-items:center; gap:10px; padding:4px 6px 4px 28px; font-size:13px; }
+.admin-tree-fileicon { color:#ff8a8a; flex:none; }
+.admin-tree-name { font-weight:600; overflow-wrap:anywhere; }
+.admin-tree-inline { display:inline-flex; align-items:center; gap:5px; margin-top:4px; font-size:12px; color:#fbbf24; font-family:ui-monospace, SFMono-Regular, Menlo, monospace; }
+.admin-tree-inline:hover { text-decoration:underline; }
