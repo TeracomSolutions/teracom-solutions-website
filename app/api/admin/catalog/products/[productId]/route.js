@@ -27,7 +27,8 @@ export const PATCH = withAdminSession(async ({ req, token, params }) => {
 });
 
 // Takes a product off the store (soft delete on the backend).
-export const DELETE = withAdminSession(async ({ token, params }) => {
-  await deactivateProduct(token, params.productId);
+export const DELETE = withAdminSession(async ({ req, token, params }) => {
+  const permanent = new URL(req.url).searchParams.get('permanent') === 'true';
+  await deactivateProduct(token, params.productId, { permanent });
   return NextResponse.json({ ok: true });
 });

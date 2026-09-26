@@ -288,6 +288,22 @@ export default function AdminCatalogGrid({ products, tiers, tierPrices, supplier
     }
   }
 
+  async function deleteForever(p) {
+    if (!window.confirm(`Delete ${p.sku} permanently? Its history goes with it, and if a supplier feed still lists this SKU the next pull will create it again.`)) return;
+    setBusyId(p.id);
+    setError('');
+    try {
+      const response = await fetch(`/api/admin/catalog/products/${p.id}?permanent=true`, { method: 'DELETE' });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error || 'Unable to delete this product.');
+      router.refresh();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setBusyId(null);
+    }
+  }
+
   function discard(p) {
     setDrafts((all) => {
       const next = { ...all };
@@ -408,6 +424,9 @@ export default function AdminCatalogGrid({ products, tiers, tierPrices, supplier
                         <button type="button" className="btn btn-primary btn-sm" onClick={() => save(p)} disabled={busyId === p.id}>{busyId === p.id ? '…' : 'Save'}</button>
                         <button type="button" className="admin-link-btn" onClick={() => discard(p)}>undo</button>
                       </span>
+                    )}
+                    {!dirty && !p.active && (
+                      <button type="button" className="admin-link-btn" style={{ color: '#ff8a8a' }} onClick={() => deleteForever(p)} disabled={busyId === p.id}>Delete permanently</button>
                     )}
                   </td>
                 </tr>
