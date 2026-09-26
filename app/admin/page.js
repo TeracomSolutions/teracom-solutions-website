@@ -5,10 +5,8 @@ import {
   Cpu,
   FileText,
   Inbox,
-  PackageSearch,
   Radar,
   Sparkles,
-  Tags,
   Ticket,
 } from 'lucide-react';
 
@@ -31,24 +29,10 @@ const AREAS = [
   },
   {
     href: '/admin/suppliers',
-    title: 'Businesses & Suppliers',
-    text: 'The businesses whose suppliers we track, each supplier, the price lists it sends, and Import into store.',
+    title: 'Store',
+    text: 'Businesses and their suppliers, the catalogue sheet and the customer price tiers: what the store sells, what it costs and what each tier pays, in one place.',
     icon: Boxes,
     hue: '#fb923c',
-  },
-  {
-    href: '/admin/catalog',
-    title: 'Store Catalog',
-    text: 'Every product in the store catalogue, with a paste-in feed import for one-offs.',
-    icon: PackageSearch,
-    hue: '#ff4b4b',
-  },
-  {
-    href: '/admin/pricing',
-    title: 'Pricing',
-    text: 'Silver, Gold and Platinum discounts off RRP, per-supplier overrides, and the whole price list at every tier.',
-    icon: Tags,
-    hue: '#4ade80',
   },
   {
     href: '/admin/coupons',

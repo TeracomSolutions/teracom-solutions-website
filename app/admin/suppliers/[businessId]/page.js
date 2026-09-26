@@ -33,7 +33,7 @@ export default async function AdminBusinessSuppliersPage({ params }) {
     <AdminShell>
       <p className="admin-muted"><Link href="/admin/suppliers" className="admin-link">&larr; Businesses</Link></p>
       <h1 className="admin-heading">
-        {businessName ? `${businessName} — Suppliers` : 'Suppliers'}
+        {businessName || 'Business'}
         <AdminHelpIcon>
           <p>The product suppliers this business buys from, whose price lists it receives. Click a supplier to upload its price lists and import them into the store.</p>
           <h4>Columns</h4>
