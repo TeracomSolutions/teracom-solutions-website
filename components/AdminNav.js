@@ -11,6 +11,7 @@ export const ADMIN_AREAS = [
   { href: '/admin/catalog', label: 'Store Catalog' },
   { href: '/admin/pricing', label: 'Pricing' },
   { href: '/admin/coupons', label: 'Coupons' },
+  { href: '/admin/resources', label: 'Resources' },
   { href: '/admin/leads', label: 'Leads' },
   { href: '/admin/scout', label: 'Scout' },
   { href: '/admin/ai-connections', label: 'AI Connections' },

@@ -9,6 +9,7 @@ import AddToCartButton from '@/components/AddToCartButton';
 import CheckoutButton from '@/components/CheckoutButton';
 import StoreCategoryArt from '@/components/StoreCategoryArt';
 import ProductViewed from '@/components/ProductViewed';
+import ProductResources from '@/components/ProductResources';
 import { CUSTOMER_ACCESS_TOKEN_COOKIE } from '@/lib/customerSession';
 import {
   artSlugForProduct,
@@ -22,6 +23,10 @@ import {
   storeCategoryForProduct,
 } from '@/lib/products';
 import { absoluteUrl, BUSINESS, pageMetadata } from '@/lib/seo';
+
+// Prerendered, refreshed in the background at most hourly: a data sheet
+// published in the admin appears on the product page within the hour.
+export const revalidate = 3600;
 
 export function generateStaticParams() {
   return products.map((p) => ({ slug: p.id }));
@@ -203,6 +208,8 @@ export default async function ProductPage(props) {
           </div>
         </div>
       </section>
+
+      <ProductResources sku={product.sku} />
 
       <section className="section section-spacious alt">
         <div className="container">
