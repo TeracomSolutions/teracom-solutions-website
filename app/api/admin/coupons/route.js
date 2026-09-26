@@ -27,8 +27,15 @@ const CouponCreate = z.object({
 
 const CouponUpdate = z.object({
   code: z.string().min(1).max(40),
-  active: z.boolean(),
-});
+  active: z.boolean().optional(),
+  label: z.string().trim().min(1).max(120).optional(),
+  internal_note: z.string().max(500).nullable().optional(),
+  expires_at: z.string().nullable().optional(),
+  max_redemptions: z.number().int().positive().nullable().optional(),
+  max_per_customer: z.number().int().positive().nullable().optional(),
+  max_discount_cents: z.number().int().positive().nullable().optional(),
+  min_subtotal_cents: z.number().int().positive().nullable().optional(),
+}).refine(d => Object.keys(d).length > 1, { message: 'Nothing to change.' });
 
 async function requireStaff() {
   const token = (await cookies()).get(ACCESS_TOKEN_COOKIE)?.value;
