@@ -5,6 +5,7 @@ import { listCatalogProducts } from '@/lib/api/adminCatalog';
 import { ApiError } from '@/lib/api/client';
 import { ACCESS_TOKEN_COOKIE } from '@/lib/adminSession';
 import AdminCatalogManager from '@/components/AdminCatalogManager';
+import AdminNav from '@/components/AdminNav';
 
 export default async function AdminCatalogPage() {
   const token = (await cookies()).get(ACCESS_TOKEN_COOKIE)?.value;
@@ -31,6 +32,7 @@ export default async function AdminCatalogPage() {
     <main id="main-content">
       <section className="section section-spacious">
         <div className="container">
+          <AdminNav />
           <h1>Store Catalog</h1>
           <p className="lead">
             Upload a supplier price-list feed (CSV, JSON, or XML) to update product pricing and stock.
