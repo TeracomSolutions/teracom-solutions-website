@@ -5,6 +5,7 @@ import AdminAddSupplierForm from '@/components/AdminAddSupplierForm';
 import AdminHelpIcon from '@/components/AdminHelpIcon';
 import AdminRemoveButton from '@/components/AdminRemoveButton';
 import AdminShell from '@/components/AdminShell';
+import AdminStoreTabs from '@/components/AdminStoreTabs';
 import { fetchSuppliersForBusiness, findBusinessName } from '@/lib/api/adminSuppliers';
 import { formatDate, formatDateTime, humanise } from '@/lib/adminFormat';
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
@@ -30,7 +31,7 @@ export default async function AdminBusinessSuppliersPage({ params }) {
 
   return (
     <AdminShell>
-      <p className="admin-muted"><Link href="/admin/suppliers" className="admin-link">&larr; Businesses &amp; Suppliers</Link></p>
+      <p className="admin-muted"><Link href="/admin/suppliers" className="admin-link">&larr; Businesses</Link></p>
       <h1 className="admin-heading">
         {businessName ? `${businessName} — Suppliers` : 'Suppliers'}
         <AdminHelpIcon>
@@ -50,7 +51,8 @@ export default async function AdminBusinessSuppliersPage({ params }) {
           </ul>
         </AdminHelpIcon>
       </h1>
-      <p className="lead">Manage the suppliers associated with this business.</p>
+      <AdminStoreTabs />
+      <p className="lead">Suppliers this business buys from. Open one for its price lists, feeds and Import into store.</p>
 
       {loadError && <p className="form-error" role="alert">{loadError}</p>}
 

@@ -5,12 +5,13 @@ import AdminAddBusinessForm from '@/components/AdminAddBusinessForm';
 import AdminHelpIcon from '@/components/AdminHelpIcon';
 import AdminRemoveButton from '@/components/AdminRemoveButton';
 import AdminShell from '@/components/AdminShell';
+import AdminStoreTabs from '@/components/AdminStoreTabs';
 import { fetchManagedBusinesses } from '@/lib/api/adminSuppliers';
 import { formatDate } from '@/lib/adminFormat';
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
 
 export const metadata = {
-  title: 'Businesses & Suppliers|Teracom Solutions',
+  title: 'Businesses|Teracom Solutions',
 };
 
 export default async function AdminSuppliersPage() {
@@ -29,14 +30,14 @@ export default async function AdminSuppliersPage() {
   return (
     <AdminShell>
       <h1 className="admin-heading">
-        Businesses &amp; Suppliers
+        Businesses
         <AdminHelpIcon>
           <h4>What this section is for</h4>
           <p>The businesses whose product suppliers we track, and for each supplier the price-list files it sends. Three levels: business, then its suppliers, then each supplier&apos;s uploaded files.</p>
           <p>Uploaded files are stored as a record. Nothing reads or imports them automatically yet: the store&apos;s product catalogue is loaded separately, through the <strong>Store Catalog</strong> page.</p>
           <h4>Columns</h4>
           <ul>
-            <li><strong>Business</strong> - click it to see its suppliers.</li>
+            <li><strong>Business</strong> - open it to see its suppliers, and each supplier for its price lists and feeds.</li>
             <li><strong>Website</strong> - opens in a new tab.</li>
             <li><strong>Created</strong> - when it was added.</li>
           </ul>
@@ -48,7 +49,8 @@ export default async function AdminSuppliersPage() {
           </ul>
         </AdminHelpIcon>
       </h1>
-      <p className="lead">Each business, the suppliers whose price lists it receives, and the files uploaded from each supplier.</p>
+      <AdminStoreTabs />
+      <p className="lead">The businesses we buy through. Open one to see its suppliers, their price lists and feeds.</p>
 
       {loadError && <p className="form-error" role="alert">{loadError}</p>}
 
