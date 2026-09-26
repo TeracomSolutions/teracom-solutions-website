@@ -1,28 +1,38 @@
-import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
+import { z } from 'zod';
 
-import { listCatalogProducts } from '@/lib/api/adminCatalog';
-import { ApiError } from '@/lib/api/client';
-import { ACCESS_TOKEN_COOKIE } from '@/lib/adminSession';
+import { withAdminSession } from '@/lib/adminApi';
+import { createProduct, listCatalogProducts } from '@/lib/api/adminCatalog';
 
-export async function GET(req) {
-  const token = (await cookies()).get(ACCESS_TOKEN_COOKIE)?.value;
+const CreateRequest = z.object({
+  sku: z.string().trim().min(1).max(100),
+  name: z.string().trim().min(1).max(255),
+  description: z.string().trim().max(5000).optional().nullable(),
+  category: z.string().trim().min(1).max(100).default('Uncategorised'),
+  brand: z.string().trim().max(100).optional().nullable(),
+  supplier_id: z.string().uuid().optional().nullable(),
+  price: z.number().min(0),
+  cost: z.number().min(0).optional().nullable(),
+  stock: z.number().int().min(0).default(0),
+});
 
-  if (!token) {
-    return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
-  }
-
+export const GET = withAdminSession(async ({ req, token }) => {
   const { searchParams } = new URL(req.url);
-  const skip = Number(searchParams.get('skip')) || 0;
-  const limit = Number(searchParams.get('limit')) || 100;
+  return NextResponse.json(
+    await listCatalogProducts(token, {
+      skip: Number(searchParams.get('skip')) || 0,
+      limit: Number(searchParams.get('limit')) || 100,
+      supplierId: searchParams.get('supplier_id') || undefined,
+      q: searchParams.get('q') || undefined,
+      includeInactive: searchParams.get('include_inactive') !== 'false',
+    })
+  );
+});
 
-  try {
-    const data = await listCatalogProducts(token, { skip, limit });
-    return NextResponse.json(data);
-  } catch (err) {
-    if (err instanceof ApiError) {
-      return NextResponse.json({ error: err.message }, { status: err.status || 502 });
-    }
-    return NextResponse.json({ error: 'Unable to reach the catalog service.' }, { status: 502 });
+export const POST = withAdminSession(async ({ req, token }) => {
+  const parsed = CreateRequest.safeParse(await req.json().catch(() => null));
+  if (!parsed.success) {
+    return NextResponse.json({ error: 'A product needs a SKU, a name and an RRP.' }, { status: 400 });
   }
-}
+  return NextResponse.json(await createProduct(token, parsed.data), { status: 201 });
+});
