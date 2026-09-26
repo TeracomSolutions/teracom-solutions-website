@@ -9,9 +9,14 @@ export const metadata = {
 
 const AREAS = [
   {
-    href: '/admin/website-intelligence',
-    title: 'Website Intelligence',
-    text: 'Teracom’s businesses and their suppliers, the price-list files each one sends, and the enquiries the contact form brings in.',
+    href: '/admin/suppliers',
+    title: 'Businesses & Suppliers',
+    text: 'The businesses whose suppliers we track, each supplier, and the price-list files it sends.',
+  },
+  {
+    href: '/admin/leads',
+    title: 'Leads',
+    text: 'Enquiries from the contact form on this website, newest first, with Mark contacted.',
   },
   {
     href: '/admin/scout',
@@ -40,8 +45,8 @@ export default async function AdminHomePage() {
 
   return (
     <AdminShell>
-      <h1>Administration</h1>
-      <p className="lead">Teracom Solutions staff admin. Choose an area.</p>
+      <h1>Teracom Administration Console</h1>
+      <p className="lead">Staff tools for the Teracom Solutions website and store. Choose an area.</p>
 
       <div className="admin-cards">
         {AREAS.map((area) => (

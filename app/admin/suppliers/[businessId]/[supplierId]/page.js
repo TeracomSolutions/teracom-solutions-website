@@ -4,7 +4,7 @@ import { redirect } from 'next/navigation';
 import AdminHelpIcon from '@/components/AdminHelpIcon';
 import AdminShell from '@/components/AdminShell';
 import AdminUploadFeedForm from '@/components/AdminUploadFeedForm';
-import { fetchSupplierUploads, findBusinessName, findSupplierName } from '@/lib/api/adminWebsiteIntelligence';
+import { fetchSupplierUploads, findBusinessName, findSupplierName } from '@/lib/api/adminSuppliers';
 import { formatDateTime, humanise } from '@/lib/adminFormat';
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
 
@@ -19,8 +19,6 @@ const STATUS_CLASS = {
   imported: 'is-approved',
 };
 
-// Copied from the Global Platform's
-// app/(admin)/data-feeds/[businessId]/[supplierId]/page.js.
 export default async function AdminSupplierUploadsPage({ params }) {
   const token = await requireAdminToken();
   const { businessId, supplierId } = await params;
@@ -42,7 +40,7 @@ export default async function AdminSupplierUploadsPage({ params }) {
   return (
     <AdminShell>
       <p className="admin-muted">
-        <Link href={`/admin/website-intelligence/${businessId}`} className="admin-link">
+        <Link href={`/admin/suppliers/${businessId}`} className="admin-link">
           &larr; {businessName ? `${businessName} suppliers` : 'Suppliers'}
         </Link>
       </p>
