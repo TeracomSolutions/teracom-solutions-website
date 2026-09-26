@@ -4,7 +4,8 @@ import { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 
 import AdminAutoRefreshControl from './AdminAutoRefreshControl';
-import { formatDate, humanise } from '@/lib/adminFormat';
+import { formatDate, formatDateTime, humanise } from '@/lib/adminFormat';
+import { latestRun, lastCompleted, anyRunning } from '@/lib/scoutRunSummary';
 
 // One Scout tab: the form to add a task, the standing schedule, what has
 // finished, and the live to-do list with Run research. Copied from the
@@ -13,9 +14,23 @@ import { formatDate, humanise } from '@/lib/adminFormat';
 
 function RunStatus({ run }) {
   if (!run) return '—';
+  
   const label = humanise(run.status);
   const className = `admin-status is-${run.status}`;
-  if (run.status === 'needs_review' || run.status === 'approved' || run.status === 'rejected') {
+  
+  if (run.status === 'needs_review') {
+    return <Link href={`/admin/scout/review/${run.id}`} className={className}>Report ready → Review</Link>;
+  } else if (run.status === 'running') {
+    return <span className={className}>Running since {formatDateTime(run.created_at)}</span>;
+  } else if (run.status === 'failed') {
+    return (
+      <span className={className} title={run.error_message}>
+        Failed
+        <br />
+        <small className="admin-muted">{run.error_message}</small>
+      </span>
+    );
+  } else if (run.status === 'approved' || run.status === 'rejected') {
     return <Link href={`/admin/scout/review/${run.id}`} className={className}>{label}</Link>;
   }
   return <span className={className}>{label}</span>;
@@ -39,6 +54,7 @@ export default function AdminScoutTaskManager({ section }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [busyId, setBusyId] = useState(null);
+  const [notice, setNotice] = useState('');
 
   const loadTasks = useCallback(async () => {
     setLoading(true);
@@ -58,17 +74,23 @@ export default function AdminScoutTaskManager({ section }) {
       setRecurringTasks(recurringRes.ok ? await recurringRes.json() : []);
       setHistoryTasks(historyRes.ok ? await historyRes.json() : []);
 
-      // Fetch the latest run for each active task
-      if (activeTasksData.length > 0) {
+      // Combine all tasks to fetch runs for all of them
+      const allTasks = [...activeTasksData, ...recurringTasks, ...historyTasks];
+      
+      if (allTasks.length > 0) {
+        // Create a set of unique task IDs to avoid duplicate requests
+        const taskIds = [...new Set(allTasks.map(task => task.id))];
+        
+        // Fetch runs for all tasks
         const runsResponses = await Promise.all(
-          activeTasksData.map((task) => fetch(`/api/admin/scout-tasks/${task.id}/runs`))
+          taskIds.map((taskId) => fetch(`/api/admin/scout-tasks/${taskId}/runs`))
         );
         const runsData = await Promise.all(runsResponses.map((res) => (res.ok ? res.json() : [])));
 
         const latestRuns = {};
-        activeTasksData.forEach((task, index) => {
+        taskIds.forEach((taskId, index) => {
           if (runsData[index] && runsData[index].length > 0) {
-            latestRuns[task.id] = runsData[index][0]; // newest first
+            latestRuns[taskId] = latestRun(runsData[index]);
           }
         });
         setLatestRunsByTaskId(latestRuns);
@@ -80,11 +102,22 @@ export default function AdminScoutTaskManager({ section }) {
     } finally {
       setLoading(false);
     }
-  }, [section]);
+  }, [section, recurringTasks, historyTasks]);
 
   useEffect(() => {
     loadTasks();
   }, [loadTasks]);
+
+  // Poll for running tasks
+  useEffect(() => {
+    if (anyRunning(latestRunsByTaskId)) {
+      const interval = setInterval(() => {
+        loadTasks();
+      }, 20000); // 20 seconds
+      
+      return () => clearInterval(interval);
+    }
+  }, [latestRunsByTaskId, loadTasks]);
 
   async function postAction(url, options = {}) {
     const response = await fetch(url, { method: 'POST', ...options });
@@ -150,6 +183,7 @@ export default function AdminScoutTaskManager({ section }) {
     try {
       await postAction(`/api/admin/scout-tasks/${taskId}/run`);
       await loadTasks();
+      setNotice('Research started. This takes a few minutes; the row updates when it finishes.');
     } catch (err) {
       setError(err.message);
     } finally {
@@ -168,6 +202,7 @@ export default function AdminScoutTaskManager({ section }) {
       {error && <p className="form-error" role="alert">{error}</p>}
 
       <h2>Add new task</h2>
+      {notice && <p className="admin-card">{notice}</p>}
       <form onSubmit={handleSubmit} className="admin-form admin-card">
         <label>
           Task title
@@ -214,7 +249,7 @@ export default function AdminScoutTaskManager({ section }) {
                 <th>Target</th>
                 <th>Recurrence</th>
                 <th>Status</th>
-                <th>Last run</th>
+                <th>Latest run</th>
               </tr>
             </thead>
             <tbody>
@@ -224,7 +259,7 @@ export default function AdminScoutTaskManager({ section }) {
                   <td className="wrap">{task.target || '—'}</td>
                   <td>{humanise(task.recurrence)}</td>
                   <td>{humanise(task.status)}</td>
-                  <td>{formatDate(task.last_run_at, 'Never')}</td>
+                  <td><RunStatus run={latestRunsByTaskId[task.id]} /></td>
                 </tr>
               ))}
             </tbody>
@@ -244,7 +279,7 @@ export default function AdminScoutTaskManager({ section }) {
                 <th>Target</th>
                 <th>Recurrence</th>
                 <th>Status</th>
-                <th>Last run</th>
+                <th>Latest run</th>
               </tr>
             </thead>
             <tbody>
@@ -254,7 +289,7 @@ export default function AdminScoutTaskManager({ section }) {
                   <td className="wrap">{task.target || '—'}</td>
                   <td>{humanise(task.recurrence)}</td>
                   <td>{humanise(task.status)}</td>
-                  <td>{formatDate(task.last_run_at, 'Never')}</td>
+                  <td><RunStatus run={latestRunsByTaskId[task.id]} /></td>
                 </tr>
               ))}
             </tbody>
