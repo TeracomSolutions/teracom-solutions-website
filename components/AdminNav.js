@@ -7,6 +7,7 @@ import { usePathname, useRouter } from 'next/navigation';
 // public site never links to /admin, only the footer's double-click does.
 export const ADMIN_AREAS = [
   { href: '/admin', label: 'Overview', exact: true },
+  { href: '/admin/assistant', label: 'Assistant' },
   { href: '/admin/suppliers', label: 'Businesses & Suppliers' },
   { href: '/admin/catalog', label: 'Store Catalog' },
   { href: '/admin/pricing', label: 'Pricing' },

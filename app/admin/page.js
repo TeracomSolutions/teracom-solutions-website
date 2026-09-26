@@ -9,6 +9,11 @@ export const metadata = {
 
 const AREAS = [
   {
+    href: '/admin/assistant',
+    title: 'Assistant',
+    text: 'Tell the console what you want in plain English: it looks things up or makes the change, signed as you.',
+  },
+  {
     href: '/admin/suppliers',
     title: 'Businesses & Suppliers',
     text: 'The businesses whose suppliers we track, each supplier, the price lists it sends, and Import into store.',
