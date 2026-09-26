@@ -29,6 +29,11 @@ const AREAS = [
     text: 'Discount codes the checkout honours: create, limit and switch them off.',
   },
   {
+    href: '/admin/resources',
+    title: 'Resources',
+    text: 'Supplier and manufacturer websites we watch for data sheets and manuals, checked on a schedule and shown on the store.',
+  },
+  {
     href: '/admin/leads',
     title: 'Leads',
     text: 'Enquiries from the contact form on this website, newest first, with Mark contacted.',
