@@ -3,33 +3,29 @@
 import { useState } from 'react';
 
 import { formatDateTime, humanise } from '@/lib/adminFormat';
+import { groupProviders, providerStatus, kindLabel } from '@/lib/aiProviderStatus';
 
-// The AI providers Scout can research with. A key is sent once and never
-// shown again -- the backend keeps it encrypted and returns only its last
-// four characters. Ollama is self-hosted: it takes a host, not a key.
-const PROVIDERS = [
-  { key: 'ollama', label: 'Ollama (self-hosted)', selfHosted: true, modelHint: 'e.g. qwen3-coder-agent' },
-  { key: 'anthropic', label: 'Anthropic', modelHint: 'e.g. claude-sonnet-5' },
-  { key: 'openai', label: 'OpenAI', modelHint: 'e.g. gpt-4o-mini' },
-  { key: 'groq', label: 'Groq', modelHint: 'e.g. openai/gpt-oss-120b' },
-];
-
-function providerLabel(key) {
-  return PROVIDERS.find((p) => p.key === key)?.label || humanise(key);
-}
-
-export default function AdminAiConnections({ initialConnections, loadError }) {
+export default function AdminAiConnections({ initialConnections, loadError, providers }) {
   const [connections, setConnections] = useState(initialConnections ?? []);
   const [error, setError] = useState(loadError ?? '');
   const [notice, setNotice] = useState('');
   const [busy, setBusy] = useState(false);
 
-  const [provider, setProvider] = useState('ollama');
+  const allProviders = providers || [];
+  const { native, hosted, selfHosted: selfHostedProviders } = groupProviders(allProviders);
+  // Start on the first hosted provider that is not connected yet, so the
+  // form is ready to add something rather than re-showing one we have.
+  const [provider, setProvider] = useState(() => {
+    const first = [...hosted, ...allProviders].find((p) => providerStatus(p, initialConnections ?? []) !== 'connected');
+    return (first || allProviders[0] || { key: 'ollama' }).key;
+  });
   const [apiKey, setApiKey] = useState('');
   const [baseUrl, setBaseUrl] = useState('');
   const [defaultModel, setDefaultModel] = useState('');
 
-  const selected = PROVIDERS.find((p) => p.key === provider) || PROVIDERS[0];
+  const selected = allProviders.find((p) => p.key === provider) || { key: provider, label: humanise(provider), kind: 'hosted' };
+  const selfHosted = selected.kind === 'self_hosted';
+  const providerLabel = (key) => allProviders.find((p) => p.key === key)?.label || humanise(key);
   const existing = connections.find((c) => c.provider === provider);
 
   async function reload() {
@@ -66,7 +62,7 @@ export default function AdminAiConnections({ initialConnections, loadError }) {
       setApiKey('');
       setBaseUrl('');
       setDefaultModel('');
-      setNotice(`${providerLabel(provider)} saved.`);
+      setNotice(`${selected.label} saved.`);
       await reload();
     } catch (err) {
       setError(err.message);
@@ -170,24 +166,36 @@ export default function AdminAiConnections({ initialConnections, loadError }) {
       </div>
 
       <h2>{existing ? 'Update a provider' : 'Add a provider'}</h2>
-      <form onSubmit={handleSubmit} className="admin-form admin-card">
+      <form id="ai-connection-form" onSubmit={handleSubmit} className="admin-form admin-card">
         <label>
           Provider
           <select value={provider} onChange={(event) => setProvider(event.target.value)}>
-            {PROVIDERS.map((p) => (
-              <option key={p.key} value={p.key}>{p.label}</option>
-            ))}
+            <optgroup label="Hosted APIs">
+              {hosted.map((p) => (
+                <option key={p.key} value={p.key}>{p.label}</option>
+              ))}
+              {native.map((p) => (
+                <option key={p.key} value={p.key}>{p.label}</option>
+              ))}
+            </optgroup>
+            {selfHostedProviders.length > 0 && (
+              <optgroup label="Self-hosted">
+                {selfHostedProviders.map((p) => (
+                  <option key={p.key} value={p.key}>{p.label}</option>
+                ))}
+              </optgroup>
+            )}
           </select>
         </label>
 
-        {selected.selfHosted ? (
+        {selfHosted ? (
           <label>
             Host
             <input
               type="url"
               value={baseUrl}
               onChange={(event) => setBaseUrl(event.target.value)}
-              placeholder={existing?.base_url || 'http://your-ollama-host:11434'}
+              placeholder={existing?.base_url || selected.base_url || 'http://your-ollama-host:11434'}
               required={!existing}
             />
           </label>
@@ -204,13 +212,19 @@ export default function AdminAiConnections({ initialConnections, loadError }) {
           </label>
         )}
 
+        {selected.key_url && (
+          <p className="admin-muted">
+            Get a key: <a href={selected.key_url} target="_blank" rel="noopener noreferrer">{selected.key_url}</a>
+          </p>
+        )}
+
         <label>
           Default model
           <input
             type="text"
             value={defaultModel}
             onChange={(event) => setDefaultModel(event.target.value)}
-            placeholder={existing?.default_model || selected.modelHint}
+            placeholder={existing?.default_model || selected.default_model || 'model name'}
           />
         </label>
 
@@ -220,6 +234,57 @@ export default function AdminAiConnections({ initialConnections, loadError }) {
           </button>
         </div>
       </form>
+
+      <h2>What you can connect</h2>
+      <div className="admin-table-wrap">
+        <table className="admin-table">
+          <thead>
+            <tr>
+              <th>Provider</th>
+              <th>Kind</th>
+              <th>Good for</th>
+              <th>Default model</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {allProviders.length === 0 && (
+              <tr>
+                <td colSpan={6} className="admin-muted">The provider list could not be loaded. Refresh the page.</td>
+              </tr>
+            )}
+            {allProviders.map((provider) => {
+              const status = providerStatus(provider, connections);
+              return (
+                <tr key={provider.key}>
+                  <td>{provider.label}</td>
+                  <td>{kindLabel(provider.kind)}</td>
+                  <td>{provider.notes || '-'}</td>
+                  <td>{provider.default_model || '-'}</td>
+                  <td>
+                    <span className={`admin-status is-${status === 'connected' ? 'approved' : status === 'disabled' ? 'failed' : 'pending'}`}>
+                      {status === 'connected' ? 'Connected' : status === 'disabled' ? 'Disabled' : 'Not connected'}
+                    </span>
+                  </td>
+                  <td>
+                    <button
+                      type="button"
+                      className="btn btn-secondary btn-sm"
+                      onClick={() => {
+                        setProvider(provider.key);
+                        document.getElementById('ai-connection-form')?.scrollIntoView({ behavior: 'smooth' });
+                      }}
+                    >
+                      {status === 'connected' ? 'Change' : 'Set up'}
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
