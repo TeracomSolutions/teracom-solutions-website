@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation';
 import AdminHelpIcon from '@/components/AdminHelpIcon';
 import AdminImportUploadButton from '@/components/AdminImportUploadButton';
 import AdminShell from '@/components/AdminShell';
+import AdminStoreTabs from '@/components/AdminStoreTabs';
 import AdminSupplierFeeds from '@/components/AdminSupplierFeeds';
 import AdminUploadFeedForm from '@/components/AdminUploadFeedForm';
 import { fetchSupplierFeeds } from '@/lib/api/adminSupplierFeeds';
@@ -59,6 +60,7 @@ export default async function AdminSupplierUploadsPage({ params }) {
           <p>Column names are matched loosely: SKU / item code / part number, name / product, RRP / price / retail, cost / trade / dealer, stock / qty / SOH, category / group, brand. Rows without a SKU, a name or a price are skipped and counted. Prices are RRP; customer tiers are set on the Pricing page. Re-importing the same SKUs updates them.</p>
         </AdminHelpIcon>
       </h1>
+      <AdminStoreTabs />
       <p className="lead">Automatic feeds and hand uploads for this supplier, each imported into the store catalogue.</p>
 
       {loadError && <p className="form-error" role="alert">{loadError}</p>}
