@@ -3,8 +3,9 @@ import { redirect } from 'next/navigation';
 
 import AdminHelpIcon from '@/components/AdminHelpIcon';
 import AdminResourceDocuments from '@/components/AdminResourceDocuments';
+import AdminResourceTree from '@/components/AdminResourceTree';
 import AdminShell from '@/components/AdminShell';
-import { fetchResourceDocuments, fetchResourceRuns, fetchResourceSources } from '@/lib/api/adminResources';
+import { fetchResourceDocuments, fetchResourceRuns, fetchResourceSources, fetchResourceTree } from '@/lib/api/adminResources';
 import { formatDateTime, humanise } from '@/lib/adminFormat';
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
 
@@ -29,17 +30,20 @@ export default async function AdminResourceSourcePage({ params }) {
   let source = null;
   let documents = [];
   let runs = [];
+  let tree = null;
   let loadError = '';
 
   try {
-    const [sources, docs, history] = await Promise.all([
+    const [sources, docs, history, files] = await Promise.all([
       fetchResourceSources(token),
       fetchResourceDocuments(token, { sourceId }),
       fetchResourceRuns(token, sourceId),
+      fetchResourceTree(token, sourceId),
     ]);
     source = sources.find((s) => s.id === sourceId) || null;
     documents = docs;
     runs = history;
+    tree = files;
   } catch (err) {
     if (isSessionError(err)) redirect('/admin/login');
     loadError = 'Unable to load this website from the backend.';
@@ -51,7 +55,7 @@ export default async function AdminResourceSourcePage({ params }) {
       <h1 className="admin-heading">
         {source ? source.name : 'Documents'}
         <AdminHelpIcon>
-          <p>Every document collected from this website.</p>
+          <p>Every document collected from this website. <strong>Files on the server</strong> shows where they are kept: one folder for this site, a folder per kind inside it, the supplier&apos;s file names inside those. <strong>Pause checks</strong> on the Resources page stops the schedule for a site without removing anything.</p>
           <ul>
             <li><strong>Type</strong> - correct it if the automatic guess was wrong.</li>
             <li><strong>Store SKU</strong> - the part number of the product this belongs to; the store shows the document on that product page. Filled in automatically when the file name carries a SKU from the catalogue.</li>
@@ -74,6 +78,9 @@ export default async function AdminResourceSourcePage({ params }) {
 
       {source && (
         <>
+          <h2 id="files">Files on the server</h2>
+          {tree && <AdminResourceTree tree={tree} downloadBase={DOWNLOAD_BASE} />}
+
           <h2>Documents</h2>
           <AdminResourceDocuments documents={documents} downloadBase={DOWNLOAD_BASE} />
 

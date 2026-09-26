@@ -4,6 +4,8 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
+import { Folder } from 'lucide-react';
+
 import { formatDateTime, humanise } from '@/lib/adminFormat';
 
 // The Resources page: the websites we watch and a form to add one.
@@ -215,11 +217,17 @@ export default function AdminResourceSources({ sources, suppliers }) {
                 <td className="wrap">
                   <Link href={`/admin/resources/${source.id}`} className="admin-link">{source.name}</Link>
                   <span className="admin-muted" style={{ display: 'block', fontSize: '12px', overflowWrap: 'anywhere' }}>{source.url}</span>
+                  {source.folder && (
+                    <Link href={`/admin/resources/${source.id}#files`} className="admin-tree-inline" title="Where its files are kept on the server">
+                      <Folder size={13} strokeWidth={1.8} aria-hidden="true" /> uploads/{source.folder}/
+                    </Link>
+                  )}
                 </td>
                 <td className="wrap">{source.doc_types.length ? source.doc_types.map((t) => humanise(t)).join(', ') : 'All PDFs'}</td>
                 <td>{source.recurrence === 'manual' ? 'Manual' : humanise(source.recurrence)}{source.follow_links ? ' · linked pages' : ''}</td>
                 <td>{formatDateTime(source.last_checked_at, 'Never')}</td>
                 <td>
+                  {!source.active && <span className="admin-status is-failed" style={{ marginRight: '6px' }}>Paused</span>}
                   <span className={`admin-status ${statusClass(source.last_status)}`}>{humanise(source.last_status)}</span>
                   {source.last_status === 'ok' && (
                     <span className="admin-muted" style={{ display: 'block', fontSize: '12px' }}>
@@ -236,7 +244,7 @@ export default function AdminResourceSources({ sources, suppliers }) {
                       {source.last_status === 'running' ? 'Checking…' : 'Check now'}
                     </button>
                     <button type="button" className="btn btn-secondary btn-sm" onClick={() => toggleActive(source)} disabled={busyId === source.id}>
-                      {source.active ? 'Pause' : 'Resume'}
+                      {source.active ? 'Pause checks' : 'Resume checks'}
                     </button>
                     <button type="button" className="btn btn-secondary btn-sm" onClick={() => remove(source)} disabled={busyId === source.id}>
                       Remove
