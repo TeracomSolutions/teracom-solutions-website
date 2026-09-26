@@ -187,7 +187,7 @@ export default function AdminAiConnections({ initialConnections, loadError }) {
               type="url"
               value={baseUrl}
               onChange={(event) => setBaseUrl(event.target.value)}
-              placeholder={existing?.base_url || 'http://10.0.0.241:11434'}
+              placeholder={existing?.base_url || 'http://your-ollama-host:11434'}
               required={!existing}
             />
           </label>

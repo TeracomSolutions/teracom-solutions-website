@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 
-// Refresh now, or every N seconds. Copied from the Global Platform's
+// Refresh now, or every N seconds. Copied from the the previous platform's
 // components/AutoRefreshControl.js.
 const INTERVAL_OPTIONS = [
   { label: 'Off', value: 0 },

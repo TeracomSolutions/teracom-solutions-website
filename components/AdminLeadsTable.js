@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { formatDateTime, inquiryLabel } from '@/lib/adminFormat';
 
 // Enquiries from the public contact form, newest first. Copied from the
-// Global Platform's app/(admin)/data-feeds/LeadsTable.js; the form now
+// the previous platform's app/(admin)/data-feeds/LeadsTable.js; the form now
 // writes straight to the website backend and this reads it back.
 export default function AdminLeadsTable({ leads, loadError }) {
   const [rows, setRows] = useState(leads ?? []);

@@ -8,7 +8,7 @@ import { formatDate, humanise } from '@/lib/adminFormat';
 
 // One Scout tab: the form to add a task, the standing schedule, what has
 // finished, and the live to-do list with Run research. Copied from the
-// Global Platform's app/(admin)/scout/ScoutTaskManager.js; the fetches
+// the previous platform's app/(admin)/scout/ScoutTaskManager.js; the fetches
 // now go to this app's own /api/admin routes.
 
 function RunStatus({ run }) {

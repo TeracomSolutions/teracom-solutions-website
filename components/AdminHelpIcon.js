@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 
 // A "?" beside a heading that opens the page's own explanation. Copied
-// from the Global Platform's components/HelpIcon.js; the styling moved
+// from the the previous platform's components/HelpIcon.js; the styling moved
 // from inline to the .admin-help-* classes in globals.css.
 export default function AdminHelpIcon({ children }) {
   const [isOpen, setIsOpen] = useState(false);

@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 
-// "Website Intelligence" was the Global Platform's name for this area. On
+// "Website Intelligence" was the the previous platform's name for this area. On
 // the website itself it is two plain pages; old links and bookmarks land
 // on the right one.
 export default async function WebsiteIntelligenceRedirect({ searchParams }) {
