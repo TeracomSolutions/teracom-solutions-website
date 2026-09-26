@@ -1,127 +1,19 @@
-import React from 'react';
+'use client';
 
-const AdminAssistantAvatar = ({ state = 'idle', size = 200 }) => {
-  const getAnimationClass = () => {
-    switch (state) {
-      case 'listening':
-        return 'animate-listening';
-      case 'thinking':
-        return 'animate-thinking';
-      case 'speaking':
-        return 'animate-speaking';
-      default:
-        return 'animate-idle';
-    }
-  };
-
-  const getEyePosition = () => {
-    switch (state) {
-      case 'listening':
-        return { x: 50, y: 40 };
-      case 'thinking':
-        return { x: 50, y: 35 };
-      case 'speaking':
-        return { x: 50, y: 45 };
-      default:
-        return { x: 50, y: 40 };
-    }
-  };
-
-  const getMouthShape = () => {
-    switch (state) {
-      case 'listening':
-        return 'M 30 70 Q 50 65 70 70';
-      case 'thinking':
-        return 'M 30 70 Q 50 75 70 70';
-      case 'speaking':
-        return 'M 30 70 Q 50 80 70 70';
-      default:
-        return 'M 30 70 Q 50 70 70 70';
-    }
-  };
-
-  const animationClass = getAnimationClass();
-  const eyePosition = getEyePosition();
-  const mouthShape = getMouthShape();
-
+// A small face for the assistant. The state only changes CSS classes
+// (see the .admin-assistant-avatar rules in globals.css): a pulsing ring
+// while listening, blinking eyes while thinking, a moving mouth while
+// speaking. Decorative, so hidden from screen readers.
+export default function AdminAssistantAvatar({ state = 'idle', size = 40 }) {
   return (
-    <div className="admin-assistant-avatar" style={{ width: size, height: size }}>
-      <svg
-        width="100%"
-        height="100%"
-        viewBox="0 0 100 100"
-        xmlns="http://www.w3.org/2000/svg"
-        className={animationClass}
-      >
-        {/* Head */}
-        <circle cx="50" cy="50" r="45" fill="#4A90E2" stroke="#357ABD" strokeWidth="2" />
-        
-        {/* Eyes */}
-        <circle cx="35" cy="40" r="8" fill="white" />
-        <circle cx="65" cy="40" r="8" fill="white" />
-        <circle cx={eyePosition.x} cy={eyePosition.y} r="4" fill="#333" />
-        
-        {/* Eyelids */}
-        <path d="M 30 35 Q 50 30 70 35" fill="none" stroke="#333" strokeWidth="1" />
-        
-        {/* Mouth */}
-        <path d={mouthShape} fill="none" stroke="#333" strokeWidth="2" />
-        
-        {/* Hair */}
-        <path d="M 20 20 Q 30 10 50 15 Q 70 10 80 20 Q 75 25 60 20 Q 45 25 30 20 Q 25 25 20 20" fill="#2C3E50" />
-        
-        {/* Neck */}
-        <rect x="45" y="90" width="10" height="10" fill="#4A90E2" />
+    <span className={`admin-assistant-avatar is-${state}`} style={{ width: size, height: size }} aria-hidden="true">
+      <span className="ring" />
+      <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" focusable="false">
+        <circle cx="20" cy="20" r="18" fill="#c084fc" fillOpacity="0.18" stroke="#c084fc" strokeWidth="1.5" />
+        <circle className="eye" cx="14" cy="17" r="2.2" fill="#fff" />
+        <circle className="eye" cx="26" cy="17" r="2.2" fill="#fff" />
+        <path className="mouth" d="M13 26 Q20 31 27 26" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" />
       </svg>
-      
-      <style jsx>{`
-        .admin-assistant-avatar {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-        
-        @keyframes idle {
-          0%, 100% { transform: scale(1); }
-          50% { transform: scale(1.02); }
-        }
-        
-        @keyframes listening {
-          0%, 100% { transform: scale(1); }
-          25% { transform: scale(1.03); }
-          75% { transform: scale(1.01); }
-        }
-        
-        @keyframes thinking {
-          0%, 100% { transform: scale(1); }
-          25% { transform: scale(1.02); }
-          75% { transform: scale(1.03); }
-        }
-        
-        @keyframes speaking {
-          0%, 100% { transform: scale(1); }
-          25% { transform: scale(1.04); }
-          75% { transform: scale(1.02); }
-        }
-        
-        .animate-idle {
-          animation: idle 3s ease-in-out infinite;
-        }
-        
-        .animate-listening {
-          animation: listening 2s ease-in-out infinite;
-        }
-        
-        .animate-thinking {
-          animation: thinking 4s ease-in-out infinite;
-        }
-        
-        .animate-speaking {
-          animation: speaking 1.5s ease-in-out infinite;
-        }
-      `}</style>
-    </div>
+    </span>
   );
-};
-
-export default AdminAssistantAvatar;
+}
