@@ -4,13 +4,15 @@ import { redirect } from 'next/navigation';
 import AdminHelpIcon from '@/components/AdminHelpIcon';
 import AdminImportUploadButton from '@/components/AdminImportUploadButton';
 import AdminShell from '@/components/AdminShell';
+import AdminSupplierFeeds from '@/components/AdminSupplierFeeds';
 import AdminUploadFeedForm from '@/components/AdminUploadFeedForm';
+import { fetchSupplierFeeds } from '@/lib/api/adminSupplierFeeds';
 import { fetchSupplierUploads, findBusinessName, findSupplierName } from '@/lib/api/adminSuppliers';
 import { formatDateTime, humanise } from '@/lib/adminFormat';
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
 
 export const metadata = {
-  title: 'Supplier Uploads|Teracom Solutions',
+  title: 'Supplier price lists|Teracom Solutions',
 };
 
 const STATUS_CLASS = {
@@ -24,6 +26,7 @@ export default async function AdminSupplierUploadsPage({ params }) {
   const { businessId, supplierId } = await params;
 
   let uploads = [];
+  let feeds = [];
   let loadError = null;
   const [businessName, supplierName] = await Promise.all([
     findBusinessName(token, businessId),
@@ -31,10 +34,10 @@ export default async function AdminSupplierUploadsPage({ params }) {
   ]);
 
   try {
-    uploads = await fetchSupplierUploads(token, supplierId);
+    [uploads, feeds] = await Promise.all([fetchSupplierUploads(token, supplierId), fetchSupplierFeeds(token, supplierId)]);
   } catch (err) {
     if (isSessionError(err)) redirect('/admin/login');
-    loadError = 'Unable to load the upload history for this supplier.';
+    loadError = 'Unable to load this supplier from the backend.';
   }
 
   return (
@@ -47,72 +50,73 @@ export default async function AdminSupplierUploadsPage({ params }) {
       <h1 className="admin-heading">
         {supplierName ? `${supplierName} — Price lists` : 'Supplier price lists'}
         <AdminHelpIcon>
-          <p>Price-list files received from this supplier: upload a new one, import it into the store, and see every file uploaded so far.</p>
-          <h4>Upload</h4>
-          <p>Choose a .csv, .xlsx or .xls file (up to 4 MB). The file is kept on the website server with who uploaded it and when.</p>
-          <h4>Import into store</h4>
-          <p>Reads the file and adds or updates products in the store catalogue by SKU, linked to this supplier. Column names are matched loosely: SKU / item code / part number, name / product, RRP / price / retail, cost / trade / dealer, stock / qty, category, brand. Rows without a SKU, a name or a price are skipped and counted. Run it again after a new upload to update prices; the supplier&apos;s <em>Last import</em> date and each product&apos;s <em>Last imported</em> date are updated.</p>
-          <h4>Columns</h4>
-          <ul>
-            <li><strong>Status</strong> - Uploaded (not yet imported), Imported, or Failed (nothing could be read; the reason is shown).</li>
-            <li><strong>Rows</strong> - how many product rows the import read.</li>
-            <li><strong>Imported</strong> - when it was last imported into the store.</li>
-          </ul>
-          <p>Prices imported here are RRP. Customer tiers are set on the <strong>Pricing</strong> page.</p>
+          <p>Two ways a price list gets in: upload a file by hand, or set up an automatic feed the server pulls on a schedule. Either way the file is kept, listed in the upload history, and imported into the store catalogue by SKU.</p>
+          <h4>Automatic feeds</h4>
+          <p>Give it the address the supplier publishes -- a CSV or Excel file, a JSON or XML feed, or an API -- and how often to pull it (the scheduler runs every 15 minutes and pulls whatever is due). If the address needs a key, add it as a header (for example <em>X-Api-Key</em>, or <em>Authorization</em> with a value of <em>Bearer …</em>); it is stored encrypted and never shown again. <em>Pull now</em> runs one immediately; each pull imports straight away and shows how many products were added or updated.</p>
+          <h4>Upload by hand</h4>
+          <p>Choose a .csv, .xlsx or .xls file (up to 4 MB), then click <em>Import into store</em>.</p>
+          <h4>What the import reads</h4>
+          <p>Column names are matched loosely: SKU / item code / part number, name / product, RRP / price / retail, cost / trade / dealer, stock / qty / SOH, category / group, brand. Rows without a SKU, a name or a price are skipped and counted. Prices are RRP; customer tiers are set on the Pricing page. Re-importing the same SKUs updates them.</p>
         </AdminHelpIcon>
       </h1>
-      <p className="lead">Upload a price list from this supplier and import it into the store.</p>
-
-      <h2>Upload a price list</h2>
-      <AdminUploadFeedForm supplierId={supplierId} />
-
-      <h2>Upload history</h2>
+      <p className="lead">Automatic feeds and hand uploads for this supplier, each imported into the store catalogue.</p>
 
       {loadError && <p className="form-error" role="alert">{loadError}</p>}
 
       {!loadError && (
-        <div className="admin-table-wrap">
-          <table className="admin-table">
-            <thead>
-              <tr>
-                <th>Filename</th>
-                <th>Uploaded</th>
-                <th>Status</th>
-                <th>Rows</th>
-                <th>Imported</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {uploads.length === 0 && (
+        <>
+          <h2>Automatic feeds</h2>
+          <AdminSupplierFeeds supplierId={supplierId} feeds={feeds} />
+
+          <h2>Upload a price list by hand</h2>
+          <AdminUploadFeedForm supplierId={supplierId} />
+
+          <h2>Upload history</h2>
+          <div className="admin-table-wrap">
+            <table className="admin-table">
+              <thead>
                 <tr>
-                  <td colSpan={6} className="admin-muted">No uploads yet.</td>
+                  <th>File</th>
+                  <th>How</th>
+                  <th>Uploaded</th>
+                  <th>Status</th>
+                  <th>Rows</th>
+                  <th>Imported</th>
+                  <th></th>
                 </tr>
-              )}
-              {uploads.map((upload) => (
-                <tr key={upload.id}>
-                  <td className="wrap">
-                    {upload.filename}
-                    {upload.error_message && (
-                      <p className="admin-message" style={{ color: '#ff8a8a' }}>{upload.error_message}</p>
-                    )}
-                  </td>
-                  <td>{formatDateTime(upload.uploaded_at)}</td>
-                  <td>
-                    <span className={`admin-status ${STATUS_CLASS[upload.status] || ''}`}>
-                      {humanise(upload.status)}
-                    </span>
-                  </td>
-                  <td>{upload.row_count ?? '—'}</td>
-                  <td>{formatDateTime(upload.imported_at)}</td>
-                  <td>
-                    <AdminImportUploadButton uploadId={upload.id} alreadyImported={upload.status === 'imported'} />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {uploads.length === 0 && (
+                  <tr>
+                    <td colSpan={7} className="admin-muted">Nothing yet.</td>
+                  </tr>
+                )}
+                {uploads.map((upload) => (
+                  <tr key={upload.id}>
+                    <td className="wrap">
+                      {upload.filename}
+                      {upload.error_message && (
+                        <p className="admin-message" style={{ color: '#ff8a8a' }}>{upload.error_message}</p>
+                      )}
+                    </td>
+                    <td>{upload.feed_id ? 'Feed' : 'By hand'}</td>
+                    <td>{formatDateTime(upload.uploaded_at)}</td>
+                    <td>
+                      <span className={`admin-status ${STATUS_CLASS[upload.status] || ''}`}>
+                        {humanise(upload.status)}
+                      </span>
+                    </td>
+                    <td>{upload.row_count ?? '—'}</td>
+                    <td>{formatDateTime(upload.imported_at)}</td>
+                    <td>
+                      <AdminImportUploadButton uploadId={upload.id} alreadyImported={upload.status === 'imported'} />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
       )}
     </AdminShell>
   );
