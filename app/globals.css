@@ -2161,6 +2161,22 @@ a.admin-status:hover { filter:brightness(1.15); }
 .admin-assistant-form { display:grid; gap:10px; }
 .admin-assistant-form textarea { width:100%; padding:12px 14px; border-radius:12px; border:1px solid var(--line); background:#0d0d0d; color:#fff; font:inherit; font-size:14px; resize:vertical; }
 
+/* ---- Admin: Assistant Voice ---- */
+.admin-assistant-head { display:flex; align-items:center; gap:12px; margin:0 0 6px; }
+.admin-assistant-msg.assistant { align-items:flex-end; gap:8px; }
+.admin-assistant-avatar { position:relative; display:inline-flex; align-items:center; justify-content:center; flex:0 0 auto; }
+.admin-assistant-avatar svg { width:100%; height:100%; }
+.admin-assistant-avatar .ring { position:absolute; inset:-4px; border-radius:50%; border:2px solid rgba(192,132,252,.0); }
+.admin-assistant-avatar.is-listening .ring { border-color:rgba(192,132,252,.7); animation:assistant-pulse 1.2s ease-out infinite; }
+.admin-assistant-avatar.is-thinking .eye { animation:assistant-blink 1s steps(1) infinite; }
+.admin-assistant-avatar.is-speaking .mouth { transform-origin:20px 26px; animation:assistant-talk .35s ease-in-out infinite alternate; }
+@keyframes assistant-pulse { 0% { transform:scale(.9); opacity:1; } 100% { transform:scale(1.35); opacity:0; } }
+@keyframes assistant-blink { 0%,100% { opacity:1; } 50% { opacity:.2; } }
+@keyframes assistant-talk { from { transform:scaleY(.4); } to { transform:scaleY(1.2); } }
+.admin-assistant-voice { display:flex; flex-wrap:wrap; gap:14px; font-size:13px; color:var(--muted); }
+.admin-assistant-voice label { display:inline-flex; align-items:center; gap:6px; }
+.admin-assistant-mic[aria-pressed="true"] { background:rgba(192,132,252,.25); border-color:#c084fc; color:#fff; }
+
 /* ---- Admin: colour and icons on the blocks (black stays) ---- */
 .admin-cards a { --hue:#ff4b4b; position:relative; overflow:hidden; border-color:color-mix(in srgb, var(--hue) 22%, var(--line)); background:linear-gradient(160deg, color-mix(in srgb, var(--hue) 9%, transparent), rgba(255,255,255,.02) 55%); }
 .admin-cards a::before { content:""; position:absolute; top:-70px; right:-60px; width:190px; height:190px; border-radius:50%; background:radial-gradient(circle, color-mix(in srgb, var(--hue) 32%, transparent), transparent 68%); pointer-events:none; transition:.25s ease; }

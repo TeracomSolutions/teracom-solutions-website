@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import AdminAssistantAvatar from './AdminAssistantAvatar';
 
 // Chat with the console. Each turn sends the whole conversation (the
 // backend keeps no session), shows the reply, and lists any actions the
@@ -19,11 +20,75 @@ export default function AdminAssistantChat() {
   const [draft, setDraft] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  const [isListening, setIsListening] = useState(false);
+  const [autoSendEnabled, setAutoSendEnabled] = useState(false);
+  const [readAloudEnabled, setReadAloudEnabled] = useState(false);
+  const [assistantState, setAssistantState] = useState('idle');
   const endRef = useRef(null);
+  const recognitionRef = useRef(null);
+  const synthRef = useRef(null);
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
   }, [messages, busy]);
+
+  // Initialize speech recognition and synthesis on mount
+  useEffect(() => {
+    // Check if browser supports Web Speech API
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      recognitionRef.current = new SpeechRecognition();
+      recognitionRef.current.continuous = false;
+      recognitionRef.current.interimResults = true;
+      recognitionRef.current.lang = 'en-US';
+
+      recognitionRef.current.onresult = (event) => {
+        const transcript = Array.from(event.results)
+          .map(result => result[0])
+          .map(result => result.transcript)
+          .join(' ');
+        
+        setDraft(transcript);
+        
+        // Auto-send if enabled
+        if (autoSendEnabled && event.results[0].isFinal) {
+          send(transcript);
+        }
+      };
+
+      recognitionRef.current.onerror = (event) => {
+        console.error('Speech recognition error', event.error);
+        setIsListening(false);
+      };
+
+      recognitionRef.current.onend = () => {
+        setIsListening(false);
+      };
+    }
+
+    // Initialize speech synthesis
+    synthRef.current = window.speechSynthesis;
+
+    return () => {
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
+      }
+      if (synthRef.current && synthRef.current.speaking) {
+        synthRef.current.cancel();
+      }
+    };
+  }, []);
+
+  // Handle assistant state changes
+  useEffect(() => {
+    if (busy) {
+      setAssistantState('thinking');
+    } else if (isListening) {
+      setAssistantState('listening');
+    } else {
+      setAssistantState('idle');
+    }
+  }, [busy, isListening]);
 
   async function send(text) {
     const content = (text ?? draft).trim();
@@ -33,6 +98,10 @@ export default function AdminAssistantChat() {
     setDraft('');
     setBusy(true);
     setError('');
+    
+    // Update assistant state to thinking
+    setAssistantState('thinking');
+    
     try {
       const response = await fetch('/api/admin/assistant', {
         method: 'POST',
@@ -41,12 +110,22 @@ export default function AdminAssistantChat() {
       });
       const data = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(data.error || 'The assistant did not answer.');
+      
+      // Update assistant state to speaking when responding
+      setAssistantState('speaking');
+      
       setMessages([...history, { role: 'assistant', content: data.reply, actions: data.actions || [], model: data.model }]);
+      
+      // Read aloud if enabled
+      if (readAloudEnabled && data.reply) {
+        speakText(data.reply);
+      }
     } catch (err) {
       setError(err.message);
       setMessages(history);
     } finally {
       setBusy(false);
+      setAssistantState('idle');
     }
   }
 
@@ -55,6 +134,36 @@ export default function AdminAssistantChat() {
       event.preventDefault();
       send();
     }
+  }
+
+  // Toggle speech recognition
+  function toggleListening() {
+    if (!recognitionRef.current) return;
+    
+    if (isListening) {
+      recognitionRef.current.stop();
+      setIsListening(false);
+    } else {
+      recognitionRef.current.start();
+      setIsListening(true);
+    }
+  }
+
+  // Text-to-speech function
+  function speakText(text) {
+    if (!synthRef.current || !text) return;
+    
+    // Cancel any ongoing speech
+    if (synthRef.current.speaking) {
+      synthRef.current.cancel();
+    }
+    
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.rate = 1.0;
+    utterance.pitch = 1.0;
+    utterance.volume = 1.0;
+    
+    synthRef.current.speak(utterance);
   }
 
   return (
