@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import PublicChrome from '@/components/PublicChrome';
 import { CartProvider } from '@/lib/cart-context';
 import AskTeraWidget from '@/components/AskTeraWidget';
 import StructuredData from '@/components/StructuredData';
@@ -89,9 +90,9 @@ export default function MarketingRootLayout({ children }) {
           Skip to main content
         </a>
         <CartProvider>
-          <Header />
+          <PublicChrome><Header /></PublicChrome>
           {children}
-          <Footer />
+          <PublicChrome><Footer /></PublicChrome>
           {/* Ask Tera chat: hidden until its backend is connected -- the stub route only ever
               replies "not connected yet", which reads as broken on every page.
               Set NEXT_PUBLIC_ASK_TERA_ENABLED=true in Vercel to switch it on. */}
