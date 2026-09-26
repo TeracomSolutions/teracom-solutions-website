@@ -3,14 +3,14 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 
+import { isAreaActive } from '@/lib/adminNavMatch';
+
 // The admin's own menu. Every area is listed here and nowhere else: the
 // public site never links to /admin, only the footer's double-click does.
 export const ADMIN_AREAS = [
   { href: '/admin', label: 'Overview', exact: true },
   { href: '/admin/assistant', label: 'Assistant' },
-  { href: '/admin/suppliers', label: 'Businesses & Suppliers' },
-  { href: '/admin/catalog', label: 'Store Catalog' },
-  { href: '/admin/pricing', label: 'Pricing' },
+  { href: '/admin/suppliers', label: 'Store', match: ['/admin/catalog', '/admin/pricing'] },
   { href: '/admin/coupons', label: 'Coupons' },
   { href: '/admin/resources', label: 'Resources' },
   { href: '/admin/leads', label: 'Leads' },
@@ -32,7 +32,7 @@ export default function AdminNav() {
   return (
     <nav className="admin-nav" aria-label="Administration">
       {ADMIN_AREAS.map((area) => {
-        const active = area.exact ? pathname === area.href : pathname === area.href || pathname.startsWith(`${area.href}/`);
+        const active = isAreaActive(area, pathname);
         return (
           <Link key={area.href} href={area.href} className={active ? 'active' : undefined} aria-current={active ? 'page' : undefined}>
             {area.label}

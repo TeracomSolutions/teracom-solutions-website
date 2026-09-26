@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation';
 import AdminCatalogGrid from '@/components/AdminCatalogGrid';
 import AdminHelpIcon from '@/components/AdminHelpIcon';
 import AdminShell from '@/components/AdminShell';
+import AdminStoreTabs from '@/components/AdminStoreTabs';
 import { fetchPriceList, listCatalogProducts } from '@/lib/api/adminCatalog';
 import { fetchSupplierPricing } from '@/lib/api/adminPricing';
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
@@ -43,7 +44,7 @@ export default async function AdminCatalogPage() {
         Store Catalog
         <AdminHelpIcon>
           <h4>What this page is for</h4>
-          <p>Every product the store can sell, in one sheet you can flick through and correct. Products arrive here from supplier price lists (Businesses &amp; Suppliers → a supplier → <em>Import into store</em>, or an automatic feed) and from <em>Add product</em> for a one-off that no feed carries.</p>
+          <p>Every product the store can sell, in one sheet you can flick through and correct. Products arrive here from supplier price lists (Store → Businesses → a supplier → <em>Import into store</em>, or an automatic feed) and from <em>Add product</em> for a one-off that no feed carries.</p>
           <h4>Columns</h4>
           <ul>
             <li><strong>Cost</strong> is what the supplier charges us, ex GST. <strong>RRP</strong> is the shelf price, inc GST; <strong>Ex GST</strong> is RRP ÷ 1.1.</li>
@@ -59,6 +60,7 @@ export default async function AdminCatalogPage() {
           <p><em>Export CSV</em> downloads the rows currently shown with every column.</p>
         </AdminHelpIcon>
       </h1>
+      <AdminStoreTabs />
       <p className="lead">Every product with cost, RRP, margin and tier prices. Edit in place, add a one-off, or re-price a set from cost.</p>
 
       {loadError ? <p className="form-error" role="alert">{loadError}</p> : (
