@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
+import AdminBrand from '@/components/AdminBrand';
+
 export default function AdminLoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState('');
@@ -38,8 +40,11 @@ export default function AdminLoginPage() {
   }
 
   return (
-    <main id="main-content">
-      <section className="section section-spacious">
+    <main id="main-content" className="admin-main">
+      <section className="section section-spacious admin-section">
+        <div className="container admin-container">
+          <AdminBrand signedIn={false} />
+        </div>
         <div className="container" style={{ maxWidth: '420px' }}>
           <h1>Staff Login</h1>
           <p className="lead">Teracom Solutions staff only. Sign in with your @teracomsolutions.com.au account.</p>

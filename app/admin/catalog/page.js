@@ -6,6 +6,7 @@ import { ApiError } from '@/lib/api/client';
 import { ACCESS_TOKEN_COOKIE } from '@/lib/adminSession';
 import AdminCatalogManager from '@/components/AdminCatalogManager';
 import AdminNav from '@/components/AdminNav';
+import AdminBrand from '@/components/AdminBrand';
 
 export default async function AdminCatalogPage() {
   const token = (await cookies()).get(ACCESS_TOKEN_COOKIE)?.value;
@@ -32,6 +33,7 @@ export default async function AdminCatalogPage() {
     <main id="main-content">
       <section className="section section-spacious">
         <div className="container">
+          <AdminBrand />
           <AdminNav />
           <h1>Store Catalog</h1>
           <p className="lead">
