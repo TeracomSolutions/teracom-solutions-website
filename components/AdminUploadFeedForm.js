@@ -3,8 +3,6 @@
 import { useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-// Copied from the Global Platform's
-// app/(admin)/data-feeds/[businessId]/[supplierId]/UploadFeedForm.js.
 export default function AdminUploadFeedForm({ supplierId }) {
   const router = useRouter();
   const fileInputRef = useRef(null);
@@ -27,7 +25,7 @@ export default function AdminUploadFeedForm({ supplierId }) {
       const formData = new FormData();
       formData.append('file', file);
 
-      const response = await fetch(`/api/admin/website-intelligence/suppliers/${supplierId}/uploads`, {
+      const response = await fetch(`/api/admin/suppliers/${supplierId}/uploads`, {
         method: 'POST',
         body: formData,
       });

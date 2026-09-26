@@ -9,7 +9,7 @@ import AdminReviewQueueTable from './AdminReviewQueueTable';
 // The Scout page: two task tabs and the review queue. Copied from the
 // Global Platform's app/(admin)/scout/page.js.
 const TABS = [
-  { key: 'website_intelligence', label: 'Website Intelligence' },
+  { key: 'website_intelligence', label: 'Website' },
   { key: 'operating_systems', label: 'Operating Systems' },
   { key: 'review', label: 'Review Queue' },
 ];
@@ -34,7 +34,7 @@ export default function AdminScoutTabs({ initialTab }) {
           <h4>What this section is for</h4>
           <p>Scout is where you track research work you want done -- either a one-off lookup or something you want checked on a schedule. Creating a task records what you want researched and when it comes back due. Research only runs when someone clicks <strong>Run research</strong> on an active task: an AI researcher gathers sources and writes a report, a second AI critic reviews it, and the result lands in the <strong>Review Queue</strong> tab for a staff member to approve or reject. Nothing runs on its own schedule, and nothing here changes live website content or Operating System packs automatically.</p>
           <h4>Tabs</h4>
-          <p><strong>Website Intelligence</strong> -- tasks about content/data for the website (e.g. &quot;check competitor X&apos;s pricing page&quot;, &quot;find new case studies for the security industry&quot;). <strong>Operating Systems</strong> -- tasks about researching improvements or additions to an Operating System pack (e.g. &quot;find the latest Gallagher integration docs&quot;). Each tab has its own independent task list -- a task created on one tab never appears on the other. <strong>Review Queue</strong> -- finished research runs from both tabs, waiting for approval; click Review to open one.</p>
+          <p><strong>Website</strong> -- tasks about content/data for this website (e.g. &quot;check competitor X&apos;s pricing page&quot;, &quot;find new case studies for the security industry&quot;). <strong>Operating Systems</strong> -- tasks about researching improvements or additions to an Operating System pack (e.g. &quot;find the latest Gallagher integration docs&quot;). Each tab has its own independent task list -- a task created on one tab never appears on the other. <strong>Review Queue</strong> -- finished research runs from both tabs, waiting for approval; click Review to open one.</p>
           <h4>Add new task -- fields</h4>
           <ul>
             <li><strong>Task title</strong> -- required. A short name for what you want researched, e.g. &quot;Weekly competitor pricing check&quot; or &quot;Find Inner Range API changelog&quot;. This is the only thing shown in the list, so make it specific enough to recognise later.</li>
@@ -89,7 +89,7 @@ export default function AdminScoutTabs({ initialTab }) {
         <>
           <p className="lead">
             Finished research runs waiting for a staff member to approve or reject them. Start a
-            run from an active task on the Website Intelligence or Operating Systems tab.
+            run from an active task on the Website or Operating Systems tab.
           </p>
           <AdminReviewQueueTable />
         </>

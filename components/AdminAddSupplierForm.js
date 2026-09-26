@@ -3,8 +3,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-// Copied from the Global Platform's
-// app/(admin)/data-feeds/[businessId]/AddSupplierForm.js.
 export default function AdminAddSupplierForm({ businessId }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [name, setName] = useState('');
@@ -20,7 +18,7 @@ export default function AdminAddSupplierForm({ businessId }) {
     setError(null);
 
     try {
-      const response = await fetch(`/api/admin/website-intelligence/businesses/${businessId}/suppliers`, {
+      const response = await fetch(`/api/admin/businesses/${businessId}/suppliers`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, supplierType }),

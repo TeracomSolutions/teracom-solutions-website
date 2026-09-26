@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-// Copied from the Global Platform's app/(admin)/data-feeds/AddBusinessForm.js.
 export default function AdminAddBusinessForm() {
   const [isExpanded, setIsExpanded] = useState(false);
   const [name, setName] = useState('');
@@ -19,7 +18,7 @@ export default function AdminAddBusinessForm() {
     setError(null);
 
     try {
-      const response = await fetch('/api/admin/website-intelligence/businesses', {
+      const response = await fetch('/api/admin/businesses', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, websiteUrl }),

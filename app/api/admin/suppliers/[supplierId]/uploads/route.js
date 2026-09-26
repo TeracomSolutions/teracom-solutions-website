@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 
 import { withAdminSession } from '@/lib/adminApi';
-import { fetchSupplierUploads, uploadSupplierFeed } from '@/lib/api/adminWebsiteIntelligence';
+import { fetchSupplierUploads, uploadSupplierFeed } from '@/lib/api/adminSuppliers';
 
 // Vercel caps a serverless request body at 4.5 MB, so that is the real
 // limit here whatever the backend's own (10 MB) allows.

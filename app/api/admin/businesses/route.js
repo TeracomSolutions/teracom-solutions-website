@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
 import { withAdminSession } from '@/lib/adminApi';
-import { createManagedBusiness, fetchManagedBusinesses } from '@/lib/api/adminWebsiteIntelligence';
+import { createManagedBusiness, fetchManagedBusinesses } from '@/lib/api/adminSuppliers';
 
 const CreateRequest = z.object({
   name: z.string().trim().min(1).max(200),

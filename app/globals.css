@@ -2113,3 +2113,4 @@ a.admin-status:hover { filter:brightness(1.15); }
   .admin-nav-signout { margin-left:0; }
   .admin-facts { grid-template-columns:1fr; }
 }
+.admin-error-inline { color:#ff8a8a; font-size:13px; margin-left:8px; }
