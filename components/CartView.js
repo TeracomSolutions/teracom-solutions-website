@@ -25,7 +25,8 @@ import {
 } from 'lucide-react';
 import { useCart } from '@/lib/cart-context';
 import CouponField from '@/components/CouponField';
-import { formatMoney, memberPriceCents } from '@/lib/products';
+import { formatMoney } from '@/lib/products';
+import { unitPriceCents } from '@/lib/catalogueMerge';
 import StripeTrustBadge from '@/components/StripeTrustBadge';
 
 const CATEGORY_ICONS = {
@@ -78,12 +79,12 @@ function Progress({ current }) {
   );
 }
 
-export default function CartView({ isMember = false, shippingCents = 1500 }) {
+export default function CartView({ isMember = false, customer = null, shippingCents = 1500 }) {
   const { lines, totalItems, totalCents: rrpTotalCents, updateQuantity, removeItem, coupon } = useCart();
   // Signed-in customers see the member price they'll actually be charged at
   // checkout; everyone else sees RRP (the cookie is only a display hint --
   // /api/checkout/cart verifies the session before charging).
-  const unitCents = (product) => (isMember ? memberPriceCents(product) : product.priceCents);
+  const unitCents = (product) => (isMember ? unitPriceCents(product, customer || { tier: null }) : product.priceCents);
   const subtotalCents = lines.reduce((sum, l) => sum + l.quantity * unitCents(l.product), 0);
   const savingsCents = isMember ? rrpTotalCents - subtotalCents : 0;
   const needsShipping = lines.some((l) => l.product.type === 'hardware');
@@ -204,7 +205,7 @@ export default function CartView({ isMember = false, shippingCents = 1500 }) {
                 </div>
                 {savingsCents > 0 ? (
                   <div className="cart-savings">
-                    <dt>Member savings</dt>
+                    <dt>{customer?.tier ? `${customer.tier} savings` : 'Member savings'}</dt>
                     <dd>−{formatMoney(savingsCents)}</dd>
                   </div>
                 ) : null}

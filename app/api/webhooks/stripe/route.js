@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { stripe } from '@/lib/stripe';
-import { findProduct, memberPriceCents } from '@/lib/products';
+import { findProductAsync } from '@/lib/catalogue';
+import { unitPriceCents } from '@/lib/catalogueMerge';
 import { createZohoContact, createZohoInvoice, findZohoContactByEmail } from '@/lib/zoho';
 import { linkLicenceBillingReference } from '@/lib/api/commerceLicensing';
 import { recordCouponRedemption } from '@/lib/api/coupons';
@@ -130,7 +131,7 @@ async function handleCheckoutSessionCompleted(session) {
   if (session.metadata?.cartCheckout === 'true') {
     await syncCartCheckoutToZoho(session, email);
   } else {
-    const product = findProduct(session.metadata?.productId);
+    const product = await findProductAsync(session.metadata?.productId);
 
     if (product && email && process.env.ZOHO_REFRESH_TOKEN) {
       try {
@@ -142,7 +143,7 @@ async function handleCheckoutSessionCompleted(session) {
             customerId,
             referenceNumber: session.id,
             lineItems: [
-              { name: product.name, description: product.description, rate: memberPriceCents(product) / 100, quantity: 1 },
+              { name: product.name, description: product.description, rate: unitPriceCents(product, null) / 100, quantity: 1 },
             ],
           });
         }
@@ -167,7 +168,7 @@ async function handleInvoicePaid(invoice) {
   if (invoice.billing_reason !== 'subscription_cycle') return;
 
   const metadata = await resolveSubscriptionMetadata(invoice);
-  const product = findProduct(metadata.productId);
+  const product = await findProductAsync(metadata.productId);
   const email = invoice.customer_email;
 
   if (product && email && process.env.ZOHO_REFRESH_TOKEN) {

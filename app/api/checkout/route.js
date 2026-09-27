@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { stripe } from '@/lib/stripe';
-import { findProduct, memberPriceCents } from '@/lib/products';
+import { findProductAsync } from '@/lib/catalogue';
+import { unitPriceCents } from '@/lib/catalogueMerge';
 import { SITE_URL } from '@/lib/config';
 import { checkRateLimit, clientIpFromRequest, rateLimitResponse } from '@/lib/rateLimit';
 import { cookies } from 'next/headers';
@@ -47,9 +48,11 @@ export async function POST(req) {
     return NextResponse.json({ error: 'Sign in to complete checkout.' }, { status: 401 });
   }
 
-  // Verify the customer token
+  // Verify the customer token and keep who they are: their pricing tier
+  // decides what they are charged.
+  let me;
   try {
-    await getCurrentCustomer(token);
+    me = await getCurrentCustomer(token);
   } catch (error) {
     if (error instanceof ApiError && (error.status === 401 || error.status === 403)) {
       return NextResponse.json({ error: 'Sign in to complete checkout.' }, { status: 401 });
@@ -58,6 +61,8 @@ export async function POST(req) {
     return NextResponse.json({ error: 'Unable to verify your account right now. Please try again shortly.' }, { status: 502 });
   }
 
+  const customer = { id: me.id, tier: me.pricing_tier || null };
+
   const siteUrl = SITE_URL;
   const parsed = CheckoutRequest.safeParse(await req.json());
 
@@ -65,7 +70,7 @@ export async function POST(req) {
     return NextResponse.json({ error: 'Invalid checkout request' }, { status: 400 });
   }
 
-  const product = findProduct(parsed.data.productId);
+  const product = await findProductAsync(parsed.data.productId);
   if (!product) {
     return NextResponse.json({ error: 'Product not found' }, { status: 404 });
   }
@@ -97,8 +102,9 @@ export async function POST(req) {
               description: product.description,
               metadata: { sku: product.sku, productType: product.type },
             },
-            // Only verified signed-in customers get this far, so they pay the member price.
-            unit_amount: memberPriceCents(product),
+            // Only verified signed-in customers get this far: the tier price when
+            // they have a tier, otherwise the member price (subscriptions: RRP).
+            unit_amount: unitPriceCents(product, customer),
             ...(isSubscription ? { recurring: { interval: 'month' } } : {}),
           },
           quantity: parsed.data.quantity,
