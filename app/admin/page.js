@@ -6,6 +6,7 @@ import {
   FileText,
   Inbox,
   Radar,
+  ShieldCheck,
   Sparkles,
   Ticket,
 } from 'lucide-react';
@@ -75,6 +76,13 @@ const AREAS = [
     text: 'The providers Scout and the Assistant use — a local Ollama host first, then Anthropic, OpenAI and Groq.',
     icon: Cpu,
     hue: '#2dd4bf',
+  },
+  {
+    href: '/admin/account',
+    title: 'Account',
+    text: 'Your own sign-in: turn two-factor on with an authenticator app or Zoho Vault, and keep your backup codes.',
+    icon: ShieldCheck,
+    hue: '#f97316',
   },
 ];
 

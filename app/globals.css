@@ -2230,3 +2230,13 @@ a.admin-status:hover { filter:brightness(1.15); }
 .admin-tree-name { font-weight:600; overflow-wrap:anywhere; }
 .admin-tree-inline { display:inline-flex; align-items:center; gap:5px; margin-top:4px; font-size:12px; color:#fbbf24; font-family:ui-monospace, SFMono-Regular, Menlo, monospace; }
 .admin-tree-inline:hover { text-decoration:underline; }
+
+/* ---- Admin: two-factor sign-in ---- */
+.admin-twofactor { display:grid; gap:16px; max-width:900px; }
+.admin-twofactor-status p:first-child { display:flex; align-items:center; gap:8px; margin:0 0 8px; }
+.admin-twofactor-grid { display:grid; grid-template-columns:200px 1fr; gap:22px; align-items:start; }
+.admin-twofactor-qr { display:block; border-radius:12px; background:#fff; padding:6px; }
+.admin-secret { display:block; margin:8px 0 10px; padding:12px 14px; border-radius:10px; border:1px solid var(--line); background:#0d0d0d; font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size:16px; letter-spacing:.08em; color:#fff; overflow-wrap:anywhere; }
+.admin-backup-codes { list-style:none; margin:12px 0 16px; padding:0; display:grid; grid-template-columns:repeat(auto-fill, minmax(160px, 1fr)); gap:8px; }
+.admin-backup-codes code { display:block; padding:10px 12px; border-radius:10px; border:1px solid var(--line); background:#0d0d0d; font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size:15px; color:#fff; text-align:center; }
+@media (max-width:640px) { .admin-twofactor-grid { grid-template-columns:1fr; } }
