@@ -1,10 +1,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { ArrowDown, ArrowUp, RefreshCw } from 'lucide-react';
+import { ArrowDown, ArrowUp, Globe, RefreshCw } from 'lucide-react';
 
 import { formatDateTime } from '@/lib/adminFormat';
-import { moveInList, providerState, ringLayout, stateLabel } from '@/lib/aiRouting';
+import { internetSentence, moveInList, orderList, providerState, ringLayout, stateLabel } from '@/lib/aiRouting';
 
 // The picture of where the website's AI traffic goes: the site in the middle,
 // each connected provider around it coloured by how it is doing, the lines
@@ -53,8 +53,9 @@ export default function AdminAiRouting({ initialRouting }) {
   }
 
   async function reorder(key, direction) {
-    const next = moveInList(routing.assistant_order, key, direction);
-    if (next === routing.assistant_order) return;
+    const current = orderList(routing);
+    const next = moveInList(current, key, direction);
+    if (next === current) return;
     setBusy(`order:${key}`);
     setError('');
     try {
@@ -80,7 +81,7 @@ export default function AdminAiRouting({ initialRouting }) {
       const res = await fetch(`/api/admin/ai-connections/${encodeURIComponent(key)}/check`, { method: 'POST' });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || 'The check could not run.');
-      setCheckResult((current) => ({ ...current, [key]: data.ok ? `Responding in ${data.latency_ms} ms` : `Failed: ${data.error || 'no answer'}` }));
+      setCheckResult((current) => ({ ...current, [key]: data.ok ? `Responding in ${data.latency_ms} ms${data.detail ? ` (${data.detail})` : ''}` : `Failed: ${data.error || data.detail || 'no answer'}` }));
       await load();
     } catch (err) {
       setCheckResult((current) => ({ ...current, [key]: `Failed: ${err.message}` }));
@@ -89,11 +90,35 @@ export default function AdminAiRouting({ initialRouting }) {
     }
   }
 
+  async function toggleInternet() {
+    const on = Boolean(routing?.internet?.enabled);
+    setBusy('internet');
+    setError('');
+    try {
+      const res = await fetch('/api/admin/ai-connections/internet', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ enabled: !on }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Unable to switch the Internet.');
+      await load();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setBusy('');
+    }
+  }
+
   const providers = routing?.providers || {};
   const assistantOrder = routing?.assistant_order || [];
+  const order = orderList(routing);
+  const internet = routing?.internet || null;
+  const internetOn = Boolean(internet?.enabled);
+  const internetMode = internet ? internet.mode : null;
   const researchOrder = routing?.research_order || [];
   const lastUsed = routing?.last_used || {};
-  const shown = Object.entries(providers).filter(([, info]) => info.configured !== false).map(([key, info]) => ({ key, ...info }));
+  const shown = Object.entries(providers).filter(([key, info]) => info.configured !== false && key !== 'internet').map(([key, info]) => ({ key, ...info }));
   const positions = ringLayout(shown.length, CX, CY, RING);
 
   function rolesFor(key) {
@@ -138,15 +163,16 @@ export default function AdminAiRouting({ initialRouting }) {
             );
           })}
 
-          <line x1={CX + 62} y1={CY - 6} x2={NET.x - 46} y2={NET.y - 6} stroke="#c084fc" strokeWidth="1.5" strokeDasharray="6 5" markerEnd="url(#ai-arrow)" />
-          <text x={(CX + NET.x) / 2} y={CY - 16} textAnchor="middle" fontSize="11" fontWeight="700" fill="#c084fc">Research: web search (DuckDuckGo)</text>
+          <line x1={CX + 62} y1={CY - 6} x2={NET.x - 46} y2={NET.y - 6} stroke="#c084fc" strokeWidth={internetMode === 'web_first' ? 2.5 : 1.5} strokeOpacity={internetMode === 'off' ? 0.3 : 1} strokeDasharray="6 5" markerEnd="url(#ai-arrow)" />
+          <text x={(CX + NET.x) / 2} y={CY - 16} textAnchor="middle" fontSize="11" fontWeight="700" fill="#c084fc" fillOpacity={internetMode === 'off' ? 0.5 : 1}>{internetMode === 'model_first' ? 'Research: web as the fallback' : internetMode === 'off' ? 'Web search switched off' : 'Research: web search first (DuckDuckGo)'}</text>
           <path d={`M ${NET.x - 46} ${NET.y + 10} Q ${(CX + NET.x) / 2} ${CY + 70} ${CX + 62} ${CY + 10}`} fill="none" stroke="#c084fc" strokeWidth="1.5" markerEnd="url(#ai-arrow)" />
           <text x={(CX + NET.x) / 2} y={CY + 56} textAnchor="middle" fontSize="11" fill="#c084fc">results verified by the critique model</text>
 
           <g>
-            <rect x={NET.x - 44} y={NET.y - 26} width="88" height="52" rx="12" fill="rgba(192,132,252,.12)" stroke="#c084fc" strokeWidth="1.5" />
+            <title>{internetSentence(internetMode) || 'Web search for Scout research'}</title>
+            <rect x={NET.x - 44} y={NET.y - 26} width="88" height="52" rx="12" fill={internetMode === 'off' ? 'rgba(107,114,128,.15)' : 'rgba(192,132,252,.12)'} stroke={internetMode === 'off' ? COLOURS.off : '#c084fc'} strokeWidth="1.5" />
             <text x={NET.x} y={NET.y - 4} textAnchor="middle" fontSize="13" fontWeight="700" fill="#ffffff">Internet</text>
-            <text x={NET.x} y={NET.y + 13} textAnchor="middle" fontSize="9.5" fill="rgba(255,255,255,.7)">sources for Scout</text>
+            <text x={NET.x} y={NET.y + 13} textAnchor="middle" fontSize="9.5" fill="rgba(255,255,255,.7)">{internetMode === 'model_first' ? 'fallback for Scout' : internetMode === 'off' ? 'switched off' : 'sources for Scout'}</text>
           </g>
 
           <g>
@@ -188,25 +214,42 @@ export default function AdminAiRouting({ initialRouting }) {
 
       <div className="admin-card">
         <h3>Order of preference</h3>
-        <p className="admin-muted">One order applies to the Assistant and to Scout. Scout additionally prefers a self-hosted model first when one is configured, and always critiques with a different provider from the one that researched.</p>
+        <p className="admin-muted">One order applies to the Assistant and to Scout; the Assistant skips the Internet. Scout always critiques with a different provider from the one that researched.</p>
         <ol className="admin-ai-order">
-          {assistantOrder.map((key, index) => {
-            const info = providers[key] || { label: key };
-            const state = providerState(info);
+          {order.map((key, index) => {
+            const isInternet = key === 'internet';
+            const info = providers[key] || { label: isInternet ? 'Internet (web search)' : key };
+            const state = isInternet ? (internetOn ? 'healthy' : 'off') : providerState(info);
             return (
-              <li key={key}>
-                <span className="admin-ai-dot" style={{ background: COLOURS[state] }} />
+              <li key={key} className={isInternet && !internetOn ? 'admin-ai-off' : undefined}>
+                {isInternet ? (
+                  <Globe size={16} strokeWidth={2} aria-hidden="true" style={{ color: internetOn ? '#c084fc' : COLOURS.off, flex: '0 0 auto' }} />
+                ) : (
+                  <span className="admin-ai-dot" style={{ background: COLOURS[state] }} />
+                )}
                 <strong>{index + 1}. {info.label}</strong>
-                <span className="admin-muted">{shorten(info.model, 40)}</span>
+                <span className="admin-muted">{isInternet ? (internetOn ? 'DuckDuckGo, sources for Scout research' : 'switched off') : shorten(info.model, 40)}</span>
                 <span className="admin-actions" style={{ marginLeft: 'auto' }}>
+                  {isInternet && (
+                    <>
+                      <button type="button" className="btn btn-secondary btn-sm" onClick={toggleInternet} disabled={Boolean(busy)}>{busy === 'internet' ? 'Saving…' : internetOn ? 'Switch off' : 'Switch on'}</button>
+                      <button type="button" className="btn btn-secondary btn-sm" onClick={() => checkNow('internet')} disabled={Boolean(busy)}>{busy === 'check:internet' ? 'Checking…' : 'Check now'}</button>
+                    </>
+                  )}
                   <button type="button" className="btn btn-secondary btn-sm" onClick={() => reorder(key, -1)} disabled={index === 0 || Boolean(busy)} aria-label={`Move ${info.label} up`}><ArrowUp size={14} strokeWidth={2} aria-hidden="true" /></button>
-                  <button type="button" className="btn btn-secondary btn-sm" onClick={() => reorder(key, 1)} disabled={index === assistantOrder.length - 1 || Boolean(busy)} aria-label={`Move ${info.label} down`}><ArrowDown size={14} strokeWidth={2} aria-hidden="true" /></button>
+                  <button type="button" className="btn btn-secondary btn-sm" onClick={() => reorder(key, 1)} disabled={index === order.length - 1 || Boolean(busy)} aria-label={`Move ${info.label} down`}><ArrowDown size={14} strokeWidth={2} aria-hidden="true" /></button>
                 </span>
               </li>
             );
           })}
         </ol>
-        {assistantOrder.length === 0 && <p className="admin-muted">No enabled providers.</p>}
+        {order.length === 0 && <p className="admin-muted">No enabled providers.</p>}
+        {internet && (
+          <p className="admin-muted">
+            {internetSentence(internetMode)}
+            {checkResult.internet ? ` Last check: ${checkResult.internet}.` : ''}
+          </p>
+        )}
         <p className="admin-muted">Assistant will try: {assistantOrder.map((k) => providers[k]?.label || k).join(' → ') || '—'}. Scout research will try: {researchOrder.map((k) => providers[k]?.label || k).join(' → ') || '—'}.</p>
       </div>
 

@@ -2265,3 +2265,14 @@ a.admin-status:hover { filter:brightness(1.15); }
 .admin-social-channels, .admin-social-credentials { border:1px solid var(--line); border-radius:12px; padding:12px 14px; display:grid; gap:10px; }
 .admin-social-channels legend, .admin-social-credentials legend { padding:0 6px; font-size:13px; font-weight:700; color:var(--muted); }
 .admin-form ul.form-error { margin:0; padding-left:18px; }
+
+/* Admin: AI Connections governance tab and the Internet row. */
+.admin-ai-off { opacity:.6; }
+.admin-gov-selects { display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:12px; }
+.admin-gov-table td.wrap { max-width:46ch; }
+.admin-gov-how { font-size:12px; margin-top:4px; }
+.admin-gov-off td { opacity:.55; }
+.admin-gov-off td:last-child, .admin-gov-off td:nth-last-child(2) { opacity:1; }
+.admin-gov-edit { margin:0; max-width:none; }
+.admin-gov-result pre { white-space:pre-wrap; overflow-wrap:anywhere; background:#0d0d0d; border:1px solid var(--line); border-radius:10px; padding:12px; font-size:13px; color:#fff; }
+.admin-form ul.form-error { margin:0; padding-left:18px; }
