@@ -5,9 +5,10 @@ import CheckoutButton from '@/components/CheckoutButton';
 import AddToCartButton from '@/components/AddToCartButton';
 import Link from 'next/link';
 
-import { formatMoney, memberPriceCents, productPath } from '@/lib/products';
+import { formatMoney, productPath } from '@/lib/products';
+import { unitPriceCents } from '@/lib/catalogueMerge';
 
-export default function CategoryProductGrid({ products, isSignedIn = false }) {
+export default function CategoryProductGrid({ products, isSignedIn = false, customer = null }) {
   const brands = useMemo(
     () => [...new Set(products.map((p) => p.brand).filter(Boolean))].sort(),
     [products]
@@ -61,8 +62,8 @@ export default function CategoryProductGrid({ products, isSignedIn = false }) {
                     <>
                       <p className="price-rrp-struck">RRP <s>{formatMoney(p.priceCents)}</s></p>
                       <p className="price">
-                        <span className="price-gst-note">Member price </span>
-                        {formatMoney(memberPriceCents(p))}
+                        <span className="price-gst-note">{customer?.tier ? `${customer.tier} price ` : 'Member price '}</span>
+                        {formatMoney(unitPriceCents(p, customer || { tier: null }))}
                         <span className="price-gst-note"> inc. GST</span>
                       </p>
                     </>

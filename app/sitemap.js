@@ -1,6 +1,6 @@
 import { brands } from '@/lib/brands';
 import { categories } from '@/lib/categories';
-import { products } from '@/lib/products';
+import { getAllProducts } from '@/lib/catalogue';
 import { aiCapabilities } from '@/lib/aiCapabilities';
 import { resourcesSections } from '@/lib/resourcesSections';
 import { services } from '@/lib/services';
@@ -50,7 +50,8 @@ const staticRoutes = [
   { path: '/privacy', changeFrequency: 'yearly', priority: 0.3 },
 ];
 
-export default function sitemap() {
+export default async function sitemap() {
+  const products = await getAllProducts();
   const entries = [
     ...staticRoutes,
 
