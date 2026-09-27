@@ -22,6 +22,9 @@ const disallow = [
   '/account/',   // authenticated customer area
   '/cart',
   '/checkout/',  // includes /checkout/success, which can carry order context
+  // Explicitly disallow admin paths to ensure they're not indexed even if they pass through robots.txt
+  '/admin',
+  '/api/admin/',
 ];
 
 export default function robots() {
