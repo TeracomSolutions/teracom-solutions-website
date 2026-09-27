@@ -31,7 +31,7 @@ async function send(url, method, body) {
 
 const EMPTY = { title: '', body: '', link_url: '', image_url: '', channels: [], audienceMode: 'all', tiers: '', scheduled_at: '' };
 
-export default function AdminSocialUpdates({ initialUpdates, loadError }) {
+export default function AdminSocialUpdates({ initialUpdates, loadError, audienceCount }) {
   const [updates, setUpdates] = useState(initialUpdates || []);
   const [form, setForm] = useState(EMPTY);
   const [errors, setErrors] = useState([]);
@@ -171,7 +171,7 @@ export default function AdminSocialUpdates({ initialUpdates, loadError }) {
           <legend>Customer email goes to</legend>
           <label className="admin-check">
             <input type="radio" name="audience" checked={form.audienceMode === 'all'} onChange={() => set('audienceMode', 'all')} />
-            Everyone who agreed to hear from us
+            Everyone who agreed to hear from us{audienceCount != null ? ` (${audienceCount} customers)` : ''}
           </label>
           <label className="admin-check">
             <input type="radio" name="audience" checked={form.audienceMode === 'tiers'} onChange={() => set('audienceMode', 'tiers')} />
