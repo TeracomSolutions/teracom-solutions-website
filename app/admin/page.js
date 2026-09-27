@@ -6,6 +6,7 @@ import {
   FileText,
   Inbox,
   Radar,
+  Share2,
   ShieldCheck,
   Sparkles,
   Ticket,
@@ -76,6 +77,13 @@ const AREAS = [
     text: 'The providers Scout and the Assistant use — a local Ollama host first, then Anthropic, OpenAI and Groq.',
     icon: Cpu,
     hue: '#2dd4bf',
+  },
+  {
+    href: '/admin/social',
+    title: 'Social',
+    text: 'LinkedIn, Facebook, Instagram, X and YouTube: the links the footer shows, the accounts we post to, and Updates that go out to the networks and to customers who asked to hear from us.',
+    icon: Share2,
+    hue: '#e879f9',
   },
   {
     href: '/admin/account',
