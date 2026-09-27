@@ -17,6 +17,7 @@ export const ADMIN_AREAS = [
   { href: '/admin/website-data', label: 'Website Data' },
   { href: '/admin/scout', label: 'Scout' },
   { href: '/admin/ai-connections', label: 'AI Connections' },
+  { href: '/admin/account', label: 'Account' },
 ];
 
 export default function AdminNav() {
