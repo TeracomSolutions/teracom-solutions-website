@@ -2315,3 +2315,8 @@ a.admin-status:hover { filter:brightness(1.15); }
 .admin-customers-summary { margin:0 0 12px; }
 .admin-customers-search { min-width:260px; height:32px; }
 .admin-customers-company { display:block; font-size:12px; }
+
+/* Resources: brand buttons with their document counts. */
+.brand-tab-count { margin-left:8px; padding:1px 8px; border-radius:999px; background:rgba(0,0,0,.35); font-size:12px; font-weight:700; }
+.brand-tab-small { padding:6px 12px; font-size:13px; }
+.published-docs-elsewhere { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:0 0 16px; }
