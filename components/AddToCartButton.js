@@ -2,11 +2,10 @@
 
 import { useState } from 'react';
 import { useCart } from '@/lib/cart-context';
-import { findProduct } from '@/lib/products';
 import { AUD, track, toGaItem } from '@/lib/gtag';
 
 export default function AddToCartButton({ productId, label = 'Add to Cart' }) {
-  const { items, addItem, updateQuantity } = useCart();
+  const { items, addItem, updateQuantity, findProduct } = useCart();
   const [justAdded, setJustAdded] = useState(false);
   const inCart = items.find((i) => i.productId === productId);
 

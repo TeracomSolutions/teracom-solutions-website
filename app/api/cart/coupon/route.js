@@ -4,7 +4,7 @@ import { z } from 'zod';
 
 import { validateCoupon } from '@/lib/api/coupons';
 import { ApiError } from '@/lib/api/client';
-import { getCurrentCustomer } from '@/lib/api/customerAuth';
+import { getCatalogue, getCustomerPricing } from '@/lib/catalogue';
 import { CUSTOMER_ACCESS_TOKEN_COOKIE } from '@/lib/customerSession';
 import { resolveLines, subtotalCents } from '@/lib/cartPricing';
 import { checkRateLimit, clientIpFromRequest, rateLimitResponse } from '@/lib/rateLimit';
@@ -42,24 +42,19 @@ export async function POST(req) {
   // The subtotal is computed here from the catalogue, never taken from the
   // browser -- otherwise a customer could claim a $50,000 cart to clear the
   // minimum spend on a code.
-  const { lines } = resolveLines(parsed.data.items);
+  // Who is asking, for codes issued to one customer or one trade tier, and
+  // for the price they would pay. An expired session is not a coupon error:
+  // it is priced as a guest and a code that needs an account will say so.
+  const token = (await cookies()).get(CUSTOMER_ACCESS_TOKEN_COOKIE)?.value;
+  const customer = await getCustomerPricing(token);
+  const customerId = customer?.id || null;
+
+  const { products } = await getCatalogue();
+  const { lines } = resolveLines(parsed.data.items, products);
   if (lines.length === 0) {
     return NextResponse.json({ valid: false, reason: 'Your cart is empty.' }, { status: 400 });
   }
-  const subtotal = subtotalCents(lines);
-
-  // Who is asking, for codes issued to one customer or one trade tier.
-  let customerId = null;
-  const token = (await cookies()).get(CUSTOMER_ACCESS_TOKEN_COOKIE)?.value;
-  if (token) {
-    try {
-      const customer = await getCurrentCustomer(token);
-      customerId = customer?.id || null;
-    } catch {
-      // An expired session is not a coupon error. Carry on as a guest: a
-      // code that needs an account will say so.
-    }
-  }
+  const subtotal = subtotalCents(lines, customer);
 
   try {
     const result = await validateCoupon({ code: parsed.data.code, subtotalCents: subtotal, customerId, clientIp: ip });

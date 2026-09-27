@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { stripe } from '@/lib/stripe';
-import { findProduct, memberPriceCents } from '@/lib/products';
+import { getCatalogue } from '@/lib/catalogue';
+import { unitPriceCents } from '@/lib/catalogueMerge';
 import { SITE_URL } from '@/lib/config';
 import { checkRateLimit, clientIpFromRequest, rateLimitResponse } from '@/lib/rateLimit';
 import { cookies } from 'next/headers';
@@ -58,9 +59,11 @@ export async function POST(req) {
     return NextResponse.json({ error: 'Sign in to complete checkout.' }, { status: 401 });
   }
 
-  // Verify the customer token
+  // Verify the customer token and keep who they are: their pricing tier
+  // decides what they are charged, and their id goes on the order.
+  let me;
   try {
-    await getCurrentCustomer(token);
+    me = await getCurrentCustomer(token);
   } catch (error) {
     if (error instanceof ApiError && (error.status === 401 || error.status === 403)) {
       return NextResponse.json({ error: 'Sign in to complete checkout.' }, { status: 401 });
@@ -69,12 +72,20 @@ export async function POST(req) {
     return NextResponse.json({ error: 'Unable to verify your account right now. Please try again shortly.' }, { status: 502 });
   }
 
+  const customer = { id: me.id, tier: me.pricing_tier || null };
+
   const parsed = CartCheckoutRequest.safeParse(await req.json());
   if (!parsed.success) {
     return NextResponse.json({ error: 'Invalid checkout request' }, { status: 400 });
   }
 
-  const lines = parsed.data.items.map((item) => ({ item, product: findProduct(item.productId) }));
+  // Every line is priced from the merged catalogue on the server, never from
+  // anything the browser sent.
+  const { products } = await getCatalogue();
+  const lines = parsed.data.items.map((item) => ({
+    item,
+    product: products.find((p) => p.id === item.productId) || null,
+  }));
 
   const missing = lines.find((l) => !l.product);
   if (missing) {
@@ -102,11 +113,11 @@ export async function POST(req) {
   // answer is minutes old, the code may have expired, hit its redemption
   // limit or been switched off since, and the cart contents may have changed
   // underneath it. The amount is recomputed from the subtotal we just built
-  // out of verified member prices.
+  // out of verified prices for this customer.
   let discount = null;
   if (parsed.data.couponCode) {
     const subtotal = lines.reduce(
-      (sum, { item, product }) => sum + memberPriceCents(product) * item.quantity,
+      (sum, { item, product }) => sum + unitPriceCents(product, customer) * item.quantity,
       0
     );
     try {
@@ -176,8 +187,9 @@ export async function POST(req) {
             description: product.description,
             metadata: { sku: product.sku, productType: product.type },
           },
-          // Only verified signed-in customers get this far, so they pay the member price.
-          unit_amount: memberPriceCents(product),
+          // Only verified signed-in customers get this far: the tier price when
+          // they have one, otherwise the member price.
+          unit_amount: unitPriceCents(product, customer),
         },
         quantity: item.quantity,
       })),
@@ -229,7 +241,7 @@ export async function POST(req) {
               couponCode: discount.code,
               couponDiscountCents: String(discount.cents),
               couponSubtotalCents: String(
-                lines.reduce((sum, { item, product }) => sum + memberPriceCents(product) * item.quantity, 0)
+                lines.reduce((sum, { item, product }) => sum + unitPriceCents(product, customer) * item.quantity, 0)
               ),
             }
           : {}),
