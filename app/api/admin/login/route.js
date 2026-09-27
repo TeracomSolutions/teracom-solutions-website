@@ -52,10 +52,7 @@ export async function POST(req) {
   // yet (Phase 1 scope), so surface this plainly rather than treating
   // a challenge token as if it were a real access token.
   if (data.mfa_required) {
-    return NextResponse.json(
-      { error: 'This staff account has MFA enabled. MFA login is not yet supported in this admin UI.' },
-      { status: 501 }
-    );
+    return NextResponse.json({ mfaRequired: true, challengeToken: data.challenge_token });
   }
 
   return setAdminSessionCookies(NextResponse.json({ ok: true }), {
