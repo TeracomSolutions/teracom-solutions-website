@@ -22,7 +22,7 @@ const disallow = [
   '/account/',   // authenticated customer area
   '/cart',
   '/checkout/',  // includes /checkout/success, which can carry order context
-  // Explicitly disallow admin paths to ensure they're not indexed even if they pass through robots.txt
+  // The staff console and its API: never crawled, on top of the noindex every page carries.
   '/admin',
   '/api/admin/',
 ];

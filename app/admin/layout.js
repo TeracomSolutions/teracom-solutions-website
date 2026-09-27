@@ -1,5 +1,4 @@
 import { NOINDEX } from '@/lib/seo';
-import { isAdminPath } from '@/lib/adminIndexing';
 
 // Pass-through layout that exists purely to attach a noindex directive to
 // every route under /admin -- the staff-only catalogue administration area.
@@ -15,15 +14,8 @@ import { isAdminPath } from '@/lib/adminIndexing';
 export const metadata = {
   title: 'Administration|Teracom Solutions',
   ...NOINDEX,
-  robots: {
-    index: false,
-    follow: false,
-    nocache: true,
-    googleBot: { 
-      index: false, 
-      follow: false 
-    }
-  }
+  // Belt and braces on top of NOINDEX: no caching, and the same for Googlebot by name.
+  robots: { index: false, follow: false, nocache: true, googleBot: { index: false, follow: false } },
 };
 
 export default function NoIndexLayout({ children }) {
