@@ -2240,3 +2240,13 @@ a.admin-status:hover { filter:brightness(1.15); }
 .admin-backup-codes { list-style:none; margin:12px 0 16px; padding:0; display:grid; grid-template-columns:repeat(auto-fill, minmax(160px, 1fr)); gap:8px; }
 .admin-backup-codes code { display:block; padding:10px 12px; border-radius:10px; border:1px solid var(--line); background:#0d0d0d; font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size:15px; color:#fff; text-align:center; }
 @media (max-width:640px) { .admin-twofactor-grid { grid-template-columns:1fr; } }
+
+/* ---- Admin: AI routing picture ---- */
+.admin-ai-routing { display:grid; gap:18px; margin:0 0 28px; }
+.admin-ai-map { border:1px solid var(--line); border-radius:16px; background:linear-gradient(180deg, rgba(45,212,191,.05), rgba(255,255,255,.02) 50%); padding:12px; }
+.admin-ai-map svg { display:block; width:100%; height:auto; max-height:520px; }
+.admin-ai-legend { display:flex; flex-wrap:wrap; gap:14px; font-size:13px; color:var(--muted); align-items:center; }
+.admin-ai-legend > span { display:inline-flex; align-items:center; }
+.admin-ai-dot { display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:6px; vertical-align:middle; flex:0 0 auto; }
+.admin-ai-order { list-style:none; margin:12px 0; padding:0; display:grid; gap:8px; }
+.admin-ai-order li { display:flex; align-items:center; gap:10px; padding:8px 12px; border:1px solid var(--line); border-radius:10px; }

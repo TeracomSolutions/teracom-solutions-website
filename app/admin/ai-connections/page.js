@@ -1,9 +1,10 @@
 import { redirect } from 'next/navigation';
 
 import AdminAiConnections from '@/components/AdminAiConnections';
+import AdminAiRouting from '@/components/AdminAiRouting';
 import AdminHelpIcon from '@/components/AdminHelpIcon';
 import AdminShell from '@/components/AdminShell';
-import { fetchAiProviders, listAiConnections } from '@/lib/api/adminAiConnections';
+import { fetchAiProviders, listAiConnections, fetchAiRouting } from '@/lib/api/adminAiConnections';
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
 
 export const metadata = {
@@ -15,16 +16,24 @@ export default async function AdminAiConnectionsPage() {
 
   let connections = [];
   let providers = [];
+  let routing = null;
   let loadError = '';
 
   try {
     [connections, providers] = await Promise.all([
       listAiConnections(token),
-      fetchAiProviders(token)
+      fetchAiProviders(token),
     ]);
   } catch (err) {
     if (isSessionError(err)) redirect('/admin/login');
     loadError = 'Unable to load the AI connections from the backend.';
+  }
+  // The picture is extra: if its feed fails the page still works.
+  try {
+    routing = await fetchAiRouting(token);
+  } catch (err) {
+    if (isSessionError(err)) redirect('/admin/login');
+    routing = null;
   }
 
   return (
@@ -42,9 +51,18 @@ export default async function AdminAiConnectionsPage() {
           <p>A self-hosted provider (Ollama, LM Studio, vLLM) takes a host address on our network instead of a key; the model must already be pulled or loaded there.</p>
           <h4>Enable / Disable / Remove</h4>
           <p><strong>Disable</strong> keeps the key but takes the provider out of the running order; <strong>Enable</strong> puts it back. <strong>Remove</strong> deletes the connection and its key. Every change is recorded in the audit log.</p>
+          <h4>The picture</h4>
+          <ul>
+            <li>The website sits in the middle; each connected provider is around it, green when it is responding, red when its last call failed (hover for the reason: out of credit, key rejected, not reachable), grey when disabled, amber when it has not been used yet. The bright lines are the providers first in line; the labels say who is first for the Assistant and for Scout research and who last wrote a critique.</li>
+            <li>The Internet node is where Scout research goes for its sources (web search through DuckDuckGo); the results come back and are checked by a second model, the critique.</li>
+            <li><strong>Order of preference</strong>: move a provider up or down and both the Assistant and Scout follow the new order from the next request. A provider that fails is skipped for that request and tried again on the next one; nothing needs resetting.</li>
+            <li><strong>Check now</strong> sends one tiny real request to that provider and shows the response time or the exact error.</li>
+          </ul>
         </AdminHelpIcon>
       </h1>
       <p className="lead">The AI providers the Assistant and Scout use, and everything else we could connect.</p>
+
+      {routing ? <AdminAiRouting initialRouting={routing} /> : <p className="admin-muted">The routing picture is unavailable until the backend is updated.</p>}
 
       <AdminAiConnections initialConnections={connections} loadError={loadError} providers={providers} />
     </AdminShell>
