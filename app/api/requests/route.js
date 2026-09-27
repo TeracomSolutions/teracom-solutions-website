@@ -4,6 +4,7 @@ import { ApiError } from '@/lib/api/client';
 import { submitLead } from '@/lib/api/leads';
 import { checkRateLimit, clientIpFromRequest, rateLimitResponse } from '@/lib/rateLimit';
 import { findRequestForm, formatSubmission, valueFields } from '@/lib/requestForms';
+import { STARTED_FIELD, TRAP_FIELD, checkSubmission, textValues } from '@/lib/formGuard';
 import { TURNSTILE_FAILED_MESSAGE, verifyTurnstile } from '@/lib/turnstile';
 
 // Service and password-reset requests.
@@ -68,6 +69,20 @@ export async function POST(req) {
     const [first, ...rest] = parts;
     const error = `${first.charAt(0).toUpperCase()}${first.slice(1)}${rest.length ? `, and ${rest.join(', ')}` : ''}.`;
     return NextResponse.json({ error }, { status: 400 });
+  }
+
+  // The keyless spam guard: a caught request gets the normal success answer
+  // and is not delivered.
+  const guard = body?.guard && typeof body.guard === 'object' ? body.guard : {};
+  const verdict = checkSubmission({
+    trap: guard[TRAP_FIELD],
+    started: guard[STARTED_FIELD],
+    texts: textValues(values),
+    names: [values.name].filter((v) => typeof v === 'string'),
+  });
+  if (verdict.spam) {
+    console.warn('Request looked like spam', form.slug, verdict.reasons.join(','), clientIpFromRequest(req));
+    return NextResponse.json({ ok: true });
   }
 
   const human = await verifyTurnstile(body?.turnstileToken, clientIpFromRequest(req));

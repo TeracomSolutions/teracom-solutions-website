@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 import { submitLead } from '@/lib/api/leads';
 import { ApiError } from '@/lib/api/client';
 import { checkRateLimit, clientIpFromRequest } from '@/lib/rateLimit';
+import { STARTED_FIELD, TRAP_FIELD, checkSubmission } from '@/lib/formGuard';
 import { verifyTurnstile } from '@/lib/turnstile';
 
 // Spam/junk-CRM-data defence, not fraud defence (flagged in
@@ -49,6 +50,19 @@ export async function POST(req) {
     // in the logs even though the visitor sees the same generic message.
     console.warn('Lead submission rate limited', rateLimitKey, `retry after ${rateLimit.retryAfterSeconds}s`);
     return NextResponse.redirect(new URL(`${returnPath}?lead=error#contact`, req.url), 303);
+  }
+
+  // The keyless spam guard (lib/formGuard.js). A caught submission gets the
+  // same answer as a real one, so a bot learns nothing, and is not sent on.
+  const verdict = checkSubmission({
+    trap: lead[TRAP_FIELD],
+    started: lead[STARTED_FIELD],
+    texts: [lead.message, lead.company],
+    names: [lead.name],
+  });
+  if (verdict.spam) {
+    console.warn('Lead submission looked like spam', verdict.reasons.join(','), clientIpFromRequest(req));
+    return NextResponse.redirect(new URL(`${returnPath}?lead=received#contact`, req.url), 303);
   }
 
   // Checked before anything is written. A bot posting straight at this

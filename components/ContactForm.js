@@ -1,9 +1,11 @@
+import FormGuard from '@/components/FormGuard';
 import TurnstileWidget from '@/components/TurnstileWidget';
 
 export default function ContactForm({ preselectedInterest = '', returnTo = '/' }) {
   return (
     <form className="contact-form" action="/api/leads" method="post">
       <input type="hidden" name="return_to" value={returnTo} />
+      <FormGuard />
       <TurnstileWidget />
       <div className="field">
         <label htmlFor="lead-name">Name</label>

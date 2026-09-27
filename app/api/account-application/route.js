@@ -9,6 +9,7 @@ import {
   visibleDeclarations,
   visibleSteps,
 } from '@/lib/accountApplication';
+import { STARTED_FIELD, TRAP_FIELD, checkSubmission } from '@/lib/formGuard';
 import { TURNSTILE_FAILED_MESSAGE, verifyTurnstile } from '@/lib/turnstile';
 
 // A trade account application.
@@ -72,6 +73,15 @@ export async function POST(req) {
   const email = String(values.bizEmail || values.p1Email || values.acctEmail || '').trim();
   if (!email) {
     return NextResponse.json({ error: 'We need an email address to reply to.' }, { status: 400 });
+  }
+
+  // The keyless spam guard, hidden field and timer only: an application is
+  // full of names, addresses and web sites that the text rules would trip.
+  const guard = body?.guard && typeof body.guard === 'object' ? body.guard : {};
+  const verdict = checkSubmission({ trap: guard[TRAP_FIELD], started: guard[STARTED_FIELD] });
+  if (verdict.spam) {
+    console.warn('Account application looked like spam', verdict.reasons.join(','), clientIpFromRequest(req));
+    return NextResponse.json({ ok: true });
   }
 
   const human = await verifyTurnstile(body?.turnstileToken, clientIpFromRequest(req));
