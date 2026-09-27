@@ -2276,3 +2276,17 @@ a.admin-status:hover { filter:brightness(1.15); }
 .admin-gov-edit { margin:0; max-width:none; }
 .admin-gov-result pre { white-space:pre-wrap; overflow-wrap:anywhere; background:#0d0d0d; border:1px solid var(--line); border-radius:10px; padding:12px; font-size:13px; color:#fff; }
 .admin-form ul.form-error { margin:0; padding-left:18px; }
+
+/* Resources: the documents published from the console. */
+.published-docs-tools { display:flex; flex-wrap:wrap; gap:12px; align-items:center; margin:0 0 14px; }
+.published-docs-search { flex:1 1 260px; max-width:420px; padding:10px 12px; border-radius:10px; border:1px solid var(--line); background:#0d0d0d; color:#fff; font:inherit; font-size:14px; }
+.published-docs-brand { font-size:1.1rem; margin:22px 0 8px; }
+.published-docs-group + .published-docs-group { margin-top:8px; }
+.published-docs-meta { display:block; font-size:12px; color:var(--muted); margin:2px 0 0 2px; }
+.published-docs .document-list li { margin-bottom:10px; }
+/* Admin: publishing controls. */
+.admin-bulk-bar { margin:0 0 12px; padding:10px 12px; border:1px solid var(--line); border-radius:10px; }
+.admin-publish-fields { border:1px solid var(--line); border-radius:12px; padding:12px 14px; display:grid; gap:12px; }
+.admin-publish-fields legend { padding:0 6px; font-size:13px; font-weight:700; color:var(--muted); }
+.admin-section-map { display:grid; gap:8px; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); }
+.admin-section-map > span { grid-column:1 / -1; }

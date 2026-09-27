@@ -7,9 +7,11 @@ import { useRouter } from 'next/navigation';
 import { Folder, Pencil } from 'lucide-react';
 
 import { formatDateTime, humanise } from '@/lib/adminFormat';
+import { SECTION_LABELS, SITE_DOCUMENT_SECTIONS, sectionForType } from '@/lib/publishedResources';
 import { changedFields, sourceFormDefaults } from '@/lib/resourceSourceFields';
 
-// The Resources page: the websites we watch and a form to add one.
+// The Resources page: the websites we watch and a form to add one, with
+// where each one's documents go on the public website.
 const DOC_TYPE_OPTIONS = [
   { key: 'datasheet', label: 'Data sheets' },
   { key: 'user_manual', label: 'User manuals' },
@@ -43,6 +45,12 @@ async function send(url, method, body) {
   return data;
 }
 
+function sameMap(a, b) {
+  const ka = Object.keys(a || {}).sort();
+  const kb = Object.keys(b || {}).sort();
+  return ka.length === kb.length && ka.every((k, i) => k === kb[i] && (a[k] ?? null) === (b[k] ?? null));
+}
+
 function SourceForm({ suppliers, initial, onSaved, onCancel }) {
   const defaults = sourceFormDefaults();
   const start = initial || defaults;
@@ -53,11 +61,25 @@ function SourceForm({ suppliers, initial, onSaved, onCancel }) {
   const [recurrence, setRecurrence] = useState(start.recurrence);
   const [followLinks, setFollowLinks] = useState(start.follow_links);
   const [maxPages, setMaxPages] = useState(String(start.max_pages));
+  const [brand, setBrand] = useState(start.brand || '');
+  const [sitePublish, setSitePublish] = useState(Boolean(start.site_publish));
+  const [sectionMap, setSectionMap] = useState({ ...(start.section_map || {}) });
+  const [publishExisting, setPublishExisting] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
 
   function toggleType(key) {
     setDocTypes((current) => (current.includes(key) ? current.filter((k) => k !== key) : [...current, key]));
+  }
+
+  // The map only holds the types that differ from the default section.
+  function setSection(docType, value) {
+    setSectionMap((current) => {
+      const next = { ...current };
+      if (value === 'default') delete next[docType];
+      else next[docType] = value === 'off' ? null : value;
+      return next;
+    });
   }
 
   async function handleSubmit(event) {
@@ -74,18 +96,21 @@ function SourceForm({ suppliers, initial, onSaved, onCancel }) {
         follow_links: followLinks,
         max_pages: Number(maxPages) || defaults.max_pages,
       };
+      const publishing = { brand: brand.trim() || null, site_publish: sitePublish, section_map: sectionMap };
 
       if (initial) {
-        // Edit mode - calculate changed fields
         const changes = changedFields(initial, dataToSubmit);
+        if ((initial.brand || null) !== publishing.brand) changes.brand = publishing.brand;
+        if (Boolean(initial.site_publish) !== sitePublish) changes.site_publish = sitePublish;
+        if (!sameMap(initial.section_map, sectionMap)) changes.section_map = sectionMap;
+        if (sitePublish && publishExisting) changes.publish_existing = true;
         if (Object.keys(changes).length === 0) {
           onCancel();
           return;
         }
         await send(`/api/admin/resources/sources/${initial.id}`, 'PATCH', changes);
       } else {
-        // Add mode
-        await send('/api/admin/resources/sources', 'POST', dataToSubmit);
+        await send('/api/admin/resources/sources', 'POST', { ...dataToSubmit, ...publishing });
       }
       onSaved();
     } catch (err) {
@@ -148,6 +173,43 @@ function SourceForm({ suppliers, initial, onSaved, onCancel }) {
         />
         <small>How many pages of the site one check may read. A document library with 16 pages of listings needs about 20; 60 is a safe default.</small>
       </label>
+
+      <fieldset className="admin-publish-fields">
+        <legend>On the public website</legend>
+        <label>
+          Brand
+          <input type="text" value={brand} onChange={(e) => setBrand(e.target.value)} placeholder={name || 'e.g. Aritech'} maxLength={100} />
+          <small>Shown with every document from this site and used for the brand tabs on the Resources pages. Blank means the website name.</small>
+        </label>
+        <label style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', fontWeight: 400, color: '#fff' }}>
+          <input type="checkbox" checked={sitePublish} onChange={(e) => setSitePublish(e.target.checked)} style={{ width: 'auto' }} />
+          Publish new documents to the website automatically
+        </label>
+        {isEditMode && sitePublish && !initial.site_publish && (
+          <label style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', fontWeight: 400, color: '#fff', marginLeft: '24px' }}>
+            <input type="checkbox" checked={publishExisting} onChange={(e) => setPublishExisting(e.target.checked)} style={{ width: 'auto' }} />
+            Also publish the {initial.document_count} document{initial.document_count === 1 ? '' : 's'} already collected
+          </label>
+        )}
+        <div className="admin-section-map">
+          <span className="admin-muted">Where each kind of document goes</span>
+          {DOC_TYPE_OPTIONS.map((option) => {
+            const fallback = sectionForType(option.key);
+            const current = option.key in sectionMap ? (sectionMap[option.key] === null ? 'off' : sectionMap[option.key]) : 'default';
+            return (
+              <label key={option.key}>
+                {option.label}
+                <select value={current} onChange={(e) => setSection(option.key, e.target.value)}>
+                  <option value="default">Default: {SECTION_LABELS[fallback]}</option>
+                  {SITE_DOCUMENT_SECTIONS.map((s) => <option key={s} value={s}>{SECTION_LABELS[s]}</option>)}
+                  <option value="off">Not on the website</option>
+                </select>
+              </label>
+            );
+          })}
+        </div>
+      </fieldset>
+
       {error && <p className="form-error" role="alert">{error}</p>}
       <div className="admin-actions">
         <button type="submit" className="btn btn-primary btn-sm" disabled={busy}>{busy ? (isEditMode ? 'Saving…' : 'Adding…') : isEditMode ? 'Save changes' : 'Add and check now'}</button>
@@ -252,6 +314,7 @@ export default function AdminResourceSources({ sources, suppliers }) {
                     <td className="wrap">
                       <Link href={`/admin/resources/${source.id}`} className="admin-link">{source.name}</Link>
                       <span className="admin-muted" style={{ display: 'block', fontSize: '12px', overflowWrap: 'anywhere' }}>{source.url}</span>
+                      {source.brand && source.brand !== source.name && <span className="admin-muted" style={{ display: 'block', fontSize: '12px' }}>Brand: {source.brand}</span>}
                       {source.folder && (
                         <Link href={`/admin/resources/${source.id}#files`} className="admin-tree-inline" title="Where its files are kept on the server">
                           <Folder size={13} strokeWidth={1.8} aria-hidden="true" /> uploads/{source.folder}/
@@ -271,7 +334,12 @@ export default function AdminResourceSources({ sources, suppliers }) {
                       )}
                       {source.last_error && <span className="admin-message" style={{ color: '#ff8a8a', display: 'block' }}>{source.last_error}</span>}
                     </td>
-                    <td>{source.document_count}</td>
+                    <td>
+                      {source.document_count}
+                      <span className="admin-muted" style={{ display: 'block', fontSize: '12px' }}>
+                        {source.site_document_count || 0} on the website{source.site_publish ? ' · new ones go on automatically' : ''}
+                      </span>
+                    </td>
                     <td>{source.active ? formatDateTime(source.next_check_at, source.recurrence === 'manual' ? 'Manual' : 'Soon') : 'Paused'}</td>
                     <td>
                       <div className="admin-actions">

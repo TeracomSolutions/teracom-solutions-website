@@ -45,11 +45,13 @@ export default async function AdminResourcesPage() {
             <li><strong>Pause</strong> keeps the documents but stops the schedule; <strong>Remove</strong> deletes the website and every file collected from it.</li>
             <li><strong>Edit</strong> changes any of these settings for a website that is already watched; the next check uses them.</li>
           </ul>
+          <h4>Getting them onto the website</h4>
+          <p>The public Resources pages (User Manuals, Datasheets, Installer Manuals, Brochures, Downloads) show the documents you publish here. On a website&apos;s <strong>Edit</strong> form, set its <strong>Brand</strong>, choose where each kind of document goes, and tick <em>Publish new documents automatically</em> if every new find should go straight onto the site (with a one-off option to publish what is already collected). On the documents page, the <strong>Website</strong> column puts one document in a section, and the toolbar publishes the selected ones or everything shown. A document on the website is served from our copy, with a line saying where the manufacturer&apos;s original lives.</p>
           <h4>Getting them onto the store</h4>
           <p>A document appears in the Downloads section of a product page when it is published and its <strong>Store SKU</strong> matches the product&apos;s part number. The SKU is filled in automatically when the file name contains a SKU that is in the store catalogue; otherwise set it on the documents page.</p>
         </AdminHelpIcon>
       </h1>
-      <p className="lead">Supplier and manufacturer websites we watch for data sheets and manuals, checked on a schedule and shown on the store.</p>
+      <p className="lead">Supplier and manufacturer websites we watch for data sheets and manuals, checked on a schedule, published to the Resources pages and shown on the store.</p>
 
       {loadError ? <p className="form-error" role="alert">{loadError}</p> : (
         <AdminResourceSources sources={sources} suppliers={suppliers} />
