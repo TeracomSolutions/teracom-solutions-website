@@ -2240,3 +2240,16 @@ a.admin-status:hover { filter:brightness(1.15); }
 .admin-backup-codes { list-style:none; margin:12px 0 16px; padding:0; display:grid; grid-template-columns:repeat(auto-fill, minmax(160px, 1fr)); gap:8px; }
 .admin-backup-codes code { display:block; padding:10px 12px; border-radius:10px; border:1px solid var(--line); background:#0d0d0d; font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size:15px; color:#fff; text-align:center; }
 @media (max-width:640px) { .admin-twofactor-grid { grid-template-columns:1fr; } }
+
+/* ---- Admin: AI Routing Visualization ---- */
+.admin-ai-routing { margin-top:32px; }
+.admin-ai-map { margin-bottom:24px; }
+.admin-ai-legend { display:flex; flex-wrap:wrap; gap:12px; align-items:center; margin-bottom:24px; padding:12px; background:rgba(255,255,255,.04); border-radius:12px; }
+.admin-ai-dot { display:inline-block; width:12px; height:12px; border-radius:50%; margin-right:6px; }
+.admin-ai-order { margin-bottom:32px; }
+.admin-ai-order-list { display:flex; flex-wrap:wrap; gap:32px; margin:16px 0; }
+.admin-ai-order-item { display:flex; justify-content:space-between; align-items:center; padding:8px 0; }
+.admin-ai-order-item span { font-weight:500; }
+.admin-ai-order-item button { padding:4px 8px; background:rgba(255,255,255,.06); border:1px solid var(--line); border-radius:6px; cursor:pointer; }
+.admin-ai-order-item button:disabled { opacity:0.5; cursor:not-allowed; }
+.admin-refresh { margin-top:16px; }

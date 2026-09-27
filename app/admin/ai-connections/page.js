@@ -1,9 +1,10 @@
 import { redirect } from 'next/navigation';
 
 import AdminAiConnections from '@/components/AdminAiConnections';
+import AdminAiRouting from '@/components/AdminAiRouting';
 import AdminHelpIcon from '@/components/AdminHelpIcon';
 import AdminShell from '@/components/AdminShell';
-import { fetchAiProviders, listAiConnections } from '@/lib/api/adminAiConnections';
+import { fetchAiProviders, listAiConnections, fetchAiRouting } from '@/lib/api/adminAiConnections';
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
 
 export const metadata = {
@@ -15,12 +16,14 @@ export default async function AdminAiConnectionsPage() {
 
   let connections = [];
   let providers = [];
+  let routing = null;
   let loadError = '';
 
   try {
-    [connections, providers] = await Promise.all([
+    [connections, providers, routing] = await Promise.all([
       listAiConnections(token),
-      fetchAiProviders(token)
+      fetchAiProviders(token),
+      fetchAiRouting(token)
     ]);
   } catch (err) {
     if (isSessionError(err)) redirect('/admin/login');
@@ -42,10 +45,20 @@ export default async function AdminAiConnectionsPage() {
           <p>A self-hosted provider (Ollama, LM Studio, vLLM) takes a host address on our network instead of a key; the model must already be pulled or loaded there.</p>
           <h4>Enable / Disable / Remove</h4>
           <p><strong>Disable</strong> keeps the key but takes the provider out of the running order; <strong>Enable</strong> puts it back. <strong>Remove</strong> deletes the connection and its key. Every change is recorded in the audit log.</p>
+          <h4>AI Routing Visualization</h4>
+          <p>This visualization shows how AI traffic flows through our system:</p>
+          <ul>
+            <li>The Teracom website (in the center) routes requests to AI providers around the ring</li>
+            <li>Providers are arranged in order of preference for Assistant and Scout research</li>
+            <li>A provider that fails is skipped for that request and tried again on the next one; nothing needs to be reset</li>
+            <li>Check now button performs a health check on any provider</li>
+          </ul>
         </AdminHelpIcon>
       </h1>
       <p className="lead">The AI providers the Assistant and Scout use, and everything else we could connect.</p>
 
+      {routing && <AdminAiRouting initialRouting={routing} providersCatalogue={providers} />}
+      
       <AdminAiConnections initialConnections={connections} loadError={loadError} providers={providers} />
     </AdminShell>
   );
