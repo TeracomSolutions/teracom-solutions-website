@@ -6,6 +6,7 @@ import { deleteResourceSource, updateResourceSource } from '@/lib/api/adminResou
 
 const DOC_TYPES = ['datasheet', 'user_manual', 'installer_manual', 'brochure', 'other'];
 const RECURRENCES = ['manual', 'daily', 'weekly', 'monthly'];
+const SITE_SECTIONS = ['user-manuals', 'datasheets', 'installer-manuals', 'brochures', 'downloads'];
 
 const UpdateRequest = z
   .object({
@@ -17,6 +18,10 @@ const UpdateRequest = z
     follow_links: z.boolean().optional(),
     max_pages: z.number().int().min(1).max(500).optional(),
     active: z.boolean().optional(),
+    brand: z.string().trim().max(100).nullable().optional(),
+    site_publish: z.boolean().optional(),
+    section_map: z.record(z.enum(DOC_TYPES), z.enum(SITE_SECTIONS).nullable()).optional(),
+    publish_existing: z.boolean().optional(),
   })
   .refine((data) => Object.keys(data).length > 0, { message: 'Nothing to change.' });
 

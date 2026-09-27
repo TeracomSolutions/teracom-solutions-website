@@ -5,6 +5,7 @@ import { withAdminSession } from '@/lib/adminApi';
 import { deleteResourceDocument, updateResourceDocument } from '@/lib/api/adminResources';
 
 const DOC_TYPES = ['datasheet', 'user_manual', 'installer_manual', 'brochure', 'other'];
+const SITE_SECTIONS = ['user-manuals', 'datasheets', 'installer-manuals', 'brochures', 'downloads'];
 
 const UpdateRequest = z
   .object({
@@ -14,6 +15,8 @@ const UpdateRequest = z
     brand: z.string().trim().max(100).nullable().optional(),
     published: z.boolean().optional(),
     notes: z.string().max(4000).nullable().optional(),
+    site_section: z.enum(SITE_SECTIONS).nullable().optional(),
+    model: z.string().trim().max(120).nullable().optional(),
   })
   .refine((data) => Object.keys(data).length > 0, { message: 'Nothing to change.' });
 

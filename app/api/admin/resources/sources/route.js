@@ -6,6 +6,7 @@ import { createResourceSource, fetchResourceSources } from '@/lib/api/adminResou
 
 const DOC_TYPES = ['datasheet', 'user_manual', 'installer_manual', 'brochure', 'other'];
 const RECURRENCES = ['manual', 'daily', 'weekly', 'monthly'];
+const SITE_SECTIONS = ['user-manuals', 'datasheets', 'installer-manuals', 'brochures', 'downloads'];
 
 const CreateRequest = z.object({
   name: z.string().trim().min(1).max(200),
@@ -15,6 +16,9 @@ const CreateRequest = z.object({
   recurrence: z.enum(RECURRENCES).default('weekly'),
   follow_links: z.boolean().default(false),
   max_pages: z.number().int().min(1).max(500).default(60),
+  brand: z.string().trim().max(100).nullable().optional(),
+  site_publish: z.boolean().optional(),
+  section_map: z.record(z.enum(DOC_TYPES), z.enum(SITE_SECTIONS).nullable()).optional(),
 });
 
 export const GET = withAdminSession(async ({ token }) => {
