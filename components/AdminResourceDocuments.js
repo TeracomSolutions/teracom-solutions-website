@@ -1,7 +1,8 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { ExternalLink } from 'lucide-react';
 
 import { formatDateTime, humanise } from '@/lib/adminFormat';
 import { SECTION_LABELS, SITE_DOCUMENT_SECTIONS, sectionForType } from '@/lib/publishedResources';
@@ -9,6 +10,8 @@ import { SECTION_LABELS, SITE_DOCUMENT_SECTIONS, sectionForType } from '@/lib/pu
 // The documents collected from one source: set the SKU they belong to,
 // correct the type, publish or hide them on the store, put them on the
 // website (and say in which section), name the model, remove them.
+// One line per document (Robert, 2026-09-28): the full title and source
+// address are on hover, and the Document column can be dragged wider.
 const DOC_TYPES = ['datasheet', 'user_manual', 'installer_manual', 'brochure', 'other'];
 const SITE_ORIGIN = 'https://www.teracomsolutions.com.au';
 
@@ -25,6 +28,15 @@ function sizeLabel(bytes) {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
+function fileName(url) {
+  const last = String(url || '').split('?')[0].split('/').filter(Boolean).pop() || '';
+  try {
+    return decodeURIComponent(last);
+  } catch {
+    return last;
+  }
+}
+
 async function send(url, method, body) {
   const response = await fetch(url, {
     method,
@@ -35,8 +47,6 @@ async function send(url, method, body) {
   if (!response.ok) throw new Error(data.error || 'The change was not saved.');
   return data;
 }
-
-const field = { padding: '4px 8px', borderRadius: '8px', border: '1px solid var(--line)', background: '#0d0d0d', color: '#fff' };
 
 export default function AdminResourceDocuments({ documents, downloadBase }) {
   const router = useRouter();
@@ -50,6 +60,22 @@ export default function AdminResourceDocuments({ documents, downloadBase }) {
   const [modelDrafts, setModelDrafts] = useState({});
   const [selected, setSelected] = useState(() => new Set());
   const [bulkSection, setBulkSection] = useState('');
+  const tableRef = useRef(null);
+  const resizeRef = useRef(null);
+
+  // Dragging the Document header's corner widens the column: the width is
+  // handed to the title and file lines through a CSS variable.
+  useEffect(() => {
+    const handle = resizeRef.current;
+    const table = tableRef.current;
+    if (!handle || !table || typeof ResizeObserver === 'undefined') return undefined;
+    const observer = new ResizeObserver((entries) => {
+      const width = Math.round(entries[0].contentRect.width);
+      if (width > 0) table.style.setProperty('--doc-col', `${width}px`);
+    });
+    observer.observe(handle);
+    return () => observer.disconnect();
+  }, []);
 
   const rows = useMemo(() => {
     const needle = q.trim().toLowerCase();
@@ -133,7 +159,7 @@ export default function AdminResourceDocuments({ documents, downloadBase }) {
   }
 
   return (
-    <div>
+    <div className="admin-docs-wide">
       {error && <p className="form-error" role="alert">{error}</p>}
       {notice && <p className="form-note-banner" role="status">{notice}</p>}
       <div className="admin-refresh">
@@ -148,17 +174,18 @@ export default function AdminResourceDocuments({ documents, downloadBase }) {
         </select>
         <input
           type="search"
+          className="admin-compact-input"
           placeholder="Search title, SKU, model, link"
           value={q}
           onChange={(e) => setQ(e.target.value)}
-          style={{ ...field, padding: '6px 10px', minWidth: '240px' }}
+          style={{ minWidth: '240px', height: '32px' }}
         />
-        <span className="admin-muted">{rows.length} of {documents.length} · {onSite} on the website</span>
+        <span className="admin-muted">{rows.length} of {documents.length} · {onSite} on the website · drag the Document heading&apos;s corner to widen it</span>
       </div>
 
       <div className="admin-actions admin-bulk-bar">
         <span className="admin-muted">{selected.size} selected</span>
-        <select value={bulkSection} onChange={(e) => setBulkSection(e.target.value)} aria-label="Website section for publishing" style={field}>
+        <select value={bulkSection} onChange={(e) => setBulkSection(e.target.value)} aria-label="Website section for publishing" className="admin-compact-input">
           <option value="">Section by document type</option>
           {SITE_DOCUMENT_SECTIONS.map((s) => <option key={s} value={s}>{SECTION_LABELS[s]}</option>)}
         </select>
@@ -167,12 +194,12 @@ export default function AdminResourceDocuments({ documents, downloadBase }) {
         <button type="button" className="btn btn-secondary btn-sm" onClick={() => bulk(rows.map((d) => d.id), 'publish')} disabled={busyBulk || rows.length === 0}>Publish everything shown ({rows.length})</button>
       </div>
 
-      <div className="admin-table-wrap">
-        <table className="admin-table">
+      <div className="admin-table-wrap admin-docs-wrap">
+        <table className="admin-table admin-table-compact" ref={tableRef}>
           <thead>
             <tr>
               <th><input type="checkbox" checked={allShownSelected} onChange={toggleAllShown} aria-label="Select every document shown" /></th>
-              <th>Document</th>
+              <th><div className="admin-col-resize" ref={resizeRef} title="Drag the bottom-right corner to widen">Document</div></th>
               <th>Type</th>
               <th>Model</th>
               <th>Store SKU</th>
@@ -193,26 +220,27 @@ export default function AdminResourceDocuments({ documents, downloadBase }) {
               const modelDraft = modelDrafts[doc.id];
               const modelValue = modelDraft !== undefined ? modelDraft : doc.model || '';
               const busy = busyId === doc.id || busyBulk;
+              const changedNote = `Last changed ${formatDateTime(doc.last_changed_at || doc.first_seen_at)}${doc.change_count > 0 ? ` · changed ${doc.change_count}×` : ''}`;
               return (
                 <tr key={doc.id}>
                   <td><input type="checkbox" checked={selected.has(doc.id)} onChange={() => toggleSelected(doc.id)} aria-label={`Select ${doc.title}`} /></td>
-                  <td className="wrap">
-                    <a href={`${downloadBase}/resources/${doc.id}/download`} target="_blank" rel="noopener noreferrer" className="admin-link">{doc.title}</a>
-                    <span className="admin-muted" style={{ display: 'block', fontSize: '12px', overflowWrap: 'anywhere' }}>{doc.brand ? `${doc.brand} · ` : ''}{doc.url}</span>
+                  <td className="admin-doc-cell">
+                    <a href={`${downloadBase}/resources/${doc.id}/download`} target="_blank" rel="noopener noreferrer" className="admin-link admin-doc-title" title={doc.title}>{doc.title}</a>
+                    <span className="admin-doc-meta" title={doc.url}>{doc.brand ? `${doc.brand} · ` : ''}{fileName(doc.url)}</span>
                   </td>
                   <td>
-                    <select value={doc.doc_type} onChange={(e) => patch(doc, { doc_type: e.target.value })} disabled={busy} style={{ ...field, padding: '4px 6px' }}>
+                    <select value={doc.doc_type} onChange={(e) => patch(doc, { doc_type: e.target.value })} disabled={busy} className="admin-compact-input" aria-label="Type">
                       {DOC_TYPES.map((t) => <option key={t} value={t}>{humanise(t)}</option>)}
                     </select>
                   </td>
                   <td>
-                    <span className="admin-actions">
+                    <span className="admin-actions admin-inline">
                       <input
                         type="text"
                         value={modelValue}
                         placeholder="Model"
                         onChange={(e) => setModelDrafts({ ...modelDrafts, [doc.id]: e.target.value })}
-                        style={{ ...field, width: '130px' }}
+                        className="admin-compact-input admin-compact-short"
                         aria-label="Product model"
                       />
                       {modelDraft !== undefined && modelDraft !== (doc.model || '') && (
@@ -223,13 +251,13 @@ export default function AdminResourceDocuments({ documents, downloadBase }) {
                     </span>
                   </td>
                   <td>
-                    <span className="admin-actions">
+                    <span className="admin-actions admin-inline">
                       <input
                         type="text"
                         value={skuValue}
                         placeholder="SKU"
                         onChange={(e) => setSkuDrafts({ ...skuDrafts, [doc.id]: e.target.value })}
-                        style={{ ...field, width: '130px' }}
+                        className="admin-compact-input admin-compact-short"
                         aria-label="Store SKU"
                       />
                       {skuDraft !== undefined && skuDraft !== (doc.sku || '') && (
@@ -240,31 +268,48 @@ export default function AdminResourceDocuments({ documents, downloadBase }) {
                     </span>
                   </td>
                   <td>
-                    <span className={`admin-status ${statusClass(doc.status)}`}>{humanise(doc.status)}</span>
-                    {doc.change_count > 0 && <span className="admin-muted" style={{ display: 'block', fontSize: '12px' }}>changed {doc.change_count}×</span>}
-                    <span className="admin-muted" style={{ display: 'block', fontSize: '12px' }}>{formatDateTime(doc.last_changed_at || doc.first_seen_at)}</span>
+                    <span className={`admin-status ${statusClass(doc.status)}`} title={changedNote}>{humanise(doc.status)}</span>
                   </td>
                   <td>{sizeLabel(doc.size_bytes)}</td>
                   <td>
-                    <select
-                      value={doc.site_section || ''}
-                      onChange={(e) => patch(doc, { site_section: e.target.value || null })}
-                      disabled={busy}
-                      aria-label="Website section"
-                      style={{ ...field, padding: '4px 6px' }}
-                    >
-                      <option value="">Not on the website</option>
-                      {SITE_DOCUMENT_SECTIONS.map((s) => <option key={s} value={s}>{SECTION_LABELS[s]}{s === sectionForType(doc.doc_type) ? ' (default)' : ''}</option>)}
-                    </select>
-                    {doc.site_section && (
-                      <a href={`${SITE_ORIGIN}/resources/${doc.site_section}`} target="_blank" rel="noopener noreferrer" className="admin-link" style={{ display: 'block', fontSize: '12px', marginTop: '4px' }}>View on website</a>
-                    )}
+                    <span className="admin-actions admin-inline">
+                      <select
+                        value={doc.site_section || ''}
+                        onChange={(e) => patch(doc, { site_section: e.target.value || null })}
+                        disabled={busy}
+                        aria-label="Website section"
+                        className="admin-compact-input"
+                      >
+                        <option value="">Not on the website</option>
+                        {SITE_DOCUMENT_SECTIONS.map((s) => <option key={s} value={s}>{SECTION_LABELS[s]}{s === sectionForType(doc.doc_type) ? ' (default)' : ''}</option>)}
+                      </select>
+                      {doc.site_section && (
+                        <a
+                          href={`${SITE_ORIGIN}/resources/${doc.site_section}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="admin-link"
+                          aria-label="View on website"
+                          title="View on website"
+                        >
+                          <ExternalLink size={14} strokeWidth={2} aria-hidden="true" />
+                        </a>
+                      )}
+                    </span>
                   </td>
                   <td>
-                    <button type="button" className={`btn btn-sm ${doc.published ? 'btn-secondary' : 'btn-primary'}`} onClick={() => patch(doc, { published: !doc.published })} disabled={busy}>
-                      {doc.published ? 'Hide' : 'Publish'}
-                    </button>
-                    {doc.published && !doc.sku && <span className="admin-muted" style={{ display: 'block', fontSize: '12px' }}>needs a SKU to show</span>}
+                    <span className="admin-inline">
+                      {doc.published && !doc.sku && <span className="admin-dot-warn" role="img" aria-label="Needs a SKU to show on the store" title="Needs a SKU to show on the store" />}
+                      <button
+                        type="button"
+                        className={`btn btn-sm ${doc.published ? 'btn-secondary' : 'btn-primary'}`}
+                        onClick={() => patch(doc, { published: !doc.published })}
+                        disabled={busy}
+                        title={doc.published && !doc.sku ? 'Published, but it needs a Store SKU to appear on a product page' : undefined}
+                      >
+                        {doc.published ? 'Hide' : 'Publish'}
+                      </button>
+                    </span>
                   </td>
                   <td>
                     <button type="button" className="btn btn-secondary btn-sm" onClick={() => remove(doc)} disabled={busy}>Remove</button>

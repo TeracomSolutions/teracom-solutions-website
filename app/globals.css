@@ -2290,3 +2290,28 @@ a.admin-status:hover { filter:brightness(1.15); }
 .admin-publish-fields legend { padding:0 6px; font-size:13px; font-weight:700; color:var(--muted); }
 .admin-section-map { display:grid; gap:8px; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); }
 .admin-section-map > span { grid-column:1 / -1; }
+
+/* Admin: compact tables (Resources documents). One line per row; the full
+   title and source address are on hover; the Document column can be
+   dragged wider from the corner of its heading. */
+.admin-table-compact th { padding:8px 10px; }
+.admin-table-compact td { padding:4px 10px; vertical-align:middle; }
+.admin-table-compact tbody tr:hover td { background:rgba(255,255,255,.03); }
+.admin-table-compact .btn-sm { padding:4px 10px; font-size:12px; }
+.admin-col-resize { resize:horizontal; overflow:hidden; min-width:260px; width:360px; max-width:900px; padding-right:8px; }
+.admin-doc-cell { min-width:260px; }
+.admin-doc-title, .admin-doc-meta { display:block; max-width:var(--doc-col, 360px); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.admin-doc-title { font-weight:600; }
+.admin-doc-meta { font-size:12px; color:var(--muted); }
+.admin-inline { display:inline-flex; align-items:center; gap:6px; flex-wrap:nowrap; }
+.admin-compact-input { height:28px; padding:2px 6px; font-size:13px; border-radius:8px; border:1px solid var(--line); background:#0d0d0d; color:#fff; font-family:inherit; }
+.admin-compact-short { width:110px; }
+.admin-dot-warn { display:inline-block; width:8px; height:8px; border-radius:50%; background:#fbbf24; flex:0 0 auto; }
+.admin-docs-wrap { max-height:75vh; overflow:auto; }
+.admin-docs-wrap thead th { position:sticky; top:0; z-index:1; background:#1a0d0d; }
+.admin-docs-wide { width:min(1600px, calc(100vw - 48px)); position:relative; left:50%; transform:translateX(-50%); }
+
+/* Admin: the Customers tab under Social. */
+.admin-customers-summary { margin:0 0 12px; }
+.admin-customers-search { min-width:260px; height:32px; }
+.admin-customers-company { display:block; font-size:12px; }
