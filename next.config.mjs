@@ -26,6 +26,19 @@ const nextConfig = {
           },
         ],
       },
+      // Add X-Robots-Tag headers for admin paths to ensure they're not indexed
+      {
+        source: '/admin/:path*',
+        headers: [
+          { key: 'X-Robots-Tag', value: 'noindex, nofollow, noarchive' },
+        ],
+      },
+      {
+        source: '/api/admin/:path*',
+        headers: [
+          { key: 'X-Robots-Tag', value: 'noindex, nofollow, noarchive' },
+        ],
+      },
     ];
   },
 };

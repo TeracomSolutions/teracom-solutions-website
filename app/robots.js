@@ -22,6 +22,9 @@ const disallow = [
   '/account/',   // authenticated customer area
   '/cart',
   '/checkout/',  // includes /checkout/success, which can carry order context
+  // The staff console and its API: never crawled, on top of the noindex every page carries.
+  '/admin',
+  '/api/admin/',
 ];
 
 export default function robots() {

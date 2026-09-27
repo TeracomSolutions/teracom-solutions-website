@@ -8,6 +8,7 @@ import { monitoringServices } from '@/lib/monitoring';
 import { requestForms } from '@/lib/requestForms';
 import { tools } from '@/lib/tools';
 import { absoluteUrl } from '@/lib/seo';
+import { isAdminPath } from '@/lib/adminIndexing';
 
 // Next's native App Router sitemap convention (no next-sitemap dependency --
 // the framework covers this on its own). Served at /sitemap.xml.
@@ -119,7 +120,10 @@ export default async function sitemap() {
     })),
   ];
 
-  return entries.map(({ path, changeFrequency, priority }) => ({
+  // Filter out admin paths to prevent them from appearing in sitemap
+  const filteredEntries = entries.filter(entry => !isAdminPath(entry.path));
+
+  return filteredEntries.map(({ path, changeFrequency, priority }) => ({
     url: absoluteUrl(path),
     changeFrequency,
     priority,

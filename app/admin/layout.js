@@ -14,6 +14,8 @@ import { NOINDEX } from '@/lib/seo';
 export const metadata = {
   title: 'Administration|Teracom Solutions',
   ...NOINDEX,
+  // Belt and braces on top of NOINDEX: no caching, and the same for Googlebot by name.
+  robots: { index: false, follow: false, nocache: true, googleBot: { index: false, follow: false } },
 };
 
 export default function NoIndexLayout({ children }) {

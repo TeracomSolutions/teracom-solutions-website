@@ -39,7 +39,7 @@ export async function POST(req) {
 
   let data;
   try {
-    data = await staffLogin(parsed.data.email, parsed.data.password);
+    data = await staffLogin(parsed.data.email, parsed.data.password, clientIpFromRequest(req));
   } catch (err) {
     if (err instanceof ApiError) {
       return NextResponse.json({ error: err.message }, { status: err.status || 401 });
