@@ -14,19 +14,21 @@ import { CUSTOMER_ACCESS_TOKEN_COOKIE } from '@/lib/customerSession';
 import {
   artSlugForProduct,
   exGstCents,
-  findProductBySlug,
   formatMoney,
-  getRelatedProducts,
-  memberPriceCents,
   productPath,
   products,
   storeCategoryForProduct,
 } from '@/lib/products';
+import { findProductAsync, getAllProducts, getCustomerPricing } from '@/lib/catalogue';
+import { unitPriceCents } from '@/lib/catalogueMerge';
 import { absoluteUrl, BUSINESS, pageMetadata } from '@/lib/seo';
 
-// Prerendered, refreshed in the background at most hourly: a data sheet
-// published in the admin appears on the product page within the hour.
-export const revalidate = 3600;
+// The built-in products are prerendered; a product that only exists in the
+// admin catalogue renders on first request and is then cached. Either kind
+// refreshes within five minutes, so a data sheet or a price change published
+// in the admin shows up quickly.
+export const revalidate = 300;
+export const dynamicParams = true;
 
 export function generateStaticParams() {
   return products.map((p) => ({ slug: p.id }));
@@ -34,7 +36,7 @@ export function generateStaticParams() {
 
 export async function generateMetadata(props) {
   const params = await props.params;
-  const product = findProductBySlug(params.slug);
+  const product = await findProductAsync(params.slug);
   if (!product) return {};
   // The part number earns its place in the description: searching a part
   // number is how a trade buyer looks for a supplier.
@@ -60,16 +62,21 @@ const ASSURANCES = [
 
 export default async function ProductPage(props) {
   const params = await props.params;
-  const product = findProductBySlug(params.slug);
+  const product = await findProductAsync(params.slug);
   if (!product) notFound();
 
   const token = (await cookies()).get(CUSTOMER_ACCESS_TOKEN_COOKIE)?.value;
-  const isSignedIn = Boolean(token);
+  // The customer's pricing tier decides the price shown; a session the
+  // backend no longer recognises is priced as a guest.
+  const customer = await getCustomerPricing(token);
+  const isSignedIn = Boolean(customer);
   const category = storeCategoryForProduct(product);
-  const related = getRelatedProducts(product);
+  const related = (await getAllProducts())
+    .filter((p) => p.id !== product.id && p.category === product.category)
+    .slice(0, 3);
   const isSubscription = product.type === 'subscription';
   const showMemberPrice = isSignedIn && !isSubscription;
-  const price = showMemberPrice ? memberPriceCents(product) : product.priceCents;
+  const price = showMemberPrice ? unitPriceCents(product, customer) : product.priceCents;
 
   // Product structured data. `availability` is asserted only for things that
   // are always available -- subscriptions, digital downloads and services.
@@ -129,7 +136,7 @@ export default async function ProductPage(props) {
                 </p>
               ) : null}
               <p className="price product-price">
-                {showMemberPrice ? <span className="price-gst-note">Member price </span> : null}
+                {showMemberPrice ? <span className="price-gst-note">{customer?.tier ? `${customer.tier} price ` : 'Member price '}</span> : null}
                 {!showMemberPrice && !isSubscription ? <span className="price-gst-note">RRP </span> : null}
                 {formatMoney(price)}
                 <span className="price-gst-note"> inc. GST{isSubscription ? ' / month' : ''}</span>
@@ -174,7 +181,7 @@ export default async function ProductPage(props) {
           <div>
             <h2>What you get</h2>
             <ul className="tick-list">
-              {product.features.map((feature) => (
+              {(product.features || []).map((feature) => (
                 <li key={feature}>{feature}</li>
               ))}
             </ul>

@@ -6,7 +6,7 @@ import { BUSINESS, SITE_ORIGIN } from '@/lib/seo';
 import { services } from '@/lib/services';
 import { brands } from '@/lib/brands';
 import { tools } from '@/lib/tools';
-import { products } from '@/lib/products';
+import { getAllProducts, getCatalogue } from '@/lib/catalogue';
 import sitemap from '@/app/sitemap';
 
 // "Website intelligence" feed for the Teracom AI platform: everything the
@@ -103,7 +103,8 @@ export async function GET() {
       services: services.length,
       brands: brands.length,
       freeTools: tools.length,
-      storeProducts: products.length,
+      storeProducts: (await getAllProducts()).length,
+      catalogueSource: (await getCatalogue()).source,
     },
   };
 
