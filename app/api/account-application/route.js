@@ -99,7 +99,7 @@ export async function POST(req) {
       company: String(values.companyName || values.tradingAs || '').trim() || undefined,
       inquiry_type: 'account_application',
       message,
-    });
+    }, clientIpFromRequest(req));
   } catch (error) {
     const status = error instanceof ApiError ? error.status : 0;
     // Logged in full so a delivery failure is recoverable by a human rather

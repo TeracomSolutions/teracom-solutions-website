@@ -100,7 +100,7 @@ export async function POST(req) {
       company: String(values.company || '').trim() || undefined,
       inquiry_type: form.inquiryType,
       message,
-    });
+    }, clientIpFromRequest(req));
   } catch (error) {
     const status = error instanceof ApiError ? error.status : 0;
     // Logged in full, deliberately. If delivery fails, the submission still

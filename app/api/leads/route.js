@@ -82,7 +82,7 @@ export async function POST(req) {
       company: lead.company || undefined,
       inquiry_type: inquiryType,
       message: lead.message || undefined,
-    });
+    }, clientIpFromRequest(req));
   } catch (error) {
     // A failed backend call shouldn't strand the visitor on a broken
     // page — redirect back with an error flag rather than a 500; the
