@@ -2393,3 +2393,53 @@ a.admin-status:hover { filter:brightness(1.15); }
 .posting-from-link label { flex:1 1 280px; }
 .posting-from-link .form-error, .posting-from-link .admin-muted { flex-basis:100%; margin:0; }
 .posting-from-link-image { width:120px; height:72px; object-fit:cover; border-radius:8px; }
+
+/* Admin: Posting preview */
+.posting-layout { display:grid; grid-template-columns:minmax(0, 640px) minmax(320px, 1fr); gap:24px; align-items:start; }
+.posting-layout > .admin-form { margin-bottom:0; }
+.posting-side { position:sticky; top:16px; display:grid; gap:12px; }
+.posting-side h3 { margin:0; }
+.posting-side-tabs { display:flex; flex-wrap:wrap; gap:4px; border-bottom:1px solid var(--line); }
+@media (max-width:1100px) { .posting-layout { grid-template-columns:1fr; } .posting-side { position:static; } }
+.pv { background:#fff; color:#1d2226; border-radius:10px; font-family:-apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size:14px; line-height:1.43; overflow:hidden; max-width:520px; box-shadow:0 1px 3px rgba(0,0,0,.35); }
+.pv-head { display:flex; gap:8px; align-items:center; padding:12px 14px 6px; }
+.pv-avatar { width:40px; height:40px; border-radius:50%; background:#c8102e; color:#fff; display:inline-flex; align-items:center; justify-content:center; font-weight:700; font-size:14px; flex:none; }
+.pv-name { font-weight:600; }
+.pv-sub { color:#666; font-size:12px; }
+.pv-text { padding:6px 14px 10px; white-space:pre-wrap; overflow-wrap:anywhere; }
+.pv-more { background:none; border:0; padding:0; color:#666; font:inherit; cursor:pointer; }
+.pv-media { display:grid; gap:2px; background:#eee; }
+.pv-media img, .pv-media video { width:100%; height:100%; object-fit:cover; display:block; }
+.pv-media-single img, .pv-media-single video { max-height:420px; }
+.pv-media-two { grid-template-columns:1fr 1fr; height:260px; }
+.pv-media-three { grid-template-columns:2fr 1fr; grid-template-rows:1fr 1fr; height:300px; }
+.pv-media-three > :first-child { grid-row:1 / 3; }
+.pv-media-grid { grid-template-columns:1fr 1fr; grid-auto-rows:150px; }
+.pv-media > * { position:relative; min-height:0; }
+.pv-video { position:relative; width:100%; height:100%; }
+.pv-play { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:34px; color:#fff; text-shadow:0 2px 8px rgba(0,0,0,.6); }
+.pv-extra { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,.5); color:#fff; font-size:26px; font-weight:700; }
+.pv-link { border-top:1px solid #e0e0e0; background:#f3f2ef; padding:10px 14px; }
+.pv-link-host { color:#666; font-size:12px; text-transform:uppercase; }
+.pv-link-title { font-weight:600; }
+.pv-actions { border-top:1px solid #e0e0e0; padding:8px 14px; color:#666; font-size:13px; }
+.pv-instagram .pv-ig-media { position:relative; aspect-ratio:1 / 1; background:#000; }
+.pv-instagram .pv-ig-media img, .pv-instagram .pv-ig-media video { width:100%; height:100%; object-fit:cover; display:block; }
+.pv-ig-empty { aspect-ratio:1 / 1; display:flex; align-items:center; justify-content:center; background:#fafafa; color:#999; text-align:center; padding:20px; }
+.pv-dots { position:absolute; bottom:8px; left:0; right:0; display:flex; justify-content:center; gap:4px; }
+.pv-dots span { width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,.5); }
+.pv-dots span.on { background:#0095f6; }
+.pv-instagram .pv-actions { border-top:0; font-size:18px; }
+.pv-x { background:#000; color:#e7e9ea; box-shadow:0 0 0 1px #2f3336; }
+.pv-x .pv-sub { color:#71767b; }
+.pv-x .pv-media { border-radius:14px; overflow:hidden; margin:0 14px 10px; background:#2f3336; }
+.pv-x .pv-actions { border-top:0; color:#71767b; }
+.pv-linktext { color:#1d9bf0; }
+.pv-mail-head { padding:12px 16px; border-bottom:1px solid #e0e0e0; }
+.pv-mail-body { padding:12px 16px; }
+.pv-mail-body p { margin:0 0 8px; }
+.pv-mail-body img { max-width:100%; height:auto; display:block; }
+.pv-mail-body a { color:#1d9bf0; }
+.pv-mail-body .pv-sub { font-size:12px; }
+.pv-mail-body .pv-sub a { color:#666; }
+.pv-mail-body .pv-sub a:hover { color:#fff; }

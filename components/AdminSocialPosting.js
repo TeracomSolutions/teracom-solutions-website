@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import ChannelPanel from '@/components/posting/ChannelPanel';
 import MediaUploader from '@/components/posting/MediaUploader';
 import StartFromLink from '@/components/posting/StartFromLink';
+import PostPreview from '@/components/posting/PostPreview';
 import {
   CHANNELS,
   channelLabel,
@@ -16,6 +17,7 @@ import {
   updateWhen,
 } from '@/lib/socialFormat';
 import { checkPost } from '@/lib/socialRules';
+import { composeText } from '@/lib/postPreview';
 
 // Posting: write once, add pictures or a video, tick where it goes, adjust
 // the text per network with a preview and checklist, then save, schedule or
@@ -236,6 +238,7 @@ export default function AdminSocialPosting({ initialUpdates, accounts, audienceC
       {error && <p className="form-error" role="alert">{error}</p>}
       {notice && <p className="form-note-banner" role="status">{notice}</p>}
 
+      <div className="posting-layout">
       <form className="admin-form admin-card" onSubmit={(e) => { e.preventDefault(); submit('draft'); }}>
         <h3>Write</h3>
         <StartFromLink onDraft={applyDraft} onPicture={(item) => setMedia((current) => [...current, item])} />
@@ -357,6 +360,38 @@ export default function AdminSocialPosting({ initialUpdates, accounts, audienceC
           <button type="button" className="btn btn-secondary btn-sm" onClick={() => submit('queue')} disabled={Boolean(busy)}>{busy === 'queue' ? 'Queuing…' : 'Add to queue'}</button>
         </div>
       </form>
+
+      <aside className="posting-side" aria-label="Preview">
+        <h3>Preview</h3>
+        {form.channels.length === 0 ? (
+          <p className="admin-muted">Tick where it goes to see how each network will show it.</p>
+        ) : (
+          <>
+            <div className="posting-side-tabs">
+              {form.channels.map((key) => (
+                <button
+                  key={key}
+                  type="button"
+                  className={active === key ? 'admin-tab active' : 'admin-tab'}
+                  onClick={() => setActiveChannel(key)}
+                >
+                  {channelLabel(key)}
+                </button>
+              ))}
+            </div>
+            <PostPreview
+              channel={active}
+              accountName={accountFor(active)?.display_name || ''}
+              title={form.title}
+              text={composeText(active, { title: form.title, body: form.body, override: overrides[active] ?? null })}
+              linkUrl={form.link_url}
+              media={media}
+            />
+          </>
+        )}
+        <p className="admin-muted">A close likeness, not the network itself: fonts and cut-off points can differ slightly.</p>
+      </aside>
+      </div>
 
       <h3>History</h3>
       <div className="admin-table-wrap">
