@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 
 import ChannelPanel from '@/components/posting/ChannelPanel';
 import MediaUploader from '@/components/posting/MediaUploader';
+import StartFromLink from '@/components/posting/StartFromLink';
 import {
   CHANNELS,
   channelLabel,
@@ -57,6 +58,7 @@ export default function AdminSocialPosting({ initialUpdates, accounts, audienceC
   const [error, setError] = useState(loadError || '');
   const [notice, setNotice] = useState('');
   const [busy, setBusy] = useState('');
+  const [nextFree, setNextFree] = useState('');
 
   const accountFor = (network) => (accounts || []).find((a) => a.network === network);
   const active = form.channels.includes(activeChannel) ? activeChannel : form.channels[0];
@@ -74,6 +76,45 @@ export default function AdminSocialPosting({ initialUpdates, accounts, audienceC
     }, 10000);
     return () => clearInterval(timer);
   }, [updates]);
+
+  const channelKey = form.channels.join(",");
+
+  // The next free time for the ticked networks (Add to queue uses it).
+  useEffect(() => {
+    let cancelled = false;
+    const channels = channelKey ? channelKey.split(",") : [];
+
+    if (channels.length === 0) {
+      setNextFree('');
+      return;
+    }
+    
+    async function fetchNextSlot() {
+      try {
+        const response = await fetch('/api/admin/social/next-slot', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ channels }),
+        });
+        
+        const data = await response.json();
+        
+        if (!cancelled) {
+          setNextFree(response.ok ? data.label || '' : '');
+        }
+      } catch {
+        if (!cancelled) {
+          setNextFree('');
+        }
+      }
+    }
+    
+    fetchNextSlot();
+    
+    return () => {
+      cancelled = true;
+    };
+  }, [channelKey]);
 
   function set(field, value) {
     setForm((current) => ({ ...current, [field]: value }));
@@ -124,6 +165,12 @@ export default function AdminSocialPosting({ initialUpdates, accounts, audienceC
     };
   }
 
+  function applyDraft(draft) {
+    setForm((current) => ({ ...current, title: draft.title || current.title, body: draft.text || current.body, link_url: draft.link_url || current.link_url }));
+    setOverrides({ ...(draft.overrides || {}) });
+    setNotice('A draft was written from the link. Check each network tab before posting.');
+  }
+
   async function submit(mode) {
     const found = [];
     if (!form.title.trim()) found.push('Give the post a title.');
@@ -145,12 +192,17 @@ export default function AdminSocialPosting({ initialUpdates, accounts, audienceC
     setError('');
     setNotice('');
     try {
-      const body = payload(mode === 'now' ? { send_now: true } : mode === 'schedule' ? { scheduled_at: form.scheduled_at } : {});
-      await send('/api/admin/social/updates', 'POST', body);
+      const body = payload(mode === 'now' ? { send_now: true } : mode === 'schedule' ? { scheduled_at: form.scheduled_at } : mode === 'queue' ? { queue: true } : {});
+      const response = await send('/api/admin/social/updates', 'POST', body);
       setForm(EMPTY);
       setMedia([]);
       setOverrides({});
-      setNotice(mode === 'now' ? 'Sending now; each network reports below within a minute.' : mode === 'schedule' ? 'Scheduled.' : 'Draft saved.');
+      if (mode === 'queue') {
+        const when = new Date(response.scheduled_at).toLocaleString('en-AU', { timeZone: 'Australia/Melbourne', weekday: 'short', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' });
+        setNotice(`Queued for ${when}.`);
+      } else {
+        setNotice(mode === 'now' ? 'Sending now; each network reports below within a minute.' : mode === 'schedule' ? 'Scheduled.' : 'Draft saved.');
+      }
       await reload();
     } catch (err) {
       setError(err.message);
@@ -186,6 +238,7 @@ export default function AdminSocialPosting({ initialUpdates, accounts, audienceC
 
       <form className="admin-form admin-card" onSubmit={(e) => { e.preventDefault(); submit('draft'); }}>
         <h3>Write</h3>
+        <StartFromLink onDraft={applyDraft} onPicture={(item) => setMedia((current) => [...current, item])} />
         <label>
           Title
           <input value={form.title} onChange={(e) => set('title', e.target.value)} maxLength={200} required />
@@ -278,6 +331,7 @@ export default function AdminSocialPosting({ initialUpdates, accounts, audienceC
           Send at (for Schedule)
           <input type="datetime-local" value={form.scheduled_at} onChange={(e) => set('scheduled_at', e.target.value)} />
           <span className="admin-muted">Melbourne time. A scheduled post goes within 15 minutes of its time.</span>
+          {nextFree && <span className="admin-muted">Add to queue picks the next free time: {nextFree}.</span>}
         </label>
 
         {errors.length > 0 && (
@@ -300,6 +354,7 @@ export default function AdminSocialPosting({ initialUpdates, accounts, audienceC
           <button type="submit" className="btn btn-secondary btn-sm" disabled={Boolean(busy)}>{busy === 'draft' ? 'Saving…' : 'Save draft'}</button>
           <button type="button" className="btn btn-secondary btn-sm" onClick={() => submit('schedule')} disabled={Boolean(busy)}>{busy === 'schedule' ? 'Scheduling…' : 'Schedule'}</button>
           <button type="button" className="btn btn-primary btn-sm" onClick={() => submit('now')} disabled={Boolean(busy)}>{busy === 'now' ? 'Sending…' : 'Send now'}</button>
+          <button type="button" className="btn btn-secondary btn-sm" onClick={() => submit('queue')} disabled={Boolean(busy)}>{busy === 'queue' ? 'Queuing…' : 'Add to queue'}</button>
         </div>
       </form>
 

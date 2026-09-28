@@ -2377,3 +2377,19 @@ a.admin-status:hover { filter:brightness(1.15); }
 .posting-thumb { width:48px; height:48px; object-fit:cover; border-radius:8px; flex:none; background:#0d0d0d; }
 .posting-links { display:flex; flex-wrap:wrap; gap:4px 10px; margin-top:4px; }
 .posting-links a { color:#fff; }
+
+/* Admin: Posting calendar */
+.posting-calendar { width:100%; border-collapse:collapse; table-layout:fixed; margin:12px 0; }
+.posting-calendar th, .posting-calendar td { border:1px solid var(--line); padding:6px; vertical-align:top; font-size:12px; }
+.posting-calendar td { height:96px; }
+.posting-cal-item { margin-top:4px; padding:3px 6px; border-radius:6px; background:rgba(255,255,255,.06); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.posting-cal-item.is-sent { border-left:3px solid #4ade80; }
+.posting-cal-item.is-scheduled, .posting-cal-item.is-sending { border-left:3px solid #fbbf24; }
+.posting-cal-item.is-failed { border-left:3px solid #f87171; }
+.posting-cadence-row { display:grid; gap:8px 14px; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); align-items:end; padding:12px 0; border-bottom:1px solid var(--line); }
+.posting-days { display:flex; flex-wrap:wrap; gap:4px 10px; border:0; padding:0; margin:0; grid-column:1 / -1; }
+.posting-days legend { font-size:13px; color:var(--muted); margin-bottom:4px; }
+.posting-from-link { display:flex; flex-wrap:wrap; gap:8px; align-items:flex-end; margin:0 0 14px; }
+.posting-from-link label { flex:1 1 280px; }
+.posting-from-link .form-error, .posting-from-link .admin-muted { flex-basis:100%; margin:0; }
+.posting-from-link-image { width:120px; height:72px; object-fit:cover; border-radius:8px; }

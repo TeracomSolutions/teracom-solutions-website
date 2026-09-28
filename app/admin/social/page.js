@@ -3,11 +3,12 @@ import { redirect } from 'next/navigation';
 import AdminHelpIcon from '@/components/AdminHelpIcon';
 import AdminShell from '@/components/AdminShell';
 import AdminSocialAccounts from '@/components/AdminSocialAccounts';
+import AdminSocialCalendar from '@/components/AdminSocialCalendar';
 import AdminSocialCustomers from '@/components/AdminSocialCustomers';
 import AdminSocialPosting from '@/components/AdminSocialPosting';
 import AdminTabs from '@/components/AdminTabs';
 import { listCustomers } from '@/lib/api/adminCustomers';
-import { listSocialAccounts, listSocialUpdates } from '@/lib/api/adminSocial';
+import { getCadence, listSocialAccounts, listSocialUpdates } from '@/lib/api/adminSocial';
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
 
 export const metadata = {
@@ -37,6 +38,16 @@ export default async function AdminSocialPage() {
     customersError = 'Unable to load the customer list from the backend.';
   }
 
+  // The posting calendar settings, also on their own.
+  let cadence = [];
+  let cadenceError = '';
+  try {
+    cadence = await getCadence(token);
+  } catch (err) {
+    if (isSessionError(err)) redirect('/admin/login');
+    cadenceError = 'Unable to load the posting calendar settings.';
+  }
+
   return (
     <AdminShell>
       <h1 className="admin-heading">
@@ -58,6 +69,13 @@ export default async function AdminSocialPage() {
             <li><strong>Send now</strong> runs in the background; each network reports sent, failed or skipped within a minute. A <strong>scheduled</strong> post goes within 15 minutes of its time (Melbourne). The history links to each live post.</li>
             <li>Drafts and scheduled posts can be cancelled; sent ones stay as history.</li>
           </ul>
+          <h4>Calendar</h4>
+          <ul>
+            <li>The month view shows what is scheduled (amber), sent (green) and failed (red), at its Melbourne time.</li>
+            <li><strong>How often</strong> sets, per network, the most posts a day and a week, the hours between posts, and the preferred days and times.</li>
+            <li><strong>Add to queue</strong> on Posting picks the next time that suits every ticked network, so posts go out regularly without crowding anyone.</li>
+            <li>The starting settings: LinkedIn 3 a week, Facebook 4 a week, Instagram 3 a week, X up to 2 a day, one customer email a week.</li>
+          </ul>
           <h4>Customers</h4>
           <ul>
             <li>Every customer account on the website: the ones brought across from the old store and everyone who has signed up since.</li>
@@ -77,6 +95,11 @@ export default async function AdminSocialPage() {
             key: 'posting',
             label: 'Posting',
             content: <AdminSocialPosting initialUpdates={updates} accounts={accounts} audienceCount={customers?.counts?.receives_updates} loadError={loadError} />,
+          },
+          {
+            key: 'calendar',
+            label: 'Calendar',
+            content: <AdminSocialCalendar initialCadence={cadence || []} loadError={cadenceError} />,
           },
           {
             key: 'customers',
