@@ -9,6 +9,7 @@ import { Folder, Pencil } from 'lucide-react';
 import { formatDateTime, humanise } from '@/lib/adminFormat';
 import { SECTION_LABELS, SITE_DOCUMENT_SECTIONS, sectionForType } from '@/lib/publishedResources';
 import { changedFields, sourceFormDefaults } from '@/lib/resourceSourceFields';
+import { problemsLine, splitProblems } from '@/lib/checkProblems';
 
 // The Resources page: the websites we watch and a form to add one, with
 // where each one's documents go on the public website.
@@ -332,7 +333,12 @@ export default function AdminResourceSources({ sources, suppliers }) {
                           {source.last_found} found · {source.last_new} new · {source.last_changed} changed
                         </span>
                       )}
-                      {source.last_error && <span className="admin-message" style={{ color: '#ff8a8a', display: 'block' }}>{source.last_error}</span>}
+                      {source.last_error && (
+                        <details className="admin-result-details">
+                          <summary>{problemsLine(source.last_error)}</summary>
+                          <ul>{splitProblems(source.last_error).map((p, i) => <li key={i}>{p}</li>)}</ul>
+                        </details>
+                      )}
                     </td>
                     <td>
                       {source.document_count}

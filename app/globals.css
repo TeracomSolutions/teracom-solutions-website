@@ -2443,3 +2443,10 @@ a.admin-status:hover { filter:brightness(1.15); }
 .pv-mail-body .pv-sub { font-size:12px; }
 .pv-mail-body .pv-sub a { color:#666; }
 .pv-mail-body .pv-sub a:hover { color:#fff; }
+
+/* Admin: Resources result folded */
+.admin-result-details { margin-top:4px; font-size:12px; color:#ff8a8a; max-width:520px; }
+.admin-result-details summary { cursor:pointer; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.admin-result-details summary:hover { color:#fff; }
+.admin-result-details ul { margin:6px 0 0; padding-left:18px; max-height:320px; overflow:auto; }
+.admin-result-details li { overflow-wrap:anywhere; margin-bottom:4px; }
