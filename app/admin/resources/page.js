@@ -2,9 +2,10 @@ import { redirect } from 'next/navigation';
 
 import AdminHelpIcon from '@/components/AdminHelpIcon';
 import AdminResourceSources from '@/components/AdminResourceSources';
+import AdminResourceUpload from '@/components/AdminResourceUpload';
 import AdminShell from '@/components/AdminShell';
 import { fetchSupplierPricing } from '@/lib/api/adminPricing';
-import { fetchResourceSources } from '@/lib/api/adminResources';
+import { fetchResourceSources, resourceBrands } from '@/lib/api/adminResources';
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
 
 export const metadata = {
@@ -16,10 +17,17 @@ export default async function AdminResourcesPage() {
 
   let sources = [];
   let suppliers = [];
+  let brands = [];
   let loadError = '';
 
   try {
     [sources, suppliers] = await Promise.all([fetchResourceSources(token), fetchSupplierPricing(token)]);
+    // Load brands for the upload form
+    try {
+      brands = await resourceBrands(token);
+    } catch {
+      brands = [];
+    }
   } catch (err) {
     if (isSessionError(err)) redirect('/admin/login');
     loadError = 'Unable to load Resources from the backend.';
@@ -49,12 +57,17 @@ export default async function AdminResourcesPage() {
           <p>The public Resources pages (User Manuals, Datasheets, Installer Manuals, Brochures, Downloads) show the documents you publish here. On a website&apos;s <strong>Edit</strong> form, set its <strong>Brand</strong>, choose where each kind of document goes, and tick <em>Publish new documents automatically</em> if every new find should go straight onto the site (with a one-off option to publish what is already collected). On the documents page, the <strong>Website</strong> column puts one document in a section, and the toolbar publishes the selected ones or everything shown. A document on the website is served from our copy, with a line saying where the manufacturer&apos;s original lives.</p>
           <h4>Getting them onto the store</h4>
           <p>A document appears in the Downloads section of a product page when it is published and its <strong>Store SKU</strong> matches the product&apos;s part number. The SKU is filled in automatically when the file name contains a SKU that is in the store catalogue; otherwise set it on the documents page.</p>
+          <h4>Uploading your own documents</h4>
+          <p>Choose a PDF (up to 50 MB), give it a title, the brand and the type, and where it shows on the website; it is kept with the other documents under &quot;Uploaded by Teracom&quot;, where the documents page changes its brand, type, SKU or section later; the same file cannot be uploaded twice.</p>
         </AdminHelpIcon>
       </h1>
       <p className="lead">Supplier and manufacturer websites we watch for data sheets and manuals, checked on a schedule, published to the Resources pages and shown on the store.</p>
 
       {loadError ? <p className="form-error" role="alert">{loadError}</p> : (
-        <AdminResourceSources sources={sources} suppliers={suppliers} />
+        <>
+          <AdminResourceUpload brands={brands} />
+          <AdminResourceSources sources={sources} suppliers={suppliers} />
+        </>
       )}
     </AdminShell>
   );
