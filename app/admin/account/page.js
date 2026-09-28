@@ -2,8 +2,9 @@ import { redirect } from 'next/navigation';
 
 import AdminHelpIcon from '@/components/AdminHelpIcon';
 import AdminShell from '@/components/AdminShell';
+import AdminSessionSettings from '@/components/AdminSessionSettings';
 import AdminTwoFactor from '@/components/AdminTwoFactor';
-import { staffMe, staffMfaStatus } from '@/lib/api/adminAuth';
+import { getStaffSession, staffMe, staffMfaStatus } from '@/lib/api/adminAuth';
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
 
 export const metadata = {
@@ -25,11 +26,22 @@ export default async function AdminAccountPage() {
     loadError = 'Unable to load your account from the backend.';
   }
 
+  // Loaded on its own so an older backend without it leaves the page working.
+  let session = null;
+  try {
+    session = await getStaffSession(token);
+  } catch (err) {
+    if (isSessionError(err)) redirect('/admin/login');
+    session = null;
+  }
+
   return (
     <AdminShell>
       <h1 className="admin-heading">
         Your account
         <AdminHelpIcon>
+          <h4>Automatic sign-out</h4>
+          <p>The console signs you out after the time you choose with no activity: 5, 10, 15 or 30 minutes, or 1, 2, 4 or 8 hours. Clicking, typing, scrolling or moving between pages starts the clock again. The time left is shown next to <strong>Sign out</strong>; a minute before the end a banner offers <strong>Stay signed in</strong>. The setting is yours alone and applies straight away.</p>
           <h4>Two-factor sign-in</h4>
           <p>A second step after your password: a six-digit code that changes every 30 seconds. It comes from an authenticator app on your phone (Google or Microsoft Authenticator, Authy, 1Password) or from Zoho Vault, which can hold the same secret and generate the codes for you. Both work at the same time because they share one secret.</p>
           <h4>Setting it up</h4>
@@ -39,6 +51,8 @@ export default async function AdminAccountPage() {
         </AdminHelpIcon>
       </h1>
       <p className="lead">{email ? `Signed in as ${email}.` : 'Your sign-in settings.'}</p>
+
+      <AdminSessionSettings initial={session} />
 
       {loadError ? <p className="form-error" role="alert">{loadError}</p> : <AdminTwoFactor initialStatus={status} email={email} />}
     </AdminShell>

@@ -58,5 +58,7 @@ export async function POST(req) {
   return setAdminSessionCookies(NextResponse.json({ ok: true }), {
     accessToken: data.access_token,
     refreshToken: data.refresh_token,
+    accessMaxAge: data.access_expires_in,
+    idleMinutes: data.idle_minutes,
   });
 }

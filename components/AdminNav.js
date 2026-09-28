@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 
+import AdminSessionTimer from '@/components/AdminSessionTimer';
 import { isAreaActive } from '@/lib/adminNavMatch';
 
 // The admin's own menu. Every area is listed here and nowhere else: the
@@ -41,6 +42,7 @@ export default function AdminNav() {
           </Link>
         );
       })}
+      <AdminSessionTimer />
       <button type="button" className="admin-nav-signout" onClick={handleSignOut}>
         Sign out
       </button>
