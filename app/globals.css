@@ -2326,3 +2326,18 @@ a.admin-status:hover { filter:brightness(1.15); }
 .admin-session-timer + .admin-nav-signout { margin-left:0; }
 .admin-session-warning { position:fixed; left:50%; bottom:24px; transform:translateX(-50%); z-index:1000; display:flex; gap:14px; align-items:center; padding:12px 16px; border-radius:14px; background:#1a0d0d; border:1px solid rgba(255,75,75,.6); box-shadow:0 10px 30px rgba(0,0,0,.5); color:#fff; font-size:14px; font-variant-numeric:tabular-nums; }
 @media (max-width: 640px) { .admin-session-timer { margin-left:0; } }
+
+/* Resources: published document rows */
+.published-doc-list { gap: 8px; }
+.published-doc { display: flex; align-items: center; gap: 16px; padding: 14px 18px; border: 1px solid var(--line); border-radius: 14px; background: rgba(255,255,255,.04); color: var(--text); text-decoration: none; }
+.published-doc:hover { background: rgba(255,255,255,.08); border-color: rgba(255,75,75,.45); }
+.published-doc-main { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.published-doc-title { font-weight: 700; overflow-wrap: anywhere; }
+.published-doc-meta { font-size: 12px; color: var(--muted); }
+.published-doc-tags { flex: 0 0 auto; display: flex; align-items: center; gap: 8px; margin-left: auto; }
+.published-doc-type, .published-doc-size { border-radius: 999px; padding: 4px 10px; font-size: 11px; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; white-space: nowrap; }
+.published-doc-type { background: rgba(255,23,23,.15); color: var(--red2); }
+.published-doc-size { background: rgba(255,255,255,.08); color: var(--muted); min-width: 64px; text-align: center; }
+.published-doc svg { color: var(--muted); }
+.published-doc:hover svg { color: #fff; }
+@media (max-width: 640px) { .published-doc { flex-wrap: wrap; } .published-doc-tags { margin-left: 0; } }
