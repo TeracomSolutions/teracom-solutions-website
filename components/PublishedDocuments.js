@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
+import { Download } from 'lucide-react';
 
 import { DOC_TYPE_LABELS, brandCounts, describeSource, filterDocuments, formatSize, pickBrand } from '@/lib/publishedResources';
 
@@ -114,21 +115,25 @@ export default function PublishedDocuments({ listing, emptyMessage }) {
       )}
 
       {visible.length > 0 && (
-        <ul className="document-list" role="tabpanel" aria-label={`${current} documents`}>
-          {visible.map((doc) => (
-            <li key={doc.id}>
-              <a href={doc.download_url} target="_blank" rel="noopener noreferrer">
-                <span className="document-title">{doc.title}</span>
-                {doc.model && <span className="document-brand">{doc.model}</span>}
-                <span className="document-filetype">{DOC_TYPE_LABELS[doc.doc_type] || DOC_TYPE_LABELS.other}</span>
-                {formatSize(doc.size_bytes) && <span className="document-filetype">{formatSize(doc.size_bytes)}</span>}
-              </a>
-              <span className="published-docs-meta">
-                {describeSource(doc)}
-                {updated(doc.last_changed_at) ? ` · updated ${updated(doc.last_changed_at)}` : ''}
-              </span>
-            </li>
-          ))}
+        <ul className="document-list published-doc-list" role="tabpanel" aria-label={`${current} documents`}>
+          {visible.map((doc) => {
+            const model = doc.model ? `${doc.model} · ` : '';
+            return (
+              <li key={doc.id}>
+                <a className="published-doc" href={doc.download_url} target="_blank" rel="noopener noreferrer">
+                  <span className="published-doc-main">
+                    <span className="published-doc-title">{doc.title}</span>
+                    <span className="published-doc-meta">{model}{describeSource(doc)}{updated(doc.last_changed_at) ? ` · updated ${updated(doc.last_changed_at)}` : ''}</span>
+                  </span>
+                  <span className="published-doc-tags">
+                    <span className="published-doc-type">{DOC_TYPE_LABELS[doc.doc_type] || DOC_TYPE_LABELS.other}</span>
+                    {formatSize(doc.size_bytes) && <span className="published-doc-size">{formatSize(doc.size_bytes)}</span>}
+                    <Download size={16} aria-hidden />
+                  </span>
+                </a>
+              </li>
+            );
+          })}
         </ul>
       )}
     </div>
