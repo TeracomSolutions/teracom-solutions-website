@@ -2320,3 +2320,9 @@ a.admin-status:hover { filter:brightness(1.15); }
 .brand-tab-count { margin-left:8px; padding:1px 8px; border-radius:999px; background:rgba(0,0,0,.35); font-size:12px; font-weight:700; }
 .brand-tab-small { padding:6px 12px; font-size:13px; }
 .published-docs-elsewhere { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:0 0 16px; }
+
+/* Admin: automatic sign-out countdown and warning. */
+.admin-session-timer { margin-left:auto; padding:0 6px; font-size:12px; color:var(--muted); white-space:nowrap; font-variant-numeric:tabular-nums; }
+.admin-session-timer + .admin-nav-signout { margin-left:0; }
+.admin-session-warning { position:fixed; left:50%; bottom:24px; transform:translateX(-50%); z-index:1000; display:flex; gap:14px; align-items:center; padding:12px 16px; border-radius:14px; background:#1a0d0d; border:1px solid rgba(255,75,75,.6); box-shadow:0 10px 30px rgba(0,0,0,.5); color:#fff; font-size:14px; font-variant-numeric:tabular-nums; }
+@media (max-width: 640px) { .admin-session-timer { margin-left:0; } }

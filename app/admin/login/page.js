@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import AdminBrand from '@/components/AdminBrand';
@@ -17,6 +17,14 @@ export default function AdminLoginPage() {
   const [code, setCode] = useState('');
   const [useBackup, setUseBackup] = useState(false);
   const [error, setError] = useState('');
+  const [notice, setNotice] = useState('');
+
+  // Sent here by the automatic sign-out (or an ended session): say why.
+  useEffect(() => {
+    const reason = new URLSearchParams(window.location.search).get('reason');
+    if (reason === 'idle') setNotice('You were signed out after a period of inactivity. Sign in again to carry on.');
+    else if (reason === 'expired') setNotice('Your session has ended. Please sign in again.');
+  }, []);
   const [submitting, setSubmitting] = useState(false);
 
   async function handlePassword(e) {
@@ -93,6 +101,7 @@ export default function AdminLoginPage() {
             <>
               <h1>Staff Login</h1>
               <p className="lead">Teracom Solutions staff only. Sign in with your @teracomsolutions.com.au account.</p>
+              {notice && <p className="form-note-banner" role="status">{notice}</p>}
 
               <form onSubmit={handlePassword} style={{ marginTop: '24px' }}>
                 <div style={{ marginBottom: '16px' }}>
