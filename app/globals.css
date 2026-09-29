@@ -2480,3 +2480,11 @@ a.admin-status:hover { filter:brightness(1.15); }
 .admin-guide-section li ul { margin:4px 0; }
 .admin-note { border-left:3px solid var(--red); background:rgba(255,255,255,.04); padding:8px 12px; border-radius:6px; }
 @media (max-width:700px) { .admin-guide-toc ol { columns:1; } }
+
+/* Admin: Help link in the top bar */
+.admin-brand-help {
+  margin-left:auto;
+}
+.admin-brand-help + .admin-brand-link {
+  margin-left:0;
+}
