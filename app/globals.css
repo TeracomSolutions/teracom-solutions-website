@@ -2495,3 +2495,6 @@ a.admin-status:hover { filter:brightness(1.15); }
 
 /* Mobile menu: the panel scrolls on its own so every item can be reached */
 .mobile-nav-panel { max-height:calc(100vh - 128px); max-height:calc(100dvh - 128px); overflow-y:auto; overscroll-behavior:contain; -webkit-overflow-scrolling:touch; }
+
+/* Admin: Users */
+.admin-temp-password code { display:inline-block; margin:6px 8px 6px 0; padding:6px 10px; border-radius:8px; background:#0d0d0d; border:1px solid var(--line); font-size:15px; letter-spacing:.04em; }
