@@ -5,7 +5,7 @@ import { requireAdminToken } from '@/lib/adminPage'
 import { guideOutline } from '@/lib/guideReader'
 
 export const metadata = {
-  title: 'User guide|Teracom Solutions'
+  title: 'Help|Teracom Solutions'
 }
 
 export default async function AdminGuidePage() {
@@ -13,7 +13,7 @@ export default async function AdminGuidePage() {
   
   return (
     <AdminShell>
-      <h1 className="admin-heading" id="top">User guide</h1>
+      <h1 className="admin-heading" id="top">Help</h1>
       <p className="lead">How every part of the Administration Console works, step by step.</p>
       
       <div className="admin-guide-layout">

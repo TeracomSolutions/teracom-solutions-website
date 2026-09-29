@@ -10,7 +10,8 @@ export default function AdminBrand({ signedIn = true }) {
         <Image src="/assets/teracom-logo.png" alt="Teracom Solutions" width={150} height={58} priority />
       </Link>
       <span className="admin-brand-title">Administration Console</span>
-      <a href="/" target="_blank" rel="noopener noreferrer" className="admin-brand-link">
+      {signedIn && <Link href="/admin/guide" className="admin-brand-link admin-brand-help">Help</Link>}
+      <a href="/" target="_blank" rel="noopener noreferrer" className={signedIn ? 'admin-brand-link' : 'admin-brand-link admin-brand-help'}>
         View website ↗
       </a>
     </div>
