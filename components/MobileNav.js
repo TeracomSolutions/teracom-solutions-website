@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useSearchSubmit } from './HeaderSearch';
 import { useCart } from '@/lib/cart-context';
@@ -12,6 +12,7 @@ export default function MobileNav() {
   // Links navigate client-side, so the panel has to close itself on click.
   const close = () => setOpen(false);
   const onSearch = useSearchSubmit(close);
+  const panelRef = useRef(null);
 
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -26,6 +27,24 @@ export default function MobileNav() {
 
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [open]);
+
+  // The header is sticky, so a panel taller than the screen cannot be
+  // scrolled into view. Fit the panel between the header and the bottom of
+  // the screen, let it scroll inside, and hold the page still while it is open.
+  useEffect(() => {
+    if (!open) return undefined;
+    const panel = panelRef.current;
+    const header = document.querySelector('.site-header');
+    if (panel && header) {
+      const top = Math.ceil(header.getBoundingClientRect().bottom);
+      panel.style.maxHeight = `calc(100dvh - ${top}px)`;
+    }
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = previous;
     };
   }, [open]);
 
@@ -45,7 +64,7 @@ export default function MobileNav() {
       </button>
 
       {open && (
-        <nav className="mobile-nav-panel">
+        <nav className="mobile-nav-panel" ref={panelRef}>
           <form className="search-form mobile-nav-search" action="/search" role="search" onSubmit={onSearch}>
             <label htmlFor="mobile-search-input" className="visually-hidden">Search Teracom Solutions</label>
             <input id="mobile-search-input" type="search" name="q" placeholder="Search the site…" autoComplete="off" />

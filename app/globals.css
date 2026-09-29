@@ -2492,3 +2492,6 @@ a.admin-status:hover { filter:brightness(1.15); }
 /* Admin: Help link in blue */
 .admin-brand-link.admin-brand-help[href="/admin/guide"] { color:#3b82f6; }
 .admin-brand-link.admin-brand-help[href="/admin/guide"]:hover { color:#93c5fd; }
+
+/* Mobile menu: the panel scrolls on its own so every item can be reached */
+.mobile-nav-panel { max-height:calc(100vh - 128px); max-height:calc(100dvh - 128px); overflow-y:auto; overscroll-behavior:contain; -webkit-overflow-scrolling:touch; }
