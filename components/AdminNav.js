@@ -9,12 +9,12 @@ import { isAreaActive } from '@/lib/adminNavMatch';
 // The admin's own menu. Every area is listed here and nowhere else: the
 // public site never links to /admin, only the footer's double-click does.
 export const ADMIN_AREAS = [
+  { href: '/admin', label: 'Overview', exact: true },
   { href: '/admin/account', label: 'Account' },
   { href: '/admin/ai-connections', label: 'AI Connections' },
   { href: '/admin/assistant', label: 'Assistant' },
   { href: '/admin/coupons', label: 'Coupons' },
   { href: '/admin/leads', label: 'Leads' },
-  { href: '/admin', label: 'Overview', exact: true },
   { href: '/admin/resources', label: 'Resources' },
   { href: '/admin/scout', label: 'Scout' },
   { href: '/admin/social', label: 'Social' },
