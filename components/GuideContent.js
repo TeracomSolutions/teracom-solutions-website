@@ -20,7 +20,7 @@ function Inline({ text }) {
   });
 }
 
-export default function GuideContent({ markdown }) {
+export default function GuideContent({ markdown, idPrefix = '' }) {
   const blocks = parseGuide(markdown || '');
 
   return (
@@ -28,11 +28,11 @@ export default function GuideContent({ markdown }) {
       {blocks.map((block, index) => {
         switch (block.type) {
           case 'h2':
-            return <h2 id={block.id} key={index}><Inline text={block.text} /></h2>;
+            return <h2 id={idPrefix ? `${idPrefix}-${block.id}` : block.id} key={index}><Inline text={block.text} /></h2>;
           case 'h3':
-            return <h3 id={block.id} key={index}><Inline text={block.text} /></h3>;
+            return <h3 id={idPrefix ? `${idPrefix}-${block.id}` : block.id} key={index}><Inline text={block.text} /></h3>;
           case 'h4':
-            return <h4 id={block.id} key={index}><Inline text={block.text} /></h4>;
+            return <h4 id={idPrefix ? `${idPrefix}-${block.id}` : block.id} key={index}><Inline text={block.text} /></h4>;
           case 'p':
             return <p key={index}><Inline text={block.text} /></p>;
           case 'note':

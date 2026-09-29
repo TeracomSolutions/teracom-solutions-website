@@ -349,6 +349,23 @@ a {
 .feature-grid, .product-grid {
   display:grid;grid-template-columns:repeat(3,1fr);gap:22px;
 }
+
+/* Admin: User guide navigation and headings */
+.admin-guide-layout { display:grid; grid-template-columns:250px minmax(0,1fr); gap:48px; align-items:start; }
+.admin-guide-nav { position:sticky; top:24px; max-height:calc(100vh - 48px); overflow-y:auto; display:grid; gap:2px; padding:4px 8px 4px 18px; border-left:1px solid var(--line); }
+.admin-guide-nav p { margin:0 0 10px; font-size:12px; font-weight:900; letter-spacing:.16em; text-transform:uppercase; color:var(--red2); }
+.admin-guide-nav-group { display:grid; gap:1px; margin-bottom:10px; }
+.admin-guide-nav a { text-decoration:none; transition:color .2s ease; }
+.admin-guide-nav-chapter { padding:4px 0; font-size:14px; font-weight:800; color:#fff; }
+.admin-guide-nav-part { padding:2px 0 2px 12px; font-size:13px; color:var(--muted); }
+.admin-guide-nav a:hover, .admin-guide-nav a:focus-visible { color:#ff8a8a; }
+.admin-guide-body { min-width:0; }
+.admin-guide-section { scroll-margin-top:24px; }
+.admin-guide-section h2 { color:var(--red2); font-size:26px; padding-bottom:8px; border-bottom:2px solid rgba(255,75,75,.45); scroll-margin-top:24px; }
+.admin-guide-section h3 { color:#ff8a8a; font-size:19px; padding-left:10px; border-left:3px solid var(--red); scroll-margin-top:24px; }
+.admin-guide-section h4 { color:#fbbf24; scroll-margin-top:24px; }
+.admin-guide-section p > strong:only-child { color:#fbbf24; }
+@media (max-width:900px) { .admin-guide-layout { grid-template-columns:1fr; gap:24px; } .admin-guide-nav { position:static; max-height:none; } }
 .feature-grid article, .product-card {
   border:1px solid var(--line);background:rgba(255,255,255,.04);border-radius:28px;padding:30px;min-height:210px;
 }
