@@ -14,6 +14,10 @@ const CreateRequest = z.object({
   price: z.number().min(0),
   cost: z.number().min(0).optional().nullable(),
   stock: z.number().int().min(0).default(0),
+  weight_kg: z.number().min(0).max(1000).optional().nullable(),
+  length_cm: z.number().min(0).max(500).optional().nullable(),
+  width_cm: z.number().min(0).max(500).optional().nullable(),
+  height_cm: z.number().min(0).max(500).optional().nullable(),
 });
 
 export const GET = withAdminSession(async ({ req, token }) => {

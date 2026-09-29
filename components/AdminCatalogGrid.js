@@ -53,7 +53,7 @@ const inputStyle = { padding: '4px 6px', borderRadius: '6px', border: '1px solid
 
 function AddProductForm({ suppliers, onDone }) {
   const [open, setOpen] = useState(false);
-  const [form, setForm] = useState({ sku: '', name: '', category: '', brand: '', supplier_id: '', price: '', cost: '', stock: '0', description: '' });
+  const [form, setForm] = useState({ sku: '', name: '', category: '', brand: '', supplier_id: '', price: '', cost: '', stock: '0', description: '', weight_kg: '', length_cm: '', width_cm: '', height_cm: '' });
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
 
@@ -75,9 +75,13 @@ function AddProductForm({ suppliers, onDone }) {
         price: Number(form.price),
         cost: form.cost === '' ? null : Number(form.cost),
         stock: Number(form.stock) || 0,
+        weight_kg: form.weight_kg === '' ? null : Number(form.weight_kg),
+        length_cm: form.length_cm === '' ? null : Number(form.length_cm),
+        width_cm: form.width_cm === '' ? null : Number(form.width_cm),
+        height_cm: form.height_cm === '' ? null : Number(form.height_cm),
         description: form.description || null,
       });
-      setForm({ sku: '', name: '', category: '', brand: '', supplier_id: '', price: '', cost: '', stock: '0', description: '' });
+      setForm({ sku: '', name: '', category: '', brand: '', supplier_id: '', price: '', cost: '', stock: '0', description: '', weight_kg: '', length_cm: '', width_cm: '', height_cm: '' });
       setOpen(false);
       onDone();
     } catch (err) {
@@ -106,6 +110,10 @@ function AddProductForm({ suppliers, onDone }) {
       <label>Cost ex GST ($)<input type="number" min="0" step="0.01" value={form.cost} onChange={(e) => set('cost', e.target.value)} /></label>
       <label>RRP inc GST ($)<input type="number" min="0" step="0.01" value={form.price} onChange={(e) => set('price', e.target.value)} required /></label>
       <label>Stock<input type="number" min="0" step="1" value={form.stock} onChange={(e) => set('stock', e.target.value)} /></label>
+      <label>Shipping weight (kg)<input type="number" min="0" step="0.01" value={form.weight_kg} onChange={(e) => set('weight_kg', e.target.value)} /></label>
+      <label>Packed length (cm)<input type="number" min="0" step="0.1" value={form.length_cm} onChange={(e) => set('length_cm', e.target.value)} /></label>
+      <label>Packed width (cm)<input type="number" min="0" step="0.1" value={form.width_cm} onChange={(e) => set('width_cm', e.target.value)} /></label>
+      <label>Packed height (cm)<input type="number" min="0" step="0.1" value={form.height_cm} onChange={(e) => set('height_cm', e.target.value)} /></label>
       <label style={{ gridColumn: '1 / -1' }}>Description<input type="text" value={form.description} onChange={(e) => set('description', e.target.value)} /></label>
       {error && <p className="form-error" role="alert" style={{ gridColumn: '1 / -1' }}>{error}</p>}
       <div className="admin-actions" style={{ gridColumn: '1 / -1' }}>
@@ -270,6 +278,9 @@ export default function AdminCatalogGrid({ products, tiers, tierPrices, supplier
     if ('price' in d && d.price !== '') body.price = Number(d.price);
     if ('cost' in d) body.cost = d.cost === '' ? null : Number(d.cost);
     if ('stock' in d) body.stock = Number(d.stock) || 0;
+    for (const size of ['weight_kg', 'length_cm', 'width_cm', 'height_cm']) {
+      if (size in d) body[size] = d[size] === '' ? null : Number(d[size]);
+    }
     if ('active' in d) body.active = Boolean(d.active);
     setBusyId(p.id);
     setError('');
@@ -379,6 +390,8 @@ export default function AdminCatalogGrid({ products, tiers, tierPrices, supplier
               <th>Margin %</th>
               {tiers.map((t) => <th key={t.key}>{t.label}</th>)}
               <th>Stock</th>
+              <th>Weight kg</th>
+              <th>L × W × H cm</th>
               <th>Active</th>
               <th>Last imported</th>
               <th></th>
@@ -386,7 +399,7 @@ export default function AdminCatalogGrid({ products, tiers, tierPrices, supplier
           </thead>
           <tbody>
             {rows.length === 0 && (
-              <tr><td colSpan={14 + tiers.length} className="admin-muted">No products match. Import a supplier price list or add one by hand.</td></tr>
+              <tr><td colSpan={16 + tiers.length} className="admin-muted">No products match. Import a supplier price list or add one by hand.</td></tr>
             )}
             {rows.map((p) => {
               const d = draftOf(p);
@@ -416,6 +429,14 @@ export default function AdminCatalogGrid({ products, tiers, tierPrices, supplier
                   <td className={marginClass(pct)}>{pct == null ? '—' : `${pct.toFixed(1)}%`}</td>
                   {tiers.map((t) => <td key={t.key}>{money(tp[t.key])}</td>)}
                   <td><input type="number" min="0" step="1" value={current(p, 'stock')} onChange={(e) => setDraft(p, 'stock', e.target.value)} style={{ ...inputStyle, width: '70px' }} aria-label="Stock" /></td>
+                  <td><input type="number" min="0" step="0.01" value={current(p, 'weight_kg')} onChange={(e) => setDraft(p, 'weight_kg', e.target.value)} style={{ ...inputStyle, width: '70px' }} aria-label="Shipping weight in kg" /></td>
+                  <td>
+                    <span style={{ display: 'inline-flex', gap: '4px' }}>
+                      <input type="number" min="0" step="0.1" value={current(p, 'length_cm')} onChange={(e) => setDraft(p, 'length_cm', e.target.value)} style={{ ...inputStyle, width: '58px' }} aria-label="Packed length in cm" />
+                      <input type="number" min="0" step="0.1" value={current(p, 'width_cm')} onChange={(e) => setDraft(p, 'width_cm', e.target.value)} style={{ ...inputStyle, width: '58px' }} aria-label="Packed width in cm" />
+                      <input type="number" min="0" step="0.1" value={current(p, 'height_cm')} onChange={(e) => setDraft(p, 'height_cm', e.target.value)} style={{ ...inputStyle, width: '58px' }} aria-label="Packed height in cm" />
+                    </span>
+                  </td>
                   <td><input type="checkbox" checked={'active' in d ? Boolean(d.active) : p.active} onChange={(e) => setDraft(p, 'active', e.target.checked)} aria-label="Active" /></td>
                   <td>{formatDateTime(p.last_imported_at, 'By hand')}</td>
                   <td>

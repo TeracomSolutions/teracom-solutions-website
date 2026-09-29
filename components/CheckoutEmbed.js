@@ -8,6 +8,7 @@ import { ArrowLeft, TriangleAlert } from 'lucide-react';
 import { useCart } from '@/lib/cart-context';
 import { getStripe } from '@/lib/stripeClient';
 import { AUD, track, toGaItem } from '@/lib/gtag';
+import { readPostcode } from '@/lib/cartPostcode';
 
 // Payment happens on this page rather than on Stripe's.
 //
@@ -30,6 +31,8 @@ export default function CheckoutEmbed() {
         items: lines.map((line) => ({ productId: line.productId, quantity: line.quantity })),
         // Only the code. The route decides what it is worth.
         ...(coupon?.code ? { couponCode: coupon.code } : {}),
+        // The postcode the cart priced delivery for; the route prices it again.
+        ...(readPostcode() ? { postcode: readPostcode() } : {}),
       }),
     });
     const data = await res.json().catch(() => ({}));

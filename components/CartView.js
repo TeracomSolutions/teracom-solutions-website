@@ -25,6 +25,7 @@ import {
 } from 'lucide-react';
 import { useCart } from '@/lib/cart-context';
 import CouponField from '@/components/CouponField';
+import CartDelivery from '@/components/CartDelivery';
 import { formatMoney } from '@/lib/products';
 import { unitPriceCents } from '@/lib/catalogueMerge';
 import StripeTrustBadge from '@/components/StripeTrustBadge';
@@ -79,7 +80,7 @@ function Progress({ current }) {
   );
 }
 
-export default function CartView({ isMember = false, customer = null, shippingCents = 1500 }) {
+export default function CartView({ isMember = false, customer = null, savedPostcode = '' }) {
   const { lines, totalItems, totalCents: rrpTotalCents, updateQuantity, removeItem, coupon } = useCart();
   // Signed-in customers see the member price they'll actually be charged at
   // checkout; everyone else sees RRP (the cookie is only a display hint --
@@ -88,6 +89,10 @@ export default function CartView({ isMember = false, customer = null, shippingCe
   const subtotalCents = lines.reduce((sum, l) => sum + l.quantity * unitCents(l.product), 0);
   const savingsCents = isMember ? rrpTotalCents - subtotalCents : 0;
   const needsShipping = lines.some((l) => l.product.type === 'hardware');
+  // The cheapest delivery price for the postcode entered below; the
+  // customer picks the actual option when they pay.
+  const [freight, setFreight] = useState({ postcode: '', cents: null });
+  const shippingCents = needsShipping && freight.cents != null ? freight.cents : 0;
   // Capped at the goods value: a discount must not eat into the shipping
   // line or produce a negative total. The checkout route applies the same
   // cap server-side, which is the one that counts.
@@ -217,7 +222,7 @@ export default function CartView({ isMember = false, customer = null, shippingCe
                 ) : null}
                 <div>
                   <dt>Shipping</dt>
-                  <dd>{needsShipping ? `${formatMoney(shippingCents)} flat rate` : 'Not required'}</dd>
+                  <dd>{!needsShipping ? 'Not required' : freight.cents != null ? `From ${formatMoney(freight.cents)}` : 'Add your postcode'}</dd>
                 </div>
                 <div className="cart-summary-total">
                   <dt>Total</dt>
@@ -229,6 +234,8 @@ export default function CartView({ isMember = false, customer = null, shippingCe
               {/* Members only: a guest cannot check out, and the discount is
                   computed against the member price they would be charged,
                   which is not the RRP a guest's cart is showing. */}
+              {needsShipping ? <CartDelivery lines={lines} savedPostcode={savedPostcode} onQuote={setFreight} /> : null}
+
               {isMember ? <CouponField /> : null}
 
               {!isMember ? (
@@ -241,7 +248,7 @@ export default function CartView({ isMember = false, customer = null, shippingCe
               {error && <p className="form-error" role="alert">{error}</p>}
 
               {isMember ? (
-                <button type="button" className="btn btn-primary cart-checkout" onClick={handleCheckout} disabled={loading}>
+                <button type="button" className="btn btn-primary cart-checkout" onClick={handleCheckout} disabled={loading || (needsShipping && freight.cents == null)}>
                   <Lock size={17} strokeWidth={2} aria-hidden="true" />
                   {loading ? 'Opening secure checkout…' : 'Secure checkout'}
                 </button>
