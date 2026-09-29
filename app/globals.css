@@ -2488,3 +2488,7 @@ a.admin-status:hover { filter:brightness(1.15); }
 .admin-brand-help + .admin-brand-link {
   margin-left:0;
 }
+
+/* Admin: Help link in blue */
+.admin-brand-link.admin-brand-help[href="/admin/guide"] { color:#3b82f6; }
+.admin-brand-link.admin-brand-help[href="/admin/guide"]:hover { color:#93c5fd; }
