@@ -95,7 +95,9 @@ export default async function AdminSocialPage() {
           <ol>
             <li>Sign in to <a href="https://developer.x.com" target="_blank" rel="noreferrer">developer.x.com</a> with the Teracom X account and sign up for the <strong>Free</strong> plan (it allows posting, with a monthly limit). Describe the use as posting Teracom&apos;s own news from our website console.</li>
             <li>In the Developer Portal open <strong>Projects &amp; Apps</strong>, the app, <strong>Settings &rarr; User authentication settings &rarr; Set up</strong>: App permissions <strong>Read and write</strong>, Type of App <strong>Web App, Automated App or Bot</strong>, Callback URL <code>https://www.teracomsolutions.com.au/admin/social</code>, Website <code>https://www.teracomsolutions.com.au</code>. <strong>Save</strong>.</li>
-            <li>The last step, the keys to paste here, depends on an update to the console for X; ask before going further.</li>
+            <li>On the app&apos;s <strong>Keys and tokens</strong> tab, under <strong>Consumer Keys</strong>, click <strong>Regenerate</strong> (or <strong>Generate</strong>) and copy the <strong>API Key</strong> and <strong>API Key Secret</strong>.</li>
+            <li>On the same tab, under <strong>Authentication Tokens</strong>, generate the <strong>Access Token and Secret</strong> for the Teracom X account. Check they say <strong>Read and Write</strong>; if they were made before step 2, regenerate them. Copy both.</li>
+            <li>Here under <strong>Accounts &rarr; X</strong>: paste the four values into <strong>API key</strong>, <strong>API key secret</strong>, <strong>Access token</strong> and <strong>Access token secret</strong>. <strong>Save</strong>, then <strong>Check</strong>. These keys do not expire; X shows each secret only once, so keep them in the password manager.</li>
           </ol>
           <h4>YouTube</h4>
           <ul>
