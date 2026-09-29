@@ -65,7 +65,8 @@ function AccountCard({ network, account, onChange }) {
       const mine = fresh.find((a) => a.network === network.key);
       if (mine) onChange(mine);
       const speed = result.latency_ms != null ? ` (${result.latency_ms} ms)` : '';
-      return result.ok ? `Working: ${result.detail}${speed}` : `Not working: ${result.detail}`;
+      if (!result.ok) throw new Error(`Not working: ${result.detail}`);
+      return `Working: ${result.detail}${speed}`;
     });
   }
 
@@ -87,8 +88,6 @@ function AccountCard({ network, account, onChange }) {
         <span className={`admin-pill admin-pill-${statusTone(status)}`}>{statusLabel(status)}</span>
       </div>
       <p className="admin-muted">{network.help}</p>
-      {error && <p className="form-error" role="alert">{error}</p>}
-      {notice && <p className="form-note-banner" role="status">{notice}</p>}
 
       <label>
         Display name
@@ -126,8 +125,17 @@ function AccountCard({ network, account, onChange }) {
 
       <p className="admin-muted">
         {account?.last_checked_at ? `Last checked ${formatDateTime(account.last_checked_at)}` : 'Not checked yet'}
-        {account?.last_error ? ` — ${account.last_error}` : ''}
       </p>
+
+      {/* The card's own message box, right above its buttons, so a long
+          message wraps inside the card instead of running over the next one. */}
+      <div className="admin-social-result" aria-live="polite">
+        {error && <p className="form-error" role="alert">{error}</p>}
+        {notice && <p className="form-note-banner" role="status">{notice}</p>}
+        {!error && !notice && account?.last_error && (
+          <p className="form-error">Last check failed: {account.last_error}</p>
+        )}
+      </div>
 
       <div className="admin-actions">
         <button type="submit" className="btn btn-primary btn-sm" disabled={Boolean(busy)}>{busy === 'save' ? 'Saving…' : 'Save'}</button>

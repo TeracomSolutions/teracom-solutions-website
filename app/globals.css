@@ -2498,3 +2498,10 @@ a.admin-status:hover { filter:brightness(1.15); }
 
 /* Admin: Users */
 .admin-temp-password code { display:inline-block; margin:6px 8px 6px 0; padding:6px 10px; border-radius:8px; background:#0d0d0d; border:1px solid var(--line); font-size:15px; letter-spacing:.04em; }
+
+/* Admin: Social account messages sit in their own box above the buttons and wrap long text */
+.admin-social-card { min-width:0; }
+.admin-social-card .admin-muted, .admin-social-result p { overflow-wrap:anywhere; }
+.admin-social-result { display:grid; gap:8px; }
+.admin-social-result:empty { display:none; }
+.admin-social-result p { margin:0; }
