@@ -29,7 +29,7 @@ export default async function AdminFreightPage() {
         Freight
         <AdminHelpIcon>
           <h4>What this page is for</h4>
-          <p>What customers pay for delivery. Every price includes GST and is never less than the <strong>minimum charge</strong> ($25 to start with), whichever way it is worked out.</p>
+          <p>What customers pay for delivery. Every price includes GST and is never less than the <strong>minimum charge</strong> set below, whichever way it is worked out.</p>
           <h4>How a price is worked out</h4>
           <ul>
             <li>Each product&apos;s <strong>chargeable weight</strong> is the greater of its real weight and its cubic weight (length × width × height in metres × 250). A product with no weight or size yet counts as the default parcel.</li>
@@ -48,7 +48,7 @@ export default async function AdminFreightPage() {
         </AdminHelpIcon>
       </h1>
       <AdminStoreTabs />
-      <p className="lead">Delivery prices for the online store: a $25 minimum, then worked out from size and weight, with Australia Post and StarTrack as options.</p>
+      <p className="lead">Delivery prices for the online store: a minimum charge, then worked out from size and weight, with Australia Post and StarTrack as options.</p>
 
       {loadError ? <p className="form-error" role="alert">{loadError}</p> : <AdminFreightSettings initial={settings} />}
     </AdminShell>
