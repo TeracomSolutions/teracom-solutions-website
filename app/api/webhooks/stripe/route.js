@@ -82,6 +82,21 @@ async function syncCartCheckoutToZoho(session, email) {
     }));
     if (lineItems.length === 0) return;
 
+    // Delivery goes on the invoice as its own line. When the customer gave
+    // a different delivery postcode from the one the price was worked out
+    // for, the line says so, so the freight can be checked before sending.
+    const freightCents = session.shipping_cost?.amount_total || 0;
+    if (freightCents > 0) {
+      const quoted = session.metadata?.freightPostcode || '';
+      const delivered =
+        session.shipping_details?.address?.postal_code ||
+        session.collected_information?.shipping_details?.address?.postal_code ||
+        '';
+      const where = delivered || quoted;
+      const check = quoted && delivered && quoted !== delivered ? ` (priced for ${quoted}, check freight)` : '';
+      lineItems.push({ name: `Delivery${where ? ` to ${where}` : ''}${check}`, rate: freightCents / 100, quantity: 1 });
+    }
+
     const contact = await createZohoContact({ contactName: session.customer_details?.name || email, email });
     const customerId = contact?.contact?.contact_id || contact?.contact_id;
 

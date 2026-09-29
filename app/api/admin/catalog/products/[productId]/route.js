@@ -15,6 +15,10 @@ const UpdateRequest = z
     cost: z.number().min(0).nullable().optional(),
     stock: z.number().int().min(0).optional(),
     active: z.boolean().optional(),
+    weight_kg: z.number().min(0).max(1000).nullable().optional(),
+    length_cm: z.number().min(0).max(500).nullable().optional(),
+    width_cm: z.number().min(0).max(500).nullable().optional(),
+    height_cm: z.number().min(0).max(500).nullable().optional(),
   })
   .refine((data) => Object.keys(data).length > 0, { message: 'Nothing to change.' });
 

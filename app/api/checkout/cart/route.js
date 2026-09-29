@@ -10,6 +10,8 @@ import { CUSTOMER_ACCESS_TOKEN_COOKIE } from '@/lib/customerSession';
 import { getCurrentCustomer } from '@/lib/api/customerAuth';
 import { validateCoupon } from '@/lib/api/coupons';
 import { ApiError } from '@/lib/api/client';
+import { quoteFreight } from '@/lib/api/freight';
+import { POSTCODE_PATTERN } from '@/lib/freightParcels';
 
 // Same card-testing rationale as app/api/checkout/route.js -- reuses the
 // same env vars so both endpoints share one operator-facing knob, but a
@@ -17,15 +19,6 @@ import { ApiError } from '@/lib/api/client';
 // endpoint doesn't consume the other's allowance.
 const CART_CHECKOUT_RATE_LIMIT_MAX_ATTEMPTS = Number(process.env.CHECKOUT_RATE_LIMIT_MAX_ATTEMPTS) || 10;
 const CART_CHECKOUT_RATE_LIMIT_WINDOW_MS = (Number(process.env.CHECKOUT_RATE_LIMIT_WINDOW_SECONDS) || 60) * 1000;
-
-// Flat-rate placeholder freight (Robert, 2026-09-10): no per-product
-// weight/dimension data exists yet to support real carrier-calculated
-// shipping, so this is a single static AU-wide rate applied whenever the
-// cart contains at least one physical ('hardware') item -- a pure
-// digital/software/service order never gets a shipping line. Revisit once
-// real weight/size data exists (e.g. from the recovered historical
-// catalogue) to move to Stripe's per-item shipping or a carrier API.
-const FLAT_SHIPPING_RATE_CENTS = Number(process.env.FLAT_SHIPPING_RATE_CENTS) || 1500;
 
 const CartCheckoutRequest = z.object({
   items: z
@@ -41,6 +34,9 @@ const CartCheckoutRequest = z.object({
   // here, from the catalogue -- a discount amount sent by a client is a
   // suggestion, not a fact.
   couponCode: z.string().max(40).optional(),
+  // The postcode the cart priced delivery for. Needed when the cart has a
+  // physical item; the price itself is worked out again here.
+  postcode: z.string().trim().regex(POSTCODE_PATTERN).optional(),
 });
 
 export async function POST(req) {
@@ -107,6 +103,27 @@ export async function POST(req) {
 
   const siteUrl = SITE_URL;
   const hasPhysicalItem = lines.some(({ product }) => product.type === 'hardware');
+
+  // --- delivery -------------------------------------------------------------
+  // Priced on the server from the catalogue's weights and sizes and the
+  // Store -> Freight settings (never below the minimum charge). Every option
+  // that is switched on goes to Stripe, cheapest first, and the customer
+  // picks one there.
+  let freightOptions = [];
+  if (hasPhysicalItem) {
+    if (!parsed.data.postcode) {
+      return NextResponse.json({ error: 'Enter your delivery postcode in the cart first.' }, { status: 400 });
+    }
+    try {
+      const quote = await quoteFreight({ lines, postcode: parsed.data.postcode });
+      freightOptions = (quote.options || []).slice(0, 5);
+    } catch (error) {
+      console.error('Freight quote for checkout failed', error);
+    }
+    if (freightOptions.length === 0) {
+      return NextResponse.json({ error: 'We could not price delivery just now. Please try again shortly.' }, { status: 502 });
+    }
+  }
 
   // --- discount code -------------------------------------------------------
   // Revalidated here even though the cart already checked it: the cart's
@@ -246,23 +263,19 @@ export async function POST(req) {
             }
           : {}),
         ...(customer?.id ? { teracomCustomerId: String(customer.id) } : {}),
+        ...(hasPhysicalItem ? { freightPostcode: parsed.data.postcode } : {}),
       },
       ...(hasPhysicalItem
         ? {
             shipping_address_collection: { allowed_countries: ['AU'] },
-            shipping_options: [
-              {
-                shipping_rate_data: {
-                  type: 'fixed_amount',
-                  fixed_amount: { amount: FLAT_SHIPPING_RATE_CENTS, currency: 'aud' },
-                  display_name: 'Standard Shipping',
-                  delivery_estimate: {
-                    minimum: { unit: 'business_day', value: 3 },
-                    maximum: { unit: 'business_day', value: 7 },
-                  },
-                },
+            shipping_options: freightOptions.map((option) => ({
+              shipping_rate_data: {
+                type: 'fixed_amount',
+                fixed_amount: { amount: option.cents, currency: 'aud' },
+                display_name: String(option.label).slice(0, 100),
+                metadata: { freightKey: option.key },
               },
-            ],
+            })),
           }
         : {}),
     });

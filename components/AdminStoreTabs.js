@@ -31,6 +31,13 @@ export default function AdminStoreTabs() {
       >
         Pricing
       </Link>
+      <Link
+        href="/admin/freight"
+        className={isAreaActive({ href: '/admin/freight' }, pathname) ? 'admin-tab active' : 'admin-tab'}
+        aria-current={isAreaActive({ href: '/admin/freight' }, pathname) ? 'page' : undefined}
+      >
+        Freight
+      </Link>
     </nav>
   );
 }
