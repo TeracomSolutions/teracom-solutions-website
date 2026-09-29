@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation';
 
+import AdminChangePassword from '@/components/AdminChangePassword';
 import AdminHelpIcon from '@/components/AdminHelpIcon';
 import AdminShell from '@/components/AdminShell';
 import AdminSessionSettings from '@/components/AdminSessionSettings';
@@ -48,13 +49,21 @@ export default async function AdminAccountPage() {
           <p>Click <strong>Set up two-factor</strong>: scan the QR code with your app, or copy the key into Zoho Vault as a time-based one-time password. Enter the code it shows to confirm. You are then given eight backup codes, shown once: each signs you in a single time if the phone or vault is not to hand. Save them in your password manager.</p>
           <h4>If you are locked out</h4>
           <p>Use a backup code at sign-in. With no codes left, an administrator can clear two-factor for your account on the server (scripts/reset_staff_mfa.py) and you set it up again.</p>
+          <h4>Change password</h4>
+          <ul>
+            <li>Enter your current password</li>
+            <li>Then the new one twice</li>
+            <li>At least 12 characters, a mix of characters, not your email name and not the one you are using now</li>
+            <li>When two-factor is on, the code from your app or a backup code is also needed</li>
+          </ul>
+          <p>This session stays signed in and every other signed-in session is signed out.</p>
         </AdminHelpIcon>
       </h1>
       <p className="lead">{email ? `Signed in as ${email}.` : 'Your sign-in settings.'}</p>
 
       <AdminSessionSettings initial={session} />
 
-      {loadError ? <p className="form-error" role="alert">{loadError}</p> : <AdminTwoFactor initialStatus={status} email={email} />}
+      {loadError ? <p className="form-error" role="alert">{loadError}</p> : <> <AdminChangePassword mfaEnabled={Boolean(status?.enabled)} /> <AdminTwoFactor initialStatus={status} email={email} /></>}
     </AdminShell>
   );
 }
