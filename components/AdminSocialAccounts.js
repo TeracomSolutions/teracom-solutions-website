@@ -19,11 +19,20 @@ async function send(url, method, body) {
   return data;
 }
 
+// Identifiers are shown in their boxes so staff can see what is saved;
+// secrets stay blank with "saved, ends ..." as the hint, and a blank box
+// keeps the saved value.
+const PUBLIC_FIELDS = new Set(['page_id', 'ig_user_id', 'author_urn', 'app_id']);
+
+function savedIds(account) {
+  return Object.fromEntries(Object.entries(account?.saved || {}).filter(([field]) => PUBLIC_FIELDS.has(field)));
+}
+
 function AccountCard({ network, account, onChange }) {
   const [displayName, setDisplayName] = useState(account?.display_name || '');
   const [profileUrl, setProfileUrl] = useState(account?.profile_url || '');
   const [showOnSite, setShowOnSite] = useState(account?.show_on_site !== false);
-  const [credentials, setCredentials] = useState({});
+  const [credentials, setCredentials] = useState(() => savedIds(account));
   const [busy, setBusy] = useState('');
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
@@ -52,7 +61,7 @@ function AccountCard({ network, account, onChange }) {
       const filled = Object.fromEntries(Object.entries(credentials).filter(([, v]) => v && v.trim()));
       if (Object.keys(filled).length) body.credentials = filled;
       const saved = await send(`/api/admin/social/accounts/${network.key}`, 'PUT', body);
-      setCredentials({});
+      setCredentials(savedIds(saved));
       onChange(saved);
       return `${network.label} saved.`;
     });
@@ -112,11 +121,11 @@ function AccountCard({ network, account, onChange }) {
             <label key={field}>
               {label}
               <input
-                type="password"
+                type={PUBLIC_FIELDS.has(field) ? 'text' : 'password'}
                 autoComplete="off"
                 value={credentials[field] || ''}
                 onChange={(e) => setCredentials({ ...credentials, [field]: e.target.value })}
-                placeholder={configured ? 'unchanged' : ''}
+                placeholder={account?.saved?.[field] ? `${account.saved[field]}; leave blank to keep` : ''}
               />
             </label>
           ))}
