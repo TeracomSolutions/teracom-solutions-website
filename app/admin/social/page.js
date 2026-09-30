@@ -82,6 +82,7 @@ export default async function AdminSocialPage() {
             <li>Copy that token into the <a href="https://developers.facebook.com/tools/debug/accesstoken" target="_blank" rel="noreferrer">Access Token Debugger</a>, click <strong>Debug</strong>, then <strong>Extend Access Token</strong> at the bottom. Copy the long-lived token it shows.</li>
             <li>Back in the Graph API Explorer, paste the long-lived token into <strong>Access Token</strong>, change the request to <code>me/accounts</code> and <strong>Submit</strong>. Under Teracom Solutions copy the <code>access_token</code> (the Page access token; it does not expire) and the <code>id</code> (the Page ID).</li>
             <li>Here under <strong>Accounts &rarr; Facebook</strong>: paste them into <strong>Page access token</strong> and <strong>Page ID</strong>. <strong>Save</strong>, then <strong>Check</strong>.</li>
+            <li>So the token never runs out: in the app&apos;s <strong>App settings &rarr; Basic</strong> copy the <strong>App ID</strong> and the <strong>App secret</strong> (click Show) into the same card and <strong>Save</strong>. From then on any token you paste, even one straight from the Graph API Explorer, is swapped on Save for the Page&apos;s own token, which does not expire; Instagram&apos;s token is swapped the same way.</li>
           </ol>
           <h4>Setting up Instagram</h4>
           <ol>
