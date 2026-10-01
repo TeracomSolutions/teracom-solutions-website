@@ -2527,3 +2527,26 @@ a.admin-status:hover { filter:brightness(1.15); }
 .admin-freight-messages p { margin:0; overflow-wrap:anywhere; }
 .admin-freight-try { max-width:760px; }
 .admin-freight-result ul { margin:6px 0 0; padding-left:18px; }
+
+/* Admin: AI Provider Connections, the same layout as the TeracomAI Global
+   Platform's. Fixed table layout, because a provider's own error runs to a
+   few hundred characters and with automatic layout it would set every other
+   column's width. */
+.admin-ai-panel { display:grid; gap:18px; margin:0 0 28px; }
+.admin-ai-panel h2 { margin:0; }
+.admin-ai-panel .admin-ai-map { background:linear-gradient(180deg, rgba(255,23,23,.05), rgba(255,255,255,.02) 50%); }
+.admin-ai-table { width:100%; min-width:900px; table-layout:fixed; border-collapse:collapse; margin:0; }
+.admin-ai-table th,
+.admin-ai-table td { border:1px solid var(--line); padding:.5rem; text-align:left; vertical-align:top; white-space:normal; overflow-wrap:anywhere; }
+.admin-ai-table th { font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+.admin-ai-wrap { color:var(--muted); font-size:13px; }
+.admin-ai-move { display:flex; align-items:center; gap:4px; }
+.admin-ai-move button { padding:0 5px; line-height:1.4; font-size:11px; min-width:0; width:auto; background:transparent; color:var(--text); border:1px solid var(--line); border-radius:6px; cursor:pointer; }
+.admin-ai-move button:disabled { opacity:.35; cursor:default; }
+.admin-ai-kind { display:block; font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.04em; }
+.admin-ai-state { display:inline-flex; align-items:baseline; }
+.admin-ai-just-checked { display:block; font-size:11px; color:var(--muted); margin-top:2px; }
+.admin-ai-detail { display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; font-size:12px; color:#e0a536; }
+.admin-ai-actions { display:flex; flex-wrap:wrap; gap:4px; }
+.admin-ai-panel .admin-form { max-width:640px; }
+.admin-ai-panel .admin-form h3 { margin:0; }

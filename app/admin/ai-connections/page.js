@@ -1,8 +1,7 @@
 import { redirect } from 'next/navigation';
 
-import AdminAiConnections from '@/components/AdminAiConnections';
+import AdminAiConnectionsPanel from '@/components/AdminAiConnectionsPanel';
 import AdminAiGovernance from '@/components/AdminAiGovernance';
-import AdminAiRouting from '@/components/AdminAiRouting';
 import AdminAiTabs from '@/components/AdminAiTabs';
 import AdminHelpIcon from '@/components/AdminHelpIcon';
 import AdminShell from '@/components/AdminShell';
@@ -32,7 +31,8 @@ export default async function AdminAiConnectionsPage() {
     if (isSessionError(err)) redirect('/admin/login');
     loadError = 'Unable to load the AI connections from the backend.';
   }
-  // The picture is extra: if its feed fails the page still works.
+  // Health for the table and the diagram. If its feed fails the page still
+  // works; every row then reads Not checked yet.
   try {
     routing = await fetchAiRouting(token);
   } catch (err) {
@@ -46,8 +46,7 @@ export default async function AdminAiConnectionsPage() {
     rulesError = 'Unable to load the governance rules from the backend.';
   }
 
-  // The Internet entry is not a model: it has its own row in the order.
-  const modelConnections = connections.filter((c) => c.provider !== 'internet');
+  // Governance rules apply to models, not to the Internet source.
   const modelProviders = providers.filter((p) => p.kind !== 'source');
 
   return (
@@ -56,21 +55,24 @@ export default async function AdminAiConnectionsPage() {
         AI Connections
         <AdminHelpIcon>
           <h4>What this section is for</h4>
-          <p>The AI providers the <strong>Assistant</strong> and <strong>Scout</strong> use. The Assistant tries Anthropic first, then the other hosted providers, then self-hosted ones; Scout research tries self-hosted first (free), then the hosted providers, and a different one from the list writes the critique. Any provider can be disabled without removing its key. The table at the bottom lists everything that can be connected.</p>
-          <h4>Keys</h4>
-          <p>A key is stored encrypted and never shown again: the table shows only its last four characters so you can tell which key is in place. To change a key, choose the provider and enter the new one; leaving the field blank keeps the current key.</p>
-          <h4>Hosted APIs</h4>
-          <p>A hosted provider takes an API key from its console (the Get a key link shows where) and, optionally, a default model; we keep the key encrypted and show only its last four characters.</p>
-          <h4>Self-hosted</h4>
-          <p>A self-hosted provider (Ollama, LM Studio, vLLM) takes a host address on our network instead of a key; the model must already be pulled or loaded there.</p>
-          <h4>Enable / Disable / Remove</h4>
-          <p><strong>Disable</strong> keeps the key but takes the provider out of the running order; <strong>Enable</strong> puts it back. <strong>Remove</strong> deletes the connection and its key. Every change is recorded in the audit log.</p>
-          <h4>The picture</h4>
+          <p>The AI providers the <strong>Assistant</strong> and <strong>Scout</strong> use, laid out the same as the TeracomAI Global Platform so settings carry across one to one. One order of preference applies to both; the Assistant skips the Internet, and Scout critiques with a different provider from the one that researched.</p>
+          <h4>The diagram</h4>
           <ul>
-            <li>The website sits in the middle; each connected provider is around it, green when it is responding, red when its last call failed (hover for the reason: out of credit, key rejected, not reachable), grey when disabled, amber when it has not been used yet. The bright lines are the providers first in line; the labels say who is first for the Assistant and for Scout research and who last wrote a critique.</li>
-            <li>The <strong>Internet</strong> is where Scout research goes for its sources (web search through DuckDuckGo). It sits in the Order of preference like a provider: above the models, Scout searches the web first; below them, the first model answers from its own knowledge and the web is the fallback; switched off, Scout uses the models only. The Assistant never browses. <strong>Check now</strong> on the Internet row runs one real search.</li>
-            <li><strong>Order of preference</strong>: move a provider up or down and both the Assistant and Scout follow the new order from the next request. A provider that fails is skipped for that request and tried again on the next one; nothing needs resetting.</li>
-            <li><strong>Check now</strong> sends one tiny real request to that provider and shows the response time or the exact error.</li>
+            <li>The website is the router in the middle. A <strong>cloud</strong> is a hosted API somebody else runs; a <strong>rack</strong> is a model on our own hardware; the <strong>dashed cloud</strong> at the top is the Internet, where Scout finds its sources.</li>
+            <li>Each shape is coloured by how that connection is doing: green responding, red failing (the table says why), grey disabled, amber not checked yet. The bold line is the first choice; the numbers are the order of preference.</li>
+          </ul>
+          <h4>The table</h4>
+          <ul>
+            <li><strong>Order</strong>: the arrows move a connection earlier or later; both the Assistant and Scout follow the new order from the next request. A provider that fails is skipped for that request and tried again on the next one.</li>
+            <li><strong>Key</strong> shows only the last four characters of a stored key, <em>host</em> for a self-hosted model, or <em>none needed</em> for the Internet.</li>
+            <li><strong>Status</strong> and <strong>Last message from the provider</strong> come from the last real call or check: out of credit and key rejected both need a visit to that provider&apos;s console.</li>
+            <li><strong>Check now</strong> sends one tiny real request (for the Internet, one real search). <strong>Edit</strong> fills the form below; <strong>Remove</strong> deletes the connection and its key.</li>
+          </ul>
+          <h4>Adding or changing a connection</h4>
+          <ul>
+            <li>Choose the <strong>Provider</strong> (grouped by what it needs: a key, a host, or nothing), check the <strong>Default Model</strong>, add the <strong>API Key</strong> or <strong>Host</strong>, and tick <strong>Enabled</strong>. When editing, leave the key blank to keep the current one.</li>
+            <li>Untick <strong>Enabled</strong> to keep a connection but take it out of the running order, including switching the Internet off.</li>
+            <li>Keys are stored encrypted and never shown again. Every change is recorded in the audit log.</li>
           </ul>
           <h4>Governance</h4>
           <ul>
@@ -85,10 +87,12 @@ export default async function AdminAiConnectionsPage() {
 
       <AdminAiTabs
         connections={(
-          <>
-            {routing ? <AdminAiRouting initialRouting={routing} /> : <p className="admin-muted">The routing picture is unavailable until the backend is updated.</p>}
-            <AdminAiConnections initialConnections={modelConnections} loadError={loadError} providers={modelProviders} />
-          </>
+          <AdminAiConnectionsPanel
+            initialConnections={connections}
+            initialRouting={routing}
+            providers={providers}
+            loadError={loadError}
+          />
         )}
         governance={<AdminAiGovernance initialRules={rules} providers={modelProviders} loadError={rulesError} />}
       />
