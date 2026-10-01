@@ -1,0 +1,66 @@
+<svg viewBox="0 0 600 320" xmlns="http://www.w3.org/2000/svg" font-family="Inter, Arial, sans-serif" role="img" aria-label="Avigilon Alta: several sites connect straight to the cloud, managed from a browser or a phone with no server on site">
+  <defs>
+    <linearGradient id="al-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b1a30"/>
+      <stop offset="1" stop-color="#05080d"/>
+    </linearGradient>
+    <linearGradient id="al-cloud" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#103a6e"/>
+      <stop offset="1" stop-color="#0b1a30"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="320" fill="url(#al-bg)"/>
+
+  <!-- the cloud -->
+  <g transform="translate(196 22)">
+    <path d="M44 126 a40 40 0 0 1 6 -79 a58 58 0 0 1 106 -16 a46 46 0 0 1 42 95 z" fill="url(#al-cloud)" stroke="#00b2ff" stroke-width="2.5"/>
+    <text x="104" y="82" text-anchor="middle" font-size="16" font-weight="800" fill="#e8f1ff">Alta</text>
+    <text x="104" y="102" text-anchor="middle" font-size="11" fill="#7f93ad">Video · Access · Protect</text>
+  </g>
+
+  <!-- three sites, no servers -->
+  <g fill="none" stroke="#00b2ff" stroke-opacity="0.6" stroke-width="2" stroke-dasharray="3 7" stroke-linecap="round">
+    <path d="M100 236 C 100 190, 200 170, 250 150"/>
+    <path d="M300 236 V150"/>
+    <path d="M500 236 C 500 190, 400 170, 350 150"/>
+  </g>
+  <g font-size="11">
+    <g transform="translate(38 236)">
+      <rect width="124" height="60" rx="12" fill="#0e1b2e" stroke="#2c4c78"/>
+      <path d="M18 44 V26 L32 16 L46 26 V44 Z" fill="#132238" stroke="#3a5a86"/>
+      <text x="56" y="28" fill="#e8f1ff">Site 1</text>
+      <text x="56" y="44" fill="#7f93ad">8 cameras</text>
+    </g>
+    <g transform="translate(238 236)">
+      <rect width="124" height="60" rx="12" fill="#0e1b2e" stroke="#2c4c78"/>
+      <path d="M18 44 V26 L32 16 L46 26 V44 Z" fill="#132238" stroke="#3a5a86"/>
+      <text x="56" y="28" fill="#e8f1ff">Site 2</text>
+      <text x="56" y="44" fill="#7f93ad">6 doors</text>
+    </g>
+    <g transform="translate(438 236)">
+      <rect width="124" height="60" rx="12" fill="#0e1b2e" stroke="#2c4c78"/>
+      <path d="M18 44 V26 L32 16 L46 26 V44 Z" fill="#132238" stroke="#3a5a86"/>
+      <text x="56" y="28" fill="#e8f1ff">Site 3</text>
+      <text x="56" y="44" fill="#7f93ad">12 cameras</text>
+    </g>
+  </g>
+
+  <!-- managed from anywhere -->
+  <g transform="translate(36 34)">
+    <rect width="112" height="72" rx="8" fill="#0e1b2e" stroke="#3a5a86" stroke-width="2"/>
+    <rect x="10" y="10" width="92" height="46" rx="4" fill="#0a2240"/>
+    <g fill="#00b2ff" fill-opacity="0.6"><rect x="16" y="16" width="38" height="16" rx="2"/><rect x="58" y="16" width="38" height="16" rx="2"/><rect x="16" y="36" width="38" height="16" rx="2"/><rect x="58" y="36" width="38" height="16" rx="2"/></g>
+    <text x="56" y="90" text-anchor="middle" font-size="11" fill="#7f93ad">Browser</text>
+  </g>
+  <g transform="translate(494 26)">
+    <rect width="54" height="88" rx="10" fill="#0e1b2e" stroke="#3a5a86" stroke-width="2"/>
+    <rect x="7" y="12" width="40" height="60" rx="4" fill="#0a2240"/>
+    <rect x="12" y="20" width="30" height="20" rx="3" fill="#00b2ff" fill-opacity="0.6"/>
+    <rect x="12" y="46" width="30" height="8" rx="3" fill="#3ecf8e"/>
+    <text x="27" y="106" text-anchor="middle" font-size="11" fill="#7f93ad">Phone</text>
+  </g>
+  <g stroke="#7f93ad" stroke-opacity="0.5" stroke-width="1.5" stroke-dasharray="4 6" fill="none">
+    <path d="M148 70 H232"/>
+    <path d="M494 70 H404"/>
+  </g>
+</svg>

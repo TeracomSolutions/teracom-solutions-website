@@ -1,0 +1,70 @@
+<svg viewBox="0 0 600 360" xmlns="http://www.w3.org/2000/svg" font-family="Inter, Arial, sans-serif" role="img" aria-label="Perimeter protection: a virtual line along a fence alerts on a person crossing it and ignores an animal">
+  <defs>
+    <linearGradient id="pe-bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0b1a30"/>
+      <stop offset="1" stop-color="#05080d"/>
+    </linearGradient>
+    <linearGradient id="pe-zone" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ff4b4b" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#ff4b4b" stop-opacity="0.04"/>
+    </linearGradient>
+    <filter id="pe-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="600" height="360" fill="url(#pe-bg)"/>
+
+  <!-- ground in perspective -->
+  <g stroke="#1f6fd1" stroke-opacity="0.2" fill="none">
+    <path d="M0 200 H600 M0 236 H600 M0 280 H600 M0 334 H600"/>
+    <path d="M260 160 L40 360 M300 160 L200 360 M340 160 L360 360 M380 160 L520 360 M220 160 L-120 360 M420 160 L680 360"/>
+  </g>
+
+  <!-- protected zone behind the line -->
+  <polygon points="70,150 530,150 600,206 0,206" fill="url(#pe-zone)"/>
+
+  <!-- the fence -->
+  <g stroke="#5d7290" stroke-width="2">
+    <path d="M40 150 H560"/>
+    <path d="M40 120 H560" stroke-opacity="0.5"/>
+    <path d="M60 110 V150 M120 110 V150 M180 110 V150 M240 110 V150 M300 110 V150 M360 110 V150 M420 110 V150 M480 110 V150 M540 110 V150"/>
+  </g>
+
+  <!-- the virtual line -->
+  <path d="M10 206 H590" stroke="#ff4b4b" stroke-opacity="0.35" stroke-width="9"/>
+  <path d="M10 206 H590" stroke="#ff4b4b" stroke-width="3" stroke-dasharray="12 8"/>
+  <g transform="translate(16 214)">
+    <rect width="104" height="22" rx="11" fill="#2a0f12" stroke="#ff4b4b"/>
+    <text x="52" y="15" text-anchor="middle" font-size="11" font-weight="700" fill="#ffd6d6">Virtual line</text>
+  </g>
+
+  <!-- a person crossing: alert -->
+  <g>
+    <circle cx="330" cy="168" r="11" fill="#c9d6e8"/>
+    <rect x="317" y="181" width="26" height="46" rx="10" fill="#9fb3cc"/>
+    <path d="M330 227 l-10 22 M330 227 l12 20" stroke="#9fb3cc" stroke-width="7" stroke-linecap="round"/>
+    <g fill="none" stroke="#ff4b4b" stroke-width="3">
+      <path d="M302 154 v-10 h10 M348 144 h10 v10 M358 248 v10 h-10 M312 258 h-10 v-10"/>
+    </g>
+    <path d="M330 270 v28" stroke="#ff4b4b" stroke-width="2"/>
+    <g transform="translate(240 298)">
+      <rect width="180" height="34" rx="17" fill="#ff4b4b"/>
+      <text x="90" y="22" text-anchor="middle" font-size="13" font-weight="800" fill="#2a0508">Person crossed · alert</text>
+    </g>
+  </g>
+
+  <!-- an animal: classified and ignored -->
+  <g>
+    <ellipse cx="470" cy="250" rx="30" ry="14" fill="#5d6f87"/>
+    <circle cx="500" cy="238" r="9" fill="#5d6f87"/>
+    <path d="M452 260 v14 M462 262 v14 M480 262 v14 M490 260 v14" stroke="#5d6f87" stroke-width="5" stroke-linecap="round"/>
+    <g fill="none" stroke="#3ecf8e" stroke-width="2" stroke-opacity="0.8">
+      <path d="M432 222 v-8 h8 M506 214 h8 v8 M514 280 v8 h-8 M440 288 h-8 v-8"/>
+    </g>
+    <g transform="translate(424 296)">
+      <rect width="130" height="26" rx="13" fill="#0e1b2e" stroke="#2c4c78"/>
+      <text x="65" y="18" text-anchor="middle" font-size="11" fill="#7f93ad">Animal · ignored</text>
+    </g>
+  </g>
+</svg>

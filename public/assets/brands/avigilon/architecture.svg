@@ -1,0 +1,133 @@
+<svg viewBox="0 0 1200 560" xmlns="http://www.w3.org/2000/svg" font-family="Inter, Arial, sans-serif" role="img" aria-label="How a Teracom Avigilon system fits together: cameras, door readers and sensors report to Avigilon Unity on site or Avigilon Alta in the cloud, and the security desk, phones and the Teracom monitoring centre act on what they see">
+  <defs>
+    <linearGradient id="ar-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b1a30"/>
+      <stop offset="1" stop-color="#05080d"/>
+    </linearGradient>
+    <linearGradient id="ar-cloud" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#103a6e"/>
+      <stop offset="1" stop-color="#0b1a30"/>
+    </linearGradient>
+    <pattern id="ar-grid" width="24" height="24" patternUnits="userSpaceOnUse">
+      <path d="M24 0H0V24" fill="none" stroke="#1f6fd1" stroke-opacity="0.08"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="560" fill="url(#ar-bg)"/>
+  <rect width="1200" height="560" fill="url(#ar-grid)"/>
+
+  <!-- column headings -->
+  <g font-size="12" font-weight="700" fill="#7f93ad" letter-spacing="2">
+    <text x="150" y="44" text-anchor="middle">ON SITE</text>
+    <text x="600" y="44" text-anchor="middle">PLATFORM</text>
+    <text x="1050" y="44" text-anchor="middle">PEOPLE WHO ACT</text>
+  </g>
+
+  <!-- links from devices to the platforms -->
+  <g fill="none" stroke-width="2" stroke-linecap="round">
+    <g stroke="#00b2ff" stroke-opacity="0.55">
+      <path d="M260 110 C 360 110, 380 170, 470 170"/>
+      <path d="M260 210 C 360 210, 380 180, 470 180"/>
+      <path d="M260 310 C 360 310, 380 190, 470 190"/>
+    </g>
+    <g stroke="#00b2ff" stroke-opacity="0.35" stroke-dasharray="4 7">
+      <path d="M260 110 C 360 110, 380 370, 470 370"/>
+      <path d="M260 210 C 360 210, 380 380, 470 380"/>
+      <path d="M260 310 C 360 310, 380 390, 470 390"/>
+      <path d="M260 430 C 360 430, 380 400, 470 400"/>
+    </g>
+  </g>
+
+  <!-- devices -->
+  <g font-size="13">
+    <g transform="translate(40 80)">
+      <rect width="220" height="60" rx="14" fill="#0e1b2e" stroke="#2c4c78"/>
+      <circle cx="32" cy="30" r="15" fill="#132238" stroke="#00b2ff" stroke-width="2"/>
+      <circle cx="32" cy="30" r="5" fill="#00b2ff"/>
+      <text x="60" y="27" font-weight="700" fill="#e8f1ff">Avigilon cameras</text>
+      <text x="60" y="45" font-size="11" fill="#7f93ad">AI analytics on board</text>
+    </g>
+    <g transform="translate(40 180)">
+      <rect width="220" height="60" rx="14" fill="#0e1b2e" stroke="#2c4c78"/>
+      <rect x="22" y="14" width="20" height="32" rx="4" fill="#132238" stroke="#00b2ff" stroke-width="2"/>
+      <circle cx="32" cy="38" r="3" fill="#3ecf8e"/>
+      <text x="60" y="27" font-weight="700" fill="#e8f1ff">Readers and intercoms</text>
+      <text x="60" y="45" font-size="11" fill="#7f93ad">Cards, phones, wave to open</text>
+    </g>
+    <g transform="translate(40 280)">
+      <rect width="220" height="60" rx="14" fill="#0e1b2e" stroke="#2c4c78"/>
+      <rect x="18" y="14" width="28" height="32" rx="9" fill="#132238" stroke="#00b2ff" stroke-width="2"/>
+      <circle cx="32" cy="30" r="4" fill="#00b2ff"/>
+      <text x="60" y="27" font-weight="700" fill="#e8f1ff">HALO smart sensors</text>
+      <text x="60" y="45" font-size="11" fill="#7f93ad">Where cameras cannot go</text>
+    </g>
+    <g transform="translate(40 400)">
+      <rect width="220" height="60" rx="14" fill="#0e1b2e" stroke="#2c4c78" stroke-dasharray="5 5"/>
+      <circle cx="32" cy="30" r="15" fill="#132238" stroke="#7f93ad" stroke-width="2"/>
+      <circle cx="32" cy="30" r="5" fill="#7f93ad"/>
+      <text x="60" y="27" font-weight="700" fill="#e8f1ff">Cameras you have</text>
+      <text x="60" y="45" font-size="11" fill="#7f93ad">via an Alta Cloud Connector</text>
+    </g>
+  </g>
+
+  <!-- platform: Unity on site -->
+  <g transform="translate(470 110)">
+    <rect width="260" height="150" rx="18" fill="#0e1b2e" stroke="#00b2ff" stroke-width="2"/>
+    <rect x="22" y="26" width="56" height="98" rx="8" fill="#132238" stroke="#3a5a86"/>
+    <path d="M22 52 H78 M22 76 H78 M22 100 H78" stroke="#3a5a86"/>
+    <g fill="#3ecf8e"><circle cx="68" cy="40" r="3"/><circle cx="68" cy="64" r="3"/><circle cx="68" cy="88" r="3"/><circle cx="68" cy="112" r="3"/></g>
+    <text x="96" y="52" font-size="17" font-weight="800" fill="#e8f1ff">Avigilon Unity</text>
+    <text x="96" y="74" font-size="12" fill="#7f93ad">On your own servers</text>
+    <text x="96" y="104" font-size="12" fill="#cfe7ff">Video · Access · Alarms</text>
+    <text x="96" y="122" font-size="12" fill="#cfe7ff">Decision management</text>
+  </g>
+
+  <!-- or both -->
+  <g transform="translate(560 272)">
+    <rect width="80" height="24" rx="12" fill="#0b1a30" stroke="#2c4c78"/>
+    <text x="40" y="16" text-anchor="middle" font-size="11" fill="#7f93ad">or both</text>
+  </g>
+
+  <!-- platform: Alta in the cloud -->
+  <g transform="translate(470 310)">
+    <path d="M60 140 a44 44 0 0 1 6 -86 a64 64 0 0 1 118 -18 a50 50 0 0 1 44 104 z" fill="url(#ar-cloud)" stroke="#00b2ff" stroke-width="2"/>
+    <text x="130" y="92" text-anchor="middle" font-size="17" font-weight="800" fill="#e8f1ff">Avigilon Alta</text>
+    <text x="130" y="112" text-anchor="middle" font-size="12" fill="#7f93ad">Serverless, in the cloud</text>
+    <text x="130" y="130" text-anchor="middle" font-size="12" fill="#cfe7ff">Video · Access · Protect</text>
+  </g>
+
+  <!-- links from the platforms to people -->
+  <g fill="none" stroke-width="2" stroke-linecap="round">
+    <path d="M730 180 C 820 180, 840 110, 940 110" stroke="#00b2ff" stroke-opacity="0.55"/>
+    <path d="M730 190 C 820 190, 840 230, 940 230" stroke="#00b2ff" stroke-opacity="0.55"/>
+    <path d="M700 400 C 820 400, 840 240, 940 240" stroke="#00b2ff" stroke-opacity="0.35" stroke-dasharray="4 7"/>
+    <path d="M730 200 C 830 200, 840 380, 940 380" stroke="#ff4b4b" stroke-opacity="0.7"/>
+    <path d="M700 410 C 830 410, 840 390, 940 390" stroke="#ff4b4b" stroke-opacity="0.7" stroke-dasharray="4 7"/>
+  </g>
+
+  <!-- people who act -->
+  <g font-size="13">
+    <g transform="translate(940 76)">
+      <rect width="220" height="68" rx="14" fill="#0e1b2e" stroke="#2c4c78"/>
+      <rect x="16" y="16" width="42" height="28" rx="4" fill="#0a2240" stroke="#3a5a86"/>
+      <rect x="31" y="44" width="12" height="8" fill="#3a5a86"/>
+      <text x="72" y="31" font-weight="700" fill="#e8f1ff">Security desk</text>
+      <text x="72" y="49" font-size="11" fill="#7f93ad">Live view, search, alarms</text>
+    </g>
+    <g transform="translate(940 200)">
+      <rect width="220" height="68" rx="14" fill="#0e1b2e" stroke="#2c4c78"/>
+      <rect x="24" y="12" width="26" height="44" rx="6" fill="#0a2240" stroke="#3a5a86"/>
+      <rect x="29" y="20" width="16" height="12" rx="2" fill="#00b2ff" fill-opacity="0.6"/>
+      <text x="72" y="31" font-weight="700" fill="#e8f1ff">Phones and browsers</text>
+      <text x="72" y="49" font-size="11" fill="#7f93ad">Alerts and doors anywhere</text>
+    </g>
+    <g transform="translate(940 350)">
+      <rect width="220" height="76" rx="14" fill="#2a0f12" stroke="#ff4b4b" stroke-width="2"/>
+      <circle cx="36" cy="38" r="18" fill="#3a1418" stroke="#ff4b4b" stroke-width="2"/>
+      <path d="M28 38 h16 M36 30 v16" stroke="#ff4b4b" stroke-width="3" stroke-linecap="round"/>
+      <text x="66" y="34" font-weight="800" fill="#ffd6d6">Teracom monitoring</text>
+      <text x="66" y="54" font-size="11" fill="#ffb3b3">Alarms answered after hours</text>
+    </g>
+  </g>
+
+  <text x="600" y="524" text-anchor="middle" font-size="13" fill="#7f93ad">Designed, installed, connected and maintained by Teracom</text>
+</svg>
