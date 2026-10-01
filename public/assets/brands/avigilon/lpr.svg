@@ -1,0 +1,50 @@
+<svg viewBox="0 0 600 360" xmlns="http://www.w3.org/2000/svg" font-family="Inter, Arial, sans-serif" role="img" aria-label="Licence plate recognition: a car at a boom gate has its plate read and checked against an allow list">
+  <defs>
+    <linearGradient id="lp-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b1a30"/>
+      <stop offset="1" stop-color="#05080d"/>
+    </linearGradient>
+    <linearGradient id="lp-scan" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#00b2ff" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="#00b2ff" stop-opacity="0.8"/>
+      <stop offset="1" stop-color="#00b2ff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="360" fill="url(#lp-bg)"/>
+
+  <!-- the car, seen from the front -->
+  <g transform="translate(60 70)">
+    <path d="M30 120 L60 50 C 66 36, 80 28, 96 28 H204 C 220 28, 234 36, 240 50 L270 120 Z" fill="#33445c" stroke="#5d7290" stroke-width="2"/>
+    <path d="M72 60 C 76 50, 84 46, 96 46 H204 C 216 46, 224 50, 228 60 L240 96 H60 Z" fill="#0e1b2e" stroke="#3a5a86"/>
+    <rect x="10" y="114" width="280" height="64" rx="18" fill="#3e5270" stroke="#5d7290" stroke-width="2"/>
+    <circle cx="48" cy="140" r="14" fill="#fff4c2"/>
+    <circle cx="252" cy="140" r="14" fill="#fff4c2"/>
+    <rect x="100" y="134" width="100" height="34" rx="5" fill="#f2f6fb" stroke="#00b2ff" stroke-width="3"/>
+    <text x="150" y="158" text-anchor="middle" font-size="18" font-weight="800" fill="#0b1220" letter-spacing="1">1AB 2CD</text>
+    <rect x="30" y="178" width="40" height="26" rx="8" fill="#1a2536"/>
+    <rect x="230" y="178" width="40" height="26" rx="8" fill="#1a2536"/>
+    <rect x="96" y="148" width="108" height="3" fill="url(#lp-scan)"/>
+    <g fill="none" stroke="#00b2ff" stroke-width="3">
+      <path d="M88 126 v-10 h10 M202 116 h10 v10 M212 176 v10 h-10 M98 186 h-10 v-10"/>
+    </g>
+  </g>
+
+  <!-- the boom gate -->
+  <g transform="translate(36 286)">
+    <rect width="24" height="40" rx="4" fill="#5a2c2c"/>
+    <rect x="24" y="8" width="300" height="10" rx="5" fill="#e8f1ff"/>
+    <path d="M60 8 h30 v10 h-30 z M150 8 h30 v10 h-30 z M240 8 h30 v10 h-30 z" fill="#ff4b4b"/>
+  </g>
+
+  <!-- the read and the decision -->
+  <g transform="translate(392 70)" font-size="12">
+    <rect width="176" height="218" rx="14" fill="#0e1b2e" stroke="#2c4c78"/>
+    <text x="16" y="30" font-size="11" fill="#7f93ad">Plate read</text>
+    <text x="16" y="56" font-size="22" font-weight="800" fill="#e8f1ff">1AB 2CD</text>
+    <text x="16" y="78" fill="#7f93ad">Confidence 99%</text>
+    <rect x="16" y="94" width="144" height="30" rx="15" fill="#103a26" stroke="#3ecf8e"/>
+    <text x="88" y="114" text-anchor="middle" font-weight="700" fill="#3ecf8e">On the allow list</text>
+    <text x="16" y="150" fill="#7f93ad">Gate 1 · opening</text>
+    <path d="M16 166 H160 M16 184 H130 M16 202 H146" stroke="#1f3b60" stroke-width="6" stroke-linecap="round"/>
+  </g>
+</svg>

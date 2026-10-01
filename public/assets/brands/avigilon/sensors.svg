@@ -1,0 +1,59 @@
+<svg viewBox="0 0 600 360" xmlns="http://www.w3.org/2000/svg" font-family="Inter, Arial, sans-serif" role="img" aria-label="Smart sensors: a ceiling sensor where cameras cannot go, reporting vape, air quality, noise and a spoken call for help">
+  <defs>
+    <linearGradient id="se-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b1a30"/>
+      <stop offset="1" stop-color="#05080d"/>
+    </linearGradient>
+    <radialGradient id="se-core" cx="45%" cy="40%" r="60%">
+      <stop offset="0" stop-color="#2a3a52"/>
+      <stop offset="1" stop-color="#0b1220"/>
+    </radialGradient>
+  </defs>
+  <rect width="600" height="360" fill="url(#se-bg)"/>
+
+  <!-- rings of sensing -->
+  <g fill="none" stroke="#00b2ff" stroke-linecap="round">
+    <circle cx="300" cy="170" r="70" stroke-opacity="0.5" stroke-width="2"/>
+    <circle cx="300" cy="170" r="104" stroke-opacity="0.3" stroke-width="2" stroke-dasharray="3 9"/>
+    <circle cx="300" cy="170" r="140" stroke-opacity="0.18" stroke-width="2" stroke-dasharray="3 12"/>
+  </g>
+
+  <!-- the sensor -->
+  <g transform="translate(250 120)">
+    <rect width="100" height="100" rx="26" fill="url(#se-core)" stroke="#3a5a86" stroke-width="2"/>
+    <circle cx="50" cy="50" r="18" fill="#001326" stroke="#00b2ff" stroke-width="2"/>
+    <circle cx="50" cy="50" r="6" fill="#00b2ff"/>
+    <g fill="#3a5a86">
+      <circle cx="22" cy="22" r="3"/><circle cx="78" cy="22" r="3"/><circle cx="22" cy="78" r="3"/><circle cx="78" cy="78" r="3"/>
+    </g>
+  </g>
+
+  <!-- what it reports -->
+  <g font-size="12" font-weight="600">
+    <g transform="translate(36 54)">
+      <rect width="168" height="38" rx="19" fill="#2a1a08" stroke="#ffb020"/>
+      <circle cx="20" cy="19" r="6" fill="#ffb020"/>
+      <text x="34" y="24" fill="#ffe3b0">Vape detected</text>
+    </g>
+    <g transform="translate(396 54)">
+      <rect width="168" height="38" rx="19" fill="#0e1b2e" stroke="#2c4c78"/>
+      <circle cx="20" cy="19" r="6" fill="#3ecf8e"/>
+      <text x="34" y="24" fill="#e8f1ff">Air quality: good</text>
+    </g>
+    <g transform="translate(36 248)">
+      <rect width="168" height="38" rx="19" fill="#0e1b2e" stroke="#2c4c78"/>
+      <circle cx="20" cy="19" r="6" fill="#00b2ff"/>
+      <text x="34" y="24" fill="#e8f1ff">Noise spike · 92 dB</text>
+    </g>
+    <g transform="translate(396 248)">
+      <rect width="168" height="38" rx="19" fill="#2a0f12" stroke="#ff4b4b"/>
+      <circle cx="20" cy="19" r="6" fill="#ff4b4b"/>
+      <text x="34" y="24" fill="#ffd6d6">Keyword: "help"</text>
+    </g>
+  </g>
+  <g stroke="#2c4c78" stroke-width="1.5" stroke-dasharray="3 6">
+    <path d="M204 73 L256 128 M396 73 L344 128 M204 267 L256 212 M396 267 L344 212"/>
+  </g>
+
+  <text x="300" y="334" text-anchor="middle" font-size="12" fill="#7f93ad">No camera, no recording: alerts only</text>
+</svg>

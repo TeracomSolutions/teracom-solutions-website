@@ -1,0 +1,50 @@
+<svg viewBox="0 0 600 360" xmlns="http://www.w3.org/2000/svg" font-family="Inter, Arial, sans-serif" role="img" aria-label="Unusual activity: everyday movement paths fade into the background while one path that breaks the pattern is flagged">
+  <defs>
+    <linearGradient id="ua-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b1a30"/>
+      <stop offset="1" stop-color="#05080d"/>
+    </linearGradient>
+    <radialGradient id="ua-heat" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#ff4b4b" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#ff4b4b" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="ua-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="600" height="360" fill="url(#ua-bg)"/>
+
+  <!-- the scene: a car park seen from above -->
+  <g stroke="#1f3b60" stroke-width="2" fill="none">
+    <rect x="40" y="40" width="520" height="280" rx="18"/>
+    <path d="M140 40 V120 M220 40 V120 M300 40 V120 M380 40 V120 M460 40 V120"/>
+    <path d="M140 320 V240 M220 320 V240 M300 320 V240 M380 320 V240 M460 320 V240"/>
+  </g>
+  <rect x="500" y="150" width="60" height="60" rx="6" fill="#132238" stroke="#3a5a86"/>
+  <text x="530" y="185" text-anchor="middle" font-size="11" fill="#7f93ad">Door</text>
+
+  <!-- normal movement: people walking straight through -->
+  <g fill="none" stroke="#3ecf8e" stroke-opacity="0.45" stroke-width="3" stroke-linecap="round">
+    <path d="M60 180 C 160 170, 340 190, 498 178"/>
+    <path d="M60 196 C 180 206, 320 196, 498 192"/>
+    <path d="M100 300 C 140 240, 200 210, 300 186"/>
+    <path d="M180 60 C 200 120, 240 160, 330 176"/>
+  </g>
+
+  <!-- the unusual one: lingering by the door, then circling -->
+  <path d="M120 140 C 220 130, 300 150, 420 150 C 470 150, 480 130, 470 120 C 455 104, 430 118, 440 136 C 452 158, 488 150, 486 132" fill="none" stroke="#ff4b4b" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="8 6" filter="url(#ua-glow)"/>
+  <circle cx="462" cy="134" r="46" fill="url(#ua-heat)"/>
+  <circle cx="486" cy="132" r="7" fill="#ff4b4b"/>
+
+  <!-- the alert -->
+  <g transform="translate(60 266)">
+    <rect width="270" height="40" rx="20" fill="#2a0f12" stroke="#ff4b4b"/>
+    <circle cx="22" cy="20" r="8" fill="#ff4b4b"/>
+    <text x="40" y="25" font-size="13" font-weight="700" fill="#ffd6d6">Unusual motion near the door</text>
+  </g>
+  <g transform="translate(344 266)">
+    <rect width="196" height="40" rx="20" fill="#0e1b2e" stroke="#2c4c78"/>
+    <text x="98" y="25" text-anchor="middle" font-size="12" fill="#7f93ad">Normal paths learnt: 412</text>
+  </g>
+</svg>

@@ -5,6 +5,8 @@ import { brands, findBrand } from '@/lib/brands';
 import CategoryIcon from '@/components/CategoryIcon';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import { pageMetadata } from '@/lib/seo';
+import BrandProfile from '@/components/BrandProfile';
+import { findBrandProfile } from '@/lib/brandProfiles';
 
 const THEME_FALLBACKS = { 'cctv': '/assets/brand-fallback-cctv.svg', 'access-control': '/assets/brand-fallback-access.svg', 'audio': '/assets/brand-fallback-audio.svg', 'power': '/assets/brand-fallback-power.svg', 'networking': '/assets/brand-fallback-network.svg', 'accessories': '/assets/brand-fallback-accessories.svg' };
 
@@ -38,10 +40,12 @@ export default async function BrandPage(props) {
   if (!brand) notFound();
 
   const paragraphs = brand.body.split('\n\n');
+  // A brand with a profile gets the longer page and a drawing in the hero.
+  const profile = findBrandProfile(brand.slug);
 
   return (
     <main id="main-content" style={{ '--brand-accent': brand.accent || '#9fb0c8' }}>
-      <section className="hero hero-product hero-shallow brand-hero">
+      <section className={`hero hero-product hero-shallow brand-hero${profile?.heroImage ? ' brand-hero-with-art' : ''}`}>
         <div className="container hero-layout">
           <div className="hero-copy">
             <Breadcrumbs items={[{ name: 'Brands', href: '/brands' }]} current={brand.name} />
@@ -74,8 +78,14 @@ export default async function BrandPage(props) {
               </div>
             )}
           </div>
+          {profile?.heroImage && (
+            <div className="brand-hero-visual">
+              <Image src={profile.heroImage} alt={profile.heroAlt} width={900} height={720} priority />
+            </div>
+          )}
         </div>
       </section>
+      {profile && <BrandProfile brand={brand} profile={profile} />}
       {brand.highlights && (
         <section className="section section-spacious alt">
           <div className="container">

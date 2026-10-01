@@ -1,0 +1,121 @@
+<svg viewBox="0 0 900 720" xmlns="http://www.w3.org/2000/svg" font-family="Inter, Arial, sans-serif" role="img" aria-label="An AI camera picking out people and a vehicle and sending what it sees to Avigilon Unity on site or Avigilon Alta in the cloud">
+  <defs>
+    <radialGradient id="av-bg" cx="50%" cy="30%" r="80%">
+      <stop offset="0" stop-color="#0d2140"/>
+      <stop offset="0.55" stop-color="#07101d"/>
+      <stop offset="1" stop-color="#050505"/>
+    </radialGradient>
+    <linearGradient id="av-beam" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#00b2ff" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#0082ff" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="av-dome" cx="40%" cy="35%" r="70%">
+      <stop offset="0" stop-color="#2a3a52"/>
+      <stop offset="1" stop-color="#0b1220"/>
+    </radialGradient>
+    <filter id="av-glow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="5" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect width="900" height="720" fill="url(#av-bg)"/>
+
+  <!-- floor grid in perspective -->
+  <g stroke="#1f6fd1" stroke-opacity="0.22" stroke-width="1" fill="none">
+    <path d="M0 470 H900 M0 492 H900 M0 518 H900 M0 550 H900 M0 590 H900 M0 640 H900 M0 702 H900"/>
+    <path d="M375 470 L-150 720 M400 470 L0 720 M425 470 L150 720 M450 470 L300 720 M475 470 L450 720 M500 470 L600 720 M525 470 L750 720 M550 470 L900 720 M575 470 L1050 720"/>
+  </g>
+
+  <!-- links to the two platforms -->
+  <g fill="none" stroke-width="2" stroke-dasharray="3 8" stroke-linecap="round">
+    <path d="M380 150 C 300 150, 230 190, 190 250" stroke="#00b2ff" stroke-opacity="0.7"/>
+    <path d="M520 150 C 600 150, 670 190, 710 250" stroke="#00b2ff" stroke-opacity="0.7"/>
+  </g>
+
+  <!-- the camera beam -->
+  <polygon points="425,212 475,212 760,600 140,600" fill="url(#av-beam)"/>
+
+  <!-- the camera -->
+  <g>
+    <rect x="410" y="52" width="80" height="22" rx="6" fill="#1a2536" stroke="#3a4d68"/>
+    <rect x="440" y="74" width="20" height="26" fill="#1a2536" stroke="#3a4d68"/>
+    <circle cx="450" cy="160" r="72" fill="url(#av-dome)" stroke="#3a5a86" stroke-width="2"/>
+    <circle cx="450" cy="160" r="96" fill="none" stroke="#0082ff" stroke-opacity="0.35" stroke-width="2" stroke-dasharray="2 9" stroke-linecap="round"/>
+    <circle cx="450" cy="172" r="30" fill="#001326" stroke="#00b2ff" stroke-width="3"/>
+    <circle cx="450" cy="172" r="12" fill="#00b2ff" filter="url(#av-glow)"/>
+    <circle cx="444" cy="166" r="4" fill="#e8f6ff"/>
+  </g>
+
+  <!-- what the camera sees: a person, another person and a vehicle -->
+  <g>
+    <!-- person 1 -->
+    <circle cx="300" cy="476" r="14" fill="#9fb3cc"/>
+    <rect x="284" y="492" width="32" height="62" rx="12" fill="#9fb3cc"/>
+    <g fill="none" stroke="#3ecf8e" stroke-width="3">
+      <path d="M268 458 v-12 h12 M320 446 h12 v12 M332 554 v12 h-12 M280 566 h-12 v-12"/>
+    </g>
+    <rect x="262" y="420" width="104" height="22" rx="11" fill="#3ecf8e"/>
+    <text x="314" y="435" text-anchor="middle" font-size="12" font-weight="700" fill="#04140c">Person · 98%</text>
+
+    <!-- person 2, the one being searched for -->
+    <circle cx="560" cy="500" r="15" fill="#c9d6e8"/>
+    <rect x="543" y="517" width="34" height="66" rx="13" fill="#2f7fff"/>
+    <rect x="575" y="528" width="12" height="26" rx="4" fill="#1b3c74"/>
+    <g fill="none" stroke="#00b2ff" stroke-width="3" filter="url(#av-glow)">
+      <path d="M526 480 v-12 h12 M584 468 h12 v12 M596 586 v12 h-12 M538 598 h-12 v-12"/>
+    </g>
+    <rect x="486" y="440" width="164" height="22" rx="11" fill="#00b2ff"/>
+    <text x="568" y="455" text-anchor="middle" font-size="12" font-weight="700" fill="#001326">Appearance match · 94%</text>
+
+    <!-- vehicle -->
+    <g transform="translate(24 96)">
+    <rect x="636" y="402" width="128" height="44" rx="12" fill="#5d6f87"/>
+    <rect x="656" y="388" width="84" height="24" rx="9" fill="#73859e"/>
+    <circle cx="664" cy="448" r="10" fill="#1a2536"/>
+    <circle cx="736" cy="448" r="10" fill="#1a2536"/>
+    <rect x="682" y="430" width="36" height="12" rx="2" fill="#e8f1ff"/>
+    <g fill="none" stroke="#ffb020" stroke-width="3">
+      <path d="M624 384 v-10 h10 M766 374 h10 v10 M776 456 v10 h-10 M634 466 h-10 v-10"/>
+    </g>
+    <rect x="632" y="344" width="148" height="22" rx="11" fill="#ffb020"/>
+    <text x="706" y="359" text-anchor="middle" font-size="12" font-weight="700" fill="#241600">Vehicle · plate read</text>
+    </g>
+  </g>
+
+  <!-- platform: Unity on site -->
+  <g transform="translate(110 250)">
+    <rect width="160" height="118" rx="16" fill="#0c1626" stroke="#2c4c78" stroke-width="1.5"/>
+    <rect x="22" y="20" width="50" height="62" rx="6" fill="#132238" stroke="#3a5a86"/>
+    <path d="M22 40 H72 M22 60 H72" stroke="#3a5a86"/>
+    <circle cx="64" cy="30" r="3" fill="#3ecf8e"/>
+    <circle cx="64" cy="50" r="3" fill="#3ecf8e"/>
+    <circle cx="64" cy="70" r="3" fill="#3ecf8e"/>
+    <text x="84" y="40" font-size="13" font-weight="700" fill="#e8f1ff">Unity</text>
+    <text x="84" y="58" font-size="11" fill="#7f93ad">on site</text>
+    <text x="22" y="104" font-size="11" fill="#7f93ad">Video · Access · Alarms</text>
+  </g>
+
+  <!-- platform: Alta in the cloud -->
+  <g transform="translate(630 250)">
+    <rect width="160" height="118" rx="16" fill="#0c1626" stroke="#2c4c78" stroke-width="1.5"/>
+    <path d="M30 76 a14 14 0 0 1 2 -28 a20 20 0 0 1 38 -6 a16 16 0 0 1 14 30 z" fill="#132238" stroke="#00b2ff" stroke-width="2"/>
+    <text x="92" y="40" font-size="13" font-weight="700" fill="#e8f1ff">Alta</text>
+    <text x="92" y="58" font-size="11" fill="#7f93ad">in the cloud</text>
+    <text x="22" y="104" font-size="11" fill="#7f93ad">Browser · Mobile · Sites</text>
+  </g>
+
+  <!-- floating insight chips -->
+  <g font-size="12" font-weight="600">
+    <g transform="translate(60 92)">
+      <rect width="196" height="34" rx="17" fill="#0c1626" stroke="#2c4c78"/>
+      <circle cx="20" cy="17" r="6" fill="#00b2ff"/>
+      <text x="36" y="21" fill="#e8f1ff">Search: blue jacket, backpack</text>
+    </g>
+    <g transform="translate(660 92)">
+      <rect width="184" height="34" rx="17" fill="#0c1626" stroke="#5a2c2c"/>
+      <circle cx="20" cy="17" r="6" fill="#ff4b4b"/>
+      <text x="36" y="21" fill="#e8f1ff">Unusual motion · Gate 2</text>
+    </g>
+  </g>
+</svg>

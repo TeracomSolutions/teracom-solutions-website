@@ -1,0 +1,52 @@
+<svg viewBox="0 0 600 360" xmlns="http://www.w3.org/2000/svg" font-family="Inter, Arial, sans-serif" role="img" aria-label="Alerts in plain language: a typed sentence becomes an alert rule with a place, an object and a time">
+  <defs>
+    <linearGradient id="nl-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b1a30"/>
+      <stop offset="1" stop-color="#05080d"/>
+    </linearGradient>
+    <linearGradient id="nl-flow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#00b2ff"/>
+      <stop offset="1" stop-color="#7c5cff"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="360" fill="url(#nl-bg)"/>
+
+  <!-- what the operator types -->
+  <g transform="translate(40 34)">
+    <rect width="520" height="70" rx="16" fill="#0e1b2e" stroke="#2c4c78"/>
+    <text x="22" y="30" font-size="11" fill="#7f93ad">New alert</text>
+    <text x="22" y="54" font-size="15" fill="#e8f1ff">Tell me when a vehicle stops at the loading dock after 10 pm</text>
+    <rect x="470" y="40" width="2" height="18" fill="#00b2ff"/>
+  </g>
+
+  <!-- the analytics turning it into a rule -->
+  <path d="M300 112 V150" stroke="#00b2ff" stroke-width="3"/>
+  <g transform="translate(276 148)">
+    <rect width="48" height="48" rx="14" fill="#1a1440" stroke="#7c5cff"/>
+    <path d="M24 10 l4 10 l10 4 l-10 4 l-4 10 l-4 -10 l-10 -4 l10 -4 z" fill="#b8a6ff"/>
+  </g>
+  <path d="M300 204 V232" stroke="#7c5cff" stroke-width="3"/>
+  <path d="M120 232 H480" stroke="#7c5cff" stroke-opacity="0.5" stroke-width="2"/>
+
+  <!-- the rule it builds -->
+  <g transform="translate(40 232)" font-size="12">
+    <g>
+      <rect width="160" height="88" rx="14" fill="#0e1b2e" stroke="#2c4c78"/>
+      <text x="16" y="28" fill="#7f93ad">Where</text>
+      <text x="16" y="54" font-size="15" font-weight="700" fill="#e8f1ff">Loading dock</text>
+      <text x="16" y="74" fill="#7f93ad">Cam 09 · zone A</text>
+    </g>
+    <g transform="translate(180 0)">
+      <rect width="160" height="88" rx="14" fill="#0e1b2e" stroke="#2c4c78"/>
+      <text x="16" y="28" fill="#7f93ad">What</text>
+      <text x="16" y="54" font-size="15" font-weight="700" fill="#e8f1ff">Vehicle stops</text>
+      <text x="16" y="74" fill="#7f93ad">for 60 s or more</text>
+    </g>
+    <g transform="translate(360 0)">
+      <rect width="160" height="88" rx="14" fill="#0e1b2e" stroke="#00b2ff" stroke-width="2"/>
+      <text x="16" y="28" fill="#7f93ad">When</text>
+      <text x="16" y="54" font-size="15" font-weight="700" fill="#e8f1ff">22:00 to 06:00</text>
+      <text x="16" y="74" fill="#3ecf8e">Alert is on</text>
+    </g>
+  </g>
+</svg>
