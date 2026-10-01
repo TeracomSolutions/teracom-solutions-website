@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 import AdminBrand from '@/components/AdminBrand';
 
@@ -140,6 +141,9 @@ export default function AdminLoginPage() {
                   {submitting ? 'Signing in…' : 'Sign in'}
                 </button>
               </form>
+              <p style={{ marginTop: '16px' }}>
+                <Link href="/admin/forgot-password">Forgot your password?</Link>
+              </p>
             </>
           ) : (
             <>
