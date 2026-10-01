@@ -4,7 +4,9 @@ import { z } from 'zod';
 import { withAdminSession } from '@/lib/adminApi';
 import { deleteAiConnection, upsertAiConnection } from '@/lib/api/adminAiConnections';
 
-const PROVIDERS = ['ollama', 'anthropic', 'openai', 'groq'];
+// The backend checks the name against its provider catalogue; here only
+// the shape is checked, so a provider added there works here unchanged.
+const PROVIDER_NAME = /^[a-z0-9_]{2,40}$/;
 
 // Each field optional; only the ones present change. The key is passed
 // straight through to the backend, which encrypts it -- it is never logged
@@ -19,7 +21,7 @@ const UpdateRequest = z
   .refine((data) => Object.keys(data).length > 0, { message: 'Nothing to change.' });
 
 export const PUT = withAdminSession(async ({ req, token, params }) => {
-  if (!PROVIDERS.includes(params.provider)) {
+  if (!PROVIDER_NAME.test(params.provider || '')) {
     return NextResponse.json({ error: 'Unknown provider.' }, { status: 400 });
   }
 
@@ -32,7 +34,7 @@ export const PUT = withAdminSession(async ({ req, token, params }) => {
 });
 
 export const DELETE = withAdminSession(async ({ token, params }) => {
-  if (!PROVIDERS.includes(params.provider)) {
+  if (!PROVIDER_NAME.test(params.provider || '')) {
     return NextResponse.json({ error: 'Unknown provider.' }, { status: 400 });
   }
   return NextResponse.json(await deleteAiConnection(token, params.provider));
