@@ -2670,3 +2670,12 @@ a.admin-status:hover { filter:brightness(1.15); }
 .admin-assistant-meta { display:flex; align-items:center; gap:10px; margin-top:10px; font-size:12px; color:var(--muted); }
 .admin-assistant-copy { background:none; border:1px solid var(--line); border-radius:999px; color:#ddd; padding:3px 12px; font:inherit; cursor:pointer; }
 .admin-assistant-copy:hover { border-color:rgba(255,255,255,.35); color:#fff; }
+
+/* Homepage: the Industry News live ticker under the banner
+   (components/HomeNewsTicker.js), reusing the news page's ticker styles. */
+.home-news { padding:18px 0 0; }
+.home-news-bar { margin:0; }
+.home-news .news-live { text-decoration:none; }
+.home-news-all { flex:none; color:rgba(255,255,255,.75); font-size:13px; font-weight:700; text-decoration:none; white-space:nowrap; }
+.home-news-all:hover { color:#fff; }
+@media (max-width:640px) { .home-news-all { display:none; } }

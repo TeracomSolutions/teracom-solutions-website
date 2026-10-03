@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { brands } from '@/lib/brands';
 import { aiCapabilities } from '@/lib/aiCapabilities';
 import HeroBanner from '@/components/HeroBanner';
+import HomeNewsTicker from '@/components/HomeNewsTicker';
 import { getHeroSlides } from '@/lib/heroSlides';
 import JsonLd from '@/components/JsonLd';
 import ContactForm from '@/components/ContactForm';
@@ -134,6 +135,7 @@ export default async function Home(props) {
       <LeadSubmitted source="home_contact_form" />
       <JsonLd schema={SERVICE_SCHEMA} />
       <HeroBanner slides={await getHeroSlides()} />
+      <HomeNewsTicker />
       <section className="section intro-section">
         <div className="container intro-grid">
           <div>
