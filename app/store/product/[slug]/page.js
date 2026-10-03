@@ -21,7 +21,7 @@ import {
   storeCategoryForProduct,
 } from '@/lib/products';
 import { findProductAsync, getAllProducts, getCustomerPricing } from '@/lib/catalogue';
-import { unitPriceCents } from '@/lib/catalogueMerge';
+import { forTiles, unitPriceCents } from '@/lib/catalogueMerge';
 import {
   availabilityText,
   gtinOf,
@@ -332,7 +332,7 @@ export default async function ProductPage(props) {
               <span className="eyebrow">Optional accessories</span>
               <h2>Made to go with it.</h2>
             </div>
-            <CategoryProductGrid products={accessories} isSignedIn={isSignedIn} customer={customer} />
+            <CategoryProductGrid products={forTiles(accessories)} isSignedIn={isSignedIn} customer={customer} />
           </div>
         </section>
       ) : null}
@@ -344,7 +344,7 @@ export default async function ProductPage(props) {
               <span className="eyebrow">Alternatives</span>
               <h2>Other models that do the same job.</h2>
             </div>
-            <CategoryProductGrid products={alternatives} isSignedIn={isSignedIn} customer={customer} />
+            <CategoryProductGrid products={forTiles(alternatives)} isSignedIn={isSignedIn} customer={customer} />
           </div>
         </section>
       ) : null}

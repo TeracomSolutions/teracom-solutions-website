@@ -50,6 +50,9 @@ const NAME = {
 };
 const PRICE = { margin: 0, fontSize: '17px', fontWeight: 800 };
 const NOTE = { color: 'var(--muted)', fontSize: '12px', fontWeight: 400 };
+const MORE = { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px', marginTop: '24px' };
+// A category can hold hundreds of products: show them a page at a time.
+const PAGE_SIZE = 24;
 
 export default function CategoryProductGrid({ products, isSignedIn = false, customer = null }) {
   const brands = useMemo(
@@ -57,8 +60,15 @@ export default function CategoryProductGrid({ products, isSignedIn = false, cust
     [products]
   );
   const [activeBrand, setActiveBrand] = useState('All');
+  const [shown, setShown] = useState(PAGE_SIZE);
 
-  const visible = activeBrand === 'All' ? products : products.filter((p) => p.brand === activeBrand);
+  const matching = activeBrand === 'All' ? products : products.filter((p) => p.brand === activeBrand);
+  const visible = matching.slice(0, shown);
+
+  function chooseBrand(brand) {
+    setActiveBrand(brand);
+    setShown(PAGE_SIZE);
+  }
 
   return (
     <>
@@ -67,7 +77,7 @@ export default function CategoryProductGrid({ products, isSignedIn = false, cust
           <button
             type="button"
             className={activeBrand === 'All' ? 'brand-tab active' : 'brand-tab'}
-            onClick={() => setActiveBrand('All')}
+            onClick={() => chooseBrand('All')}
           >
             All
           </button>
@@ -76,7 +86,7 @@ export default function CategoryProductGrid({ products, isSignedIn = false, cust
               key={brand}
               type="button"
               className={activeBrand === brand ? 'brand-tab active' : 'brand-tab'}
-              onClick={() => setActiveBrand(brand)}
+              onClick={() => chooseBrand(brand)}
             >
               {brand}
             </button>
@@ -140,6 +150,14 @@ export default function CategoryProductGrid({ products, isSignedIn = false, cust
           );
         })}
       </div>
+      {matching.length > shown && (
+        <div style={MORE}>
+          <p style={NOTE}>Showing {shown} of {matching.length}</p>
+          <button type="button" className="btn btn-secondary" onClick={() => setShown((n) => n + PAGE_SIZE)}>
+            Show more
+          </button>
+        </div>
+      )}
     </>
   );
 }
