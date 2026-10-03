@@ -13,12 +13,14 @@ import { nextState, pickVoice, speakableText } from '@/lib/assistantVoice';
 // and, by default, sends when you stop talking; Read replies aloud speaks
 // each answer. Nothing spoken leaves the browser except as the text sent.
 const SUGGESTIONS = [
+  'How does a supplier price list become a price in the store?',
   'Which suppliers have never had a price list imported?',
   'Set the Gold tier to 15% off RRP.',
   'Create a weekly Scout task: what are competitors charging for Hikvision 8MP turret cameras in Australia?',
-  'Watch https://www.example.com/support/downloads for data sheets and installer manuals, weekly.',
   'Show me the new leads and summarise what each one wants.',
   'How did the website do in the last 7 days compared with the week before?',
+  'Write a master prompt to add a stock level column to the Store catalogue.',
+  'Which AI model are you running on, and what do you remember?',
 ];
 
 const STATE_LABEL = { idle: 'Ready', listening: 'Listening…', thinking: 'Thinking…', speaking: 'Speaking…' };
@@ -43,6 +45,7 @@ export default function AdminAssistantChat() {
   const [readAloud, setReadAloud] = useState(false);
   const [speechSupported, setSpeechSupported] = useState(false);
   const [synthSupported, setSynthSupported] = useState(false);
+  const [copied, setCopied] = useState(null);
   const endRef = useRef(null);
   const recognitionRef = useRef(null);
   // The recogniser's callbacks outlive a render, so they read the latest
@@ -175,6 +178,16 @@ export default function AdminAssistantChat() {
     }
   }
 
+  // A reply (a master prompt, say) goes to the clipboard in one click.
+  function copyReply(text, index) {
+    navigator.clipboard?.writeText(text)
+      .then(() => {
+        setCopied(index);
+        setTimeout(() => setCopied(null), 1500);
+      })
+      .catch(() => setError('Copy did not work here. Select the text and copy it instead.'));
+  }
+
   function reset() {
     synth()?.cancel();
     recognitionRef.current?.stop();
@@ -195,7 +208,7 @@ export default function AdminAssistantChat() {
         </div>
         {messages.length === 0 && (
           <div className="admin-assistant-empty">
-            <p className="admin-muted">Ask about, or ask for changes to, suppliers and price lists, the catalogue and price tiers, Scout research, watched websites, leads and visitor numbers. Try one of these, or press the microphone and just say it:</p>
+            <p className="admin-muted">Ask anything about the console and the website, ask for changes to suppliers and price lists, the catalogue and price tiers, Scout research, watched websites and leads, or ask for a master prompt to get something coded and fixed. Try one of these, or press the microphone and just say it:</p>
             <div className="admin-actions">
               {SUGGESTIONS.map((s) => (
                 <button key={s} type="button" className="btn btn-secondary btn-sm" onClick={() => send(s)} disabled={busy}>{s}</button>
@@ -212,6 +225,14 @@ export default function AdminAssistantChat() {
                 <ul className="admin-assistant-actions">
                   {m.actions.map((a, j) => <li key={j}>✓ {a}</li>)}
                 </ul>
+              )}
+              {m.role === 'assistant' && (
+                <div className="admin-assistant-meta">
+                  {m.model && <span>Answered by {m.model}</span>}
+                  <button type="button" className="admin-assistant-copy" onClick={() => copyReply(m.content, i)}>
+                    {copied === i ? 'Copied' : 'Copy'}
+                  </button>
+                </div>
               )}
             </div>
           </div>
