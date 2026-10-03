@@ -50,6 +50,8 @@ function csvEscape(value) {
 }
 
 const inputStyle = { padding: '4px 6px', borderRadius: '6px', border: '1px solid var(--line)', background: '#0d0d0d', color: '#fff', font: 'inherit', fontSize: '13px' };
+const liveStyle = { color: '#7ee2a8', fontWeight: 600 };
+const thumbStyle = { width: '36px', height: '36px', objectFit: 'contain', background: '#fff', borderRadius: '4px', flex: '0 0 auto' };
 
 function AddProductForm({ suppliers, onDone }) {
   const [open, setOpen] = useState(false);
@@ -233,13 +235,20 @@ export default function AdminCatalogGrid({ products, tiers, tierPrices, supplier
   const [drafts, setDrafts] = useState({});
   const [busyId, setBusyId] = useState(null);
   const [error, setError] = useState('');
+  // '' shows everything, 'live' only what is on the website, 'offline' the rest.
+  const [live, setLive] = useState('');
+  const [selected, setSelected] = useState(() => new Set());
+  const [publishing, setPublishing] = useState(false);
 
   const categories = useMemo(() => [...new Set(products.map((p) => p.category).filter(Boolean))].sort(), [products]);
+  const liveCount = useMemo(() => products.filter((p) => p.published).length, [products]);
 
   const rows = useMemo(() => {
     const needle = q.trim().toLowerCase();
     return products.filter((p) => {
       if (!showInactive && !p.active) return false;
+      if (live === 'live' && !p.published) return false;
+      if (live === 'offline' && p.published) return false;
       if (supplierId && p.supplier_id !== supplierId) return false;
       if (category && p.category !== category) return false;
       if (onlyThin) {
@@ -249,7 +258,39 @@ export default function AdminCatalogGrid({ products, tiers, tierPrices, supplier
       if (!needle) return true;
       return [p.sku, p.name, p.brand, p.category, p.supplier].some((v) => v && v.toLowerCase().includes(needle));
     });
-  }, [products, q, supplierId, category, showInactive, onlyThin]);
+  }, [products, q, supplierId, category, showInactive, onlyThin, live]);
+
+  const allShownSelected = rows.length > 0 && rows.every((p) => selected.has(p.id));
+
+  function toggle(p) {
+    setSelected((current) => {
+      const next = new Set(current);
+      if (next.has(p.id)) next.delete(p.id);
+      else next.add(p.id);
+      return next;
+    });
+  }
+
+  function toggleAll() {
+    setSelected(allShownSelected ? new Set() : new Set(rows.map((p) => p.id)));
+  }
+
+  // Go live puts the ticked products on the website; Take offline removes them.
+  async function publish(published) {
+    const ids = [...selected];
+    if (ids.length === 0) return;
+    setPublishing(true);
+    setError('');
+    try {
+      await send('/api/admin/catalog/publish', 'POST', { product_ids: ids, published });
+      setSelected(new Set());
+      router.refresh();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setPublishing(false);
+    }
+  }
 
   function draftOf(p) {
     return drafts[p.id] || {};
@@ -325,13 +366,13 @@ export default function AdminCatalogGrid({ products, tiers, tierPrices, supplier
 
   function exportCsv() {
     const header = ['SKU', 'Name', 'Brand', 'Category', 'Supplier', 'Cost ex GST', 'RRP inc GST', 'RRP ex GST', 'Margin $', 'Margin %',
-      ...tiers.map((t) => t.label), 'Stock', 'Active', 'Last imported'];
+      ...tiers.map((t) => t.label), 'Stock', 'Active', 'Live on website', 'Last imported'];
     const lines = rows.map((p) => {
       const { cents, pct } = marginOf(p.price_cents, p.cost_cents);
       const tp = tierPrices[p.id] || {};
       return [p.sku, p.name, p.brand, p.category, p.supplier, dollars(p.cost_cents), dollars(p.price_cents), (p.price_cents / GST / 100).toFixed(2),
         cents == null ? '' : (cents / 100).toFixed(2), pct == null ? '' : pct.toFixed(1),
-        ...tiers.map((t) => dollars(tp[t.key])), p.stock, p.active ? 'yes' : 'no', p.last_imported_at || ''].map(csvEscape).join(',');
+        ...tiers.map((t) => dollars(tp[t.key])), p.stock, p.active ? 'yes' : 'no', p.published ? 'yes' : 'no', p.last_imported_at || ''].map(csvEscape).join(',');
     });
     const blob = new Blob([[header.join(','), ...lines].join('\n')], { type: 'text/csv;charset=utf-8' });
     const url = URL.createObjectURL(blob);
@@ -359,16 +400,25 @@ export default function AdminCatalogGrid({ products, tiers, tierPrices, supplier
           <option value="">All categories</option>
           {categories.map((c) => <option key={c} value={c}>{c}</option>)}
         </select>
+        <select value={live} onChange={(e) => setLive(e.target.value)} aria-label="On the website">
+          <option value="">Live and offline</option>
+          <option value="live">Live on the website</option>
+          <option value="offline">Offline</option>
+        </select>
         <label style={{ display: 'inline-flex', gap: '6px', alignItems: 'center' }}>
           <input type="checkbox" checked={showInactive} onChange={(e) => setShowInactive(e.target.checked)} /> show inactive
         </label>
         <label style={{ display: 'inline-flex', gap: '6px', alignItems: 'center' }}>
           <input type="checkbox" checked={onlyThin} onChange={(e) => setOnlyThin(e.target.checked)} /> thin or negative margin only
         </label>
-        <span className="admin-muted">{rows.length} of {products.length} products{dirtyCount ? ` · ${dirtyCount} unsaved` : ''}</span>
+        <span className="admin-muted">{rows.length} of {products.length} products · {liveCount} live{dirtyCount ? ` · ${dirtyCount} unsaved` : ''}</span>
       </div>
 
       <div className="admin-actions" style={{ margin: '0 0 16px' }}>
+        <button type="button" className="btn btn-primary btn-sm" onClick={() => publish(true)} disabled={publishing || selected.size === 0}>
+          {publishing ? 'Saving…' : `Go live${selected.size ? ` (${selected.size})` : ''}`}
+        </button>
+        <button type="button" className="btn btn-secondary btn-sm" onClick={() => publish(false)} disabled={publishing || selected.size === 0}>Take offline</button>
         <AddProductForm suppliers={suppliers} onDone={() => router.refresh()} />
         <RepricePanel suppliers={suppliers} visibleIds={rows.map((p) => p.id)} onDone={() => router.refresh()} />
         <button type="button" className="btn btn-secondary btn-sm" onClick={exportCsv} disabled={rows.length === 0}>Export CSV</button>
@@ -378,6 +428,8 @@ export default function AdminCatalogGrid({ products, tiers, tierPrices, supplier
         <table className="admin-table admin-sheet">
           <thead>
             <tr>
+              <th><input type="checkbox" checked={allShownSelected} onChange={toggleAll} aria-label="Tick every product shown" /></th>
+              <th>Website</th>
               <th>SKU</th>
               <th>Product</th>
               <th>Brand</th>
@@ -399,7 +451,7 @@ export default function AdminCatalogGrid({ products, tiers, tierPrices, supplier
           </thead>
           <tbody>
             {rows.length === 0 && (
-              <tr><td colSpan={16 + tiers.length} className="admin-muted">No products match. Import a supplier price list or add one by hand.</td></tr>
+              <tr><td colSpan={18 + tiers.length} className="admin-muted">No products match. Import a supplier price list or add one by hand.</td></tr>
             )}
             {rows.map((p) => {
               const d = draftOf(p);
@@ -410,9 +462,17 @@ export default function AdminCatalogGrid({ products, tiers, tierPrices, supplier
               const tp = tierPrices[p.id] || {};
               return (
                 <tr key={p.id} className={dirty ? 'is-dirty' : undefined} style={p.active ? undefined : { opacity: 0.55 }}>
+                  <td><input type="checkbox" checked={selected.has(p.id)} onChange={() => toggle(p)} aria-label={`Tick ${p.sku}`} /></td>
+                  <td>{p.published ? <span style={liveStyle}>Live</span> : <span className="admin-muted">Offline</span>}</td>
                   <td><code>{p.sku}</code></td>
-                  <td className="wrap" style={{ minWidth: '220px' }}>
-                    <input type="text" value={current(p, 'name')} onChange={(e) => setDraft(p, 'name', e.target.value)} style={{ ...inputStyle, width: '100%' }} aria-label="Name" />
+                  <td className="wrap" style={{ minWidth: '260px' }}>
+                    <span style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                      {p.image_url ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={p.image_url} alt="" loading="lazy" style={thumbStyle} />
+                      ) : null}
+                      <input type="text" value={current(p, 'name')} onChange={(e) => setDraft(p, 'name', e.target.value)} style={{ ...inputStyle, width: '100%' }} aria-label="Name" />
+                    </span>
                   </td>
                   <td><input type="text" value={current(p, 'brand')} onChange={(e) => setDraft(p, 'brand', e.target.value)} style={{ ...inputStyle, width: '110px' }} aria-label="Brand" /></td>
                   <td><input type="text" value={current(p, 'category')} onChange={(e) => setDraft(p, 'category', e.target.value)} style={{ ...inputStyle, width: '130px' }} aria-label="Category" /></td>

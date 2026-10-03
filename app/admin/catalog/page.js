@@ -44,12 +44,15 @@ export default async function AdminCatalogPage() {
         Store Catalog
         <AdminHelpIcon>
           <h4>What this page is for</h4>
-          <p>Every product the store can sell, in one sheet you can flick through and correct. Products arrive here from supplier price lists (Store → Businesses → a supplier → <em>Import into store</em>, or an automatic feed) and from <em>Add product</em> for a one-off that no feed carries.</p>
+          <p>Every product the store can sell, in one sheet you can flick through and correct. Products arrive here from supplier price lists (Store → Data Feeds → a supplier → <em>Import into store</em>, or an automatic feed) and from <em>Add product</em> for a one-off that no feed carries.</p>
+          <h4>Going live</h4>
+          <p>Imported products start <strong>offline</strong>: they are in the catalogue but not on the website. Tick the ones you want and press <em>Go live</em>; they appear in the store within five minutes, under their category and in New Arrivals. <em>Take offline</em> removes ticked products from the website without losing them. The <strong>Website</strong> column and filter show which are live. Start with a few, check their photos and prices on the website, then put the rest live.</p>
           <h4>Columns</h4>
           <ul>
             <li><strong>Cost</strong> is what the supplier charges us, ex GST. <strong>RRP</strong> is the shelf price, inc GST; <strong>Ex GST</strong> is RRP ÷ 1.1.</li>
             <li><strong>Margin</strong> is Ex GST minus Cost, in dollars and as a percentage of Ex GST. Red is below cost, amber under 15%.</li>
-            <li><strong>Silver / Gold / Platinum</strong> are what each customer tier pays, from the Pricing page (supplier override first, then the tier default).</li>
+            <li><strong>Member / Silver / Gold / Platinum</strong> are what each customer tier pays: cost plus that tier&apos;s markup from the Pricing page, plus GST, never above RRP.</li>
+            <li><strong>Category</strong> is the store category the product is listed under. For feed products it comes from the supplier&apos;s category, mapped on the supplier&apos;s Data Feeds page.</li>
             <li><strong>Active</strong> off takes a product out of the store without losing it: the row stays so a re-import updates it rather than duplicating it, and its history survives. An inactive row shows <em>Delete permanently</em> if you really want it gone -- but if a supplier feed still lists the SKU, the next pull creates it again.</li>
           </ul>
           <h4>Editing</h4>
@@ -61,7 +64,7 @@ export default async function AdminCatalogPage() {
         </AdminHelpIcon>
       </h1>
       <AdminStoreTabs />
-      <p className="lead">Every product with cost, RRP, margin and tier prices. Edit in place, add a one-off, or re-price a set from cost.</p>
+      <p className="lead">Every product with cost, RRP, margin and tier prices. Tick products and press Go live to put them on the website; edit in place, add a one-off, or re-price a set from cost.</p>
 
       {loadError ? <p className="form-error" role="alert">{loadError}</p> : (
         <AdminCatalogGrid products={products} tiers={tiers} tierPrices={tierPrices} suppliers={suppliers} />

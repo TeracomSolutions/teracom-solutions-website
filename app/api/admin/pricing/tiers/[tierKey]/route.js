@@ -4,12 +4,14 @@ import { z } from 'zod';
 import { withAdminSession } from '@/lib/adminApi';
 import { updateTier } from '@/lib/api/adminPricing';
 
-const TIERS = ['silver', 'gold', 'platinum'];
+const TIERS = ['member', 'silver', 'gold', 'platinum'];
 
 const UpdateRequest = z
   .object({
     label: z.string().trim().min(1).max(50).optional(),
-    discount_percent: z.number().min(0).max(100).optional(),
+    markup_percent: z.number().min(0).max(1000).optional(),
+    // True makes the tier pay RRP.
+    clear_markup: z.boolean().optional(),
     active: z.boolean().optional(),
   })
   .refine((data) => Object.keys(data).length > 0, { message: 'Nothing to change.' });
@@ -20,7 +22,7 @@ export const PUT = withAdminSession(async ({ req, token, params }) => {
   }
   const parsed = UpdateRequest.safeParse(await req.json().catch(() => null));
   if (!parsed.success) {
-    return NextResponse.json({ error: 'The discount must be a number between 0 and 100.' }, { status: 400 });
+    return NextResponse.json({ error: 'The markup must be a number between 0 and 1000.' }, { status: 400 });
   }
   return NextResponse.json(await updateTier(token, params.tierKey, parsed.data));
 });

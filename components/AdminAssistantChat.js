@@ -15,7 +15,7 @@ import { nextState, pickVoice, speakableText } from '@/lib/assistantVoice';
 const SUGGESTIONS = [
   'How does a supplier price list become a price in the store?',
   'Which suppliers have never had a price list imported?',
-  'Set the Gold tier to 15% off RRP.',
+  'Set the Gold tier to 12% on cost.',
   'Create a weekly Scout task: what are competitors charging for Hikvision 8MP turret cameras in Australia?',
   'Show me the new leads and summarise what each one wants.',
   'How did the website do in the last 7 days compared with the week before?',

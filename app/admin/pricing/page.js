@@ -37,18 +37,18 @@ export default async function AdminPricingPage() {
         Pricing
         <AdminHelpIcon>
           <h4>What this page is for</h4>
-          <p>One place to see the whole price list and decide what each customer tier pays. Every product&apos;s price is its <strong>RRP</strong> as the supplier&apos;s feed lists it (AUD, GST included); a tier is a percentage off that RRP.</p>
-          <h4>Tier discounts off RRP</h4>
-          <p>The default discount for Silver, Gold and Platinum. A customer&apos;s tier comes from their account (the Zoho import brought them across); customers with no tier pay RRP.</p>
-          <h4>Per-supplier overrides</h4>
-          <p>A distributor&apos;s margin is not a manufacturer&apos;s, so a supplier can have its own percentage per tier. Blank means the tier default applies. Also shows each supplier&apos;s product count and when its price list was last imported.</p>
+          <p>One place to see the whole price list and decide what each customer tier pays. A tier pays our <strong>cost</strong> (ex GST, from the supplier&apos;s feed) plus a <strong>markup</strong>, plus GST, rounded to the nearest 5 cents -- so every sale carries a known margin. A tier price never goes above the <strong>RRP</strong>; where the markup would, the customer pays RRP. Products with no cost sell at RRP.</p>
+          <h4>Markup on cost by tier</h4>
+          <p>The default markup for Member, Silver, Gold and Platinum. Member is any signed-in customer without a tier; Silver, Gold and Platinum come from the customer&apos;s account (the Zoho import brought them across). Visitors who are not signed in see RRP. Clear a box and save to make that tier pay RRP.</p>
+          <h4>Per-supplier markups</h4>
+          <p>A distributor&apos;s margin is not a manufacturer&apos;s, so a supplier can have its own markup per tier. Blank means the tier markup applies. Also shows each supplier&apos;s product count and when its price list was last imported.</p>
           <h4>Price list</h4>
-          <p>Every active product with RRP, each tier&apos;s price (override first, tier default otherwise), cost where the feed carried one, and when it was last imported. Filter by supplier or search by SKU, name or category. Products come in through <strong>Store</strong> → Businesses → a supplier → <em>Import into store</em>.</p>
-          <p>Every change here is recorded in the audit log. The public store applies these tier prices once it reads this catalogue rather than its built-in product list -- that switch is the next stage.</p>
+          <p>Every active product with cost, RRP, each tier&apos;s price (supplier markup first, tier markup otherwise), whether it is live on the website, and when it was last imported. Filter by supplier, search by SKU, name or category, or show only what is live. Products come in through <strong>Data Feeds</strong>, and go on the website from <strong>Catalog</strong> with <em>Go live</em>.</p>
+          <p>Every change here is recorded in the audit log, and the website picks up new prices within five minutes.</p>
         </AdminHelpIcon>
       </h1>
       <AdminStoreTabs />
-      <p className="lead">Customer price tiers, per-supplier overrides, and the whole price list at every tier.</p>
+      <p className="lead">What each customer tier pays on top of our cost, per-supplier markups, and the whole price list at every tier.</p>
 
       {loadError ? <p className="form-error" role="alert">{loadError}</p> : (
         <AdminPricingManager tiers={tiers} suppliers={suppliers} priceList={priceList} />

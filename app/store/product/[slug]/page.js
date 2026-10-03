@@ -53,6 +53,20 @@ export async function generateMetadata(props) {
 // A tax-invoice promise was deliberately left out: Stripe sends a receipt,
 // not an ATO-compliant tax invoice, so claiming one would be a false
 // representation until that is built.
+// The supplier's photo, whole, in a white box where the category art goes.
+const PHOTO_FRAME = {
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  minHeight: 320,
+  padding: 24,
+  background: '#fff',
+  borderRadius: 16,
+};
+const PHOTO = { maxWidth: '100%', maxHeight: 360, objectFit: 'contain' };
+// Supplier descriptions run to pages: three lines up top, the rest below.
+const CLAMP = { display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' };
+
 const ASSURANCES = [
   { icon: ShieldCheck, text: 'Warranty support handled locally' },
   { icon: ReceiptText, text: 'Priced in AUD, GST included, no card surcharge' },
@@ -127,7 +141,7 @@ export default async function ProductPage(props) {
             />
             <span className="eyebrow">{category ? category.title : product.category}</span>
             <h1>{product.name}</h1>
-            <p className="lead">{product.description}</p>
+            <p className="lead" style={CLAMP}>{product.description}</p>
 
             <div className="product-buy">
               {showMemberPrice ? (
@@ -172,20 +186,34 @@ export default async function ProductPage(props) {
               ) : null}
             </div>
           </div>
-          <StoreCategoryArt slug={artSlugForProduct(product)} />
+          {product.imageUrl ? (
+            <div style={PHOTO_FRAME}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={product.imageUrl} alt={product.name} style={PHOTO} />
+            </div>
+          ) : (
+            <StoreCategoryArt slug={artSlugForProduct(product)} />
+          )}
         </div>
       </section>
 
       <section className="section section-spacious">
         <div className="container product-detail-grid">
-          <div>
-            <h2>What you get</h2>
-            <ul className="tick-list">
-              {(product.features || []).map((feature) => (
-                <li key={feature}>{feature}</li>
-              ))}
-            </ul>
-          </div>
+          {product.features && product.features.length > 0 ? (
+            <div>
+              <h2>What you get</h2>
+              <ul className="tick-list">
+                {product.features.map((feature) => (
+                  <li key={feature}>{feature}</li>
+                ))}
+              </ul>
+            </div>
+          ) : (
+            <div>
+              <h2>About this product</h2>
+              <div style={{ whiteSpace: 'pre-line' }}>{product.description}</div>
+            </div>
+          )}
           <div>
             <h2>Product details</h2>
             <dl className="product-spec-list">
@@ -193,6 +221,12 @@ export default async function ProductPage(props) {
                 <dt>Part number</dt>
                 <dd>{product.sku}</dd>
               </div>
+              {product.brand ? (
+                <div>
+                  <dt>Brand</dt>
+                  <dd>{product.brand}</dd>
+                </div>
+              ) : null}
               <div>
                 <dt>Category</dt>
                 <dd>
@@ -245,7 +279,7 @@ export default async function ProductPage(props) {
                 <Link href={productPath(r)} key={r.id}>
                   <article>
                     <h3>{r.name}</h3>
-                    <p>{r.description}</p>
+                    <p style={CLAMP}>{r.description}</p>
                   </article>
                 </Link>
               ))}
