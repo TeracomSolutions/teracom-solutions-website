@@ -6,6 +6,7 @@ import { Headset, PackageSearch, ReceiptText, ShieldCheck, Truck } from 'lucide-
 import Breadcrumbs from '@/components/Breadcrumbs';
 import JsonLd from '@/components/JsonLd';
 import AddToCartButton from '@/components/AddToCartButton';
+import CategoryProductGrid from '@/components/CategoryProductGrid';
 import CheckoutButton from '@/components/CheckoutButton';
 import StoreCategoryArt from '@/components/StoreCategoryArt';
 import ProductViewed from '@/components/ProductViewed';
@@ -21,6 +22,14 @@ import {
 } from '@/lib/products';
 import { findProductAsync, getAllProducts, getCustomerPricing } from '@/lib/catalogue';
 import { unitPriceCents } from '@/lib/catalogueMerge';
+import {
+  availabilityText,
+  gtinOf,
+  productsForSkus,
+  sizeText,
+  warrantyText,
+  weightText,
+} from '@/lib/productDetails';
 import { absoluteUrl, BUSINESS, pageMetadata } from '@/lib/seo';
 
 // The built-in products are prerendered; a product that only exists in the
@@ -85,9 +94,18 @@ export default async function ProductPage(props) {
   const customer = await getCustomerPricing(token);
   const isSignedIn = Boolean(customer);
   const category = storeCategoryForProduct(product);
-  const related = (await getAllProducts())
+  const allProducts = await getAllProducts();
+  const related = allProducts
     .filter((p) => p.id !== product.id && p.category === product.category)
     .slice(0, 3);
+  // What the supplier's feed says beyond the price. Accessories and
+  // alternatives show only when they are live in the store too.
+  const accessories = productsForSkus(allProducts, product.accessorySkus, product.id);
+  const alternatives = productsForSkus(allProducts, product.alternativeSkus, product.id);
+  const warranty = warrantyText(product.warrantyMonths);
+  const weight = weightText(product.weightKg);
+  const size = sizeText(product.lengthCm, product.widthCm, product.heightCm);
+  const gtin = gtinOf(product.barcode);
   const isSubscription = product.type === 'subscription';
   const showMemberPrice = isSignedIn && !isSubscription;
   const price = showMemberPrice ? unitPriceCents(product, customer) : product.priceCents;
@@ -105,6 +123,9 @@ export default async function ProductPage(props) {
     description: product.description,
     sku: product.sku,
     url: absoluteUrl(productPath(product)),
+    ...(product.imageUrl ? { image: product.imageUrl } : {}),
+    ...(product.manufacturerSku ? { mpn: product.manufacturerSku } : {}),
+    ...(gtin ? { gtin } : {}),
     ...(product.brand ? { brand: { '@type': 'Brand', name: product.brand } } : {}),
     ...(category ? { category: category.title } : {}),
     offers: {
@@ -146,7 +167,7 @@ export default async function ProductPage(props) {
             <div className="product-buy">
               {showMemberPrice ? (
                 <p className="price-rrp-struck">
-                  RRP <s>{formatMoney(product.priceCents)}</s>
+                  RRP <del>{formatMoney(product.priceCents)}</del>
                 </p>
               ) : null}
               <p className="price product-price">
@@ -221,6 +242,12 @@ export default async function ProductPage(props) {
                 <dt>Part number</dt>
                 <dd>{product.sku}</dd>
               </div>
+              {product.manufacturerSku ? (
+                <div>
+                  <dt>Manufacturer part number</dt>
+                  <dd>{product.manufacturerSku}</dd>
+                </div>
+              ) : null}
               {product.brand ? (
                 <div>
                   <dt>Brand</dt>
@@ -239,18 +266,67 @@ export default async function ProductPage(props) {
                   {formatMoney(product.priceCents)} inc. GST ({formatMoney(exGstCents(product.priceCents))} ex GST)
                 </dd>
               </div>
+              {product.type === 'hardware' ? (
+                <div>
+                  <dt>Availability</dt>
+                  <dd>{availabilityText(product.stock, product.nextDelivery)}</dd>
+                </div>
+              ) : null}
               <div>
                 <dt>Warranty</dt>
                 <dd>
+                  {warranty ? `${warranty} manufacturer's warranty. ` : null}
                   <Link href="/warranty">Warranty &amp; returns</Link>
                 </dd>
               </div>
+              {weight ? (
+                <div>
+                  <dt>Shipping weight</dt>
+                  <dd>{weight}</dd>
+                </div>
+              ) : null}
+              {size ? (
+                <div>
+                  <dt>Packed size</dt>
+                  <dd>{size}</dd>
+                </div>
+              ) : null}
+              {gtin ? (
+                <div>
+                  <dt>Barcode</dt>
+                  <dd>{gtin}</dd>
+                </div>
+              ) : null}
             </dl>
           </div>
         </div>
       </section>
 
       <ProductResources sku={product.sku} />
+
+      {accessories.length > 0 ? (
+        <section className="section section-spacious">
+          <div className="container">
+            <div className="section-heading">
+              <span className="eyebrow">Optional accessories</span>
+              <h2>Made to go with it.</h2>
+            </div>
+            <CategoryProductGrid products={accessories} isSignedIn={isSignedIn} customer={customer} />
+          </div>
+        </section>
+      ) : null}
+
+      {alternatives.length > 0 ? (
+        <section className="section section-spacious">
+          <div className="container">
+            <div className="section-heading">
+              <span className="eyebrow">Alternatives</span>
+              <h2>Other models that do the same job.</h2>
+            </div>
+            <CategoryProductGrid products={alternatives} isSignedIn={isSignedIn} customer={customer} />
+          </div>
+        </section>
+      ) : null}
 
       <section className="section section-spacious alt">
         <div className="container">
