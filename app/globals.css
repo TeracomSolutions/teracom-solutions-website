@@ -2664,3 +2664,9 @@ a.admin-status:hover { filter:brightness(1.15); }
 @media (max-width:640px) {
   .platform-services, .platform-pillars, .outcome-grid, .trust-grid, .trust-grid-detail, .ai-compare-teracom ul { grid-template-columns:1fr; }
 }
+
+/* Assistant: under each reply, the model that answered and a Copy button
+   (components/AdminAssistantChat.js), for copying a master prompt. */
+.admin-assistant-meta { display:flex; align-items:center; gap:10px; margin-top:10px; font-size:12px; color:var(--muted); }
+.admin-assistant-copy { background:none; border:1px solid var(--line); border-radius:999px; color:#ddd; padding:3px 12px; font:inherit; cursor:pointer; }
+.admin-assistant-copy:hover { border-color:rgba(255,255,255,.35); color:#fff; }
