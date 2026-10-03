@@ -1,9 +1,11 @@
 import Image from 'next/image';
+import BrandArt from '@/components/BrandArt';
 
 // The longer brand page, built from a profile in lib/brandProfiles: the
 // manufacturer's platforms, what its analytics do, the range, how a system
 // fits together and Teracom's part in it. The graphics are drawings of what
-// the technology does, not product photos.
+// the technology does, not product photos: either a drawing spec (art),
+// drawn by lib/brandArt in the brand's colour, or an SVG file (image).
 export default function BrandProfile({ brand, profile }) {
   return (
     <>
@@ -29,9 +31,13 @@ export default function BrandProfile({ brand, profile }) {
               {profile.platformsIntro && <p>{profile.platformsIntro}</p>}
             </div>
             <div className="brand-profile-platforms">
-              {profile.platforms.map((platform) => (
+              {profile.platforms.map((platform, index) => (
                 <article className="brand-profile-card brand-profile-platform" key={platform.name}>
-                  <Image className="brand-profile-art" src={platform.image} alt={platform.imageAlt} width={600} height={320} />
+                  {platform.art ? (
+                    <BrandArt className="brand-profile-art" spec={platform.art} uid={`${brand.slug}-platform-${index}`} accent={brand.accent} />
+                  ) : (
+                    <Image className="brand-profile-art" src={platform.image} alt={platform.imageAlt} width={600} height={320} />
+                  )}
                   <div className="brand-profile-card-body">
                     <span className="brand-profile-kicker">{platform.kicker}</span>
                     <h3>{platform.name}</h3>
@@ -58,9 +64,13 @@ export default function BrandProfile({ brand, profile }) {
               {profile.capabilitiesIntro && <p>{profile.capabilitiesIntro}</p>}
             </div>
             <div className="brand-profile-capabilities">
-              {profile.capabilities.map((capability) => (
+              {profile.capabilities.map((capability, index) => (
                 <article className="brand-profile-card" key={capability.title}>
-                  <Image className="brand-profile-art" src={capability.image} alt={capability.imageAlt} width={600} height={360} />
+                  {capability.art ? (
+                    <BrandArt className="brand-profile-art" spec={capability.art} uid={`${brand.slug}-capability-${index}`} accent={brand.accent} />
+                  ) : (
+                    <Image className="brand-profile-art" src={capability.image} alt={capability.imageAlt} width={600} height={360} />
+                  )}
                   <div className="brand-profile-card-body">
                     <h3>{capability.title}</h3>
                     <p>{capability.body}</p>
@@ -95,20 +105,29 @@ export default function BrandProfile({ brand, profile }) {
         </section>
       )}
 
-      {profile.architectureImage && (
+      {(profile.architectureImage || profile.architectureArt) && (
         <section className="section section-spacious alt">
           <div className="container">
             <div className="section-heading left brand-profile-heading">
               <span className="eyebrow">{profile.architectureEyebrow}</span>
               <h2>{profile.architectureHeading}</h2>
             </div>
-            <Image
-              className="brand-profile-art brand-profile-architecture"
-              src={profile.architectureImage}
-              alt={profile.architectureAlt}
-              width={1200}
-              height={560}
-            />
+            {profile.architectureArt ? (
+              <BrandArt
+                className="brand-profile-art brand-profile-architecture"
+                spec={profile.architectureArt}
+                uid={`${brand.slug}-architecture`}
+                accent={brand.accent}
+              />
+            ) : (
+              <Image
+                className="brand-profile-art brand-profile-architecture"
+                src={profile.architectureImage}
+                alt={profile.architectureAlt}
+                width={1200}
+                height={560}
+              />
+            )}
             {profile.architectureCaption && <p className="brand-profile-caption">{profile.architectureCaption}</p>}
           </div>
         </section>
