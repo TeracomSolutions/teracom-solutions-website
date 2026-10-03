@@ -107,10 +107,18 @@ export default function AdminBrandPicker({ uploadId, supplierName, onCancel, onD
                   <input type="checkbox" checked={chosen.has(b.brand)} onChange={() => toggle(b.brand)} />
                   <span>{b.brand}</span>
                   <span className="admin-muted">{b.products}</span>
+                  {b.hasPage === false && b.brand !== '(no brand)' ? (
+                    <span className="admin-muted" style={{ fontSize: '12px', color: '#ffcc66' }}>no brand page yet</span>
+                  ) : null}
                 </label>
               </li>
             ))}
           </ul>
+          {brands.some((b) => b.hasPage === false && b.brand !== '(no brand)') && (
+            <p className="admin-muted" style={{ fontSize: '13px' }}>
+              Brands marked <em>no brand page yet</em> are not in the website&apos;s Brands section. Their products still sell; ask for a brand page to be made for any you import.
+            </p>
+          )}
           <label className="admin-brand-remember">
             <input type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)} />
             Remember these brands: every later import from {supplierName || 'this supplier'} takes only these

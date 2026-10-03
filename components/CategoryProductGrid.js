@@ -8,6 +8,49 @@ import Link from 'next/link';
 import { formatMoney, productPath } from '@/lib/products';
 import { unitPriceCents } from '@/lib/catalogueMerge';
 
+// Small tiles, like the Brands page (Robert, 2026-10-03): a photo, the
+// brand, the name and the price, so a shopper can scan a category quickly.
+// The full description is on the product's own page, one click away.
+
+const GRID = { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(190px, 1fr))', gap: '16px' };
+const TILE = {
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'space-between',
+  gap: '10px',
+  padding: '14px',
+  border: '1px solid var(--line)',
+  borderRadius: '18px',
+  background: 'rgba(255,255,255,.04)',
+};
+const TILE_LINK = { display: 'flex', flexDirection: 'column', gap: '6px', color: 'inherit', textDecoration: 'none' };
+// Supplier photos come in every shape on a white background, so each sits
+// whole in the same small white box.
+const PHOTO_FRAME = {
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  height: '120px',
+  padding: '8px',
+  background: '#fff',
+  borderRadius: '12px',
+};
+const PHOTO = { maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' };
+const NO_PHOTO = { color: '#555', fontWeight: 700, fontSize: '14px', textAlign: 'center' };
+const BRAND = { color: 'var(--muted)', fontSize: '12px', fontWeight: 700, letterSpacing: '.06em', textTransform: 'uppercase' };
+const NAME = {
+  display: '-webkit-box',
+  WebkitLineClamp: 2,
+  WebkitBoxOrient: 'vertical',
+  overflow: 'hidden',
+  fontSize: '15px',
+  fontWeight: 700,
+  lineHeight: 1.3,
+  color: '#fff',
+};
+const PRICE = { margin: 0, fontSize: '17px', fontWeight: 800 };
+const NOTE = { color: 'var(--muted)', fontSize: '12px', fontWeight: 400 };
+
 export default function CategoryProductGrid({ products, isSignedIn = false, customer = null }) {
   const brands = useMemo(
     () => [...new Set(products.map((p) => p.brand).filter(Boolean))].sort(),
@@ -40,55 +83,62 @@ export default function CategoryProductGrid({ products, isSignedIn = false, cust
           ))}
         </div>
       )}
-      <div className="product-grid">
-        {visible.map((p) => (
-          <article className="product-card" key={p.id}>
-            <div>
-              <span className="badge">{p.type}</span>
-              <h3>
-                <Link href={productPath(p)}>{p.name}</Link>
-              </h3>
-              <p>{p.description}</p>
-            </div>
-            <div>
-              {p.priceCents === null ? (
-                <>
-                  <p className="price">Sign in to view pricing</p>
-                  <a href="/account/login" className="btn btn-primary">Sign in</a>
-                </>
-              ) : (
-                <>
-                  {isSignedIn && p.type !== 'subscription' ? (
-                    <>
-                      <p className="price-rrp-struck">RRP <s>{formatMoney(p.priceCents)}</s></p>
-                      <p className="price">
-                        <span className="price-gst-note">{customer?.tier ? `${customer.tier} price ` : 'Member price '}</span>
-                        {formatMoney(unitPriceCents(p, customer || { tier: null }))}
-                        <span className="price-gst-note"> inc. GST</span>
-                      </p>
-                    </>
+      {!isSignedIn && (
+        <p className="form-note">
+          Prices shown are RRP. <a href="/account/signup">Create a free account</a> for additional member discounts.
+        </p>
+      )}
+      <div style={GRID}>
+        {visible.map((p) => {
+          const isSubscription = p.type === 'subscription';
+          const memberPrice = isSignedIn && !isSubscription;
+          return (
+            <article key={p.id} style={TILE}>
+              <Link href={productPath(p)} style={TILE_LINK}>
+                <span style={PHOTO_FRAME}>
+                  {p.imageUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={p.imageUrl} alt={p.name} loading="lazy" style={PHOTO} />
                   ) : (
-                    <p className="price">
-                      {p.type === 'subscription' ? null : <span className="price-gst-note">RRP </span>}
-                      {formatMoney(p.priceCents)}
-                      <span className="price-gst-note"> inc. GST{p.type === 'subscription' ? ' / month' : ''}</span>
+                    <span style={NO_PHOTO}>{p.brand || 'Teracom'}</span>
+                  )}
+                </span>
+                {p.brand ? <span style={BRAND}>{p.brand}</span> : null}
+                <span style={NAME}>{p.name}</span>
+              </Link>
+              <div>
+                {p.priceCents === null ? (
+                  <p style={PRICE}>
+                    <a href="/account/login">Sign in for pricing</a>
+                  </p>
+                ) : (
+                  <>
+                    <p style={PRICE}>
+                      {formatMoney(memberPrice ? unitPriceCents(p, customer || { tier: null }) : p.priceCents)}
+                      <span style={NOTE}> inc. GST{isSubscription ? ' / month' : ''}</span>
                     </p>
-                  )}
-                  {!isSignedIn && p.type !== 'subscription' && (
-                    <p className="form-note">
-                      <a href="/account/signup">Create a free account</a> for additional member discounts.
+                    <p style={{ ...NOTE, margin: '2px 0 10px' }}>
+                      {memberPrice ? (
+                        <>
+                          {customer?.tier ? `${customer.tier} price` : 'Member price'} · RRP <del>{formatMoney(p.priceCents)}</del>
+                        </>
+                      ) : isSubscription ? (
+                        'Subscription'
+                      ) : (
+                        'RRP'
+                      )}
                     </p>
-                  )}
-                  {p.type === 'subscription' ? (
-                    <CheckoutButton productId={p.id} label="Subscribe" />
-                  ) : (
-                    <AddToCartButton productId={p.id} label="Add to Cart" />
-                  )}
-                </>
-              )}
-            </div>
-          </article>
-        ))}
+                    {isSubscription ? (
+                      <CheckoutButton productId={p.id} label="Subscribe" />
+                    ) : (
+                      <AddToCartButton productId={p.id} label="Add to Cart" />
+                    )}
+                  </>
+                )}
+              </div>
+            </article>
+          );
+        })}
       </div>
     </>
   );

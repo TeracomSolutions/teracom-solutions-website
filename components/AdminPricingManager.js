@@ -5,13 +5,26 @@ import { useRouter } from 'next/navigation';
 
 import { formatDateTime } from '@/lib/adminFormat';
 
-// The Pricing page: tier defaults, per-supplier overrides, and the whole
-// price list priced at every tier. Everything is RRP-based: RRP is what
-// the supplier feed says, each tier takes a percentage off it.
+// The Pricing page: tier markups, per-supplier overrides, and the whole
+// price list priced at every tier. Everything is cost-based (Robert,
+// 2026-10-03): a tier price is our cost ex GST plus that tier's markup,
+// plus GST, to the nearest 5 cents, and never more than the RRP.
+
+const inputStyle = { padding: '6px 8px', borderRadius: '8px', border: '1px solid var(--line)', background: '#0d0d0d', color: '#fff' };
 
 function money(cents) {
   if (cents == null) return '—';
   return `$${(cents / 100).toLocaleString('en-AU', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+}
+
+function percentText(value) {
+  return value == null ? '' : String(value);
+}
+
+// What a $100 (ex GST) cost sells for at this markup, inc GST.
+function exampleCents(markup) {
+  if (markup === '' || markup == null || !Number.isFinite(Number(markup))) return null;
+  return Math.round((10000 * (100 + Number(markup)) / 100 * 1.1) / 5) * 5;
 }
 
 async function send(url, method, body) {
@@ -26,20 +39,24 @@ async function send(url, method, body) {
 }
 
 function TierEditor({ tiers, onSaved }) {
-  const [drafts, setDrafts] = useState(() => Object.fromEntries(tiers.map((t) => [t.key, String(t.discount_percent)])));
+  const [drafts, setDrafts] = useState(() => Object.fromEntries(tiers.map((t) => [t.key, percentText(t.markup_percent)])));
   const [busyKey, setBusyKey] = useState(null);
   const [error, setError] = useState('');
 
   async function save(tier) {
-    const value = Number(drafts[tier.key]);
-    if (!Number.isFinite(value) || value < 0 || value > 100) {
-      setError('Enter a percentage between 0 and 100.');
-      return;
-    }
+    const raw = drafts[tier.key];
     setBusyKey(tier.key);
     setError('');
     try {
-      await send(`/api/admin/pricing/tiers/${tier.key}`, 'PUT', { discount_percent: value });
+      if (raw === '') {
+        await send(`/api/admin/pricing/tiers/${tier.key}`, 'PUT', { clear_markup: true });
+      } else {
+        const value = Number(raw);
+        if (!Number.isFinite(value) || value < 0 || value > 1000) {
+          throw new Error('Enter a markup between 0 and 1000 per cent, or clear the box to charge RRP.');
+        }
+        await send(`/api/admin/pricing/tiers/${tier.key}`, 'PUT', { markup_percent: value });
+      }
       onSaved();
     } catch (err) {
       setError(err.message);
@@ -50,9 +67,10 @@ function TierEditor({ tiers, onSaved }) {
 
   return (
     <div className="admin-card" style={{ marginBottom: '26px' }}>
-      <h2 style={{ marginTop: 0 }}>Tier discounts off RRP</h2>
+      <h2 style={{ marginTop: 0 }}>Markup on cost by tier</h2>
       <p className="admin-muted" style={{ marginTop: 0 }}>
-        The default for every supplier. Customers are matched to a tier by the pricing tier on their account (Silver, Gold or Platinum); customers with no tier pay RRP.
+        Price = our cost ex GST plus the markup, plus GST, to the nearest 5 cents. It never goes above RRP: where the markup would, the customer pays RRP. Products without a cost sell at RRP.
+        Member is any signed-in customer without a Silver, Gold or Platinum tier on their account. Visitors who are not signed in see RRP.
       </p>
       {error && <p className="form-error" role="alert">{error}</p>}
       <div className="admin-table-wrap" style={{ marginBottom: 0 }}>
@@ -60,7 +78,8 @@ function TierEditor({ tiers, onSaved }) {
           <thead>
             <tr>
               <th>Tier</th>
-              <th>Discount off RRP</th>
+              <th>Markup on cost</th>
+              <th>$100 cost sells for</th>
               <th>Last changed</th>
               <th></th>
             </tr>
@@ -74,19 +93,21 @@ function TierEditor({ tiers, onSaved }) {
                     <input
                       type="number"
                       min="0"
-                      max="100"
+                      max="1000"
                       step="0.5"
+                      placeholder="RRP"
                       value={drafts[tier.key]}
                       onChange={(event) => setDrafts({ ...drafts, [tier.key]: event.target.value })}
-                      style={{ width: '90px', padding: '6px 8px', borderRadius: '8px', border: '1px solid var(--line)', background: '#0d0d0d', color: '#fff' }}
-                      aria-label={`${tier.label} discount percent`}
+                      style={{ ...inputStyle, width: '90px' }}
+                      aria-label={`${tier.label} markup percent`}
                     />
                     <span className="admin-muted">%</span>
                   </span>
                 </td>
+                <td>{exampleCents(drafts[tier.key]) == null ? <span className="admin-muted">RRP</span> : `${money(exampleCents(drafts[tier.key]))} inc GST`}</td>
                 <td>{formatDateTime(tier.updated_at)}</td>
                 <td>
-                  <button type="button" className="btn btn-primary btn-sm" onClick={() => save(tier)} disabled={busyKey === tier.key || String(tier.discount_percent) === drafts[tier.key]}>
+                  <button type="button" className="btn btn-primary btn-sm" onClick={() => save(tier)} disabled={busyKey === tier.key || percentText(tier.markup_percent) === drafts[tier.key]}>
                     {busyKey === tier.key ? 'Saving…' : 'Save'}
                   </button>
                 </td>
@@ -120,10 +141,10 @@ function SupplierOverrides({ tiers, suppliers, onSaved }) {
         }
       } else {
         const value = Number(raw);
-        if (!Number.isFinite(value) || value < 0 || value > 100) {
-          throw new Error('Enter a percentage between 0 and 100, or clear the box to use the tier default.');
+        if (!Number.isFinite(value) || value < 0 || value > 1000) {
+          throw new Error('Enter a markup between 0 and 1000 per cent, or clear the box to use the tier markup.');
         }
-        await send(`/api/admin/pricing/suppliers/${supplier.supplier_id}/tiers/${tier.key}`, 'PUT', { discount_percent: value });
+        await send(`/api/admin/pricing/suppliers/${supplier.supplier_id}/tiers/${tier.key}`, 'PUT', { markup_percent: value });
       }
       setDrafts((d) => {
         const next = { ...d };
@@ -140,9 +161,9 @@ function SupplierOverrides({ tiers, suppliers, onSaved }) {
 
   return (
     <div className="admin-card" style={{ marginBottom: '26px' }}>
-      <h2 style={{ marginTop: 0 }}>Per-supplier overrides</h2>
+      <h2 style={{ marginTop: 0 }}>Per-supplier markups</h2>
       <p className="admin-muted" style={{ marginTop: 0 }}>
-        Leave a box blank to use the tier default above. A number here applies to that supplier&apos;s products only.
+        Leave a box blank to use the tier markup above. A number here applies to that supplier&apos;s products only.
       </p>
       {error && <p className="form-error" role="alert">{error}</p>}
       <div className="admin-table-wrap" style={{ marginBottom: 0 }}>
@@ -161,10 +182,7 @@ function SupplierOverrides({ tiers, suppliers, onSaved }) {
             )}
             {suppliers.map((supplier) => (
               <tr key={supplier.supplier_id}>
-                <td className="wrap">
-                  {supplier.supplier_name}
-                  <span className="admin-muted" style={{ display: 'block', fontSize: '12px' }}>{supplier.business_name}</span>
-                </td>
+                <td className="wrap">{supplier.supplier_name}</td>
                 <td>{supplier.product_count}</td>
                 <td>{supplier.last_import_at ? formatDateTime(supplier.last_import_at) : <span className="admin-muted">Never</span>}</td>
                 {tiers.map((tier) => {
@@ -178,13 +196,13 @@ function SupplierOverrides({ tiers, suppliers, onSaved }) {
                         <input
                           type="number"
                           min="0"
-                          max="100"
+                          max="1000"
                           step="0.5"
-                          placeholder={`${tier.discount_percent}`}
+                          placeholder={tier.markup_percent == null ? 'RRP' : `${tier.markup_percent}`}
                           value={value}
                           onChange={(event) => setDrafts({ ...drafts, [key]: event.target.value })}
-                          style={{ width: '80px', padding: '6px 8px', borderRadius: '8px', border: '1px solid var(--line)', background: '#0d0d0d', color: '#fff' }}
-                          aria-label={`${supplier.supplier_name} ${tier.label} override percent`}
+                          style={{ ...inputStyle, width: '80px' }}
+                          aria-label={`${supplier.supplier_name} ${tier.label} markup percent`}
                         />
                         {dirty && (
                           <button type="button" className="btn btn-primary btn-sm" onClick={() => save(supplier, tier)} disabled={busy === key}>
@@ -207,15 +225,17 @@ function SupplierOverrides({ tiers, suppliers, onSaved }) {
 function PriceList({ tiers, rows, suppliers }) {
   const [supplierId, setSupplierId] = useState('');
   const [q, setQ] = useState('');
+  const [liveOnly, setLiveOnly] = useState(false);
 
   const filtered = useMemo(() => {
     const needle = q.trim().toLowerCase();
     return rows.filter((row) => {
       if (supplierId && row.supplier_id !== supplierId) return false;
+      if (liveOnly && !row.published) return false;
       if (!needle) return true;
       return [row.sku, row.name, row.supplier, row.category].some((v) => v && v.toLowerCase().includes(needle));
     });
-  }, [rows, supplierId, q]);
+  }, [rows, supplierId, q, liveOnly]);
 
   return (
     <div>
@@ -230,8 +250,11 @@ function PriceList({ tiers, rows, suppliers }) {
           placeholder="Search SKU, name, category"
           value={q}
           onChange={(event) => setQ(event.target.value)}
-          style={{ padding: '6px 10px', borderRadius: '8px', border: '1px solid var(--line)', background: '#0d0d0d', color: '#fff', minWidth: '240px' }}
+          style={{ ...inputStyle, padding: '6px 10px', minWidth: '240px' }}
         />
+        <label style={{ display: 'inline-flex', gap: '6px', alignItems: 'center' }}>
+          <input type="checkbox" checked={liveOnly} onChange={(event) => setLiveOnly(event.target.checked)} /> live on the website only
+        </label>
         <span className="admin-muted">{filtered.length} of {rows.length} products</span>
       </div>
       <div className="admin-table-wrap">
@@ -241,24 +264,26 @@ function PriceList({ tiers, rows, suppliers }) {
               <th>SKU</th>
               <th>Product</th>
               <th>Supplier</th>
+              <th>Website</th>
+              <th>Cost ex GST</th>
               <th>RRP</th>
               {tiers.map((tier) => <th key={tier.key}>{tier.label}</th>)}
-              <th>Cost</th>
               <th>Last imported</th>
             </tr>
           </thead>
           <tbody>
             {filtered.length === 0 && (
-              <tr><td colSpan={6 + tiers.length} className="admin-muted">No products. Import a supplier price list from Businesses &amp; Suppliers.</td></tr>
+              <tr><td colSpan={7 + tiers.length} className="admin-muted">No products. Import a supplier price list from Data Feeds.</td></tr>
             )}
             {filtered.map((row) => (
               <tr key={row.id}>
                 <td>{row.sku}</td>
                 <td className="wrap">{row.name}<span className="admin-muted" style={{ display: 'block', fontSize: '12px' }}>{row.category}</span></td>
                 <td>{row.supplier || '—'}</td>
+                <td>{row.published ? 'Live' : <span className="admin-muted">Offline</span>}</td>
+                <td>{money(row.cost_cents)}</td>
                 <td>{money(row.rrp_cents)}</td>
                 {tiers.map((tier) => <td key={tier.key}>{money(row.tier_prices_cents[tier.key])}</td>)}
-                <td>{money(row.cost_cents)}</td>
                 <td>{formatDateTime(row.last_imported_at)}</td>
               </tr>
             ))}
