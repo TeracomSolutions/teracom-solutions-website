@@ -3,26 +3,48 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-// "Import into store" for one uploaded price list. The backend parses the
-// file and upserts by SKU; running it again on the same file updates.
-export default function AdminImportUploadButton({ uploadId, alreadyImported }) {
+import AdminBrandPicker from '@/components/AdminBrandPicker';
+
+function summaryText(result) {
+  const parts = [`${result.created} added`, `${result.updated} updated`];
+  if (result.filtered) parts.push(`${result.filtered} from other brands left out`);
+  if (result.skipped) parts.push(`${result.skipped} row${result.skipped === 1 ? '' : 's'} skipped`);
+  return `${parts.join(', ')}.`;
+}
+
+// Import one uploaded price list into the store. With a brand rule saved
+// for the supplier it imports straight away, keeping to those brands;
+// without one it opens the brand picker first.
+export default function AdminImportUploadButton({ uploadId, alreadyImported, hasRule, supplierName }) {
   const router = useRouter();
+  const [picking, setPicking] = useState(false);
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState('');
 
-  async function handleClick() {
+  function done(data) {
+    setPicking(false);
+    setResult(data);
+    router.refresh();
+  }
+
+  async function importWithRule() {
     setBusy(true);
     setError('');
     setResult(null);
     try {
-      const response = await fetch(`/api/admin/uploads/${uploadId}/import`, { method: 'POST' });
+      const response = await fetch(`/api/admin/uploads/${uploadId}/import-selected`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ brands: null }),
+      });
       const data = await response.json().catch(() => ({}));
-      if (!response.ok) {
-        throw new Error(data.error || 'The import failed.');
+      if (!response.ok) throw new Error(data.error || 'The import failed.');
+      if (data.needs_brands) {
+        setPicking(true);
+        return;
       }
-      setResult(data);
-      router.refresh();
+      done(data);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -30,14 +52,34 @@ export default function AdminImportUploadButton({ uploadId, alreadyImported }) {
     }
   }
 
+  if (picking) {
+    return (
+      <AdminBrandPicker
+        uploadId={uploadId}
+        supplierName={supplierName}
+        onCancel={() => setPicking(false)}
+        onDone={done}
+      />
+    );
+  }
+
   return (
     <div className="admin-actions" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '6px' }}>
-      <button type="button" className={`btn btn-sm ${alreadyImported ? 'btn-secondary' : 'btn-primary'}`} onClick={handleClick} disabled={busy}>
-        {busy ? 'Importing…' : alreadyImported ? 'Import again' : 'Import into store'}
-      </button>
+      {hasRule ? (
+        <button type="button" className={`btn btn-sm ${alreadyImported ? 'btn-secondary' : 'btn-primary'}`} onClick={importWithRule} disabled={busy}>
+          {busy ? 'Importing…' : alreadyImported ? 'Import again' : 'Import into store'}
+        </button>
+      ) : (
+        <button type="button" className="btn btn-primary btn-sm" onClick={() => setPicking(true)}>
+          Choose brands and import
+        </button>
+      )}
+      {hasRule && (
+        <button type="button" className="admin-link-button" onClick={() => setPicking(true)}>Choose other brands</button>
+      )}
       {result && (
         <span className="admin-muted" style={{ fontSize: '13px', whiteSpace: 'normal' }}>
-          {result.created} added, {result.updated} updated{result.skipped ? `, ${result.skipped} row${result.skipped === 1 ? '' : 's'} skipped` : ''}.
+          {summaryText(result)}
           {result.problems && result.problems.length > 0 && (
             <>
               {' '}

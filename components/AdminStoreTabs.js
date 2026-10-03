@@ -15,7 +15,7 @@ export default function AdminStoreTabs() {
         className={isAreaActive({ href: '/admin/suppliers' }, pathname) ? 'admin-tab active' : 'admin-tab'}
         aria-current={isAreaActive({ href: '/admin/suppliers' }, pathname) ? 'page' : undefined}
       >
-        Businesses
+        Data Feeds
       </Link>
       <Link
         href="/admin/catalog"
