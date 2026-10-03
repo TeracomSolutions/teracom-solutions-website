@@ -5,9 +5,10 @@ import { useRouter } from 'next/navigation';
 
 import { formatDateTime, humanise } from '@/lib/adminFormat';
 
-// A supplier's automatic feeds: a URL or API pulled on a schedule and
-// imported into the store, with the pull history landing in the same
-// upload list as hand uploads.
+// A supplier's automatic feeds: a direct download link, a URL or an API
+// pulled on a schedule and imported into the store, with the pull history
+// landing in the same upload list as hand uploads. The backend keeps the
+// full link encrypted and returns only a masked copy (feed.url).
 const FORMATS = [
   { key: 'auto', label: 'Work it out' },
   { key: 'csv', label: 'CSV' },
@@ -73,13 +74,15 @@ function AddFeedForm({ supplierId, onDone }) {
   }
 
   if (!open) {
-    return <button type="button" className="btn btn-primary btn-sm" onClick={() => setOpen(true)}>Add an automatic feed</button>;
+    return <button type="button" className="btn btn-primary btn-sm" onClick={() => setOpen(true)}>Add a direct link or feed</button>;
   }
 
   return (
     <form onSubmit={submit} className="admin-form admin-card">
       <label>Name<input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Leader price file" required /></label>
-      <label>Feed address<input type="url" value={url} onChange={(e) => setUrl(e.target.value)} placeholder="https://supplier.example.com/pricelist.csv or an API address" required /></label>
+      <label>Direct link or feed address <span className="admin-muted">for Leader: Data Feed Center, CopyLink next to Stock Data Feed - CSV with Heading. Stored encrypted; only its start is shown again.</span>
+        <input type="url" value={url} onChange={(e) => setUrl(e.target.value)} placeholder="https://partner.supplier.com.au/... (paste the whole link)" required />
+      </label>
       <label>Format
         <select value={format} onChange={(e) => setFormat(e.target.value)}>
           {FORMATS.map((f) => <option key={f.key} value={f.key}>{f.label}</option>)}
@@ -141,7 +144,7 @@ export default function AdminSupplierFeeds({ supplierId, feeds }) {
           </thead>
           <tbody>
             {feeds.length === 0 && (
-              <tr><td colSpan={7} className="admin-muted">No automatic feeds. Add one below if this supplier publishes a price file or an API; otherwise upload files by hand above.</td></tr>
+              <tr><td colSpan={7} className="admin-muted">No direct link or feed yet. Add one below if this supplier publishes a price file, a download link or an API; otherwise upload files by hand.</td></tr>
             )}
             {feeds.map((feed) => (
               <tr key={feed.id} style={feed.active ? undefined : { opacity: 0.55 }}>

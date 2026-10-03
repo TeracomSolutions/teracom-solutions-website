@@ -3,10 +3,12 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-export default function AdminAddSupplierForm({ businessId }) {
+// Adds a supplier on the Data Feeds page. There is one website, so the
+// backend files it under that business; nobody picks one here.
+export default function AdminAddSupplierForm() {
   const [isExpanded, setIsExpanded] = useState(false);
   const [name, setName] = useState('');
-  const [supplierType, setSupplierType] = useState('manufacturer');
+  const [supplierType, setSupplierType] = useState('distributor');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
 
@@ -18,7 +20,7 @@ export default function AdminAddSupplierForm({ businessId }) {
     setError(null);
 
     try {
-      const response = await fetch(`/api/admin/businesses/${businessId}/suppliers`, {
+      const response = await fetch('/api/admin/suppliers', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, supplierType }),
@@ -29,7 +31,7 @@ export default function AdminAddSupplierForm({ businessId }) {
       }
 
       setName('');
-      setSupplierType('manufacturer');
+      setSupplierType('distributor');
       setIsExpanded(false);
       router.refresh();
     } catch (err) {
@@ -56,6 +58,7 @@ export default function AdminAddSupplierForm({ businessId }) {
           type="text"
           value={name}
           onChange={(event) => setName(event.target.value)}
+          placeholder="e.g. Leader Computers"
           required
         />
       </label>
@@ -63,8 +66,8 @@ export default function AdminAddSupplierForm({ businessId }) {
       <label>
         Supplier type
         <select id="supplierType" value={supplierType} onChange={(event) => setSupplierType(event.target.value)}>
-          <option value="manufacturer">Manufacturer</option>
-          <option value="distributor">Distributor</option>
+          <option value="distributor">Distributor (sells many brands)</option>
+          <option value="manufacturer">Manufacturer (makes its own)</option>
         </select>
       </label>
 

@@ -2679,3 +2679,16 @@ a.admin-status:hover { filter:brightness(1.15); }
 .home-news-all { flex:none; color:rgba(255,255,255,.75); font-size:13px; font-weight:700; text-decoration:none; white-space:nowrap; }
 .home-news-all:hover { color:#fff; }
 @media (max-width:640px) { .home-news-all { display:none; } }
+
+/* Data Feeds: the brand picker and a supplier's brand rule
+   (components/AdminBrandPicker.js, AdminBrandRule.js). */
+.admin-brand-picker { margin-top:10px; min-width:min(560px, 100%); white-space:normal; }
+.admin-brand-picker h3 { margin:0 0 6px; font-size:16px; }
+.admin-brand-search { width:100%; margin:8px 0; }
+.admin-brand-list { list-style:none; margin:10px 0; padding:0; display:grid; grid-template-columns:repeat(auto-fill, minmax(180px, 1fr)); gap:4px 14px; max-height:320px; overflow-y:auto; }
+.admin-brand-list label { display:flex; align-items:center; gap:8px; font-size:14px; cursor:pointer; }
+.admin-brand-list label span:first-of-type { flex:1; }
+.admin-brand-remember { display:flex; align-items:center; gap:8px; font-size:14px; margin:6px 0 10px; }
+.admin-brand-chips { list-style:none; margin:8px 0 12px; padding:0; display:flex; flex-wrap:wrap; gap:8px; }
+.admin-brand-chips li { padding:5px 12px; border-radius:999px; border:1px solid var(--line); background:rgba(255,255,255,.05); font-size:13px; }
+.admin-link-button { background:none; border:none; padding:0; color:#9fc3ff; font:inherit; font-size:13px; text-decoration:underline; cursor:pointer; }
