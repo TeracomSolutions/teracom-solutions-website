@@ -2597,3 +2597,9 @@ a.admin-status:hover { filter:brightness(1.15); }
 @media (max-width:640px) {
   .brand-profile-stats, .brand-profile-capabilities, .brand-profile-range, .brand-profile-steps { grid-template-columns:1fr; }
 }
+
+/* Brands: drawings from lib/brandArt (components/BrandArt.js), drawn inline
+   in the brand's colour. Same frame as the SVG files they stand in for. */
+.brand-art svg { display:block; width:100%; height:auto; }
+.brand-hero-visual .brand-art svg { border-radius:24px; border:1px solid var(--line); box-shadow:0 35px 100px color-mix(in srgb, var(--brand-accent) 22%, transparent); }
+.brand-art.brand-profile-architecture { overflow:hidden; }
