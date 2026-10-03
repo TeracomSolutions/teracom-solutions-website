@@ -29,6 +29,8 @@ const INTEREST_TO_INQUIRY_TYPE = {
   'Technical Consulting': 'technical_consulting',
   'Teracom Store': 'store',
   Partnership: 'partnership',
+  // "Register interest" on a Teracom AI module still in early access.
+  'Early Access': 'securityos',
 };
 
 export async function POST(req) {
