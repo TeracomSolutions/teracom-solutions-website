@@ -13,6 +13,7 @@ import {
   Tag,
   Wrench,
 } from 'lucide-react';
+import { getAllProducts } from '@/lib/catalogue';
 import { groupResults, searchSite } from '@/lib/search';
 
 export const metadata = {
@@ -48,7 +49,8 @@ const POPULAR = [
 export default async function SearchPage(props) {
   const searchParams = await props.searchParams;
   const q = typeof searchParams?.q === 'string' ? searchParams.q.trim().slice(0, 100) : '';
-  const results = q ? searchSite(q) : [];
+  // Every product live in the store is searchable, not only the built-in list.
+  const results = q ? searchSite(q, { products: await getAllProducts() }) : [];
   const groups = groupResults(results);
 
   return (
