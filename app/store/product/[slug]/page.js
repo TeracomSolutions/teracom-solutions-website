@@ -76,6 +76,10 @@ const PHOTO = { maxWidth: '100%', maxHeight: 360, objectFit: 'contain' };
 // Supplier descriptions run to pages: three lines up top, the rest below.
 const CLAMP = { display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' };
 
+// Out-of-stock products stay orderable and say when stock is expected.
+const IN_STOCK = { margin: '8px 0', fontWeight: 700, color: '#7ee2a8' };
+const ON_ORDER = { margin: '8px 0', fontWeight: 700, color: '#ffcc66' };
+
 // The supplier's description: spec tables, brochure images and long links
 // stay inside their column.
 const DESCRIPTION_CSS = `
@@ -87,7 +91,6 @@ const DESCRIPTION_CSS = `
 .product-description a { color: var(--red2); }
 .product-description h3, .product-description h4 { margin: 18px 0 8px; }
 `;
-
 const ASSURANCES = [
   { icon: ShieldCheck, text: 'Warranty support handled locally' },
   { icon: ReceiptText, text: 'Priced in AUD, GST included, no card surcharge' },
@@ -192,6 +195,12 @@ export default async function ProductPage(props) {
                   inclusive one stays the prominent figure, which is what the
                   ACL requires on a page a consumer can also land on. */}
               <p className="price-ex-gst">{formatMoney(exGstCents(price))} ex GST</p>
+
+              {product.type === 'hardware' && product.stock !== null && product.stock !== undefined ? (
+                <p style={Number(product.stock) > 0 ? IN_STOCK : ON_ORDER}>
+                  {availabilityText(product.stock, product.nextDelivery)}
+                </p>
+              ) : null}
 
               {!isSignedIn && !isSubscription ? (
                 <p className="form-note">
