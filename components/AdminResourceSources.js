@@ -4,7 +4,7 @@ import { Fragment, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
-import { Folder, Pencil } from 'lucide-react';
+import { Folder, Pause, Pencil, Play, RefreshCw, Trash2 } from 'lucide-react';
 
 import { formatDateTime, humanise } from '@/lib/adminFormat';
 import { SECTION_LABELS, SITE_DOCUMENT_SECTIONS, sectionForType } from '@/lib/publishedResources';
@@ -12,7 +12,9 @@ import { changedFields, sourceFormDefaults } from '@/lib/resourceSourceFields';
 import { problemsLine, splitProblems } from '@/lib/checkProblems';
 
 // The Resources page: the websites we watch and a form to add one, with
-// where each one's documents go on the public website.
+// where each one's documents go on the public website. One compact row per
+// website (Robert, 2026-10-03): the details are on the site's own page, and
+// Check, Pause, Edit and Remove stay in view.
 const DOC_TYPE_OPTIONS = [
   { key: 'datasheet', label: 'Data sheets' },
   { key: 'user_manual', label: 'User manuals' },
@@ -44,6 +46,15 @@ async function send(url, method, body) {
   const data = await response.json().catch(() => ({}));
   if (!response.ok) throw new Error(data.error || 'The request failed.');
   return data;
+}
+
+// The address without its scheme or www, for a one-line cell; the full
+// address is in the cell's tooltip and on the site's own page.
+function shortUrl(url) {
+  const text = String(url || '');
+  const start = text.indexOf('://');
+  const rest = start >= 0 ? text.slice(start + 3) : text;
+  return rest.startsWith('www.') ? rest.slice(4) : rest;
 }
 
 function sameMap(a, b) {
@@ -290,49 +301,66 @@ export default function AdminResourceSources({ sources, suppliers }) {
         <span className="admin-muted">{sources.length} website{sources.length === 1 ? '' : 's'} watched. The scheduler checks recurring ones every 15 minutes for anything due.</span>
       </div>
       <div className="admin-table-wrap">
-        <table className="admin-table">
+        <table className="admin-table admin-sources-table">
+          <colgroup>
+            <col style={{ width: '31%' }} />
+            <col style={{ width: '17%' }} />
+            <col style={{ width: '21%' }} />
+            <col style={{ width: '9%' }} />
+            <col style={{ width: '22%' }} />
+          </colgroup>
           <thead>
             <tr>
               <th>Website</th>
               <th>Collects</th>
-              <th>Check</th>
-              <th>Last check</th>
-              <th>Result</th>
+              <th>Status</th>
               <th>Documents</th>
-              <th>Next check</th>
               <th></th>
             </tr>
           </thead>
           <tbody>
             {sources.length === 0 && (
-              <tr><td colSpan={8} className="admin-muted">No websites yet. Add a supplier or manufacturer downloads page below.</td></tr>
+              <tr><td colSpan={5} className="admin-muted">No websites yet. Add a supplier or manufacturer downloads page below.</td></tr>
             )}
             {sources.map((source) => {
               const isEditing = editingId === source.id;
+              const busy = busyId === source.id;
               return (
                 <Fragment key={source.id}>
-                  <tr style={source.active ? undefined : { opacity: 0.55 }}>
-                    <td className="wrap">
-                      <Link href={`/admin/resources/${source.id}`} className="admin-link">{source.name}</Link>
-                      <span className="admin-muted" style={{ display: 'block', fontSize: '12px', overflowWrap: 'anywhere' }}>{source.url}</span>
-                      {source.brand && source.brand !== source.name && <span className="admin-muted" style={{ display: 'block', fontSize: '12px' }}>Brand: {source.brand}</span>}
-                      {source.folder && (
-                        <Link href={`/admin/resources/${source.id}#files`} className="admin-tree-inline" title="Where its files are kept on the server">
-                          <Folder size={13} strokeWidth={1.8} aria-hidden="true" /> uploads/{source.folder}/
-                        </Link>
-                      )}
+                  <tr className={source.active ? undefined : 'is-paused'}>
+                    <td>
+                      <Link href={`/admin/resources/${source.id}`} className="admin-link admin-source-name">{source.name}</Link>
+                      <span className="admin-source-url" title={source.url}>{shortUrl(source.url)}</span>
+                      {(source.brand && source.brand !== source.name) || source.folder ? (
+                        <span className="admin-source-sub">
+                          {source.brand && source.brand !== source.name ? `Brand: ${source.brand}` : ''}
+                          {source.folder && (
+                            <Link href={`/admin/resources/${source.id}#files`} className="admin-tree-inline" title="Where its files are kept on the server">
+                              <Folder size={12} strokeWidth={1.8} aria-hidden="true" /> uploads/{source.folder}/
+                            </Link>
+                          )}
+                        </span>
+                      ) : null}
                     </td>
-                    <td className="wrap">{source.doc_types.length ? source.doc_types.map((t) => humanise(t)).join(', ') : 'All PDFs'}</td>
-                    <td>{source.recurrence === 'manual' ? 'Manual' : humanise(source.recurrence)}{source.follow_links ? ` · linked pages · ${source.max_pages} pages` : ''}</td>
-                    <td>{formatDateTime(source.last_checked_at, 'Never')}</td>
+                    <td>
+                      <span className="admin-source-line" title={source.doc_types.length ? source.doc_types.map((t) => humanise(t)).join(', ') : 'All PDFs'}>
+                        {source.doc_types.length ? source.doc_types.map((t) => humanise(t)).join(', ') : 'All PDFs'}
+                      </span>
+                      <span className="admin-source-sub">
+                        {source.recurrence === 'manual' ? 'Manual' : humanise(source.recurrence)}{source.follow_links ? ` · up to ${source.max_pages} pages` : ''}
+                      </span>
+                    </td>
                     <td>
                       {!source.active && <span className="admin-status is-failed" style={{ marginRight: '6px' }}>Paused</span>}
                       <span className={`admin-status ${statusClass(source.last_status)}`}>{humanise(source.last_status)}</span>
-                      {source.last_status === 'ok' && (
-                        <span className="admin-muted" style={{ display: 'block', fontSize: '12px' }}>
-                          {source.last_found} found · {source.last_new} new · {source.last_changed} changed
-                        </span>
-                      )}
+                      <span className="admin-source-sub">
+                        {source.last_status === 'ok'
+                          ? `${source.last_found} found · ${source.last_new} new · ${source.last_changed} changed`
+                          : `Checked ${formatDateTime(source.last_checked_at, 'never')}`}
+                      </span>
+                      <span className="admin-source-sub">
+                        {source.active ? `Next: ${formatDateTime(source.next_check_at, source.recurrence === 'manual' ? 'manual' : 'soon')}` : 'Checks paused'}
+                      </span>
                       {source.last_error && (
                         <details className="admin-result-details">
                           <summary>{problemsLine(source.last_error)}</summary>
@@ -342,36 +370,30 @@ export default function AdminResourceSources({ sources, suppliers }) {
                     </td>
                     <td>
                       {source.document_count}
-                      <span className="admin-muted" style={{ display: 'block', fontSize: '12px' }}>
-                        {source.site_document_count || 0} on the website{source.site_publish ? ' · new ones go on automatically' : ''}
+                      <span className="admin-source-sub" title={source.site_publish ? 'New ones go on the website automatically' : undefined}>
+                        {source.site_document_count || 0} on site{source.site_publish ? ' · auto' : ''}
                       </span>
                     </td>
-                    <td>{source.active ? formatDateTime(source.next_check_at, source.recurrence === 'manual' ? 'Manual' : 'Soon') : 'Paused'}</td>
                     <td>
-                      <div className="admin-actions">
-                        <button type="button" className="btn btn-primary btn-sm" onClick={() => checkNow(source)} disabled={busyId === source.id || source.last_status === 'running'}>
-                          {source.last_status === 'running' ? 'Checking…' : 'Check now'}
+                      <div className="admin-source-actions">
+                        <button type="button" className="admin-mini-btn is-primary" onClick={() => checkNow(source)} disabled={busy || source.last_status === 'running'} title="Check this website now">
+                          <RefreshCw size={13} strokeWidth={2} aria-hidden="true" /> {source.last_status === 'running' ? 'Checking…' : 'Check'}
                         </button>
-                        <button type="button" className="btn btn-secondary btn-sm" onClick={() => toggleActive(source)} disabled={busyId === source.id}>
-                          {source.active ? 'Pause checks' : 'Resume checks'}
+                        <button type="button" className="admin-mini-btn" onClick={() => toggleActive(source)} disabled={busy} title={source.active ? 'Stop checking this website for new documents' : 'Start checking this website again'}>
+                          {source.active ? <Pause size={13} strokeWidth={2} aria-hidden="true" /> : <Play size={13} strokeWidth={2} aria-hidden="true" />} {source.active ? 'Pause' : 'Resume'}
                         </button>
-                        <button
-                          type="button"
-                          className="btn btn-secondary btn-sm"
-                          onClick={() => setEditingId(isEditing ? null : source.id)}
-                          disabled={busyId === source.id}
-                        >
-                          <Pencil size={14} strokeWidth={2} aria-hidden="true" /> {isEditing ? 'Close' : 'Edit'}
+                        <button type="button" className="admin-mini-btn" onClick={() => setEditingId(isEditing ? null : source.id)} disabled={busy} title="Change the address, name, schedule or publishing">
+                          <Pencil size={13} strokeWidth={2} aria-hidden="true" /> {isEditing ? 'Close' : 'Edit'}
                         </button>
-                        <button type="button" className="btn btn-secondary btn-sm" onClick={() => remove(source)} disabled={busyId === source.id}>
-                          Remove
+                        <button type="button" className="admin-mini-btn" onClick={() => remove(source)} disabled={busy} title="Remove this website and its documents" aria-label={`Remove ${source.name}`}>
+                          <Trash2 size={13} strokeWidth={2} aria-hidden="true" />
                         </button>
                       </div>
                     </td>
                   </tr>
                   {isEditing && (
                     <tr key={`${source.id}-edit`}>
-                      <td colSpan={8}>
+                      <td colSpan={5} className="wrap">
                         <SourceForm
                           suppliers={suppliers}
                           initial={source}
