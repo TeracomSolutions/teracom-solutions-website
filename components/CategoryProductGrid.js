@@ -7,6 +7,7 @@ import Link from 'next/link';
 
 import { formatMoney, productPath } from '@/lib/products';
 import { unitPriceCents } from '@/lib/catalogueMerge';
+import { availabilityText } from '@/lib/productDetails';
 
 // Small tiles, like the Brands page (Robert, 2026-10-03): a photo, the
 // brand, the name and the price, so a shopper can scan a category quickly.
@@ -50,6 +51,9 @@ const NAME = {
 };
 const PRICE = { margin: 0, fontSize: '17px', fontWeight: 800 };
 const NOTE = { color: 'var(--muted)', fontSize: '12px', fontWeight: 400 };
+// Out-of-stock products stay orderable and say when stock is expected.
+const IN_STOCK = { margin: '0 0 10px', fontSize: '12px', fontWeight: 700, color: '#7ee2a8' };
+const ON_ORDER = { margin: '0 0 10px', fontSize: '12px', fontWeight: 700, color: '#ffcc66' };
 const MORE = { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px', marginTop: '24px' };
 // A category can hold hundreds of products: show them a page at a time.
 const PAGE_SIZE = 24;
@@ -138,6 +142,9 @@ export default function CategoryProductGrid({ products, isSignedIn = false, cust
                         'RRP'
                       )}
                     </p>
+                    {p.type === 'hardware' && p.stock !== null && p.stock !== undefined ? (
+                      <p style={Number(p.stock) > 0 ? IN_STOCK : ON_ORDER}>{availabilityText(p.stock, p.nextDelivery)}</p>
+                    ) : null}
                     {isSubscription ? (
                       <CheckoutButton productId={p.id} label="Subscribe" />
                     ) : (
