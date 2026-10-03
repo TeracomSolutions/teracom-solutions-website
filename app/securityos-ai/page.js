@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { aiCapabilities } from '@/lib/aiCapabilities';
 import CategoryIcon from '@/components/CategoryIcon';
 import JsonLd from '@/components/JsonLd';
+import { AiComparison, OrganisationalMemory, SecurityTrust } from '@/components/PlatformSections';
 import { pageMetadata, SITE_ORIGIN, absoluteUrl } from '@/lib/seo';
 
 
@@ -52,9 +53,9 @@ export default function SecurityOSAI() {
             <span className="eyebrow">Available now</span>
             <h1>Teracom AI: the AI operating system for modern organisations.</h1>
             <p className="lead">
-              A focused platform for technical support, documentation, estimation assistance, tender support and
-              knowledge management — built from real electronic security industry expertise, designed for
-              organisations of any kind.
+              Teracom AI captures, protects and transforms organisational knowledge into a workforce of digital
+              specialists — built from real electronic security industry expertise, designed for organisations of
+              any kind, and able to run in Australia or on your own servers.
             </p>
             <div className="hero-actions">
               <Link className="btn btn-primary" href="/store">
@@ -77,6 +78,8 @@ export default function SecurityOSAI() {
           </div>
         </div>
       </section>
+
+      <OrganisationalMemory alt />
 
       <section className="section section-spacious">
         <div className="container">
@@ -128,6 +131,10 @@ export default function SecurityOSAI() {
           </div>
         </section>
       ))}
+
+      <AiComparison alt />
+
+      <SecurityTrust detailed />
 
       <section className="section section-spacious">
         <div className="container">

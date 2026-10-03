@@ -1,7 +1,7 @@
 import FormGuard from '@/components/FormGuard';
 import TurnstileWidget from '@/components/TurnstileWidget';
 
-export default function ContactForm({ preselectedInterest = '', returnTo = '/' }) {
+export default function ContactForm({ preselectedInterest = '', preselectedMessage = '', returnTo = '/' }) {
   return (
     <form className="contact-form" action="/api/leads" method="post">
       <input type="hidden" name="return_to" value={returnTo} />
@@ -30,11 +30,12 @@ export default function ContactForm({ preselectedInterest = '', returnTo = '/' }
           <option>Technical Consulting</option>
           <option>Teracom Store</option>
           <option>Partnership</option>
+          <option>Early Access</option>
         </select>
       </div>
       <div className="field">
         <label htmlFor="lead-message">How can we help?</label>
-        <textarea id="lead-message" name="message" rows={4}></textarea>
+        <textarea id="lead-message" name="message" rows={4} defaultValue={preselectedMessage}></textarea>
       </div>
       <button className="btn btn-primary" type="submit">Get In Touch</button>
       <p className="form-note">We usually reply within one business day. Weekdays 9am &ndash; 4:30pm AEST.</p>

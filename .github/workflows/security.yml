@@ -1,0 +1,66 @@
+name: Security
+
+# The website's security scanning (CTO action brief, 2026-10-01, item 7):
+# - CodeQL reads the code for injection, XSS and similar flaws on every pull
+#   request and every week.
+# - npm audit fails the run if a production dependency has a known high or
+#   critical vulnerability.
+# - Once a week, and on demand, the live site's security headers are checked
+#   so a hosting or config change cannot quietly drop one.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: '17 20 * * 0'
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  codeql:
+    name: CodeQL
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: github/codeql-action/init@v3
+        with:
+          languages: javascript-typescript
+          queries: security-extended
+      - uses: github/codeql-action/analyze@v3
+
+  dependencies:
+    name: Dependency audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+      - name: npm audit (production dependencies)
+        run: npm audit --omit=dev --audit-level=high
+
+  live-headers:
+    name: Live security headers
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check https://www.teracomsolutions.com.au
+        run: |
+          headers=$(curl -sS -D - -o /dev/null https://www.teracomsolutions.com.au/)
+          echo "$headers"
+          missing=0
+          for h in strict-transport-security content-security-policy x-frame-options x-content-type-options referrer-policy permissions-policy; do
+            if ! echo "$headers" | grep -qi "^$h:"; then
+              echo "::error::Missing header: $h"
+              missing=1
+            fi
+          done
+          exit $missing

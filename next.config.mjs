@@ -15,26 +15,37 @@ const nextConfig = {
   async headers() {
     return [
       {
-        source: '/:path*',
+        source: "/:path*",
         headers: [
           { key: 'X-Content-Type-Options', value: 'nosniff' },
           { key: 'X-Frame-Options', value: 'DENY' },
           { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+          // The microphone is allowed for this site only: the admin
+          // Assistant takes spoken questions. Camera and location stay off.
           {
             key: 'Permissions-Policy',
-            value: 'camera=(), microphone=(), geolocation=()',
+            value: 'camera=(), microphone=(self), geolocation=()',
+          },
+          // A Content-Security-Policy that cannot break the pages: no
+          // framing by other sites and no <base> or plugin injection.
+          // Scripts and styles are not restricted here (Turnstile, Google Maps
+          // and analytics load from other origins); tighten that with nonces
+          // later.
+          {
+            key: 'Content-Security-Policy',
+            value: "frame-ancestors 'none'; base-uri 'self'; object-src 'none'",
           },
         ],
       },
       // Add X-Robots-Tag headers for admin paths to ensure they're not indexed
       {
-        source: '/admin/:path*',
+        source: "/admin/:path*",
         headers: [
           { key: 'X-Robots-Tag', value: 'noindex, nofollow, noarchive' },
         ],
       },
       {
-        source: '/api/admin/:path*',
+        source: "/api/admin/:path*",
         headers: [
           { key: 'X-Robots-Tag', value: 'noindex, nofollow, noarchive' },
         ],
