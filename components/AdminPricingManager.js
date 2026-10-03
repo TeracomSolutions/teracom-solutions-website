@@ -1,8 +1,9 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
+import AdminPriceList from '@/components/AdminPriceList';
 import { formatDateTime } from '@/lib/adminFormat';
 
 // The Pricing page: tier markups, per-supplier overrides, and the whole
@@ -222,85 +223,13 @@ function SupplierOverrides({ tiers, suppliers, onSaved }) {
   );
 }
 
-function PriceList({ tiers, rows, suppliers }) {
-  const [supplierId, setSupplierId] = useState('');
-  const [q, setQ] = useState('');
-  const [liveOnly, setLiveOnly] = useState(false);
-
-  const filtered = useMemo(() => {
-    const needle = q.trim().toLowerCase();
-    return rows.filter((row) => {
-      if (supplierId && row.supplier_id !== supplierId) return false;
-      if (liveOnly && !row.published) return false;
-      if (!needle) return true;
-      return [row.sku, row.name, row.supplier, row.category].some((v) => v && v.toLowerCase().includes(needle));
-    });
-  }, [rows, supplierId, q, liveOnly]);
-
-  return (
-    <div>
-      <h2>Price list</h2>
-      <div className="admin-refresh">
-        <select value={supplierId} onChange={(event) => setSupplierId(event.target.value)} aria-label="Supplier">
-          <option value="">All suppliers</option>
-          {suppliers.map((s) => <option key={s.supplier_id} value={s.supplier_id}>{s.supplier_name}</option>)}
-        </select>
-        <input
-          type="search"
-          placeholder="Search SKU, name, category"
-          value={q}
-          onChange={(event) => setQ(event.target.value)}
-          style={{ ...inputStyle, padding: '6px 10px', minWidth: '240px' }}
-        />
-        <label style={{ display: 'inline-flex', gap: '6px', alignItems: 'center' }}>
-          <input type="checkbox" checked={liveOnly} onChange={(event) => setLiveOnly(event.target.checked)} /> live on the website only
-        </label>
-        <span className="admin-muted">{filtered.length} of {rows.length} products</span>
-      </div>
-      <div className="admin-table-wrap">
-        <table className="admin-table">
-          <thead>
-            <tr>
-              <th>SKU</th>
-              <th>Product</th>
-              <th>Supplier</th>
-              <th>Website</th>
-              <th>Cost ex GST</th>
-              <th>RRP</th>
-              {tiers.map((tier) => <th key={tier.key}>{tier.label}</th>)}
-              <th>Last imported</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.length === 0 && (
-              <tr><td colSpan={7 + tiers.length} className="admin-muted">No products. Import a supplier price list from Data Feeds.</td></tr>
-            )}
-            {filtered.map((row) => (
-              <tr key={row.id}>
-                <td>{row.sku}</td>
-                <td className="wrap">{row.name}<span className="admin-muted" style={{ display: 'block', fontSize: '12px' }}>{row.category}</span></td>
-                <td>{row.supplier || '—'}</td>
-                <td>{row.published ? 'Live' : <span className="admin-muted">Offline</span>}</td>
-                <td>{money(row.cost_cents)}</td>
-                <td>{money(row.rrp_cents)}</td>
-                {tiers.map((tier) => <td key={tier.key}>{money(row.tier_prices_cents[tier.key])}</td>)}
-                <td>{formatDateTime(row.last_imported_at)}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
-}
-
 export default function AdminPricingManager({ tiers, suppliers, priceList }) {
   const router = useRouter();
   return (
     <div>
       <TierEditor tiers={tiers} onSaved={() => router.refresh()} />
       <SupplierOverrides tiers={tiers} suppliers={suppliers} onSaved={() => router.refresh()} />
-      <PriceList tiers={priceList.tiers} rows={priceList.rows} suppliers={suppliers} />
+      <AdminPriceList tiers={priceList.tiers} rows={priceList.rows} suppliers={suppliers} />
     </div>
   );
 }
