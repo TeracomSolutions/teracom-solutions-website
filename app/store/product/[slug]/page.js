@@ -76,6 +76,18 @@ const PHOTO = { maxWidth: '100%', maxHeight: 360, objectFit: 'contain' };
 // Supplier descriptions run to pages: three lines up top, the rest below.
 const CLAMP = { display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' };
 
+// The supplier's description: spec tables, brochure images and long links
+// stay inside their column.
+const DESCRIPTION_CSS = `
+.product-description { overflow-wrap: anywhere; line-height: 1.6; }
+.product-description img { display: block; max-width: 100%; height: auto; margin: 12px 0; border-radius: 8px; }
+.product-description table { display: block; max-width: 100%; overflow-x: auto; border-collapse: collapse; margin: 12px 0; font-size: 14px; }
+.product-description th, .product-description td { border: 1px solid var(--line); padding: 6px 10px; text-align: left; vertical-align: top; }
+.product-description th { color: #fff; }
+.product-description a { color: var(--red2); }
+.product-description h3, .product-description h4 { margin: 18px 0 8px; }
+`;
+
 const ASSURANCES = [
   { icon: ShieldCheck, text: 'Warranty support handled locally' },
   { icon: ReceiptText, text: 'Priced in AUD, GST included, no card surcharge' },
@@ -230,9 +242,18 @@ export default async function ProductPage(props) {
               </ul>
             </div>
           ) : (
-            <div>
+            <div style={{ minWidth: 0 }}>
               <h2>About this product</h2>
-              <div style={{ whiteSpace: 'pre-line' }}>{product.description}</div>
+              {product.descriptionHtml ? (
+                <>
+                  <style>{DESCRIPTION_CSS}</style>
+                  {/* Cleaned by the backend to headings, paragraphs, lists, tables, links and images only
+                      (services/description_cleaner.py), with the supplier's own sales content removed. */}
+                  <div className="product-description" dangerouslySetInnerHTML={{ __html: product.descriptionHtml }} />
+                </>
+              ) : (
+                <div style={{ whiteSpace: 'pre-line', overflowWrap: 'anywhere' }}>{product.description}</div>
+              )}
             </div>
           )}
           <div>
