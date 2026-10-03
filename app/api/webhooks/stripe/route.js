@@ -157,8 +157,15 @@ async function handleCheckoutSessionCompleted(session) {
           await createZohoInvoice({
             customerId,
             referenceNumber: session.id,
+            // The invoice shows what Stripe charged for the one item (the
+            // customer's tier or member price), not the RRP.
             lineItems: [
-              { name: product.name, description: product.description, rate: unitPriceCents(product, null) / 100, quantity: 1 },
+              {
+                name: product.name,
+                description: product.description,
+                rate: (session.amount_subtotal ?? unitPriceCents(product, null)) / 100,
+                quantity: 1,
+              },
             ],
           });
         }
