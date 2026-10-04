@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import ShopTheParts from '@/components/ShopTheParts';
 import CalculatorUsage from '@/components/CalculatorUsage';
@@ -9,8 +10,9 @@ import PoeBudgetCalculator from '@/components/tools/PoeBudgetCalculator';
 import BatteryStandbyCalculator from '@/components/tools/BatteryStandbyCalculator';
 import VoltageDropCalculator from '@/components/tools/VoltageDropCalculator';
 import ToolIcon, { ToolBackdrop } from '@/components/tools/ToolIcon';
+import ToolPrintButton, { PrintDate } from '@/components/tools/ToolPrintButton';
 import { findTool, toolGroups, tools } from '@/lib/tools';
-import { pageMetadata } from '@/lib/seo';
+import { BUSINESS, pageMetadata } from '@/lib/seo';
 
 // Every calculator page shares this layout: hero with the tool's icon emblem,
 // then the calculator on a panel over a faint icon pattern for its group.
@@ -49,6 +51,16 @@ export default async function ToolPage(props) {
 
   return (
     <main id="main-content">
+      {/* Shown only on the Save as PDF report (print styles in globals.css). */}
+      <div className="print-only tool-print-header">
+        <Image src="/assets/teracom-logo.png" alt="Teracom Solutions" width={150} height={58} />
+        <div>
+          <p>Teracom Solutions free tools</p>
+          <h1>{tool.title}</h1>
+        </div>
+      </div>
+      <p className="print-only tool-print-lead">{tool.description}</p>
+
       <section className="hero hero-product hero-shallow tool-hero">
         <div className="container hero-layout tool-hero-layout">
           <div className="hero-copy">
@@ -61,6 +73,7 @@ export default async function ToolPage(props) {
             />
             <h1>{tool.title}</h1>
             <p className="lead">{tool.description}</p>
+            <ToolPrintButton />
           </div>
           <div className="tool-hero-art" aria-hidden="true">
             <span className="tool-hero-ring">
@@ -87,7 +100,19 @@ export default async function ToolPage(props) {
       </section>
 
       <CalculatorUsage slug={tool.slug} group={tool.group} />
-      <ShopTheParts toolSlug={tool.slug} />
+      <div className="print-hide">
+        <ShopTheParts toolSlug={tool.slug} />
+      </div>
+
+      <div className="print-only tool-print-footer">
+        <p>
+          © {new Date().getFullYear()} {BUSINESS.legalName} · ABN {BUSINESS.abn} · teracomsolutions.com.au/tools/{tool.slug}
+        </p>
+        <p>
+          Worked out on <PrintDate />. These figures are estimates for planning; check them against the manufacturers&apos;
+          datasheets, or ask our team.
+        </p>
+      </div>
     </main>
   );
 }
