@@ -12,7 +12,13 @@ export const metadata = pageMetadata({
   path: '/tools',
 });
 
-export default function Tools() {
+// Tabs across the top pick one group (/tools?category=cctv); All tools shows
+// every group, as before (Robert, 2026-10-04).
+export default async function Tools({ searchParams }) {
+  const query = (await searchParams) || {};
+  const active = toolGroups.find((group) => group.id === query.category) || null;
+  const shown = active ? [active] : toolGroups;
+
   return (
     <main id="main-content">
       <section className="hero hero-product hero-shallow tool-hero">
@@ -34,7 +40,26 @@ export default function Tools() {
         </div>
       </section>
 
-      {toolGroups.map((group, gi) => (
+      <div className="container tools-tabs-wrap">
+        <nav className="brand-tabs tools-tabs" aria-label="Tool categories">
+          <Link href="/tools" scroll={false} className={active ? 'brand-tab' : 'brand-tab active'} aria-current={active ? undefined : 'page'}>
+            All tools <span className="brand-tab-count">{tools.length}</span>
+          </Link>
+          {toolGroups.map((group) => (
+            <Link
+              key={group.id}
+              href={`/tools?category=${group.id}`}
+              scroll={false}
+              className={active?.id === group.id ? 'brand-tab active' : 'brand-tab'}
+              aria-current={active?.id === group.id ? 'page' : undefined}
+            >
+              {group.eyebrow} <span className="brand-tab-count">{tools.filter((t) => t.group === group.id).length}</span>
+            </Link>
+          ))}
+        </nav>
+      </div>
+
+      {shown.map((group, gi) => (
         <section className={`section section-spacious${gi % 2 === 1 ? ' alt' : ''}`} key={group.id}>
           <div className="container">
             <div className="section-heading left tools-group-heading">

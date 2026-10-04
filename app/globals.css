@@ -1027,6 +1027,9 @@ a {
    calculator on a glass panel over a faint pattern of related icons. */
 .tools-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:22px; }
 .section-heading.left.tools-group-heading { margin-bottom:36px; }
+/* Category tabs under the /tools hero (?category=). */
+.tools-tabs-wrap { padding-top:34px; }
+.tools-tabs { margin-bottom:0; }
 .tool-card {
   position:relative; overflow:hidden; isolation:isolate; display:flex; flex-direction:column; gap:12px; min-height:280px;
   padding:30px; border:1px solid var(--line); border-radius:28px;
