@@ -13,6 +13,7 @@ export const ADMIN_AREAS = [
   { href: '/admin/account', label: 'Account' },
   { href: '/admin/ai-connections', label: 'AI Connections' },
   { href: '/admin/assistant', label: 'Assistant' },
+  { href: '/admin/connections', label: 'Connections' },
   { href: '/admin/coupons', label: 'Coupons' },
   { href: '/admin/leads', label: 'Leads' },
   { href: '/admin/resources', label: 'Resources' },

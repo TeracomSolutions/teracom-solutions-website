@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import {
+  Activity,
   Boxes,
   ChartColumn,
   Cpu,
@@ -42,6 +43,13 @@ const AREAS = [
     text: 'Tell the console what you want in plain English: it looks things up or makes the change, signed as you.',
     icon: Sparkles,
     hue: '#c084fc',
+  },
+  {
+    href: '/admin/connections',
+    title: 'Connections',
+    text: 'Zoho Books, Cloudflare, Vercel, Stripe and every other outside service, plus our servers and PCs: is each one working, and its keys.',
+    icon: Activity,
+    hue: '#84cc16',
   },
   {
     href: '/admin/coupons',
