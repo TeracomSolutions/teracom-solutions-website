@@ -51,8 +51,10 @@ export default async function AdminConnectionsPage({ searchParams }) {
             <li><strong>Failing</strong>: the last check did not work; the message says why.</li>
             <li><strong>Not set up</strong> and <strong>Not checked yet</strong>: no key yet, or press Test.</li>
           </ul>
+          <h4>Edit</h4>
+          <p>Every card has an Edit button. Zoho Books, Cloudflare, Vercel and Email sending open their settings here; the website server, database, website and backend API cards set when they turn amber or red; a watched server or PC can be renamed or given a new check-in interval. Freight carriers and supplier feeds open their own pages, and Stripe, Turnstile and this deployment open their Vercel settings.</p>
           <h4>Keys</h4>
-          <p>Zoho Books, Cloudflare and Vercel keys are entered here with <strong>Edit</strong>; they are stored encrypted and never shown again, only their last four characters. Other connections link to the page that holds their keys. Stripe, Turnstile and Google Analytics keys live in the website&apos;s Vercel settings.</p>
+          <p>Zoho Books, Cloudflare and Vercel keys are entered here with <strong>Edit</strong>; they are stored encrypted and never shown again, only their last four characters. Other connections link to the page that holds their keys. Stripe and Turnstile keys live in the website&apos;s Vercel settings.</p>
           <h4>Servers and computers</h4>
           <p>This server and its database are checked whenever the page opens. Add any other server or PC with <strong>Add a server or computer</strong>: paste the line it gives you on that machine and it checks in by itself. It turns red when it misses two check-ins.</p>
         </AdminHelpIcon>

@@ -58,12 +58,63 @@ export function DeviceCommands({ name, commands, onDone }) {
   );
 }
 
+// The name, kind, interval and notes boxes, shared by Add and Edit.
+function DeviceFields({ form, set }) {
+  return (
+    <>
+      <label>
+        Name
+        <input value={form.name} onChange={set('name')} maxLength={120} required placeholder="e.g. Office NAS or Reception PC" />
+      </label>
+      <label>
+        Kind
+        <select value={form.kind} onChange={set('kind')}>
+          {KINDS.map((kind) => <option key={kind.value} value={kind.value}>{kind.label}</option>)}
+        </select>
+      </label>
+      <label>
+        Checks in every
+        <select value={form.every_minutes} onChange={set('every_minutes')}>
+          {INTERVALS.map((minutes) => <option key={minutes} value={String(minutes)}>{minutes} minutes</option>)}
+        </select>
+      </label>
+      <label>
+        Notes <span className="admin-muted">(optional: where it is, what it does)</span>
+        <input value={form.notes} onChange={set('notes')} maxLength={500} />
+      </label>
+    </>
+  );
+}
+
 export function DeviceActions({ item, onChanged }) {
   const [confirm, setConfirm] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [commands, setCommands] = useState(null);
+  const [editing, setEditing] = useState(false);
+  const [form, setForm] = useState(() => ({
+    name: item.name,
+    kind: item.device?.kind || 'server',
+    every_minutes: String(item.device?.every_minutes || 5),
+    notes: item.device?.notes || '',
+  }));
   const base = `/api/admin/connections/devices/${encodeURIComponent(item.device_id)}`;
+  const set = (key) => (event) => setForm((current) => ({ ...current, [key]: event.target.value }));
+
+  async function save(event) {
+    event.preventDefault();
+    setBusy(true);
+    setError('');
+    try {
+      await call(base, 'PUT', { ...form, every_minutes: Number(form.every_minutes) });
+      setEditing(false);
+      onChanged();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setBusy(false);
+    }
+  }
 
   async function act(kind) {
     setBusy(true);
@@ -87,6 +138,19 @@ export function DeviceActions({ item, onChanged }) {
   if (commands) {
     return <DeviceCommands name={item.name} commands={commands} onDone={() => { setCommands(null); onChanged(); }} />;
   }
+  if (editing) {
+    return (
+      <form className="admin-form connection-form connection-commands" onSubmit={save}>
+        <DeviceFields form={form} set={set} />
+        <p className="admin-muted">The check-in address stays the same. If you change how often it checks in, also change the line on the machine: New check-in address shows the new one.</p>
+        {error ? <p className="form-error" role="alert">{error}</p> : null}
+        <div className="admin-actions">
+          <button type="submit" className="btn btn-primary btn-sm" disabled={busy}>{busy ? 'Saving…' : 'Save'}</button>
+          <button type="button" className="btn btn-secondary btn-sm" onClick={() => setEditing(false)}>Cancel</button>
+        </div>
+      </form>
+    );
+  }
   if (confirm) {
     return (
       <>
@@ -103,6 +167,7 @@ export function DeviceActions({ item, onChanged }) {
   }
   return (
     <>
+      <button type="button" className="btn btn-secondary btn-sm" onClick={() => setEditing(true)}>Edit</button>
       <button type="button" className="btn btn-secondary btn-sm" onClick={() => setConfirm('token')}>New check-in address</button>
       <button type="button" className="admin-link-btn" onClick={() => setConfirm('remove')}>Remove</button>
     </>
@@ -147,26 +212,7 @@ export default function AdminAddDevice({ onAdded }) {
   }
   return (
     <form className="admin-form connection-form" onSubmit={submit}>
-      <label>
-        Name
-        <input value={form.name} onChange={set('name')} maxLength={120} required placeholder="e.g. Office NAS or Reception PC" />
-      </label>
-      <label>
-        Kind
-        <select value={form.kind} onChange={set('kind')}>
-          {KINDS.map((kind) => <option key={kind.value} value={kind.value}>{kind.label}</option>)}
-        </select>
-      </label>
-      <label>
-        Checks in every
-        <select value={form.every_minutes} onChange={set('every_minutes')}>
-          {INTERVALS.map((minutes) => <option key={minutes} value={String(minutes)}>{minutes} minutes</option>)}
-        </select>
-      </label>
-      <label>
-        Notes <span className="admin-muted">(optional: where it is, what it does)</span>
-        <input value={form.notes} onChange={set('notes')} maxLength={500} />
-      </label>
+      <DeviceFields form={form} set={set} />
       {error ? <p className="form-error" role="alert">{error}</p> : null}
       <div className="admin-actions">
         <button type="submit" className="btn btn-primary btn-sm" disabled={busy}>{busy ? 'Adding…' : 'Add'}</button>
