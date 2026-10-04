@@ -12,14 +12,15 @@ import {
 } from './lib/adminIdle.js';
 
 // Keeps a staff console session alive while it is being used. On any
-// console page or console API call, when the access token is more than a
+// console page or console API call, and on Ask Tera's calls (Tera answers
+// anyone signed in to the console), when the access token is more than a
 // minute old (or about to expire), it is refreshed with the refresh token:
 // that records activity on the backend, which refuses the refresh once the
 // staff member has been inactive for their chosen time. Then the person is
 // sent to the sign-in page (pages) or given a 401 (API calls).
 // A backend that cannot be reached never signs anyone out.
 export const config = {
-  matcher: ['/admin/:path*', '/api/admin/:path*'],
+  matcher: ['/admin/:path*', '/api/admin/:path*', '/api/tera/:path*'],
 };
 
 const SKIP = [/^\/admin\/login(\/|$)/, /^\/api\/admin\/login(\/|$)/, /^\/api\/admin\/logout(\/|$)/];
@@ -64,6 +65,13 @@ export async function middleware(req) {
   if (answer.status === 401) {
     const data = await answer.json().catch(() => ({}));
     const reason = signOutReason(data.detail);
+    // Ask Tera also serves website customers: an ended console session is
+    // dropped and the request carries on without it.
+    if (pathname.startsWith('/api/tera/')) {
+      const headers = new Headers(req.headers);
+      headers.set('cookie', replaceCookie(req.headers.get('cookie'), ACCESS_TOKEN_COOKIE, ''));
+      return clearCookies(NextResponse.next({ request: { headers } }), options);
+    }
     if (pathname.startsWith('/api/')) {
       return clearCookies(NextResponse.json({ error: data.detail || 'Your session has ended. Please sign in again.', reason }, { status: 401 }), options);
     }
