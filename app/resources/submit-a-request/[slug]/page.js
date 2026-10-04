@@ -1,8 +1,9 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, ClipboardList, KeyRound, Mail, ShieldCheck, Wrench } from 'lucide-react';
+import { ArrowLeft, ClipboardList, Clock, KeyRound, Mail, MessageSquare, ShieldCheck, Wrench } from 'lucide-react';
 
 import Breadcrumbs from '@/components/Breadcrumbs';
+import OrbitArt from '@/components/OrbitArt';
 import RequestForm from '@/components/RequestForm';
 import { pageMetadata, BUSINESS } from '@/lib/seo';
 import { charges, findRequestForm, requestForms } from '@/lib/requestForms';
@@ -47,11 +48,7 @@ export default async function RequestFormPage(props) {
             <h1>{form.title}</h1>
             <p className="lead">{form.lead}</p>
           </div>
-          <div className="tool-hero-art orbit-emblem" aria-hidden="true">
-            <span className="tool-hero-ring">
-              <Icon size={96} strokeWidth={1.3} aria-hidden="true" focusable="false" />
-            </span>
-          </div>
+          <OrbitArt icon={Icon} badges={[MessageSquare, Clock, ShieldCheck]} />
         </div>
       </section>
 

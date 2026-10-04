@@ -1,7 +1,8 @@
 import Link from 'next/link';
-import { ArrowLeft, Mail, ShieldCheck, Wallet } from 'lucide-react';
+import { ArrowLeft, Building2, FileText, Mail, ShieldCheck, Wallet } from 'lucide-react';
 
 import Breadcrumbs from '@/components/Breadcrumbs';
+import OrbitArt from '@/components/OrbitArt';
 import AccountApplicationForm from '@/components/AccountApplicationForm';
 import { pageMetadata, BUSINESS } from '@/lib/seo';
 import { accountApplication } from '@/lib/accountApplication';
@@ -29,11 +30,7 @@ export default function AccountApplicationPage() {
             <h1>{accountApplication.title}</h1>
             <p className="lead">{accountApplication.lead}</p>
           </div>
-          <div className="tool-hero-art orbit-emblem" aria-hidden="true">
-            <span className="tool-hero-ring">
-              <Wallet size={96} strokeWidth={1.3} aria-hidden="true" focusable="false" />
-            </span>
-          </div>
+          <OrbitArt icon={Wallet} badges={[FileText, Building2, ShieldCheck]} />
         </div>
       </section>
 

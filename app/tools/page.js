@@ -1,6 +1,7 @@
 import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Cable, HardDrive, Zap } from 'lucide-react';
 import Breadcrumbs from '@/components/Breadcrumbs';
+import OrbitArt from '@/components/OrbitArt';
 import ToolIcon, { CalculatorIcon } from '@/components/tools/ToolIcon';
 import { toolGroups, tools } from '@/lib/tools';
 import { pageMetadata } from '@/lib/seo';
@@ -32,11 +33,7 @@ export default async function Tools({ searchParams }) {
               you check on every job, from cameras and storage to power, cabling, networks and AV.
             </p>
           </div>
-          <div className="tool-hero-art" aria-hidden="true">
-            <span className="tool-hero-ring">
-              <CalculatorIcon size={96} strokeWidth={1.3} />
-            </span>
-          </div>
+          <OrbitArt icon={CalculatorIcon} badges={[HardDrive, Zap, Cable]} />
         </div>
       </section>
 

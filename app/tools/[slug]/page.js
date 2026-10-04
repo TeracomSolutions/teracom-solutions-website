@@ -3,7 +3,9 @@ import { notFound } from 'next/navigation';
 import ShopTheParts from '@/components/ShopTheParts';
 import CalculatorUsage from '@/components/CalculatorUsage';
 import Link from 'next/link';
+import { Battery, Cable, Cctv, Gauge, HardDrive, Monitor, Network, Projector, Router, Ruler, Speaker, Video, Wifi, Zap } from 'lucide-react';
 import Breadcrumbs from '@/components/Breadcrumbs';
+import OrbitArt from '@/components/OrbitArt';
 import ConfigCalculator from '@/components/tools/ConfigCalculator';
 import CctvStorageCalculator from '@/components/tools/CctvStorageCalculator';
 import PoeBudgetCalculator from '@/components/tools/PoeBudgetCalculator';
@@ -13,6 +15,15 @@ import ToolIcon, { ToolBackdrop } from '@/components/tools/ToolIcon';
 import ToolPrintButton, { PrintDate } from '@/components/tools/ToolPrintButton';
 import { findTool, toolGroups, tools } from '@/lib/tools';
 import { BUSINESS, pageMetadata } from '@/lib/seo';
+
+// The three badges that orbit the hero emblem, by tool category.
+const GROUP_BADGES = {
+  cctv: [Cctv, HardDrive, Video],
+  power: [Zap, Battery, Gauge],
+  cabling: [Cable, Ruler, Network],
+  network: [Router, Wifi, Network],
+  av: [Monitor, Speaker, Projector],
+};
 
 // Every calculator page shares this layout: hero with the tool's icon emblem,
 // then the calculator on a panel over a faint icon pattern for its group.
@@ -75,11 +86,9 @@ export default async function ToolPage(props) {
             <p className="lead">{tool.description}</p>
             <ToolPrintButton />
           </div>
-          <div className="tool-hero-art" aria-hidden="true">
-            <span className="tool-hero-ring">
-              <ToolIcon slug={tool.slug} size={96} strokeWidth={1.3} />
-            </span>
-          </div>
+          <OrbitArt badges={GROUP_BADGES[tool.group] || GROUP_BADGES.cctv}>
+            <ToolIcon slug={tool.slug} size={92} strokeWidth={1.3} />
+          </OrbitArt>
         </div>
       </section>
 

@@ -1,4 +1,9 @@
+import { FileText, Scale, ShieldCheck } from 'lucide-react';
+
 import Breadcrumbs from '@/components/Breadcrumbs';
+import OrbitArt from '@/components/OrbitArt';
+
+const LEGAL_BADGES = [Scale, FileText, ShieldCheck];
 
 // Shared layout for the legal pages (/privacy, /terms): glowing emblem hero,
 // optional "at a glance" tiles, a sticky contents list and numbered sections.
@@ -43,11 +48,7 @@ export default function LegalDocument({ icon: Icon, title, lead, updated, highli
             <p className="lead">{lead}</p>
             {updated ? <p className="legal-updated">Last updated {updated}</p> : null}
           </div>
-          <div className="tool-hero-art" aria-hidden="true">
-            <span className="tool-hero-ring">
-              <Icon size={96} strokeWidth={1.3} aria-hidden="true" focusable="false" />
-            </span>
-          </div>
+          <OrbitArt icon={Icon} badges={LEGAL_BADGES} />
         </div>
       </section>
 
