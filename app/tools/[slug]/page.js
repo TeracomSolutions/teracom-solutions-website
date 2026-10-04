@@ -9,7 +9,7 @@ import PoeBudgetCalculator from '@/components/tools/PoeBudgetCalculator';
 import BatteryStandbyCalculator from '@/components/tools/BatteryStandbyCalculator';
 import VoltageDropCalculator from '@/components/tools/VoltageDropCalculator';
 import ToolIcon, { ToolBackdrop } from '@/components/tools/ToolIcon';
-import { findTool, tools } from '@/lib/tools';
+import { findTool, toolGroups, tools } from '@/lib/tools';
 import { pageMetadata } from '@/lib/seo';
 
 // Every calculator page shares this layout: hero with the tool's icon emblem,
@@ -45,13 +45,20 @@ export default async function ToolPage(props) {
   const tool = findTool(params.slug);
   if (!tool) notFound();
   const Custom = CUSTOM_CALCULATORS[tool.slug];
+  const group = toolGroups.find((g) => g.id === tool.group);
 
   return (
     <main id="main-content">
       <section className="hero hero-product hero-shallow tool-hero">
         <div className="container hero-layout tool-hero-layout">
           <div className="hero-copy">
-            <Breadcrumbs items={[{ name: 'Tools', href: '/tools' }]} current={tool.title} />
+            <Breadcrumbs
+              items={[
+                { name: 'Tools', href: '/tools' },
+                ...(group ? [{ name: group.eyebrow, href: `/tools?category=${group.id}` }] : []),
+              ]}
+              current={tool.title}
+            />
             <h1>{tool.title}</h1>
             <p className="lead">{tool.description}</p>
           </div>
