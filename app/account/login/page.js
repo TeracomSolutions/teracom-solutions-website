@@ -99,7 +99,7 @@ export default function CustomerLoginPage() {
 
       <p className="auth-aside">
         Had an account on our previous store?{' '}
-        <Link href="/account/forgot-password">Set your password here</Link> -- your details have
+        <Link href="/account/forgot-password" className="auth-link-green">Set your password here</Link> -- your details have
         carried across.
       </p>
 
