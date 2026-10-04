@@ -1770,6 +1770,8 @@ a {
 .auth-form .btn { width:100%; justify-content:center; }
 .auth-aside { margin:22px 0 0; text-align:center; font-size:14px; color:var(--muted); }
 .auth-aside a { color:#fff; }
+.auth-aside a.auth-link-green { color:#4ade80; font-weight:800; text-decoration:underline; text-underline-offset:3px; }
+.auth-aside a.auth-link-green:hover, .auth-aside a.auth-link-green:focus-visible { color:#86efac; }
 .auth-art { width:220px; height:220px; }
 .auth-art .tool-hero-ring { width:160px; height:160px; }
 .auth-art .store-art-badge-1 { top:calc(50% - 96px); }
