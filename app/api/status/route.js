@@ -96,7 +96,7 @@ export async function GET() {
       googleBusinessProfile: { url: BUSINESS.googleBusinessUrl || null },
       stripe: { configured: checks.stripe, powers: 'Store checkout' },
       zoho: { configured: checks.zoho, powers: 'Invoices and contacts after a store order' },
-      askTera: { enabled: process.env.NEXT_PUBLIC_ASK_TERA_ENABLED === 'true' },
+      askTera: { enabled: true, signedInCustomersOnly: true },
     },
     content: {
       sitemapPages: pages,

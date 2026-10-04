@@ -53,6 +53,10 @@ export default function HelpCentre() {
           </Link>{' '}
           and we&apos;ll deal with your query promptly.
         </p>
+        <p className="lead">
+          Signed-in customers can also ask Tera, our AI support assistant: click Tera&apos;s face at the bottom of any
+          page. Tera answers from our manuals, product details and these help articles.
+        </p>
       </ResourceHero>
       <section className="section section-spacious">
         <div className="container">

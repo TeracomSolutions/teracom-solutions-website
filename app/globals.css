@@ -990,6 +990,33 @@ a {
   background: var(--red2);
 }
 
+/* Ask Tera: answer sources, ratings, the sign-in prompt and the AI note. */
+.tera-message { white-space: pre-wrap; overflow-wrap: anywhere; }
+.tera-sources { margin: 10px 0 0; padding: 8px 0 0 18px; border-top: 1px solid var(--line); font-size: 13px; white-space: normal; }
+.tera-sources a { color: var(--text); text-decoration: underline; text-underline-offset: 3px; }
+.tera-handover { margin: 8px 0 0; font-size: 13px; white-space: normal; }
+.tera-handover a { color: var(--text); font-weight: 700; text-decoration: underline; }
+.tera-feedback { display: flex; gap: 6px; margin-top: 8px; }
+.tera-feedback button { display: inline-flex; padding: 5px 7px; border: 1px solid var(--line); border-radius: 999px; background: transparent; color: var(--muted); cursor: pointer; }
+.tera-feedback button:hover, .tera-feedback button.is-on { color: var(--text); border-color: var(--red); }
+.tera-signin { display: flex; flex-wrap: wrap; gap: 10px; }
+.tera-note { margin: 0; padding: 0 20px 12px; font-size: 11px; color: var(--muted); }
+.tera-send-button:disabled { opacity: .6; cursor: default; }
+@media (max-width: 480px) { .tera-panel { right: 12px; left: 12px; width: auto; } }
+
+/* Admin -> Support */
+.support-controls { margin: 0 0 26px; gap: 16px; }
+.support-cap { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
+.support-cap input { width: 110px; padding: 7px 10px; border-radius: 8px; border: 1px solid var(--line); background: #0d0d0d; color: #fff; font: inherit; }
+.support-conversations { display: grid; gap: 10px; margin: 0 0 18px; }
+.support-conversation { padding: 0; }
+.support-conversation-head { display: grid; gap: 4px; width: 100%; padding: 14px 18px; border: 0; background: transparent; color: inherit; font: inherit; text-align: left; cursor: pointer; }
+.support-first-question { overflow-wrap: anywhere; }
+.support-transcript { display: grid; gap: 10px; padding: 0 18px 16px; border-top: 1px solid var(--line); }
+.support-line p { margin: 10px 0 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.support-line.is-assistant { padding-left: 14px; border-left: 2px solid rgba(255,23,23,.4); }
+.support-meta { font-size: 12px; }
+
 /* Free tools (/tools): calculator inputs reuse the contact form's field look;
    PoE device rows sit in a responsive grid; results get their own panel. */
 .calculator-section { padding-top: 48px; }

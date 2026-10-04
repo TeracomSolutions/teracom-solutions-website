@@ -2,126 +2,197 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
+import { ThumbsDown, ThumbsUp } from 'lucide-react';
+
+// Ask Tera: Teracom's AI support assistant, for signed-in customers only
+// (Robert, 2026-10-04). Signed-out visitors are asked to sign in. Answers
+// come from Teracom's own manuals, product details and help pages, with
+// links to them; when Tera is not sure it says so and offers a request.
+const REQUEST_HREF = '/resources/submit-a-request';
+
+let nextId = 1;
+const newId = () => nextId++;
 
 export default function AskTeraWidget() {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState([
-    {
-      id: 1,
-      type: 'assistant',
-      text: "Hi, I'm Tera. Ask me anything about Teracom's products or Teracom AI.",
-    },
-  ]);
+  const [status, setStatus] = useState(null); // null while checking, then { signedIn, firstName }
+  const [messages, setMessages] = useState([]);
+  const [conversationId, setConversationId] = useState(null);
   const [inputValue, setInputValue] = useState('');
+  const [sending, setSending] = useState(false);
 
-  const toggleChat = () => {
-    setIsOpen(!isOpen);
-  };
+  async function open() {
+    setIsOpen(true);
+    if (status) return;
+    try {
+      const res = await fetch('/api/tera/status', { cache: 'no-store' });
+      const data = await res.json();
+      setStatus({ signedIn: Boolean(data.signedIn), firstName: data.firstName || '' });
+      if (data.signedIn) {
+        setMessages([{
+          id: newId(),
+          type: 'assistant',
+          text: `Hi${data.firstName ? ` ${data.firstName}` : ''}, I'm Tera, Teracom's AI support assistant. Ask me about our products, setting them up, or the free calculators. I answer from Teracom's manuals and help pages, and I'll tell you if I'm not sure.`,
+        }]);
+      }
+    } catch {
+      setStatus({ signedIn: false, firstName: '' });
+    }
+  }
 
-  const handleSend = async (e) => {
+  async function handleSend(e) {
     e.preventDefault();
-    if (!inputValue.trim()) return;
-
-    const newUserMessage = {
-      id: Date.now(),
-      type: 'user',
-      text: inputValue,
-    };
-
-    // A stable id for the placeholder, generated once up front, so the
-    // later replace can target this exact message -- not whichever
-    // message happens to be last in the array by the time the response
-    // arrives. Matching by array position breaks as soon as a second
-    // message is sent before the first reply resolves (a real
-    // possibility once this is wired to a real, non-instant backend).
-    const placeholderId = Date.now() + 1;
-
+    const text = inputValue.trim();
+    if (!text || sending) return;
+    const placeholderId = newId();
     setMessages((prev) => [
       ...prev,
-      newUserMessage,
-      { id: placeholderId, type: 'assistant', text: 'Tera is thinking...' },
+      { id: newId(), type: 'user', text },
+      { id: placeholderId, type: 'assistant', text: 'Tera is looking that up...', pending: true },
     ]);
     setInputValue('');
-
+    setSending(true);
     try {
-      const response = await fetch('/api/tera/chat', {
+      const res = await fetch('/api/tera/chat', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ message: inputValue }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: text, conversationId }),
       });
-
-      const data = await response.json();
-
-      setMessages((prev) =>
-        prev.map((m) => (m.id === placeholderId ? { ...m, text: data.reply } : m))
-      );
-    } catch (error) {
-      setMessages((prev) =>
-        prev.map((m) =>
-          m.id === placeholderId
-            ? { ...m, text: 'Sorry, I encountered an error. Please try again.' }
-            : m
-        )
-      );
+      const data = await res.json().catch(() => ({}));
+      if (res.status === 401 && data.signIn) {
+        setStatus({ signedIn: false, firstName: '' });
+        return;
+      }
+      if (!res.ok) throw new Error(data.error || 'Tera is not available right now.');
+      setConversationId(data.conversationId || conversationId);
+      setMessages((prev) => prev.map((m) => (m.id === placeholderId
+        ? { id: placeholderId, type: 'assistant', text: data.reply, sources: data.sources || [], answered: data.answered, messageId: data.messageId }
+        : m)));
+    } catch (err) {
+      setMessages((prev) => prev.map((m) => (m.id === placeholderId
+        ? { id: placeholderId, type: 'assistant', text: err.message || 'Sorry, something went wrong. Please try again.', answered: false }
+        : m)));
+    } finally {
+      setSending(false);
     }
-  };
+  }
+
+  async function rate(message, value) {
+    setMessages((prev) => prev.map((m) => (m.id === message.id ? { ...m, feedback: value } : m)));
+    try {
+      await fetch('/api/tera/feedback', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messageId: message.messageId, value }),
+      });
+    } catch {
+      // A lost rating is not worth interrupting the chat for.
+    }
+  }
 
   return (
     <>
-      {/* Chat Toggle Button */}
       <button
         className="tera-toggle-button"
-        onClick={toggleChat}
-        aria-label={isOpen ? "Close chat with Tera" : "Open chat with Tera"}
+        onClick={isOpen ? () => setIsOpen(false) : open}
+        aria-label={isOpen ? 'Close chat with Tera' : 'Open chat with Tera'}
       >
         {isOpen ? '✕' : <Image src="/assets/tera-avatar.webp" alt="" width={60} height={60} className="tera-toggle-avatar" />}
       </button>
 
-      {/* Chat Panel */}
       {isOpen && (
-        <div className="tera-panel">
+        <div className="tera-panel" role="dialog" aria-label="Ask Tera">
           <div className="tera-header">
             <Image src="/assets/tera-avatar.webp" alt="" width={36} height={36} className="tera-avatar-badge" />
             <h3>Ask Tera</h3>
-            <button 
-              className="tera-close-button"
-              onClick={toggleChat}
-              aria-label="Close chat"
-            >
+            <button className="tera-close-button" onClick={() => setIsOpen(false)} aria-label="Close chat">
               ✕
             </button>
           </div>
-          
-          <div className="tera-messages">
-            {messages.map((message) => (
-              <div 
-                key={message.id} 
-                className={`tera-message ${message.type === 'user' ? 'tera-message-user' : 'tera-message-assistant'}`}
-              >
-                {message.text}
+
+          {status === null ? (
+            <div className="tera-messages"><p className="tera-note">One moment...</p></div>
+          ) : !status.signedIn ? (
+            <div className="tera-messages">
+              <div className="tera-message tera-message-assistant">
+                I&apos;m Tera, Teracom&apos;s AI support assistant. I answer questions for signed-in customers: sign in, or create a free account, to chat with me.
               </div>
-            ))}
-          </div>
-          
-          <form className="tera-input-row" onSubmit={handleSend}>
-            <input
-              type="text"
-              className="tera-input"
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              placeholder="Type your message..."
-              aria-label="Enter your message"
-            />
-            <button 
-              type="submit" 
-              className="tera-send-button"
-              aria-label="Send message"
-            >
-              Send
-            </button>
-          </form>
+              <div className="tera-signin">
+                <Link href="/account/login" className="btn btn-primary">Sign in</Link>
+                <Link href="/account/signup" className="btn btn-secondary">Create an account</Link>
+              </div>
+            </div>
+          ) : (
+            <>
+              <div className="tera-messages" aria-live="polite">
+                {messages.map((message) => (
+                  <div
+                    key={message.id}
+                    className={`tera-message ${message.type === 'user' ? 'tera-message-user' : 'tera-message-assistant'}`}
+                  >
+                    {message.text}
+                    {message.sources?.length ? (
+                      <ul className="tera-sources">
+                        {message.sources.map((source) => (
+                          <li key={source.url || source.title}>
+                            {source.url ? (
+                              <a href={source.url} target="_blank" rel="noopener noreferrer">{source.title}</a>
+                            ) : (
+                              source.title
+                            )}
+                          </li>
+                        ))}
+                      </ul>
+                    ) : null}
+                    {message.type === 'assistant' && message.answered === false && !message.pending ? (
+                      <p className="tera-handover">
+                        <Link href={REQUEST_HREF}>Submit a request</Link> and the team will get back to you.
+                      </p>
+                    ) : null}
+                    {message.messageId ? (
+                      <div className="tera-feedback">
+                        <button
+                          type="button"
+                          aria-label="Helpful"
+                          aria-pressed={message.feedback === 1}
+                          className={message.feedback === 1 ? 'is-on' : undefined}
+                          onClick={() => rate(message, 1)}
+                        >
+                          <ThumbsUp size={14} aria-hidden="true" />
+                        </button>
+                        <button
+                          type="button"
+                          aria-label="Not helpful"
+                          aria-pressed={message.feedback === -1}
+                          className={message.feedback === -1 ? 'is-on' : undefined}
+                          onClick={() => rate(message, -1)}
+                        >
+                          <ThumbsDown size={14} aria-hidden="true" />
+                        </button>
+                      </div>
+                    ) : null}
+                  </div>
+                ))}
+              </div>
+
+              <form className="tera-input-row" onSubmit={handleSend}>
+                <input
+                  type="text"
+                  className="tera-input"
+                  value={inputValue}
+                  maxLength={1000}
+                  onChange={(e) => setInputValue(e.target.value)}
+                  placeholder="Ask about a product or setup..."
+                  aria-label="Your question for Tera"
+                />
+                <button type="submit" className="tera-send-button" disabled={sending} aria-label="Send question">
+                  Send
+                </button>
+              </form>
+              <p className="tera-note">Tera is an AI assistant and can make mistakes. Chats are kept for 90 days.</p>
+            </>
+          )}
         </div>
       )}
     </>
