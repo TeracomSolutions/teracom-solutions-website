@@ -1006,8 +1006,11 @@ a {
 
 /* Admin -> Support */
 .support-controls { margin: 0 0 26px; gap: 16px; }
-.support-cap { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
-.support-cap input { width: 110px; padding: 7px 10px; border-radius: 8px; border: 1px solid var(--line); background: #0d0d0d; color: #fff; font: inherit; }
+.support-keep { margin-top: 6px; font-size: 12px; }
+.teach-filters { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 12px; }
+.teach-answer { max-width: 420px; white-space: pre-wrap; }
+.teach-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.teach-tera tr.is-off td { opacity: .55; }
 .support-conversations { display: grid; gap: 10px; margin: 0 0 18px; }
 .support-conversation { padding: 0; }
 .support-conversation-head { display: grid; gap: 4px; width: 100%; padding: 14px 18px; border: 0; background: transparent; color: inherit; font: inherit; text-align: left; cursor: pointer; }
