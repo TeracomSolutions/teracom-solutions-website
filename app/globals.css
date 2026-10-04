@@ -1878,6 +1878,7 @@ a {
   color:#d7d7d7; opacity:.9!important; font-size:13.5px; line-height:1.35;
 }
 .nav-dropdown-card a:hover { background:none; color:#fff; }
+.nav-dropdown.is-closed .nav-dropdown-panel { display:none !important; }
 
 @media (max-width:860px) {
   /* MobileNav takes over the navigation; the utility row stays, because the
@@ -2766,3 +2767,44 @@ a.admin-status:hover { filter:brightness(1.15); }
 .admin-mini-btn.is-primary { background:var(--red); border-color:var(--red); }
 .admin-mini-btn:disabled { opacity:.5; cursor:default; }
 @media (max-width:980px) { .admin-sources-table { table-layout:auto; min-width:860px; } }
+
+/* Save as PDF on the calculators (components/tools/ToolPrintButton.js): one
+   A4 page with the Teracom header, the figures entered, the results, how it
+   works and the footer; the site's menus, colours and extras are left out. */
+.print-only { display:none; }
+.tool-print-button { margin-top:18px; display:inline-flex; align-items:center; gap:8px; }
+@media print {
+  @page { size:A4; margin:12mm 14mm; }
+  html, body { background:#fff !important; }
+  body * { color:#111 !important; box-shadow:none !important; text-shadow:none !important; }
+  .site-header, .site-footer, .skip-link, .tera-toggle-button, .tera-panel, .tool-hero, .tool-backdrop,
+  .print-hide, .calculator button, .tool-print-button { display:none !important; }
+  .print-only { display:block !important; }
+  .tool-stage, .tool-stage-inner, main .section, .calculator-section, .calculator, .calculator-results, main .container {
+    background:none !important; border:0 !important; padding:0 !important; margin:0 !important; max-width:none !important; width:auto !important;
+  }
+  .tool-print-header {
+    display:flex !important; align-items:center; gap:18px; padding:12px 16px; margin:0 0 10px;
+    background:#0b0b0b !important; -webkit-print-color-adjust:exact; print-color-adjust:exact;
+  }
+  .tool-print-header p, .tool-print-header h1 { margin:0; color:#fff !important; }
+  .tool-print-header p { font-size:8.5pt; letter-spacing:.12em; text-transform:uppercase; }
+  .tool-print-header h1 { font-size:18pt; line-height:1.2; }
+  .tool-print-lead { margin:0 0 10px; font-size:10pt; }
+  .calculator { display:grid !important; grid-template-columns:1fr 1fr; gap:6px 20px; font-size:10pt; }
+  .calculator h2, .calculator-results, .calculator-row, .calculator .form-note-banner { grid-column:1 / -1; }
+  .calculator .field { display:grid; gap:1px; }
+  .calculator .field label { font-size:8pt; letter-spacing:.06em; text-transform:uppercase; color:#555 !important; }
+  .calculator .field .form-note { display:none !important; }
+  .calculator input, .calculator select {
+    border:0 !important; background:none !important; padding:0 !important; min-height:0 !important;
+    font:inherit; font-weight:700; color:#111 !important; -webkit-appearance:none; appearance:none;
+  }
+  .calculator-results { border-top:2px solid #c8102e !important; padding-top:6px !important; margin-top:8px !important; }
+  .calculator-results p { margin:0 0 3px; }
+  main h2 { font-size:12pt; margin:10px 0 4px; }
+  main p { font-size:10pt; margin:0 0 4px; }
+  main a { text-decoration:none; }
+  .tool-print-footer { margin-top:14px; padding-top:8px; border-top:1px solid #ccc !important; }
+  .tool-print-footer p { font-size:8pt; color:#555 !important; margin:0 0 2px; }
+}

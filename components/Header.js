@@ -4,6 +4,7 @@ import { cookies } from 'next/headers';
 import MobileNav from './MobileNav';
 import CartIndicator from './CartIndicator';
 import HeaderSearch from './HeaderSearch';
+import NavDropdownCloser from './NavDropdownCloser';
 import { resourcesSections } from '@/lib/resourcesSections';
 import { monitoringServices } from '@/lib/monitoring';
 import { services, serviceGroups } from '@/lib/services';
@@ -39,6 +40,7 @@ export default async function Header() {
 
   return (
     <header className="site-header">
+      <NavDropdownCloser />
       <div className="header-utility">
         <div className="container header-utility-inner">
           <div className="header-utility-actions">
