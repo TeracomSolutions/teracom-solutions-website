@@ -10,6 +10,7 @@ import {
   Share2,
   ShieldCheck,
   Sparkles,
+  Headset,
   Ticket,
 } from 'lucide-react';
 
@@ -92,6 +93,13 @@ const AREAS = [
     text: 'LinkedIn, Facebook, Instagram, X and YouTube: the footer links, the accounts we post to, Posting with pictures, video and text per network, the Calendar, and the customers who get updates by email.',
     icon: Share2,
     hue: '#e879f9',
+  },
+  {
+    href: '/admin/support',
+    title: 'Support',
+    text: 'Ask Tera, the AI support assistant for signed-in customers: what it answers from, the questions it could not answer, and every conversation.',
+    icon: Headset,
+    hue: '#38bdf8',
   },
   {
     href: '/admin/suppliers',

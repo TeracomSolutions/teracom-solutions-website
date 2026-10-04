@@ -93,10 +93,8 @@ export default function MarketingRootLayout({ children }) {
           <PublicChrome><Header /></PublicChrome>
           {children}
           <PublicChrome><Footer /></PublicChrome>
-          {/* Ask Tera chat: hidden until its backend is connected -- the stub route only ever
-              replies "not connected yet", which reads as broken on every page.
-              Set NEXT_PUBLIC_ASK_TERA_ENABLED=true in Vercel to switch it on. */}
-          {process.env.NEXT_PUBLIC_ASK_TERA_ENABLED === 'true' && <AskTeraWidget />}
+          {/* Ask Tera: answers signed-in customers; asks everyone else to sign in. */}
+          <AskTeraWidget />
         </CartProvider>
       </body>
     </html>
