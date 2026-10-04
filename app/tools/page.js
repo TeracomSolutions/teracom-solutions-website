@@ -8,7 +8,7 @@ import { pageMetadata } from '@/lib/seo';
 export const metadata = pageMetadata({
   title: 'Free Calculators & Tools for the Industry | Teracom Solutions',
   description:
-    'Free CCTV, power, cabling, network, audio and projector calculators for engineers, technicians, installers, AV specialists and customers -- storage, lens, bandwidth, RAID, PoE, PSU, battery, voltage drop, UPS, subnet and more.',
+    'Free CCTV, power, cabling, network, audio and display calculators for engineers, technicians, installers, AV specialists and customers -- storage, lens, bitrate, bandwidth, RAID, PoE, solar, battery, voltage drop, fibre loss, UPS, subnet, wireless link, screen size and more.',
   path: '/tools',
 });
 
