@@ -35,7 +35,9 @@ export default async function AdminWebsiteDataPage({ searchParams }) {
           <p>The website itself records every public page view to our own backend on VM 101 (a small beacon on each page). A visitor is counted once per day by an anonymous code made from their address and browser with a daily salt -- nobody can be identified from it and no address is stored. Known bots and crawlers are ignored, and so are admin pages. Google Analytics keeps running alongside; this is the copy we own.</p>
           <h4>Reading it</h4>
           <ul>
-            <li><strong>Page views</strong> - every page load. <strong>Visitors</strong> - distinct people per day, summed over the period.</li>
+            <li><strong>Page views</strong> - every page load. One person reading five pages is five views.</li>
+            <li><strong>Daily visitors</strong> - people, each counted once per day. Someone who comes back on another day is counted again on that day, so over a week or a month this is the number of daily visits added up, not the number of different people. The anonymous code changes every day on purpose, so nobody can be followed from one day to the next.</li>
+            <li>Example: Australia with 333 views and 120 daily visitors means 333 pages were loaded from Australia by people on 120 visitor-days; that could be 120 people once each, or fewer people coming back on several days.</li>
             <li><strong>Where visitors came from</strong> - the site that linked to us; <em>(direct)</em> means they typed the address, used a bookmark, or came from an email or app that hides the source.</li>
             <li><strong>Top pages</strong> - what people actually read; the Share bar is that page&apos;s slice of all views.</li>
             <li>Days run midnight to midnight, Sydney time. Recording started the day this page went live, so the first comparison period will be short.</li>
