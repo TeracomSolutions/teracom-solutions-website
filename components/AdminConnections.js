@@ -132,8 +132,11 @@ export default function AdminConnections({ initial, notice }) {
                       {busy === 'zoho' ? 'Opening Zoho…' : item.connected ? 'Connect again' : 'Connect to Zoho Books'}
                     </button>
                   ) : null}
-                  {item.manage_href ? (
-                    <Link className="btn btn-secondary btn-sm" href={item.manage_href}>Manage</Link>
+                  {item.manage_href && item.manage_href.startsWith('https://') ? (
+                    <a className="btn btn-secondary btn-sm" href={item.manage_href} target="_blank" rel="noopener noreferrer">Edit in Vercel</a>
+                  ) : null}
+                  {item.manage_href && item.manage_href.startsWith('/') ? (
+                    <Link className="btn btn-secondary btn-sm" href={item.manage_href}>Edit</Link>
                   ) : null}
                   {item.device_id ? <DeviceActions item={item} onChanged={reload} /> : null}
                 </div>
