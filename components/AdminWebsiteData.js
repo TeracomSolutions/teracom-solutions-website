@@ -119,7 +119,7 @@ function TopTable({ title, rows, keyLabel, formatKey }) {
     <div className="admin-card" style={{ padding: 0, overflow: 'hidden' }}>
       <h3 style={{ margin: '16px 20px 8px' }}>{title}</h3>
       <table className="admin-table">
-        <thead><tr><th>{keyLabel}</th><th>Views</th><th>Visitors</th><th>Share</th></tr></thead>
+        <thead><tr><th>{keyLabel}</th><th>Views</th><th title="Each person counted once per day">Daily visitors</th><th>Share</th></tr></thead>
         <tbody>
           {rows.length === 0 && <tr><td colSpan={4} className="admin-muted">Nothing yet.</td></tr>}
           {rows.map((r) => (
@@ -161,13 +161,13 @@ export default function AdminWebsiteData({ summary, days }) {
 
       <div className="admin-stats">
         <StatTile label="Page views" value={totals.views} previous={previous.views} />
-        <StatTile label="Visitors" value={totals.visitors} previous={previous.visitors} />
+        <StatTile label="Daily visitors" value={totals.visitors} previous={previous.visitors} />
         <StatTile label="Views per visitor" value={totals.visitors ? Math.round((totals.views / totals.visitors) * 10) / 10 : 0} previous={previous.visitors ? Math.round((previous.views / previous.visitors) * 10) / 10 : 0} />
       </div>
 
       <div className="admin-charts">
         <DailyBars title="Page views" series={series} field="views" />
-        <DailyBars title="Visitors" series={series} field="visitors" />
+        <DailyBars title="Daily visitors" series={series} field="visitors" />
       </div>
 
       <div className="admin-two-col">
