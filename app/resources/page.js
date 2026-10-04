@@ -6,10 +6,13 @@ import {
   Clapperboard,
   Download,
   FileSpreadsheet,
+  FileText,
   LibraryBig,
   LifeBuoy,
   Newspaper,
+  PlayCircle,
 } from 'lucide-react';
+import OrbitArt from '@/components/OrbitArt';
 import { resourcesSections } from '@/lib/resourcesSections';
 import { resourcesIntros } from '@/lib/resourcesIntros';
 import { tools } from '@/lib/tools';
@@ -42,11 +45,7 @@ export default function Resources() {
               together in one place.
             </p>
           </div>
-          <div className="tool-hero-art" aria-hidden="true">
-            <span className="tool-hero-ring">
-              <LibraryBig size={96} strokeWidth={1.3} aria-hidden="true" focusable="false" />
-            </span>
-          </div>
+          <OrbitArt icon={LibraryBig} badges={[BookOpen, FileText, PlayCircle]} />
         </div>
       </section>
       <section className="section section-spacious">

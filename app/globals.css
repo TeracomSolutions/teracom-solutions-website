@@ -1501,16 +1501,6 @@ a {
   .legal-toc { display:none; }
 }
 
-/* Hero emblem with up to three orbiting badges (/warranty, /resources/*). */
-.orbit-emblem { position:relative; }
-.orbit-sat {
-  position:absolute; width:46px; height:46px; border-radius:50%; display:grid; place-items:center; color:#ff4b4b;
-  background:#0b0b0b; border:1px solid rgba(255,23,23,.45); box-shadow:0 0 24px rgba(255,23,23,.3);
-}
-.orbit-sat-1 { left:203px; top:17px; }
-.orbit-sat-2 { left:-1px; top:135px; }
-.orbit-sat-3 { left:203px; top:253px; }
-
 /* /warranty: brand warranty cards. */
 .warranty-cta { margin:44px 0 0; text-align:center; }
 .warranty-cta .btn { display:inline-flex; align-items:center; gap:10px; }

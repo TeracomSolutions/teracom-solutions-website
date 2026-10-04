@@ -2,6 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight, ArrowUpRight, MessageSquareText, PackageCheck, PackageOpen, RotateCcw, ShieldCheck, Truck } from 'lucide-react';
 import Breadcrumbs from '@/components/Breadcrumbs';
+import OrbitArt from '@/components/OrbitArt';
 import ProcessSteps from '@/components/ProcessSteps';
 import { warrantyEntries } from '@/lib/warranties';
 import { pageMetadata } from '@/lib/seo';
@@ -44,14 +45,7 @@ export default function Warranty() {
               How to send a product back to us, and the manufacturer warranty terms for every brand we supply.
             </p>
           </div>
-          <div className="tool-hero-art orbit-emblem" aria-hidden="true">
-            <span className="tool-hero-ring">
-              <PackageCheck size={96} strokeWidth={1.3} aria-hidden="true" focusable="false" />
-            </span>
-            <span className="orbit-sat orbit-sat-1"><ShieldCheck size={22} strokeWidth={1.8} /></span>
-            <span className="orbit-sat orbit-sat-2"><RotateCcw size={22} strokeWidth={1.8} /></span>
-            <span className="orbit-sat orbit-sat-3"><Truck size={22} strokeWidth={1.8} /></span>
-          </div>
+          <OrbitArt icon={PackageCheck} badges={[ShieldCheck, RotateCcw, Truck]} />
         </div>
       </section>
 

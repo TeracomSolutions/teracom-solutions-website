@@ -13,6 +13,7 @@ import {
   Tag,
   Wrench,
 } from 'lucide-react';
+import OrbitArt from '@/components/OrbitArt';
 import { getAllProducts } from '@/lib/catalogue';
 import { groupResults, searchSite } from '@/lib/search';
 
@@ -82,11 +83,7 @@ export default async function SearchPage(props) {
               </p>
             ) : null}
           </div>
-          <div className="tool-hero-art" aria-hidden="true">
-            <span className="tool-hero-ring">
-              <Search size={96} strokeWidth={1.3} />
-            </span>
-          </div>
+          <OrbitArt icon={Search} badges={[FileText, ShoppingBag, Wrench]} />
         </div>
       </section>
 

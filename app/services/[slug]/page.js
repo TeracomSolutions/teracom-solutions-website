@@ -6,7 +6,8 @@ import Breadcrumbs from '@/components/Breadcrumbs';
 import JsonLd from '@/components/JsonLd';
 import ProcessSteps from '@/components/ProcessSteps';
 import ServiceCard from '@/components/ServiceCard';
-import ServiceIcon from '@/components/ServiceIcon';
+import OrbitArt from '@/components/OrbitArt';
+import ServiceIcon, { serviceBadges } from '@/components/ServiceIcon';
 import { findService, serviceGroups, services } from '@/lib/services';
 import { findBrand } from '@/lib/brands';
 import { findCategory } from '@/lib/categories';
@@ -73,11 +74,9 @@ export default async function ServicePage(props) {
               </p>
             ) : null}
           </div>
-          <div className="tool-hero-art" aria-hidden="true">
-            <span className="tool-hero-ring">
-              <ServiceIcon slug={service.slug} size={96} strokeWidth={1.3} />
-            </span>
-          </div>
+          <OrbitArt badges={serviceBadges(service.slug)}>
+            <ServiceIcon slug={service.slug} size={92} strokeWidth={1.3} />
+          </OrbitArt>
         </div>
       </section>
 
