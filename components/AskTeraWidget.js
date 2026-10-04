@@ -5,6 +5,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ThumbsDown, ThumbsUp } from 'lucide-react';
 
+import { takeEvents } from '@/lib/teraStream';
+
 // Ask Tera: Teracom's AI support assistant, for signed-in customers only
 // (Robert, 2026-10-04). Signed-out visitors are asked to sign in. Answers
 // come from Teracom's own manuals, product details and help pages, with
@@ -53,22 +55,48 @@ export default function AskTeraWidget() {
     ]);
     setInputValue('');
     setSending(true);
+    // The answer arrives as it is written (lib/teraStream.js): the words
+    // fill the placeholder, then the sources and rating buttons follow.
+    const update = (changes) => setMessages((prev) => prev.map((m) => (m.id === placeholderId ? { ...m, ...changes } : m)));
     try {
-      const res = await fetch('/api/tera/chat', {
+      const res = await fetch('/api/tera/stream', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: text, conversationId }),
       });
-      const data = await res.json().catch(() => ({}));
-      if (res.status === 401 && data.signIn) {
-        setStatus({ signedIn: false, firstName: '' });
-        return;
+      if (!res.ok || !res.body) {
+        const data = await res.json().catch(() => ({}));
+        if (res.status === 401 && data.signIn) {
+          setStatus({ signedIn: false, firstName: '' });
+          return;
+        }
+        throw new Error(data.error || 'Tera is not available right now.');
       }
-      if (!res.ok) throw new Error(data.error || 'Tera is not available right now.');
-      setConversationId(data.conversationId || conversationId);
-      setMessages((prev) => prev.map((m) => (m.id === placeholderId
-        ? { id: placeholderId, type: 'assistant', text: data.reply, sources: data.sources || [], answered: data.answered, messageId: data.messageId }
-        : m)));
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '';
+      let written = '';
+      let finished = false;
+      while (!finished) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        const { events, rest } = takeEvents(buffer);
+        buffer = rest;
+        for (const event of events) {
+          if (event.type === 'text') {
+            written += event.text;
+            update({ text: written, pending: false });
+          } else if (event.type === 'done') {
+            finished = true;
+            setConversationId(event.conversation_id || conversationId);
+            update({ text: event.reply, sources: event.sources || [], answered: event.answered, messageId: event.message_id, pending: false });
+          } else if (event.type === 'error') {
+            throw new Error(event.error || 'Tera is not available right now.');
+          }
+        }
+      }
+      if (!finished) throw new Error('Tera stopped before finishing. Please try again.');
     } catch (err) {
       setMessages((prev) => prev.map((m) => (m.id === placeholderId
         ? { id: placeholderId, type: 'assistant', text: err.message || 'Sorry, something went wrong. Please try again.', answered: false }

@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 
+import AdminTeachTera from '@/components/AdminTeachTera';
+import AdminTeraSettings from '@/components/AdminTeraSettings';
 import { formatDateTime } from '@/lib/adminFormat';
 
 // Admin -> Support: Ask Tera's library, this month's use, the questions it
@@ -14,7 +16,8 @@ function percent(part, whole) {
 
 export default function AdminSupport({ initial }) {
   const [summary, setSummary] = useState(initial.summary);
-  const [cap, setCap] = useState(String(initial.summary.monthly_cloud_cap));
+  const [facts, setFacts] = useState(initial.facts || []);
+  const [draft, setDraft] = useState(null);
   const [busy, setBusy] = useState('');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
@@ -50,12 +53,20 @@ export default function AdminSupport({ initial }) {
     }
   }
 
-  async function saveCap(event) {
-    event.preventDefault();
-    const data = await send('/api/admin/support/settings', 'PUT', { monthly_cloud_cap: Number(cap) || 0 }, 'cap');
-    if (data) {
-      setSummary((s) => ({ ...s, monthly_cloud_cap: data.monthly_cloud_cap }));
-      setMessage('Monthly cloud cap saved.');
+  function settingsSaved(settings) {
+    setSummary((s) => ({ ...s, monthly_cloud_cap: settings.monthly_cloud_cap, settings }));
+  }
+
+  // Keep this answer: the reply becomes something Tera has learned.
+  async function keep(conversationId, messageId) {
+    const fact = await send(`/api/admin/support/messages/${encodeURIComponent(messageId)}/keep`, 'POST', null, `keep-${messageId}`);
+    if (fact) {
+      setTranscripts((t) => ({
+        ...t,
+        [conversationId]: (t[conversationId] || []).map((m) => (m.id === messageId ? { ...m, kept: true } : m)),
+      }));
+      setFacts((list) => [fact, ...list.filter((f) => f.id !== fact.id)]);
+      setMessage('Kept. Tera will give this answer when someone asks the same thing.');
     }
   }
 
@@ -73,6 +84,7 @@ export default function AdminSupport({ initial }) {
 
   const last = summary.last_30_days;
   const library = summary.library;
+  const known = summary.facts || { taught: 0, learned: 0 };
 
   return (
     <div>
@@ -94,7 +106,11 @@ export default function AdminSupport({ initial }) {
         </div>
         <div>
           <dt>Local model</dt>
-          <dd>{summary.local_models.length ? summary.local_models.join(', ') : 'None reachable by a public address yet, so Tera uses the cloud within the cap.'}</dd>
+          <dd>{summary.local_models.length ? summary.local_models.join(', ') : 'None switched on, so Tera uses the cloud within the cap.'}</dd>
+        </div>
+        <div>
+          <dt>What Tera knows</dt>
+          <dd>{known.taught} taught by staff, {known.learned} learned from chats</dd>
         </div>
         <div>
           <dt>Last 30 days</dt>
@@ -108,25 +124,29 @@ export default function AdminSupport({ initial }) {
         <button type="button" className="btn btn-secondary btn-sm" disabled={Boolean(busy) || library.status === 'running'} onClick={rebuild}>
           {library.status === 'running' ? 'Building...' : 'Rebuild library'}
         </button>
-        <form className="support-cap" onSubmit={saveCap}>
-          <label htmlFor="support-cap">Cloud answers allowed per month</label>
-          <input id="support-cap" type="number" min="0" step="10" value={cap} onChange={(e) => setCap(e.target.value)} />
-          <button type="submit" className="btn btn-secondary btn-sm" disabled={Boolean(busy)}>Save</button>
-        </form>
       </div>
+
+      <h2>Teach Tera</h2>
+      <p className="admin-muted">Questions and answers Tera searches before anything else. Write your own, or keep a good answer from a conversation below.</p>
+      <AdminTeachTera facts={facts} setFacts={setFacts} draft={draft} />
 
       <h2>Questions Tera could not answer</h2>
       {initial.unanswered.length ? (
         <div className="admin-table-wrap">
           <table className="admin-table">
             <thead>
-              <tr><th>Question</th><th>Asked</th></tr>
+              <tr><th>Question</th><th>Asked</th><th>Actions</th></tr>
             </thead>
             <tbody>
               {initial.unanswered.map((q) => (
                 <tr key={`${q.conversation_id}-${q.asked_at}`}>
                   <td className="wrap">{q.question}</td>
                   <td>{formatDateTime(q.asked_at)}</td>
+                  <td>
+                    <button type="button" className="admin-link-btn" onClick={() => setDraft({ question: q.question, at: Date.now() })}>
+                      Teach Tera this
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -164,6 +184,15 @@ export default function AdminSupport({ initial }) {
                           {m.sources?.length ? `. Sources: ${m.sources.map((s) => s.title).join('; ')}` : ''}
                         </p>
                       ) : null}
+                      {m.role === 'assistant' && m.answered ? (
+                        m.kept ? (
+                          <p className="admin-muted support-meta">Kept: Tera gives this answer to the same question.</p>
+                        ) : (
+                          <button type="button" className="admin-link-btn support-keep" disabled={Boolean(busy)} onClick={() => keep(c.id, m.id)}>
+                            {busy === `keep-${m.id}` ? 'Keeping…' : 'Keep this answer'}
+                          </button>
+                        )
+                      ) : null}
                     </div>
                   ))}
                   {!transcripts[c.id] ? <p className="admin-muted">Loading...</p> : null}
@@ -175,7 +204,12 @@ export default function AdminSupport({ initial }) {
       ) : (
         <p className="admin-muted">No conversations yet. Tera appears on every page for signed-in customers.</p>
       )}
-      <p className="admin-muted">Conversations are deleted {summary.keep_days} days after their last message.</p>
+      <p className="admin-muted">
+        Conversations are deleted {summary.keep_days} days after their last message. Just before that, every answer nobody rated not helpful is kept for Tera, with personal details taken out.
+      </p>
+
+      <h2>Settings</h2>
+      {summary.settings ? <AdminTeraSettings initial={summary.settings} onSaved={settingsSaved} /> : null}
     </div>
   );
 }
