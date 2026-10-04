@@ -5,12 +5,14 @@ import { Mic, MicOff, Volume2, VolumeX } from 'lucide-react';
 
 import AdminAssistantAvatar from './AdminAssistantAvatar';
 import { nextState, pickVoice, speakableText } from '@/lib/assistantVoice';
+import { endsDictation, joinSpeech } from '@/lib/dictation';
 
 // Chat with the console. Each turn sends the whole conversation (the
 // backend keeps no session), shows the reply, and lists any actions the
 // assistant took so nothing happens silently. Voice is the browser's own
 // Web Speech API (Chrome and Edge): the mic button dictates into the box
-// and, by default, sends when you stop talking; Read replies aloud speaks
+// and, by default, sends when you stop talking (untick that to keep the
+// microphone open until Stop and send yourself); Read replies aloud speaks
 // each answer. Nothing spoken leaves the browser except as the text sent.
 const SUGGESTIONS = [
   'How does a supplier price list become a price in the store?',
@@ -53,11 +55,15 @@ export default function AdminAssistantChat() {
   const sendRef = useRef(null);
   const autoSendRef = useRef(autoSend);
   const readAloudRef = useRef(readAloud);
+  // Set when Stop (or New conversation) ends dictation, so a held-open
+  // microphone does not start listening again.
+  const stopRequestedRef = useRef(false);
 
   useEffect(() => {
     setSpeechSupported(Boolean(recognitionClass()));
     setSynthSupported(Boolean(synth()));
     return () => {
+      stopRequestedRef.current = true;
       recognitionRef.current?.stop();
       synth()?.cancel();
     };
@@ -129,46 +135,70 @@ export default function AdminAssistantChat() {
   }
   sendRef.current = send;
 
+  // Speak dictates into the box. With "Send when I stop talking" ticked,
+  // the browser stops at the first pause and the words are sent. Unticked,
+  // the microphone stays open (Chrome ends a session after a pause, so a
+  // new one starts straight away) until Stop is pressed, and the words wait
+  // in the box to be read, changed and sent (Robert, 2026-10-04).
   function toggleListening() {
     if (listening) {
+      stopRequestedRef.current = true;
       recognitionRef.current?.stop();
       return;
     }
     const Recognition = recognitionClass();
     if (!Recognition) return;
     synth()?.cancel();
-    const recognition = new Recognition();
-    recognition.lang = 'en-AU';
-    recognition.interimResults = true;
-    recognition.continuous = false;
-    recognition.maxAlternatives = 1;
+    stopRequestedRef.current = false;
+    const holdOpen = !autoSendRef.current;
+    const typed = draft;
     let finalText = '';
-    recognition.onresult = (event) => {
-      let interim = '';
-      for (let i = event.resultIndex; i < event.results.length; i += 1) {
-        const piece = event.results[i][0].transcript;
-        if (event.results[i].isFinal) finalText += piece;
-        else interim += piece;
-      }
-      setDraft(`${finalText}${interim}`.trim());
+
+    const listen = () => {
+      const recognition = new Recognition();
+      recognition.lang = 'en-AU';
+      recognition.interimResults = true;
+      recognition.continuous = holdOpen;
+      recognition.maxAlternatives = 1;
+      recognition.onresult = (event) => {
+        let interim = '';
+        for (let i = event.resultIndex; i < event.results.length; i += 1) {
+          const piece = event.results[i][0].transcript;
+          if (event.results[i].isFinal) finalText = joinSpeech(finalText, piece);
+          else interim += piece;
+        }
+        setDraft(joinSpeech(typed, finalText, interim));
+      };
+      recognition.onerror = (event) => {
+        if (endsDictation(event.error)) {
+          stopRequestedRef.current = true;
+          setError(`Voice input stopped: ${event.error}.`);
+        }
+      };
+      recognition.onend = () => {
+        if (holdOpen && !stopRequestedRef.current) {
+          try {
+            listen();
+            return;
+          } catch {
+            // The browser would not start again; finish as if Stop was pressed.
+          }
+        }
+        recognitionRef.current = null;
+        setListening(false);
+        dispatch('listen_end');
+        const spoken = joinSpeech(typed, finalText);
+        setDraft(spoken);
+        if (finalText && !holdOpen && autoSendRef.current) sendRef.current?.(spoken);
+      };
+      recognitionRef.current = recognition;
+      recognition.start();
     };
-    recognition.onerror = (event) => {
-      if (event.error !== 'no-speech' && event.error !== 'aborted') {
-        setError(`Voice input stopped: ${event.error}.`);
-      }
-    };
-    recognition.onend = () => {
-      recognitionRef.current = null;
-      setListening(false);
-      dispatch('listen_end');
-      const spoken = finalText.trim();
-      if (spoken && autoSendRef.current) sendRef.current?.(spoken);
-    };
-    recognitionRef.current = recognition;
+
     setError('');
     setListening(true);
     dispatch('listen_start');
-    recognition.start();
+    listen();
   }
 
   function onKeyDown(event) {
@@ -190,6 +220,7 @@ export default function AdminAssistantChat() {
 
   function reset() {
     synth()?.cancel();
+    stopRequestedRef.current = true;
     recognitionRef.current?.stop();
     setMessages([]);
     setError('');
@@ -252,7 +283,9 @@ export default function AdminAssistantChat() {
           onChange={(e) => setDraft(e.target.value)}
           onKeyDown={onKeyDown}
           rows={2}
-          placeholder={listening ? 'Listening… speak now.' : 'Tell the console what to do… (Enter to send, Shift+Enter for a new line)'}
+          placeholder={listening
+            ? (autoSend ? 'Listening… speak now.' : 'Listening… press Stop when you have finished.')
+            : 'Tell the console what to do… (Enter to send, Shift+Enter for a new line)'}
           disabled={busy}
         />
         <div className="admin-actions">
