@@ -13,6 +13,8 @@ const SettingsRequest = z.object({
   web_search_enabled: z.boolean().optional(),
   manufacturer_sites: z.array(z.string().trim().max(200)).max(200).optional(),
   draft_replies_enabled: z.boolean().optional(),
+  study_schedule: z.enum(['off', 'daily', 'weekly']).optional(),
+  study_batch: z.number().int().min(10).max(500).optional(),
 });
 
 export const PUT = withAdminSession(async ({ req, token }) => {
