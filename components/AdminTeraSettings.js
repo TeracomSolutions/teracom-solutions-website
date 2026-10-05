@@ -15,6 +15,8 @@ function formValues(settings) {
     web_search_enabled: Boolean(settings.web_search_enabled),
     manufacturer_sites: (settings.manufacturer_sites || []).join(', '),
     draft_replies_enabled: settings.draft_replies_enabled !== false,
+    study_schedule: settings.study_schedule || 'daily',
+    study_batch: String(settings.study_batch ?? 100),
   };
 }
 
@@ -45,6 +47,8 @@ export default function AdminTeraSettings({ initial, onSaved }) {
           web_search_enabled: values.web_search_enabled,
           manufacturer_sites: splitSites(values.manufacturer_sites),
           draft_replies_enabled: values.draft_replies_enabled,
+          study_schedule: values.study_schedule,
+          study_batch: Math.min(500, Math.max(10, Number(values.study_batch) || 100)),
         }),
       });
       const data = await res.json().catch(() => ({}));
@@ -82,6 +86,20 @@ export default function AdminTeraSettings({ initial, onSaved }) {
         Model
         <input value={values.local_model} maxLength={120} placeholder="qwen2.5:3b" onChange={(e) => set('local_model', e.target.value)} />
         <span className="admin-muted">A model already pulled into Ollama. Its answer appears word by word. If it goes 20 seconds without writing, a cloud model answers instead, within the cap below.</span>
+      </label>
+      <label>
+        Study products on manufacturer websites
+        <select value={values.study_schedule} onChange={(e) => set('study_schedule', e.target.value)}>
+          <option value="daily">Every day</option>
+          <option value="weekly">Every week</option>
+          <option value="off">Off (Study now only)</option>
+        </select>
+        <span className="admin-muted">Tera looks up each store product on the website of its manufacturer and keeps what the page says about it. Never-studied products go first; each is studied again after 90 days.</span>
+      </label>
+      <label>
+        Products per study run
+        <input type="number" min="10" max="500" step="10" value={values.study_batch} onChange={(e) => set('study_batch', e.target.value)} />
+        <span className="admin-muted">About 15 seconds a product, so 100 takes about 25 minutes.</span>
       </label>
       <label>
         Cloud answers allowed per month

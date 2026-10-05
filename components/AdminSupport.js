@@ -53,6 +53,14 @@ export default function AdminSupport({ initial }) {
     }
   }
 
+  async function studyNow() {
+    const data = await send('/api/admin/support/study', 'POST', null, 'study');
+    if (data) {
+      setSummary((s) => ({ ...s, study: { ...(s.study || {}), status: 'running' } }));
+      setMessage('Tera is studying the next batch of products. It takes about 15 seconds a product; reload the page later to see the result.');
+    }
+  }
+
   function settingsSaved(settings) {
     setSummary((s) => ({ ...s, monthly_cloud_cap: settings.monthly_cloud_cap, settings }));
   }
@@ -86,6 +94,7 @@ export default function AdminSupport({ initial }) {
   const library = summary.library;
   const known = summary.facts || { taught: 0, learned: 0 };
   const drafts = summary.drafts || { sent_unchanged: 0, sent_edited: 0, discarded: 0, waiting: 0 };
+  const study = summary.study || { status: 'never', products: 0, studied: 0, found: 0 };
 
   return (
     <div>
@@ -121,6 +130,15 @@ export default function AdminSupport({ initial }) {
           </dd>
         </div>
         <div>
+          <dt>Product study</dt>
+          <dd>
+            {study.status === 'running' ? 'Studying now. ' : ''}
+            {study.studied} of {study.products} store products studied, {study.found} found on the manufacturer&apos;s website
+            {study.finished_at ? `; last run ${formatDateTime(study.finished_at)}` : ''}
+            {study.detail ? <span className="admin-muted"> {study.detail}</span> : null}
+          </dd>
+        </div>
+        <div>
           <dt>Last 30 days</dt>
           <dd>
             {last.conversations} conversations, {last.answers} answers, {percent(last.answered, last.answers)} answered from the library; {last.helpful} helpful, {last.not_helpful} not
@@ -131,6 +149,9 @@ export default function AdminSupport({ initial }) {
       <div className="admin-actions support-controls">
         <button type="button" className="btn btn-secondary btn-sm" disabled={Boolean(busy) || library.status === 'running'} onClick={rebuild}>
           {library.status === 'running' ? 'Building...' : 'Rebuild library'}
+        </button>
+        <button type="button" className="btn btn-secondary btn-sm" disabled={Boolean(busy) || study.status === 'running'} onClick={studyNow}>
+          {study.status === 'running' ? 'Studying...' : 'Study now'}
         </button>
       </div>
 
