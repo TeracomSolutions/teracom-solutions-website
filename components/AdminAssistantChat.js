@@ -1,10 +1,11 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { Mic, MicOff, Volume2, VolumeX } from 'lucide-react';
+import { MessageCircle, Mic, MicOff, Volume2, VolumeX } from 'lucide-react';
 
 import AdminAssistantAvatar from './AdminAssistantAvatar';
 import { nextState, pickVoice, speakableText } from '@/lib/assistantVoice';
+import { LISTEN_DELAY_MS, conversationNotice, conversationStep } from '@/lib/assistantConversation';
 import { endsDictation, joinSpeech } from '@/lib/dictation';
 
 // Chat with the console. Each turn sends the whole conversation (the
@@ -13,7 +14,11 @@ import { endsDictation, joinSpeech } from '@/lib/dictation';
 // Web Speech API (Chrome and Edge): the mic button dictates into the box
 // and, by default, sends when you stop talking (untick that to keep the
 // microphone open until Stop and send yourself); Read replies aloud speaks
-// each answer. Nothing spoken leaves the browser except as the text sent.
+// each answer. Hold a conversation turns both on and keeps going: it
+// listens, sends when you pause, speaks the reply, then listens again
+// until you say that is all, press End conversation, or stay silent a
+// few rounds (Robert, 2026-10-06). Nothing spoken leaves the browser
+// except as the text sent.
 const SUGGESTIONS = [
   'How does a supplier price list become a price in the store?',
   'Which suppliers have never had a price list imported?',
@@ -48,6 +53,8 @@ export default function AdminAssistantChat() {
   const [speechSupported, setSpeechSupported] = useState(false);
   const [synthSupported, setSynthSupported] = useState(false);
   const [copied, setCopied] = useState(null);
+  const [conversation, setConversation] = useState(false);
+  const [notice, setNotice] = useState('');
   const endRef = useRef(null);
   const recognitionRef = useRef(null);
   // The recogniser's callbacks outlive a render, so they read the latest
@@ -58,11 +65,22 @@ export default function AdminAssistantChat() {
   // Set when Stop (or New conversation) ends dictation, so a held-open
   // microphone does not start listening again.
   const stopRequestedRef = useRef(false);
+  // Hold a conversation: whether it is on (callbacks outlive a render, so they
+  // read it here), how many listening rounds in a row heard nothing, what Read
+  // replies aloud was set to before it began, and the timer that reopens the
+  // microphone after a reply has been spoken.
+  const conversationRef = useRef(false);
+  const silentRoundsRef = useRef(0);
+  const readAloudBeforeRef = useRef(false);
+  const listenRef = useRef(null);
+  const listenTimerRef = useRef(null);
 
   useEffect(() => {
     setSpeechSupported(Boolean(recognitionClass()));
     setSynthSupported(Boolean(synth()));
     return () => {
+      conversationRef.current = false;
+      clearTimeout(listenTimerRef.current);
       stopRequestedRef.current = true;
       recognitionRef.current?.stop();
       synth()?.cancel();
@@ -98,8 +116,14 @@ export default function AdminAssistantChat() {
     if (voice) utterance.voice = voice;
     utterance.rate = 1;
     utterance.onstart = () => setAvatarState('speaking');
-    utterance.onend = () => dispatch('speak_end');
-    utterance.onerror = () => dispatch('error');
+    utterance.onend = () => {
+      dispatch('speak_end');
+      if (conversationRef.current) listenSoon();
+    };
+    utterance.onerror = (event) => {
+      dispatch('error');
+      if (conversationRef.current && event.error !== 'canceled' && event.error !== 'interrupted') endConversation('speech');
+    };
     speech.speak(utterance);
   }
 
@@ -112,12 +136,16 @@ export default function AdminAssistantChat() {
     setDraft('');
     setBusy(true);
     setError('');
+    setNotice('');
     dispatch('send');
     try {
       const response = await fetch('/api/admin/assistant', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: history.slice(-24).map(({ role, content: c }) => ({ role, content: c })) }),
+        body: JSON.stringify({
+          messages: history.slice(-24).map(({ role, content: c }) => ({ role, content: c })),
+          voice: conversationRef.current,
+        }),
       });
       const data = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(data.error || 'The assistant did not answer.');
@@ -125,15 +153,18 @@ export default function AdminAssistantChat() {
       const wantSpeech = readAloudRef.current && Boolean(data.reply);
       dispatch({ type: 'reply', speak: wantSpeech });
       if (wantSpeech) speak(data.reply);
+      else if (conversationRef.current) listenSoon();
     } catch (err) {
       setError(err.message);
       setMessages(history);
       dispatch('error');
+      if (conversationRef.current) endConversation('error');
     } finally {
       setBusy(false);
     }
   }
   sendRef.current = send;
+  listenRef.current = startListening;
 
   // Speak dictates into the box. With "Send when I stop talking" ticked,
   // the browser stops at the first pause and the words are sent. Unticked,
@@ -146,12 +177,16 @@ export default function AdminAssistantChat() {
       recognitionRef.current?.stop();
       return;
     }
+    startListening();
+  }
+
+  function startListening() {
     const Recognition = recognitionClass();
-    if (!Recognition) return;
+    if (!Recognition || recognitionRef.current) return;
     synth()?.cancel();
     stopRequestedRef.current = false;
-    const holdOpen = !autoSendRef.current;
-    const typed = draft;
+    const holdOpen = !autoSendRef.current && !conversationRef.current;
+    const typed = conversationRef.current ? '' : draft;
     let finalText = '';
 
     const listen = () => {
@@ -188,6 +223,10 @@ export default function AdminAssistantChat() {
         setListening(false);
         dispatch('listen_end');
         const spoken = joinSpeech(typed, finalText);
+        if (conversationRef.current) {
+          afterListening(spoken, Boolean(finalText));
+          return;
+        }
         setDraft(spoken);
         if (finalText && !holdOpen && autoSendRef.current) sendRef.current?.(spoken);
       };
@@ -218,7 +257,70 @@ export default function AdminAssistantChat() {
       .catch(() => setError('Copy did not work here. Select the text and copy it instead.'));
   }
 
+  // Open the microphone again a moment after a reply has been spoken.
+  function listenSoon() {
+    clearTimeout(listenTimerRef.current);
+    listenTimerRef.current = setTimeout(() => {
+      if (conversationRef.current) listenRef.current?.();
+    }, LISTEN_DELAY_MS);
+  }
+
+  // A listening round has ended in a conversation: send what was said,
+  // listen again after silence, or finish.
+  function afterListening(spoken, heard) {
+    if (stopRequestedRef.current) {
+      endConversation('mic');
+      return;
+    }
+    const step = conversationStep({ heard, spoken, silentRounds: silentRoundsRef.current });
+    silentRoundsRef.current = step.silentRounds;
+    if (step.action === 'end') endConversation(step.reason);
+    else if (step.action === 'send') sendRef.current?.(spoken);
+    else listenSoon();
+  }
+
+  function startConversation() {
+    if (!speechSupported || !synthSupported || busy) return;
+    readAloudBeforeRef.current = readAloudRef.current;
+    readAloudRef.current = true;
+    setReadAloud(true);
+    autoSendRef.current = true;
+    setAutoSend(true);
+    conversationRef.current = true;
+    silentRoundsRef.current = 0;
+    setConversation(true);
+    setNotice('');
+    setDraft('');
+    startListening();
+  }
+
+  // Finish the conversation. The microphone's handlers are detached first, so
+  // words caught in the last moment are dropped rather than sent.
+  function endConversation(reason = 'stopped') {
+    if (!conversationRef.current) return;
+    conversationRef.current = false;
+    clearTimeout(listenTimerRef.current);
+    stopRequestedRef.current = true;
+    const recognition = recognitionRef.current;
+    if (recognition) {
+      recognition.onresult = null;
+      recognition.onerror = null;
+      recognition.onend = null;
+      recognition.stop();
+      recognitionRef.current = null;
+      setListening(false);
+    }
+    synth()?.cancel();
+    readAloudRef.current = readAloudBeforeRef.current;
+    setReadAloud(readAloudBeforeRef.current);
+    setConversation(false);
+    setNotice(conversationNotice(reason));
+    setAvatarState('idle');
+  }
+
   function reset() {
+    endConversation('stopped');
+    setNotice('');
     synth()?.cancel();
     stopRequestedRef.current = true;
     recognitionRef.current?.stop();
@@ -276,6 +378,16 @@ export default function AdminAssistantChat() {
         )}
         <div ref={endRef} />
       </div>
+      {conversation && (
+        <div className="admin-assistant-conversation" role="status">
+          <span className="admin-assistant-conversation-dot" aria-hidden="true" />
+          <span>
+            Conversation on · {STATE_LABEL[avatarState] || 'Ready'} Say &quot;that is all&quot; or press End conversation to finish.
+          </span>
+          <button type="button" className="btn btn-secondary btn-sm" onClick={() => endConversation('stopped')}>End conversation</button>
+        </div>
+      )}
+      {!conversation && notice && <p className="admin-muted" role="status">{notice}</p>}
       {error && <p className="form-error" role="alert">{error}</p>}
       <form className="admin-assistant-form" onSubmit={(e) => { e.preventDefault(); send(); }}>
         <textarea
@@ -283,35 +395,49 @@ export default function AdminAssistantChat() {
           onChange={(e) => setDraft(e.target.value)}
           onKeyDown={onKeyDown}
           rows={2}
-          placeholder={listening
-            ? (autoSend ? 'Listening… speak now.' : 'Listening… press Stop when you have finished.')
-            : 'Tell the console what to do… (Enter to send, Shift+Enter for a new line)'}
-          disabled={busy}
+          placeholder={conversation
+            ? 'Conversation is on: just talk, and the answer is read aloud.'
+            : listening
+              ? (autoSend ? 'Listening… speak now.' : 'Listening… press Stop when you have finished.')
+              : 'Tell the console what to do… (Enter to send, Shift+Enter for a new line)'}
+          disabled={busy || conversation}
         />
         <div className="admin-actions">
-          <button type="submit" className="btn btn-primary btn-sm" disabled={busy || !draft.trim()}>{busy ? 'Working…' : 'Send'}</button>
+          <button type="submit" className="btn btn-primary btn-sm" disabled={busy || conversation || !draft.trim()}>{busy ? 'Working…' : 'Send'}</button>
           <button
             type="button"
             className="btn btn-secondary btn-sm admin-assistant-mic"
             onClick={toggleListening}
-            disabled={busy || !speechSupported}
+            disabled={busy || !speechSupported || conversation}
             aria-pressed={listening}
             title={speechSupported ? (listening ? 'Stop listening' : 'Speak instead of typing') : 'Voice input needs Chrome or Edge'}
           >
             {listening ? <MicOff size={15} strokeWidth={2} aria-hidden="true" /> : <Mic size={15} strokeWidth={2} aria-hidden="true" />}
             {' '}{listening ? 'Stop' : 'Speak'}
           </button>
+          {!conversation && (
+            <button
+              type="button"
+              className="btn btn-secondary btn-sm"
+              onClick={startConversation}
+              disabled={busy || !speechSupported || !synthSupported}
+              title={speechSupported && synthSupported ? 'Talk back and forth: it listens, answers aloud, then listens again' : 'A conversation needs Chrome or Edge'}
+            >
+              <MessageCircle size={15} strokeWidth={2} aria-hidden="true" />
+              {' '}Hold a conversation
+            </button>
+          )}
           {messages.length > 0 && (
             <button type="button" className="btn btn-secondary btn-sm" onClick={reset} disabled={busy}>New conversation</button>
           )}
         </div>
         <div className="admin-assistant-voice">
           <label>
-            <input type="checkbox" checked={autoSend} onChange={(e) => setAutoSend(e.target.checked)} disabled={!speechSupported} />
+            <input type="checkbox" checked={autoSend} onChange={(e) => setAutoSend(e.target.checked)} disabled={!speechSupported || conversation} />
             Send when I stop talking
           </label>
           <label>
-            <input type="checkbox" checked={readAloud} onChange={(e) => setReadAloud(e.target.checked)} disabled={!synthSupported} />
+            <input type="checkbox" checked={readAloud} onChange={(e) => setReadAloud(e.target.checked)} disabled={!synthSupported || conversation} />
             {readAloud ? <Volume2 size={14} strokeWidth={2} aria-hidden="true" /> : <VolumeX size={14} strokeWidth={2} aria-hidden="true" />}
             {' '}Read replies aloud
           </label>

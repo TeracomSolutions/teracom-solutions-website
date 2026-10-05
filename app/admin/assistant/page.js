@@ -26,6 +26,10 @@ export default async function AdminAssistantPage() {
             <li>Leads: list new enquiries, summarise them, mark one contacted.</li>
             <li>Website data: visitor numbers and top pages for a period.</li>
           </ul>
+          <h4>Talk to it</h4>
+          <p><strong>Speak</strong> dictates into the box. <strong>Hold a conversation</strong> goes further: it listens, sends what you said when you pause, reads the answer aloud, then listens again, so you can ask follow-up questions back and forth without touching the keyboard. Say &quot;that is all&quot;, press <strong>End conversation</strong> or stay quiet to finish. It needs Chrome or Edge.</p>
+          <h4>What it knows</h4>
+          <p>It answers questions about any console setting from the same guide and page help you can read: for each question, the matching help is found and handed to it. If the help does not cover something, it says so rather than guessing.</p>
           <h4>What it will not do</h4>
           <p>It cannot delete anything, upload files, change AI keys or edit the website itself; those stay as clicks on their pages. It runs on the connections under AI Connections, in the order of preference set there, and says which one answered.</p>
         </AdminHelpIcon>
