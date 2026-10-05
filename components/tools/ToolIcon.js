@@ -5,11 +5,14 @@ import {
   Calculator,
   Camera,
   Cctv,
+  Cpu,
   Database,
   Eye,
   Film,
   Gauge,
   HardDrive,
+  Layers,
+  MemoryStick,
   Monitor,
   MoveVertical,
   Network,
@@ -20,6 +23,7 @@ import {
   Router,
   Ruler,
   Server,
+  ServerCog,
   Signal,
   Speaker,
   Spline,
@@ -60,6 +64,10 @@ const TOOL_ICONS = {
   'projector-throw-calculator': Projector,
   'screen-size-calculator': Tv,
   'projector-brightness-calculator': SunMedium,
+  'pc-power-supply-calculator': Cpu,
+  'cctv-recording-server-calculator': ServerCog,
+  'virtual-server-calculator': Layers,
+  'rack-size-heat-calculator': Server,
 };
 
 const GROUP_ICONS = {
@@ -68,6 +76,7 @@ const GROUP_ICONS = {
   cabling: [Cable, Waypoints, Ruler, Spline, Cable, Waypoints, Ruler, Spline],
   network: [Network, Router, Wifi, RadioTower, Antenna, Timer, Network, Wifi],
   av: [Speaker, Projector, Monitor, Tv, Volume2, SunMedium, Speaker, Tv],
+  it: [Server, Cpu, HardDrive, MemoryStick, ServerCog, Layers, Server, Cpu],
 };
 
 export default function ToolIcon({ slug, size = 24, strokeWidth = 1.75 }) {
