@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ThumbsDown, ThumbsUp } from 'lucide-react';
 
+import TeraHandover from '@/components/TeraHandover';
 import { takeEvents } from '@/lib/teraStream';
 
 // Ask Tera: Teracom's AI support assistant, for signed-in customers only
@@ -174,9 +175,13 @@ export default function AskTeraWidget() {
                       </ul>
                     ) : null}
                     {message.type === 'assistant' && message.answered === false && !message.pending ? (
-                      <p className="tera-handover">
-                        <Link href={REQUEST_HREF}>Submit a request</Link> and the team will get back to you.
-                      </p>
+                      message.messageId ? (
+                        <TeraHandover conversationId={conversationId} />
+                      ) : (
+                        <p className="tera-handover">
+                          <Link href={REQUEST_HREF}>Submit a request</Link> and the team will get back to you.
+                        </p>
+                      )
                     ) : null}
                     {message.messageId ? (
                       <div className="tera-feedback">

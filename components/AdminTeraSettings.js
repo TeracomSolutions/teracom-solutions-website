@@ -14,6 +14,7 @@ function formValues(settings) {
     local_model: settings.local_model || '',
     web_search_enabled: Boolean(settings.web_search_enabled),
     manufacturer_sites: (settings.manufacturer_sites || []).join(', '),
+    draft_replies_enabled: settings.draft_replies_enabled !== false,
   };
 }
 
@@ -43,6 +44,7 @@ export default function AdminTeraSettings({ initial, onSaved }) {
           local_model: values.local_model.trim(),
           web_search_enabled: values.web_search_enabled,
           manufacturer_sites: splitSites(values.manufacturer_sites),
+          draft_replies_enabled: values.draft_replies_enabled,
         }),
       });
       const data = await res.json().catch(() => ({}));
@@ -62,6 +64,11 @@ export default function AdminTeraSettings({ initial, onSaved }) {
       {message ? <p className="form-note-banner" role="status">{message}</p> : null}
       {error ? <p className="form-error" role="alert">{error}</p> : null}
 
+      <label className="admin-check">
+        <input type="checkbox" checked={values.draft_replies_enabled} onChange={(e) => set('draft_replies_enabled', e.target.checked)} />
+        Tera drafts a reply to every new enquiry for you to check and send on the Leads page
+      </label>
+      <p className="admin-muted">Nothing is emailed until someone presses Send. Untick to stop the drafts; you can still ask Tera for one on any enquiry.</p>
       <label className="admin-check">
         <input type="checkbox" checked={values.local_model_enabled} onChange={(e) => set('local_model_enabled', e.target.checked)} />
         Answer with Tera&apos;s own model on this server first

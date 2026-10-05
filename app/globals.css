@@ -1011,6 +1011,22 @@ a {
 .teach-answer { max-width: 420px; white-space: pre-wrap; }
 .teach-actions { display: flex; flex-wrap: wrap; gap: 10px; }
 .teach-tera tr.is-off td { opacity: .55; }
+/* Admin -> Leads: Tera's draft reply under an enquiry. */
+.lead-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.lead-reply-row td { background: rgba(255,255,255,.02); }
+.lead-reply { display: grid; gap: 10px; max-width: 760px; padding: 6px 0; }
+.lead-reply-label { font-size: 13px; font-weight: 700; color: var(--muted); }
+.lead-reply-box { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line); background: #0d0d0d; color: #fff; font: inherit; font-size: 14px; line-height: 1.5; }
+.lead-reply-text { white-space: pre-wrap; margin: 0; }
+.lead-reply-sources { font-size: 12px; margin: 0; }
+.admin-status.is-draft { margin-left: 6px; color: #4ade80; }
+/* Ask Tera: send to the team, or ask for a callback. */
+.tera-handover-button { padding: 0; border: 0; background: none; color: #ff4b4b; font: inherit; font-weight: 700; text-decoration: underline; cursor: pointer; }
+.tera-handover-button:disabled { opacity: .6; cursor: default; }
+.tera-callback { display: grid; gap: 8px; margin-top: 6px; }
+.tera-callback label { display: grid; gap: 4px; font-size: 12px; }
+.tera-callback input { padding: 7px 9px; border-radius: 8px; border: 1px solid var(--line); background: #0d0d0d; color: #fff; font: inherit; font-size: 13px; }
+.tera-handover-error { color: #ff6b6b; margin: 6px 0 0; font-size: 12px; }
 .support-conversations { display: grid; gap: 10px; margin: 0 0 18px; }
 .support-conversation { padding: 0; }
 .support-conversation-head { display: grid; gap: 4px; width: 100%; padding: 14px 18px; border: 0; background: transparent; color: inherit; font: inherit; text-align: left; cursor: pointer; }

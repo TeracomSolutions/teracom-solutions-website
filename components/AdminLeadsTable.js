@@ -1,17 +1,20 @@
 'use client';
 
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 
+import AdminLeadReply from '@/components/AdminLeadReply';
 import { formatDateTime, inquiryLabel } from '@/lib/adminFormat';
 
 // Enquiries from the public contact form, newest first. Copied from the
 // the previous platform's app/(admin)/data-feeds/LeadsTable.js; the form now
-// writes straight to the website backend and this reads it back.
+// writes straight to the website backend and this reads it back. Reply opens
+// Tera's draft reply under the row (AdminLeadReply).
 export default function AdminLeadsTable({ leads, loadError }) {
   const [rows, setRows] = useState(leads ?? []);
   const [error, setError] = useState(loadError ?? null);
   const [busyId, setBusyId] = useState(null);
   const [openId, setOpenId] = useState(null);
+  const [replyId, setReplyId] = useState(null);
 
   const reload = async () => {
     try {
@@ -79,7 +82,8 @@ export default function AdminLeadsTable({ leads, loadError }) {
               </tr>
             )}
             {rows.map((lead) => (
-              <tr key={lead.id}>
+              <Fragment key={lead.id}>
+              <tr>
                 <td>{formatDateTime(lead.created_at)}</td>
                 <td className="wrap">
                   {lead.name}
@@ -106,8 +110,17 @@ export default function AdminLeadsTable({ leads, loadError }) {
                   {lead.status === 'contacted'
                     ? <span className="admin-status is-contacted">Contacted {lead.contacted_at ? formatDateTime(lead.contacted_at) : ''}</span>
                     : <span className="admin-status is-new">New</span>}
+                  {lead.status !== 'contacted' && lead.draft?.status === 'ready' ? <span className="admin-status is-draft">Draft ready</span> : null}
                 </td>
-                <td>
+                <td className="lead-actions">
+                  <button
+                    type="button"
+                    className="btn btn-secondary btn-sm"
+                    aria-expanded={replyId === lead.id}
+                    onClick={() => setReplyId(replyId === lead.id ? null : lead.id)}
+                  >
+                    {replyId === lead.id ? 'Close' : 'Reply'}
+                  </button>
                   {lead.status !== 'contacted' && (
                     <button
                       type="button"
@@ -120,6 +133,14 @@ export default function AdminLeadsTable({ leads, loadError }) {
                   )}
                 </td>
               </tr>
+              {replyId === lead.id ? (
+                <tr className="lead-reply-row">
+                  <td colSpan={7}>
+                    <AdminLeadReply key={`${lead.id}-${lead.draft?.status}-${lead.draft?.updated_at}`} lead={lead} onChange={reload} />
+                  </td>
+                </tr>
+              ) : null}
+              </Fragment>
             ))}
           </tbody>
         </table>
