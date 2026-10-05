@@ -403,6 +403,18 @@ a {
 .brand-card-logo {
   flex:none;max-height:30px;max-width:110px;width:auto;height:auto;object-fit:contain;filter:brightness(0) invert(1);opacity:.85;
 }
+/* A solid logo (a square app icon) shown as it is, on a tile, instead of as a white silhouette. */
+.brand-card-logo.brand-logo-tile, .brand-hero-logo.brand-logo-tile { filter:none; opacity:1; background:#fff; border-radius:8px; padding:3px; }
+/* Admin -> Store -> Brands */
+.brand-admin-list { display:grid; gap:12px; margin:0 0 24px; }
+.brand-admin-card { display:grid; gap:12px; padding:14px 16px; }
+.brand-admin-head { display:flex; flex-wrap:wrap; align-items:center; gap:14px; }
+.brand-admin-logo { width:120px; height:56px; display:grid; place-items:center; border-radius:10px; background:#1a1a1a; flex:none; }
+.brand-admin-logo img { max-width:104px; max-height:44px; object-fit:contain; }
+.brand-admin-logo.is-tile img { background:#fff; border-radius:6px; padding:2px; }
+.brand-admin-name { flex:1; min-width:160px; }
+.brand-admin-actions { display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+
 .brand-hero-heading {
   display:flex;align-items:center;gap:22px;flex-wrap:wrap;
 }

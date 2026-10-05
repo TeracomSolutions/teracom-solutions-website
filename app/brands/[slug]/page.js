@@ -1,7 +1,15 @@
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import { brands, findBrand } from '@/lib/brands';
+import { cookies } from 'next/headers';
+import { brands } from '@/lib/brands';
+import { findBrandAsync } from '@/lib/storeBrands';
+import { productsForBrand } from '@/lib/storeBrandsMerge';
+import { getAllProducts, getCustomerPricing } from '@/lib/catalogue';
+import { forTiles } from '@/lib/catalogueMerge';
+import { CUSTOMER_ACCESS_TOKEN_COOKIE } from '@/lib/customerSession';
+import BrandLogo from '@/components/BrandLogo';
+import CategoryProductGrid from '@/components/CategoryProductGrid';
 import CategoryIcon from '@/components/CategoryIcon';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import { pageMetadata } from '@/lib/seo';
@@ -11,13 +19,17 @@ import { findBrandProfile } from '@/lib/brandProfiles';
 
 const THEME_FALLBACKS = { 'cctv': '/assets/brand-fallback-cctv.svg', 'access-control': '/assets/brand-fallback-access.svg', 'audio': '/assets/brand-fallback-audio.svg', 'power': '/assets/brand-fallback-power.svg', 'networking': '/assets/brand-fallback-network.svg', 'accessories': '/assets/brand-fallback-accessories.svg' };
 
+// A brand that arrives in a supplier's feed gets its page within five
+// minutes (the slugs below are only the hand-written ones).
+export const revalidate = 300;
+
 export function generateStaticParams() {
   return brands.map((b) => ({ slug: b.slug }));
 }
 
 export async function generateMetadata(props) {
   const params = await props.params;
-  const brand = findBrand(params.slug);
+  const brand = await findBrandAsync(params.slug);
   if (!brand) return {};
   // Search-result title only (not rendered on the page). Says what Teracom does
   // with the brand and where, which is what someone searching the brand name
@@ -37,8 +49,13 @@ export async function generateMetadata(props) {
 
 export default async function BrandPage(props) {
   const params = await props.params;
-  const brand = findBrand(params.slug);
+  const brand = await findBrandAsync(params.slug);
   if (!brand) notFound();
+
+  // The brand's products in the store, priced for whoever is looking.
+  const token = (await cookies()).get(CUSTOMER_ACCESS_TOKEN_COOKIE)?.value;
+  const customer = await getCustomerPricing(token);
+  const storeProducts = productsForBrand(await getAllProducts(), brand);
 
   const paragraphs = brand.body.split('\n\n');
   // A brand with a profile gets the longer page and a drawing in the hero.
@@ -52,15 +69,7 @@ export default async function BrandPage(props) {
             <Breadcrumbs items={[{ name: 'Brands', href: '/brands' }]} current={brand.name} />
             <div className="brand-hero-heading">
               <h1>{brand.name}</h1>
-              {brand.logoFile && (
-                <Image
-                  className="brand-hero-logo"
-                  src={`/assets/logos/${brand.logoFile}`}
-                  alt={`${brand.name} logo`}
-                  width={180}
-                  height={48}
-                />
-              )}
+              <BrandLogo brand={brand} className="brand-hero-logo" width={180} height={48} />
             </div>
             <p className="lead">{brand.tagline}</p>
             {brand.stats && (
@@ -140,6 +149,17 @@ export default async function BrandPage(props) {
           </div>
         </div>
       </section>
+      {storeProducts.length > 0 && (
+        <section className="section section-spacious alt">
+          <div className="container">
+            <div className="section-heading left">
+              <span className="eyebrow">Teracom Store</span>
+              <h2>{brand.name} in the store.</h2>
+            </div>
+            <CategoryProductGrid products={forTiles(storeProducts)} isSignedIn={Boolean(token)} customer={customer} />
+          </div>
+        </section>
+      )}
       <section className="section">
         <div className="container">
           <div className="brand-store-cta">
