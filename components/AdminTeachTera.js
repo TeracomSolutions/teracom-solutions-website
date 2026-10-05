@@ -134,7 +134,10 @@ export default function AdminTeachTera({ facts, setFacts, draft }) {
             <button type="button" className="btn btn-secondary btn-sm" onClick={() => setForm(EMPTY)}>Cancel</button>
           ) : null}
         </div>
-        <p className="admin-muted">Card numbers, keys, phone numbers, email and street addresses are taken out before anything is saved.</p>
+        <p className="admin-muted">
+          Customers see these answers. Never add costs, markups, margins or buy prices; Tera refuses them. Card numbers,
+          keys, phone numbers, email and street addresses are taken out before anything is saved.
+        </p>
       </form>
 
       <div className="teach-filters" role="group" aria-label="Show">

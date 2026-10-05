@@ -901,6 +901,26 @@ a {
   font-weight: bold;
 }
 
+/* Tera's face: a pulsing ring while listening, a gentle bob while thinking,
+   a pulse while speaking (Ask Tera phase 2). */
+.tera-avatar-badge.is-listening { box-shadow: 0 0 0 3px rgba(255, 75, 75, .55); animation: tera-ring 1.2s ease-in-out infinite; }
+.tera-avatar-badge.is-thinking { animation: tera-bob 1.4s ease-in-out infinite; }
+.tera-avatar-badge.is-speaking { animation: tera-talk .5s ease-in-out infinite alternate; }
+@keyframes tera-ring { 0%, 100% { box-shadow: 0 0 0 2px rgba(255, 75, 75, .35); } 50% { box-shadow: 0 0 0 6px rgba(255, 75, 75, .7); } }
+@keyframes tera-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+@keyframes tera-talk { from { transform: scale(1); } to { transform: scale(1.08); } }
+@media (prefers-reduced-motion: reduce) {
+  .tera-avatar-badge.is-listening, .tera-avatar-badge.is-thinking, .tera-avatar-badge.is-speaking { animation: none; }
+}
+.tera-voice-toggle { display: grid; place-items: center; width: 30px; height: 30px; border: 0; border-radius: 50%; background: none; color: var(--text); cursor: pointer; }
+.tera-voice-toggle:hover, .tera-voice-toggle[aria-pressed="true"] { background: rgba(255, 255, 255, 0.1); }
+.tera-mic-button { display: grid; place-items: center; width: 40px; flex: none; border: 1px solid var(--line); border-radius: 10px; background: #0d0d0d; color: var(--text); cursor: pointer; }
+.tera-mic-button.is-on { border-color: #ff4b4b; color: #ff4b4b; }
+/* "Ask Tera" on product and calculator pages (Ask Tera phase 5). */
+.tera-nudge { padding: 0; border: 0; background: none; color: #ff4b4b; font: inherit; font-weight: 700; text-decoration: underline; cursor: pointer; }
+.tool-suggestions { margin: 18px 0 0; }
+.tool-suggestions ul { margin: 6px 0 0; padding-left: 18px; }
+
 .tera-header h3 {
   flex: 1;
   margin: 0;
