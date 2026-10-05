@@ -17,7 +17,6 @@ import {
   Plus,
   RotateCcw,
   ShieldCheck,
-  ShoppingCart,
   Sparkles,
   Trash2,
   Truck,
@@ -29,6 +28,7 @@ import CartDelivery from '@/components/CartDelivery';
 import { formatMoney } from '@/lib/products';
 import { unitPriceCents } from '@/lib/catalogueMerge';
 import StripeTrustBadge from '@/components/StripeTrustBadge';
+import TeraPose from '@/components/TeraPose';
 
 const CATEGORY_ICONS = {
   'Access Control': KeyRound,
@@ -52,7 +52,7 @@ function CartArt() {
   return (
     <div className="store-art cart-art" aria-hidden="true">
       <span className="store-art-ring tool-hero-ring">
-        <ShoppingCart size={88} strokeWidth={1.3} focusable="false" />
+        <TeraPose pose="walking" size={150} />
       </span>
       <span className="store-art-orbit">
         {[CreditCard, ShieldCheck, Truck].map((Badge, i) => (

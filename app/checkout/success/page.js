@@ -1,6 +1,7 @@
 import Link from 'next/link';
-import { ArrowRight, Mail, PackageCheck, ShieldCheck, Truck } from 'lucide-react';
+import { ArrowRight, Mail, ShieldCheck, Truck } from 'lucide-react';
 import ClearCartOnMount from '@/components/ClearCartOnMount';
+import TeraPose from '@/components/TeraPose';
 
 export default function Success() {
   return (
@@ -26,7 +27,7 @@ export default function Success() {
             </p>
           </div>
           <div className="store-art cart-art" aria-hidden="true">
-            <span className="store-art-ring tool-hero-ring"><PackageCheck size={88} strokeWidth={1.3} /></span>
+            <span className="store-art-ring tool-hero-ring"><TeraPose pose="celebrate" size={150} /></span>
             <span className="store-art-orbit">
               {[Mail, Truck, ShieldCheck].map((Badge, i) => (
                 <span className={`store-art-badge store-art-badge-${i + 1}`} key={i}><span><Badge size={22} strokeWidth={1.8} /></span></span>
