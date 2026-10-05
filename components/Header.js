@@ -99,7 +99,6 @@ export default async function Header() {
             </div>
           </div>
           <Link href="/securityos-ai">Teracom AI</Link>
-          <Link href="/store">Store</Link>
           <Link href="/brands">Brands</Link>
           <div className="nav-dropdown">
             <Link href="/resources">Resources</Link>
