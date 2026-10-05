@@ -7,9 +7,10 @@ import { Mic, MicOff, ThumbsDown, ThumbsUp, Volume2, VolumeX } from 'lucide-reac
 
 import TeraHandover from '@/components/TeraHandover';
 import TeraPose from '@/components/TeraPose';
-import { nextState, pickVoice, speakableText } from '@/lib/assistantVoice';
+import { nextState } from '@/lib/assistantVoice';
 import { endsDictation, joinSpeech } from '@/lib/dictation';
 import { takeEvents } from '@/lib/teraStream';
+import { speakReply, speechControl } from '@/lib/voicePlayer';
 
 // Ask Tera: Teracom's AI support assistant, for signed-in customers only
 // (Robert, 2026-10-04). Signed-out visitors are asked to sign in. Answers
@@ -31,8 +32,10 @@ function recognitionClass() {
   return window.SpeechRecognition || window.webkitSpeechRecognition || null;
 }
 
+// Something to cancel speech with, or null where the browser cannot speak:
+// it stops the cloud voice as well as the browser's own.
 function synth() {
-  return typeof window !== 'undefined' && window.speechSynthesis ? window.speechSynthesis : null;
+  return speechControl() || null;
 }
 
 export default function AskTeraWidget() {
@@ -94,16 +97,11 @@ export default function AskTeraWidget() {
   }
 
   function speak(text) {
-    const speech = synth();
-    if (!speech) return;
-    speech.cancel();
-    const utterance = new SpeechSynthesisUtterance(speakableText(text));
-    const voice = pickVoice(speech.getVoices());
-    if (voice) utterance.voice = voice;
-    utterance.onstart = () => setAvatarState('speaking');
-    utterance.onend = () => dispatch('speak_end');
-    utterance.onerror = () => dispatch('error');
-    speech.speak(utterance);
+    speakReply(text, null, {
+      onStart: () => setAvatarState('speaking'),
+      onEnd: () => dispatch('speak_end'),
+      onError: () => dispatch('error'),
+    });
   }
 
   // The microphone stays open (Chrome ends a session after a pause, so a
