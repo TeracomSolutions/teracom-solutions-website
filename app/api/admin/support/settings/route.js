@@ -12,6 +12,7 @@ const SettingsRequest = z.object({
   local_model: z.string().trim().min(1).max(120).optional(),
   web_search_enabled: z.boolean().optional(),
   manufacturer_sites: z.array(z.string().trim().max(200)).max(200).optional(),
+  draft_replies_enabled: z.boolean().optional(),
 });
 
 export const PUT = withAdminSession(async ({ req, token }) => {

@@ -85,6 +85,7 @@ export default function AdminSupport({ initial }) {
   const last = summary.last_30_days;
   const library = summary.library;
   const known = summary.facts || { taught: 0, learned: 0 };
+  const drafts = summary.drafts || { sent_unchanged: 0, sent_edited: 0, discarded: 0, waiting: 0 };
 
   return (
     <div>
@@ -111,6 +112,13 @@ export default function AdminSupport({ initial }) {
         <div>
           <dt>What Tera knows</dt>
           <dd>{known.taught} taught by staff, {known.learned} learned from chats</dd>
+        </div>
+        <div>
+          <dt>Draft replies (30 days)</dt>
+          <dd>
+            {summary.settings?.draft_replies_enabled === false ? 'Switched off. ' : ''}
+            {drafts.sent_unchanged} sent as Tera wrote them, {drafts.sent_edited} changed first, {drafts.discarded} discarded; {drafts.waiting} waiting on the Leads page
+          </dd>
         </div>
         <div>
           <dt>Last 30 days</dt>
