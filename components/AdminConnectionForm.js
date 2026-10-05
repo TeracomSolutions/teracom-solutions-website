@@ -31,6 +31,12 @@ const HOW_TO = {
     'Name it Teracom console. In Scope pick the Teracom Solutions team, then the teracom-solutions-website project.',
     'Choose an expiration, select Create, and paste the token here. Vercel shows it only once.',
   ],
+  voice: [
+    'In the Azure portal (portal.azure.com) choose Create a resource, search for Speech and create a Speech resource.',
+    'Pick a subscription and resource group, set the region to Australia East, name it, and choose the Free F0 pricing tier if it is offered (otherwise Standard S0, which is pay as you go).',
+    'When it has deployed, open the resource and go to Keys and Endpoint. Copy KEY 1 into the Azure Speech key box here. The region box should match the one you chose, australiaeast for Australia East.',
+    'Set Voice engine to azure, pick a voice (Natasha is the default Australian one), Save, press Test, then Hear it to listen.',
+  ],
 };
 
 export default function AdminConnectionForm({ connection, onSaved, onCancel }) {

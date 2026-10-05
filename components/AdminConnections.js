@@ -5,6 +5,7 @@ import { useState } from 'react';
 
 import AdminConnectionForm from '@/components/AdminConnectionForm';
 import AdminAddDevice, { DeviceActions } from '@/components/AdminMonitoredDevices';
+import AdminVoiceSample from '@/components/AdminVoiceSample';
 import { checkedText, groupConnections, statusLabel, summarise, withResult } from '@/lib/connectionStatus';
 
 // Admin -> Connections: one card per outside service, server or computer,
@@ -140,6 +141,7 @@ export default function AdminConnections({ initial, notice }) {
                   ) : null}
                   {item.device_id ? <DeviceActions item={item} onChanged={reload} /> : null}
                 </div>
+                {item.key === 'voice' && item.voice ? <AdminVoiceSample voice={item.voice} /> : null}
                 {editing === item.key ? (
                   <AdminConnectionForm connection={item} onSaved={saved} onCancel={() => setEditing('')} />
                 ) : null}

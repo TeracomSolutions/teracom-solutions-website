@@ -4,9 +4,10 @@ import { useEffect, useRef, useState } from 'react';
 import { MessageCircle, Mic, MicOff, Volume2, VolumeX } from 'lucide-react';
 
 import AdminAssistantAvatar from './AdminAssistantAvatar';
-import { nextState, pickVoice, speakableText } from '@/lib/assistantVoice';
+import { nextState } from '@/lib/assistantVoice';
 import { LISTEN_DELAY_MS, conversationNotice, conversationStep } from '@/lib/assistantConversation';
 import { endsDictation, joinSpeech } from '@/lib/dictation';
+import { speakReply, speechControl } from '@/lib/voicePlayer';
 
 // Chat with the console. Each turn sends the whole conversation (the
 // backend keeps no session), shows the reply, and lists any actions the
@@ -37,8 +38,10 @@ function recognitionClass() {
   return window.SpeechRecognition || window.webkitSpeechRecognition || null;
 }
 
+// Something to cancel speech with, or undefined where the browser cannot
+// speak: it stops the cloud voice as well as the browser's own.
 function synth() {
-  return typeof window !== 'undefined' ? window.speechSynthesis : undefined;
+  return speechControl();
 }
 
 export default function AdminAssistantChat() {
@@ -108,23 +111,17 @@ export default function AdminAssistantChat() {
   }
 
   function speak(reply) {
-    const speech = synth();
-    if (!speech) return;
-    speech.cancel();
-    const utterance = new SpeechSynthesisUtterance(speakableText(reply));
-    const voice = pickVoice(speech.getVoices());
-    if (voice) utterance.voice = voice;
-    utterance.rate = 1;
-    utterance.onstart = () => setAvatarState('speaking');
-    utterance.onend = () => {
-      dispatch('speak_end');
-      if (conversationRef.current) listenSoon();
-    };
-    utterance.onerror = (event) => {
-      dispatch('error');
-      if (conversationRef.current && event.error !== 'canceled' && event.error !== 'interrupted') endConversation('speech');
-    };
-    speech.speak(utterance);
+    speakReply(reply, null, {
+      onStart: () => setAvatarState('speaking'),
+      onEnd: () => {
+        dispatch('speak_end');
+        if (conversationRef.current) listenSoon();
+      },
+      onError: (event) => {
+        dispatch('error');
+        if (conversationRef.current && event?.error !== 'canceled' && event?.error !== 'interrupted') endConversation('speech');
+      },
+    });
   }
 
   async function send(text) {
