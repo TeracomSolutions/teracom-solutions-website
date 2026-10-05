@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import ShopTheParts from '@/components/ShopTheParts';
+import AskTeraNudge from '@/components/AskTeraNudge';
 import CalculatorUsage from '@/components/CalculatorUsage';
 import Link from 'next/link';
 import { Battery, Cable, Cctv, Gauge, HardDrive, Monitor, Network, Projector, Router, Ruler, Speaker, Video, Wifi, Zap } from 'lucide-react';
@@ -104,6 +105,10 @@ export default async function ToolPage(props) {
           <p>
             Need help designing a system? <Link href="/contact">Talk to our team</Link>, or{' '}
             <Link href="/tools">see all {tools.length} free calculators</Link>.
+          </p>
+          <p className="print-hide">
+            Not sure what to enter, or what the result means?{' '}
+            <AskTeraNudge question={`How do I use the ${tool.title}?`} label="Ask Tera" />, our AI support assistant.
           </p>
         </div>
       </section>

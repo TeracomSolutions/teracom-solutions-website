@@ -11,6 +11,7 @@ import CheckoutButton from '@/components/CheckoutButton';
 import StoreCategoryArt from '@/components/StoreCategoryArt';
 import ProductViewed from '@/components/ProductViewed';
 import ProductResources from '@/components/ProductResources';
+import AskTeraNudge from '@/components/AskTeraNudge';
 import { CUSTOMER_ACCESS_TOKEN_COOKIE } from '@/lib/customerSession';
 import {
   artSlugForProduct,
@@ -31,6 +32,8 @@ import {
   weightText,
 } from '@/lib/productDetails';
 import { absoluteUrl, BUSINESS, pageMetadata } from '@/lib/seo';
+import { toolsForProduct } from '@/lib/toolSuggestions';
+import { findTool } from '@/lib/tools';
 
 // The built-in products are prerendered; a product that only exists in the
 // admin catalogue renders on first request and is then cached. Either kind
@@ -109,6 +112,8 @@ export default async function ProductPage(props) {
   const customer = await getCustomerPricing(token);
   const isSignedIn = Boolean(customer);
   const category = storeCategoryForProduct(product);
+  // Help before people ask (Ask Tera phase 5): the calculators that fit.
+  const helpers = toolsForProduct(category?.slug, product.name).map(findTool).filter(Boolean);
   const allProducts = await getAllProducts();
   const related = allProducts
     .filter((p) => p.id !== product.id && p.category === product.category)
@@ -328,6 +333,22 @@ export default async function ProductPage(props) {
                 </div>
               ) : null}
             </dl>
+            <div className="tool-suggestions">
+              {helpers.length ? (
+                <>
+                  <h3>Plan it with a free calculator</h3>
+                  <ul>
+                    {helpers.map((tool) => (
+                      <li key={tool.slug}><Link href={`/tools/${tool.slug}`}>{tool.title}</Link></li>
+                    ))}
+                  </ul>
+                </>
+              ) : null}
+              <p>
+                Questions about this product?{' '}
+                <AskTeraNudge question={`Can you help me with the ${product.name}?`} label="Ask Tera" />, our AI support assistant.
+              </p>
+            </div>
           </div>
         </div>
       </section>
