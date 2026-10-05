@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { Mic, MicOff, ThumbsDown, ThumbsUp, Volume2, VolumeX } from 'lucide-react';
 
 import TeraHandover from '@/components/TeraHandover';
+import TeraPose from '@/components/TeraPose';
 import { nextState, pickVoice, speakableText } from '@/lib/assistantVoice';
 import { endsDictation, joinSpeech } from '@/lib/dictation';
 import { takeEvents } from '@/lib/teraStream';
@@ -175,6 +176,7 @@ export default function AskTeraWidget() {
         setMessages([{
           id: newId(),
           type: 'assistant',
+          pose: 'wink',
           text: `Hi${data.firstName ? ` ${data.firstName}` : ''}, I'm Tera, Teracom's AI support assistant. Ask me about our products, setting them up, or the free calculators. I answer from Teracom's manuals and help pages, and I'll tell you if I'm not sure.`,
         }]);
       }
@@ -320,6 +322,8 @@ export default function AskTeraWidget() {
                     key={message.id}
                     className={`tera-message ${message.type === 'user' ? 'tera-message-user' : 'tera-message-assistant'}`}
                   >
+                    {message.pose ? <TeraPose pose={message.pose} size={72} className="tera-pose-chat" /> : null}
+                    {message.pending ? <TeraPose pose="laptop" size={64} className="tera-pose-chat" /> : null}
                     {message.text}
                     {message.sources?.length ? (
                       <ul className="tera-sources">

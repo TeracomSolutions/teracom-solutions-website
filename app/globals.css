@@ -1877,6 +1877,12 @@ a {
    82px runs to four lines and pushes itself up behind the header. */
 .hero-home h1.hero-news-headline { font-size: clamp(30px, 3.4vw, 50px); line-height: 1.04; letter-spacing: -.035em; }
 
+/* Tera's poses (components/TeraPose.js). */
+.tera-pose { height: auto; filter: drop-shadow(0 6px 18px rgba(255, 23, 23, .28)); }
+.tera-pose-inline { display: block; margin: 0 0 14px; }
+.tera-pose-chat { display: block; margin: 0 0 6px; }
+.cart-art .tool-hero-ring .tera-pose { filter: drop-shadow(0 0 16px rgba(255, 23, 23, .4)); }
+
 /* A store category with no listings yet: a quote offer, not an apology. */
 .category-quote-band {
   padding: 40px 44px; border-radius: 28px; border: 1px solid var(--line);

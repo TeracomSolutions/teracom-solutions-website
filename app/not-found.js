@@ -1,5 +1,6 @@
 import Link from 'next/link';
-import { Compass, LifeBuoy, MapPinOff, Search, ShoppingBag, Wrench } from 'lucide-react';
+import { Compass, LifeBuoy, Search, ShoppingBag, Wrench } from 'lucide-react';
+import TeraPose from '@/components/TeraPose';
 
 const POPULAR = [
   { label: 'What we do', href: '/services' },
@@ -35,7 +36,7 @@ export default function NotFound() {
           </div>
           <div className="store-art cart-art" aria-hidden="true">
             <span className="store-art-ring tool-hero-ring">
-              <MapPinOff size={88} strokeWidth={1.3} />
+              <TeraPose pose="presenting" size={150} />
             </span>
             <span className="store-art-orbit">
               {[Compass, ShoppingBag, Wrench].map((Badge, i) => (
