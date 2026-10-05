@@ -1,5 +1,5 @@
 import { ImageResponse } from 'next/og';
-import { findBrand } from '@/lib/brands';
+import { findBrandAsync } from '@/lib/storeBrands';
 
 export const alt = 'Teracom Solutions -- electronic security, AI and technology';
 export const size = { width: 1200, height: 630 };
@@ -7,7 +7,7 @@ export const contentType = 'image/png';
 
 export default async function OGImage(props) {
   const params = await props.params;
-  const brand = findBrand(params.slug);
+  const brand = await findBrandAsync(params.slug);
   
   return new ImageResponse(
     (

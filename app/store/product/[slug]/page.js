@@ -33,6 +33,8 @@ import {
 } from '@/lib/productDetails';
 import { absoluteUrl, BUSINESS, pageMetadata } from '@/lib/seo';
 import { toolsForProduct } from '@/lib/toolSuggestions';
+import { getBrands } from '@/lib/storeBrands';
+import { brandForProduct } from '@/lib/storeBrandsMerge';
 import { findTool } from '@/lib/tools';
 
 // The built-in products are prerendered; a product that only exists in the
@@ -112,6 +114,8 @@ export default async function ProductPage(props) {
   const customer = await getCustomerPricing(token);
   const isSignedIn = Boolean(customer);
   const category = storeCategoryForProduct(product);
+  // The brand's own page, when it has one (every brand in the store does).
+  const brandPage = product.brand ? brandForProduct(await getBrands(), product.brand) : null;
   // Help before people ask (Ask Tera phase 5): the calculators that fit.
   const helpers = toolsForProduct(category?.slug, product.name).map(findTool).filter(Boolean);
   const allProducts = await getAllProducts();
@@ -286,7 +290,7 @@ export default async function ProductPage(props) {
               {product.brand ? (
                 <div>
                   <dt>Brand</dt>
-                  <dd>{product.brand}</dd>
+                  <dd>{brandPage ? <Link href={`/brands/${brandPage.slug}`}>{product.brand}</Link> : product.brand}</dd>
                 </div>
               ) : null}
               <div>

@@ -1,4 +1,4 @@
-import { brands } from '@/lib/brands';
+import { getBrands } from '@/lib/storeBrands';
 import { categories } from '@/lib/categories';
 import { getAllProducts } from '@/lib/catalogue';
 import { aiCapabilities } from '@/lib/aiCapabilities';
@@ -53,6 +53,7 @@ const staticRoutes = [
 
 export default async function sitemap() {
   const products = await getAllProducts();
+  const brands = await getBrands();
   const entries = [
     ...staticRoutes,
 

@@ -1,7 +1,10 @@
 import { pageMetadata } from '@/lib/seo';
-import Image from 'next/image';
 import Link from 'next/link';
-import { brands } from '@/lib/brands';
+import BrandLogo from '@/components/BrandLogo';
+import { getBrands } from '@/lib/storeBrands';
+
+// A brand that arrives in a supplier's feed shows here within five minutes.
+export const revalidate = 300;
 
 export const metadata = pageMetadata({
   title: 'Technology & Security Brands We Supply | Teracom Solutions',
@@ -9,7 +12,10 @@ export const metadata = pageMetadata({
   path: '/brands',
 });
 
-export default function Brands() {
+export default async function Brands() {
+  const all = await getBrands();
+  const brands = all.filter((b) => !b.isStoreBrand || b.supported);
+  const storeBrands = all.filter((b) => b.isStoreBrand && !b.supported && b.products > 0);
   return (
     <main id="main-content">
       <section className="hero hero-product hero-shallow hero-centered">
@@ -32,15 +38,7 @@ export default function Brands() {
                 <article>
                   <div className="brand-card-heading">
                     <h3>{b.name}</h3>
-                    {b.logoFile && (
-                      <Image
-                        className="brand-card-logo"
-                        src={`/assets/logos/${b.logoFile}`}
-                        alt={`${b.name} logo`}
-                        width={110}
-                        height={30}
-                      />
-                    )}
+                    <BrandLogo brand={b} className="brand-card-logo" width={110} height={30} />
                   </div>
                   <p>{b.tagline}</p>
                 </article>
@@ -49,6 +47,29 @@ export default function Brands() {
           </div>
         </div>
       </section>
+      {storeBrands.length > 0 && (
+        <section className="section section-spacious alt">
+          <div className="container">
+            <div className="section-heading left">
+              <span className="eyebrow">Teracom Store</span>
+              <h2>More brands in the store.</h2>
+            </div>
+            <div className="feature-grid brands-grid">
+              {storeBrands.map((b) => (
+                <Link href={`/brands/${b.slug}`} key={b.slug}>
+                  <article>
+                    <div className="brand-card-heading">
+                      <h3>{b.name}</h3>
+                      <BrandLogo brand={b} className="brand-card-logo" width={110} height={30} />
+                    </div>
+                    <p>{b.products} {b.products === 1 ? 'product' : 'products'} in the Teracom Store.</p>
+                  </article>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
     </main>
   );
 }
