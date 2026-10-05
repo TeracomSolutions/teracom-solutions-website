@@ -2857,3 +2857,7 @@ a.admin-status:hover { filter:brightness(1.15); }
   .tool-print-footer { margin-top:14px; padding-top:8px; border-top:1px solid #ccc !important; }
   .tool-print-footer p { font-size:8pt; color:#555 !important; margin:0 0 2px; }
 }
+.admin-assistant-conversation { display:flex; flex-wrap:wrap; align-items:center; gap:12px; padding:10px 14px; border:1px solid rgba(192,132,252,.45); border-radius:12px; background:rgba(192,132,252,.1); font-size:14px; }
+.admin-assistant-conversation-dot { width:10px; height:10px; border-radius:50%; background:#c084fc; animation:assistant-pulse 1.2s ease-out infinite; }
+.admin-assistant-conversation .btn { margin-left:auto; }
+@media (prefers-reduced-motion: reduce) { .admin-assistant-conversation-dot { animation:none; } }
