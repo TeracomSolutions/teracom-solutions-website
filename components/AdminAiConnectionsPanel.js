@@ -330,7 +330,7 @@ export default function AdminAiConnectionsPanel({ initialConnections, initialRou
                 value={baseUrl}
                 onChange={(event) => setBaseUrl(event.target.value.trim())}
                 required={!isEditing}
-                placeholder="http://10.10.0.1:11434"
+                placeholder="https://ai.example.com"
               />
             </label>
             <p className="admin-muted">Where this model runs. It needs no API key -- it is reached over our own network, and research runs use it before any paid provider.</p>
