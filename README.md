@@ -1,74 +1,61 @@
-# Teracom Solutions Website
+# Teracom Solutions website
 
-The Teracom Solutions marketing and commerce website — homepage, SecurityOS
-AI product page, store, Stripe checkout, and lead capture.
+The public website at https://www.teracomsolutions.com.au and the staff console at `/admin`: marketing pages, the online store with Stripe checkout, brand and product pages, free tools and calculators, Resources, the Ask Tera assistant, and lead capture.
 
-Extracted from the combined `teracom-commerce-platform-v3` app per
-`Website_Application_Separation_Plan_V1.md` (Website/Application
-Separation, Phase 4). The Teracom AI product application now lives
-separately in `teracom-ai-frontend`. Git history for every file below was
-preserved from the original combined repo via `git filter-repo`.
-
-## Included
-
-- Teracom Solutions homepage
-- SecurityOS AI product page
-- Teracom Store page with products and plans
-- Stripe Checkout API route + webhook (commerce-to-licensing handoff to
-  teracom-ai-backend)
-- Zoho Books helper integration foundation
-- Supplier CSV / JSON / XML feed parser + admin feed import API route
-- Lead capture API route
-- Sitemap and robots routes
+It is a Next.js 15 (App Router) and React 19 application, written in JavaScript, deployed on Vercel (Sydney region) from the `main` branch. It keeps no data of its own: everything is read from and written to the website backend, the separate repository `teracom-website-backend`, which runs on VM 101 and is reached at https://api.teracomsolutions.com.au through a Cloudflare Tunnel.
 
 ## Repository layout
 
 ```text
-app/
-  layout.js, page.js            homepage
-  securityos-ai/page.js         product page
-  store/page.js                 store
-  checkout/{success,cancel}/    Stripe checkout result pages
-  api/checkout/                 Stripe Checkout session creation
-  api/webhooks/stripe/          Stripe webhook -> licence provisioning
-  api/leads/                    lead capture
-  api/admin/import-feed/        supplier feed import
-  sitemap.xml/, robots.txt/     Next.js route-handler convention
-components/                     Header, Footer, ExpertisePartners, CheckoutButton
-lib/                            products, stripe, zoho, feed-importer, config
-lib/api/                        client, commerceLicensing, leads
+app/                    pages and API routes (the App Router)
+  admin/                the staff console: one folder per page (suppliers, catalog, pricing, brands, leads, support ...)
+  api/                  route handlers: checkout, Stripe webhook, leads, Ask Tera, voice, and /api/admin/* for the console
+  store/ brands/ tools/ resources/ ...   public pages, one folder per section
+  layout.js, globals.css                 the shared page frame and the whole stylesheet
+components/             React components shared across pages (Admin* for the console)
+lib/                    plain JavaScript: pricing and calculators, formatting, session handling, search
+  api/                  server-only clients for the backend, one per area
+  adminGuide/           the console's Help guide, one file per section
+  __tests__/            the tests (node:test), named after the module they cover
+public/                 static files served as they are; see public/assets/README.md
+scripts/                build-time scripts; see scripts/README.md
+docs/                   documentation; start at docs/README.md
+brand-assets/           original brand artwork (see brand-assets/README.md)
+.github/workflows/      CI (lint, test, build) and the dependency audit
+middleware.js           keeps console sessions fresh and guards /admin
+next.config.mjs, vercel.json, jsconfig.json, .eslintrc.json, .nvmrc   tool configuration
 ```
 
-## Design system
+The `@/` import alias means the repository root (`@/lib/...`, `@/components/...`).
 
-Visual styling (CSS custom properties, `.btn`/`.hero`/`.section`/`.showcase-*`
-etc. class vocabulary) lives entirely in this repo's own `app/globals.css`.
-Per `UI_DECOUPLING_PLAN_V1.md` (2026-08-22), the former shared `@teracoms/ui`
-package has been dissolved: this app no longer has any cross-repository
-dependency for its styling. Edit `app/globals.css` directly for any visual
-change; there is no longer a second file or repository to keep in sync.
+## Working on it
 
-## Backend dependency
-
-This app is not backend-independent: `lib/api/commerceLicensing.js` (Stripe
-webhook handler) and `lib/api/leads.js` (lead capture route) both call
-`teracom-ai-backend` server-side via `BACKEND_API_URL`. See `.env.example`.
-
-## Environment variables
-
-See `.env.example` for the full list and what each one is for
-(`NEXT_PUBLIC_SITE_URL`, `BACKEND_API_URL`, Stripe, Zoho, admin import
-token, internal service token).
-
-## Getting started
+Needs Node 20 (`.nvmrc`).
 
 ```bash
 npm install
-cp .env.example .env.local   # fill in real values
-npm run dev   # serves on :3001 — :3000 is teracom-ai-frontend's, run both side by side
+cp .env.example .env.local   # fill in what you need; see .env.example
+npm run dev                  # http://localhost:3001
+npm test                     # node --test, no browser or backend needed
+npm run lint
+npm run build
 ```
 
-## Notes
+`npm run help:build` rewrites `lib/adminHelp.generated.js` from the help behind each console page's `?` icon. It runs before every build, and a test fails if the committed file is out of date, so after changing a console page's help run it and commit the result. The Assistant in the console answers questions from that help.
 
-Stripe and Zoho routes are built but require live credentials before
-taking real payments or creating invoices.
+## Configuration
+
+Every setting is an environment variable. `.env.example` lists them with what each is for. Real values live in Vercel (Project Settings, Environment Variables); the website never reads a secret from the repository. The backend address is `BACKEND_API_URL`, and the website's server proves who it is to the backend with `WEBSITE_FRONTEND_SERVICE_TOKEN`, which must match the backend's setting of the same name. Keys that staff enter in the console (AI providers, Zoho, Cloudflare, Vercel, voice) are stored encrypted by the backend, not here.
+
+## Deploying
+
+A merge to `main` deploys to production on Vercel. The CI workflow runs on every pull request. Production deployments are listed in the repository's GitHub deployments (environment `Production`).
+
+## Conventions
+
+- A new page is a folder under `app/` with a `page.js`; its server-side calls to the backend go through a module in `lib/api/`. Those modules refuse to load in the browser.
+- Logic that can be tested without a browser goes in `lib/` with a test in `lib/__tests__/`; components stay thin.
+- Each console page has a `?` help icon, and a matching section in `lib/adminGuide/`. Keep both up to date when the page changes.
+- Pictures go in `public/assets/`, as WebP where they are photos or artwork, in the folder that matches what they are (`public/assets/README.md`).
+- Documents go in `docs/` and are listed in `docs/README.md`.
+- No keys, passwords or customer data in the repository, in code or in documents.
