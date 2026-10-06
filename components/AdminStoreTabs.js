@@ -2,11 +2,30 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 import { isAreaActive } from '@/lib/adminNavMatch';
+import { tabLabel } from '@/lib/holds';
 
 export default function AdminStoreTabs() {
   const pathname = usePathname();
+  const [waiting, setWaiting] = useState(0);
+
+  // How many price list rows are held for review, for the Needs review tab.
+  useEffect(() => {
+    let cancelled = false;
+    fetch('/api/admin/holds/count')
+      .then((response) => (response.ok ? response.json() : null))
+      .then((data) => {
+        if (!cancelled && data && data.counts) setWaiting(data.counts.pending || 0);
+      })
+      .catch(() => {
+        // No count: the tab just has no number.
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [pathname]);
 
   return (
     <nav className="admin-tabs" aria-label="Store">
@@ -44,6 +63,13 @@ export default function AdminStoreTabs() {
         aria-current={isAreaActive({ href: '/admin/freight' }, pathname) ? 'page' : undefined}
       >
         Freight
+      </Link>
+      <Link
+        href="/admin/review"
+        className={isAreaActive({ href: '/admin/review' }, pathname) ? 'admin-tab active' : 'admin-tab'}
+        aria-current={isAreaActive({ href: '/admin/review' }, pathname) ? 'page' : undefined}
+      >
+        {tabLabel(waiting)}
       </Link>
     </nav>
   );

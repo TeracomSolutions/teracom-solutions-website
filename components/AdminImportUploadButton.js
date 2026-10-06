@@ -4,11 +4,14 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import AdminBrandPicker from '@/components/AdminBrandPicker';
+import { heldNotice } from '@/lib/holds';
 
 function summaryText(result) {
   const parts = [`${result.created} added`, `${result.updated} updated`];
   if (result.filtered) parts.push(`${result.filtered} from other brands left out`);
   if (result.skipped) parts.push(`${result.skipped} row${result.skipped === 1 ? '' : 's'} skipped`);
+  const notice = heldNotice(result);
+  if (notice) parts.push(notice);
   return `${parts.join(', ')}.`;
 }
 

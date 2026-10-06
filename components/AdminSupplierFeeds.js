@@ -244,7 +244,7 @@ export default function AdminSupplierFeeds({ supplierId, feeds }) {
                   <span className={`admin-status ${statusClass(feed.last_status)}`}>{humanise(feed.last_status)}</span>
                   {feed.last_summary && feed.last_status === 'ok' && (
                     <span className="admin-muted" style={{ display: 'block', fontSize: '12px' }}>
-                      {feed.last_summary.created} added · {feed.last_summary.updated} updated{feed.last_summary.skipped ? ` · ${feed.last_summary.skipped} skipped` : ''}
+                      {feed.last_summary.created} added · {feed.last_summary.updated} updated{feed.last_summary.skipped ? ` · ${feed.last_summary.skipped} skipped` : ''}{feed.last_summary.held ? ` · ${feed.last_summary.held} held for review` : ''}
                     </span>
                   )}
                   {feed.last_error && <span className="admin-message" style={{ color: '#ff8a8a', display: 'block' }}>{feed.last_error}</span>}
