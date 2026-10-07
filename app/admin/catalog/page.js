@@ -4,34 +4,35 @@ import AdminCatalogGrid from '@/components/AdminCatalogGrid';
 import AdminHelpIcon from '@/components/AdminHelpIcon';
 import AdminShell from '@/components/AdminShell';
 import AdminStoreTabs from '@/components/AdminStoreTabs';
-import { fetchPriceList, listCatalogProducts } from '@/lib/api/adminCatalog';
 import { fetchSupplierPricing } from '@/lib/api/adminPricing';
+import { fetchFacets, fetchSheet } from '@/lib/api/adminSheet';
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
+import { DEFAULT_FILTERS, sheetParams } from '@/lib/sheetQuery';
 
 export const metadata = {
   title: 'Store Catalog|Teracom Solutions',
 };
 
-// The whole catalogue as one working sheet: every product, every column,
+// The catalogue as one working sheet, 100 products at a time: every column,
 // edited in place, with cost, RRP, margin and the tier prices side by side.
+// The first page comes with the page; searching, filtering and paging load
+// the rest from the backend.
 export default async function AdminCatalogPage() {
   const token = await requireAdminToken();
 
-  let products = [];
-  let tiers = [];
-  let tierPrices = {};
+  let initial = { total: 0, skip: 0, limit: 100, tiers: [], products: [] };
+  let facets = { total: 0, active: 0, live: 0, categories: [] };
   let suppliers = [];
   let loadError = '';
 
   try {
-    const [list, priceList, supplierSummaries] = await Promise.all([
-      listCatalogProducts(token, { skip: 0, limit: 5000, includeInactive: true }),
-      fetchPriceList(token, { includeInactive: true }),
+    const [sheet, facetCounts, supplierSummaries] = await Promise.all([
+      fetchSheet(token, sheetParams(DEFAULT_FILTERS)),
+      fetchFacets(token),
       fetchSupplierPricing(token),
     ]);
-    products = list.products;
-    tiers = priceList.tiers;
-    tierPrices = Object.fromEntries(priceList.rows.map((row) => [row.id, row.tier_prices_cents]));
+    initial = sheet;
+    facets = facetCounts;
     suppliers = supplierSummaries;
   } catch (err) {
     if (isSessionError(err)) redirect('/admin/login');
@@ -47,6 +48,8 @@ export default async function AdminCatalogPage() {
           <p>Every product the store can sell, in one sheet you can flick through and correct. Products arrive here from supplier price lists (Store → Data Feeds → a supplier → <em>Import into store</em>, or an automatic feed) and from <em>Add product</em> for a one-off that no feed carries.</p>
           <h4>Going live</h4>
           <p>Imported products start <strong>offline</strong>: they are in the catalogue but not on the website. Tick the ones you want and press <em>Go live</em>; they appear in the store within five minutes, under their category and in New Arrivals. <em>Take offline</em> removes ticked products from the website without losing them. The <strong>Website</strong> column and filter show which are live. Start with a few, check their photos and prices on the website, then put the rest live.</p>
+          <h4>Finding and ticking products</h4>
+          <p>The sheet shows 100 products at a time. <em>Search</em>, the filters and the page buttons under the sheet find what you want, and every page is sorted by name. The box at the top of the first column ticks every product on the page; then <em>Tick all</em> and the number matching ticks every product the filters match, on every page. Ticks and unsaved edits stay while you change page or filters.</p>
           <h4>Columns</h4>
           <ul>
             <li><strong>Cost</strong> is what the supplier charges us, ex GST. <strong>RRP</strong> is the shelf price, inc GST; <strong>Ex GST</strong> is RRP ÷ 1.1.</li>
@@ -58,16 +61,16 @@ export default async function AdminCatalogPage() {
           <h4>Editing</h4>
           <p>Type straight into a row -- name, brand, category, supplier, cost, RRP, stock, active -- and its <em>Save</em> button appears; each save is recorded in the audit log with the before and after values.</p>
           <h4>Re-price from cost</h4>
-          <p>Sets RRP = Cost × (1 + markup) × 1.1 (GST), rounded to the nearest 5 cents, for the rows currently shown or for one supplier. <em>Preview</em> shows how many would change and a few examples; nothing moves until you click <em>Apply</em>. Products without a cost are skipped.</p>
+          <p>Sets RRP = Cost × (1 + markup) × 1.1 (GST), rounded to the nearest 5 cents, for every product the filters match (on all pages) or for one supplier. <em>Preview</em> shows how many would change and a few examples; nothing moves until you click <em>Apply</em>. Products without a cost are skipped.</p>
           <h4>Export</h4>
-          <p><em>Export CSV</em> downloads the rows currently shown with every column.</p>
+          <p><em>Export CSV</em> downloads every product the filters match, on all pages, with every column.</p>
         </AdminHelpIcon>
       </h1>
       <AdminStoreTabs />
       <p className="lead">Every product with cost, RRP, margin and tier prices. Tick products and press Go live to put them on the website; edit in place, add a one-off, or re-price a set from cost.</p>
 
       {loadError ? <p className="form-error" role="alert">{loadError}</p> : (
-        <AdminCatalogGrid products={products} tiers={tiers} tierPrices={tierPrices} suppliers={suppliers} />
+        <AdminCatalogGrid initial={initial} facets={facets} suppliers={suppliers} />
       )}
     </AdminShell>
   );
