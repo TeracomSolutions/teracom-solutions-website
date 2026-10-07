@@ -1,278 +1,96 @@
 'use client';
 
-import { useMemo, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useCallback, useMemo, useState } from 'react';
 
-import { formatDateTime } from '@/lib/adminFormat';
+import AdminCatalogAddProduct from '@/components/AdminCatalogAddProduct';
+import AdminCatalogReprice from '@/components/AdminCatalogReprice';
+import AdminCatalogRow from '@/components/AdminCatalogRow';
+import AdminSheetPager from '@/components/AdminSheetPager';
+import { catalogCsv, inputStyle, send } from '@/lib/catalogShared';
+import { DEFAULT_FILTERS, allTicked, clampPage, sheetQueryString, togglePage } from '@/lib/sheetQuery';
+import useSheet from '@/lib/useSheet';
 
-// The Store Catalog as a sheet: every product, every column, edited in
-// place. Money is shown in dollars; the backend keeps cents.
+// The Store Catalog as a sheet, 100 products at a time (Robert, 2026-10-07:
+// all 4,600 at once made it crawl). Searching, filtering and paging happen on
+// the backend. Ticks and unsaved edits are kept while you change page or
+// filters. Money is shown in dollars; the backend keeps cents.
 
-const GST = 1.1;
+const number = (value) => Number(value || 0).toLocaleString('en-AU');
 
-function money(cents) {
-  if (cents == null || Number.isNaN(cents)) return '—';
-  return `$${(cents / 100).toLocaleString('en-AU', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-}
-
-function dollars(cents) {
-  return cents == null ? '' : (cents / 100).toFixed(2);
-}
-
-function marginOf(rrpCents, costCents) {
-  if (rrpCents == null || costCents == null) return { cents: null, pct: null };
-  const exGst = rrpCents / GST;
-  const cents = exGst - costCents;
-  return { cents, pct: exGst > 0 ? (cents / exGst) * 100 : null };
-}
-
-function marginClass(pct) {
-  if (pct == null) return 'admin-muted';
-  if (pct < 0) return 'admin-margin bad';
-  if (pct < 15) return 'admin-margin thin';
-  return 'admin-margin good';
-}
-
-async function send(url, method, body) {
-  const response = await fetch(url, {
-    method,
-    headers: body ? { 'Content-Type': 'application/json' } : undefined,
-    body: body ? JSON.stringify(body) : undefined,
-  });
-  const data = await response.json().catch(() => ({}));
-  if (!response.ok) throw new Error(data.error || 'The request failed.');
-  return data;
-}
-
-function csvEscape(value) {
-  const text = value == null ? '' : String(value);
-  return /[",\n]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
-}
-
-const inputStyle = { padding: '4px 6px', borderRadius: '6px', border: '1px solid var(--line)', background: '#0d0d0d', color: '#fff', font: 'inherit', fontSize: '13px' };
-const liveStyle = { color: '#7ee2a8', fontWeight: 600 };
-const thumbStyle = { width: '36px', height: '36px', objectFit: 'contain', background: '#fff', borderRadius: '4px', flex: '0 0 auto' };
-
-function AddProductForm({ suppliers, onDone }) {
-  const [open, setOpen] = useState(false);
-  const [form, setForm] = useState({ sku: '', name: '', category: '', brand: '', supplier_id: '', price: '', cost: '', stock: '0', description: '', weight_kg: '', length_cm: '', width_cm: '', height_cm: '' });
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState('');
-
-  function set(field, value) {
-    setForm((f) => ({ ...f, [field]: value }));
-  }
-
-  async function submit(event) {
-    event.preventDefault();
-    setBusy(true);
-    setError('');
-    try {
-      await send('/api/admin/catalog/products', 'POST', {
-        sku: form.sku,
-        name: form.name,
-        category: form.category || 'Uncategorised',
-        brand: form.brand || null,
-        supplier_id: form.supplier_id || null,
-        price: Number(form.price),
-        cost: form.cost === '' ? null : Number(form.cost),
-        stock: Number(form.stock) || 0,
-        weight_kg: form.weight_kg === '' ? null : Number(form.weight_kg),
-        length_cm: form.length_cm === '' ? null : Number(form.length_cm),
-        width_cm: form.width_cm === '' ? null : Number(form.width_cm),
-        height_cm: form.height_cm === '' ? null : Number(form.height_cm),
-        description: form.description || null,
-      });
-      setForm({ sku: '', name: '', category: '', brand: '', supplier_id: '', price: '', cost: '', stock: '0', description: '', weight_kg: '', length_cm: '', width_cm: '', height_cm: '' });
-      setOpen(false);
-      onDone();
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  if (!open) {
-    return <button type="button" className="btn btn-primary btn-sm" onClick={() => setOpen(true)}>Add product</button>;
-  }
-
-  return (
-    <form onSubmit={submit} className="admin-form admin-card" style={{ maxWidth: 'none', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))' }}>
-      <label>SKU<input type="text" value={form.sku} onChange={(e) => set('sku', e.target.value)} required /></label>
-      <label>Name<input type="text" value={form.name} onChange={(e) => set('name', e.target.value)} required /></label>
-      <label>Category<input type="text" value={form.category} onChange={(e) => set('category', e.target.value)} placeholder="Uncategorised" /></label>
-      <label>Brand<input type="text" value={form.brand} onChange={(e) => set('brand', e.target.value)} /></label>
-      <label>Supplier
-        <select value={form.supplier_id} onChange={(e) => set('supplier_id', e.target.value)}>
-          <option value="">—</option>
-          {suppliers.map((s) => <option key={s.supplier_id} value={s.supplier_id}>{s.supplier_name}</option>)}
-        </select>
-      </label>
-      <label>Cost ex GST ($)<input type="number" min="0" step="0.01" value={form.cost} onChange={(e) => set('cost', e.target.value)} /></label>
-      <label>RRP inc GST ($)<input type="number" min="0" step="0.01" value={form.price} onChange={(e) => set('price', e.target.value)} required /></label>
-      <label>Stock<input type="number" min="0" step="1" value={form.stock} onChange={(e) => set('stock', e.target.value)} /></label>
-      <label>Shipping weight (kg)<input type="number" min="0" step="0.01" value={form.weight_kg} onChange={(e) => set('weight_kg', e.target.value)} /></label>
-      <label>Packed length (cm)<input type="number" min="0" step="0.1" value={form.length_cm} onChange={(e) => set('length_cm', e.target.value)} /></label>
-      <label>Packed width (cm)<input type="number" min="0" step="0.1" value={form.width_cm} onChange={(e) => set('width_cm', e.target.value)} /></label>
-      <label>Packed height (cm)<input type="number" min="0" step="0.1" value={form.height_cm} onChange={(e) => set('height_cm', e.target.value)} /></label>
-      <label style={{ gridColumn: '1 / -1' }}>Description<input type="text" value={form.description} onChange={(e) => set('description', e.target.value)} /></label>
-      {error && <p className="form-error" role="alert" style={{ gridColumn: '1 / -1' }}>{error}</p>}
-      <div className="admin-actions" style={{ gridColumn: '1 / -1' }}>
-        <button type="submit" className="btn btn-primary btn-sm" disabled={busy}>{busy ? 'Adding…' : 'Add product'}</button>
-        <button type="button" className="btn btn-secondary btn-sm" onClick={() => setOpen(false)}>Cancel</button>
-      </div>
-    </form>
-  );
-}
-
-function RepricePanel({ suppliers, visibleIds, onDone }) {
-  const [open, setOpen] = useState(false);
-  const [scope, setScope] = useState('visible');
-  const [supplierId, setSupplierId] = useState('');
-  const [markup, setMarkup] = useState('30');
-  const [rounding, setRounding] = useState('5');
-  const [preview, setPreview] = useState(null);
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState('');
-
-  function body(isPreview) {
-    const payload = { markup_percent: Number(markup), round_to_cents: Number(rounding) || 5, preview: isPreview };
-    if (scope === 'supplier') payload.supplier_id = supplierId || null;
-    else payload.product_ids = visibleIds;
-    return payload;
-  }
-
-  async function run(isPreview) {
-    if (scope === 'supplier' && !supplierId) {
-      setError('Choose a supplier.');
-      return;
-    }
-    if (!isPreview && !window.confirm(`Re-price ${preview ? preview.updated : 'the matching'} product(s) at ${markup}% markup on cost? This changes RRP now.`)) return;
-    setBusy(true);
-    setError('');
-    try {
-      const result = await send('/api/admin/catalog/reprice', 'POST', body(isPreview));
-      if (isPreview) {
-        setPreview(result);
-      } else {
-        setPreview(null);
-        setOpen(false);
-        onDone();
-      }
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  if (!open) {
-    return <button type="button" className="btn btn-secondary btn-sm" onClick={() => setOpen(true)}>Re-price from cost…</button>;
-  }
-
-  return (
-    <div className="admin-card admin-form" style={{ maxWidth: 'none' }}>
-      <h3 style={{ margin: 0 }}>Re-price from cost</h3>
-      <p className="admin-muted" style={{ margin: 0 }}>RRP = Cost × (1 + markup) × 1.1 GST, rounded. Products without a cost are skipped. Preview first.</p>
-      <div className="admin-actions">
-        <label style={{ display: 'inline-flex', gap: '6px', alignItems: 'center' }}>
-          <input type="radio" name="scope" checked={scope === 'visible'} onChange={() => setScope('visible')} style={{ width: 'auto' }} />
-          the {visibleIds.length} product{visibleIds.length === 1 ? '' : 's'} shown
-        </label>
-        <label style={{ display: 'inline-flex', gap: '6px', alignItems: 'center' }}>
-          <input type="radio" name="scope" checked={scope === 'supplier'} onChange={() => setScope('supplier')} style={{ width: 'auto' }} />
-          one supplier
-          <select value={supplierId} onChange={(e) => setSupplierId(e.target.value)} disabled={scope !== 'supplier'} style={{ width: 'auto' }}>
-            <option value="">choose…</option>
-            {suppliers.map((s) => <option key={s.supplier_id} value={s.supplier_id}>{s.supplier_name}</option>)}
-          </select>
-        </label>
-      </div>
-      <div className="admin-actions">
-        <label style={{ display: 'inline-flex', gap: '6px', alignItems: 'center' }}>Markup on cost
-          <input type="number" step="0.5" value={markup} onChange={(e) => { setMarkup(e.target.value); setPreview(null); }} style={{ width: '90px' }} /> %
-        </label>
-        <label style={{ display: 'inline-flex', gap: '6px', alignItems: 'center' }}>Round to
-          <select value={rounding} onChange={(e) => { setRounding(e.target.value); setPreview(null); }} style={{ width: 'auto' }}>
-            <option value="1">the cent</option>
-            <option value="5">5 cents</option>
-            <option value="10">10 cents</option>
-            <option value="50">50 cents</option>
-            <option value="100">the dollar</option>
-          </select>
-        </label>
-      </div>
-      {preview && (
-        <div className="admin-muted" style={{ fontSize: '13px' }}>
-          {preview.matched} matched, <strong style={{ color: '#fff' }}>{preview.updated} would change</strong>, {preview.skipped_no_cost} skipped (no cost).
-          {preview.examples.length > 0 && (
-            <ul style={{ margin: '6px 0 0', paddingLeft: '18px' }}>
-              {preview.examples.map((ex) => (
-                <li key={ex.sku}>{ex.sku}: cost {money(ex.cost_cents)} → RRP {money(ex.before_cents)} becomes {money(ex.after_cents)}</li>
-              ))}
-            </ul>
-          )}
-        </div>
-      )}
-      {error && <p className="form-error" role="alert">{error}</p>}
-      <div className="admin-actions">
-        <button type="button" className="btn btn-secondary btn-sm" onClick={() => run(true)} disabled={busy}>Preview</button>
-        <button type="button" className="btn btn-primary btn-sm" onClick={() => run(false)} disabled={busy || !preview || preview.updated === 0}>Apply</button>
-        <button type="button" className="btn btn-secondary btn-sm" onClick={() => { setOpen(false); setPreview(null); }}>Close</button>
-      </div>
-    </div>
-  );
-}
-
-export default function AdminCatalogGrid({ products, tiers, tierPrices, suppliers }) {
-  const router = useRouter();
-  const [q, setQ] = useState('');
-  const [supplierId, setSupplierId] = useState('');
-  const [category, setCategory] = useState('');
-  const [showInactive, setShowInactive] = useState(false);
-  const [onlyThin, setOnlyThin] = useState(false);
+export default function AdminCatalogGrid({ initial, facets: initialFacets, suppliers }) {
+  const [filters, setFilters] = useState(DEFAULT_FILTERS);
+  const { data, loading, error: loadError, reload, patchRow } = useSheet(filters, initial);
+  const [facets, setFacets] = useState(initialFacets);
   const [drafts, setDrafts] = useState({});
   const [busyId, setBusyId] = useState(null);
   const [error, setError] = useState('');
-  // '' shows everything, 'live' only what is on the website, 'offline' the rest.
-  const [live, setLive] = useState('');
   const [selected, setSelected] = useState(() => new Set());
   const [publishing, setPublishing] = useState(false);
+  const [working, setWorking] = useState('');
 
-  const categories = useMemo(() => [...new Set(products.map((p) => p.category).filter(Boolean))].sort(), [products]);
-  const liveCount = useMemo(() => products.filter((p) => p.published).length, [products]);
+  const products = data.products;
+  const pageIds = useMemo(() => products.map((p) => p.id), [products]);
+  const pageTicked = allTicked(selected, pageIds);
+  const dirtyCount = Object.keys(drafts).length;
 
-  const rows = useMemo(() => {
-    const needle = q.trim().toLowerCase();
-    return products.filter((p) => {
-      if (!showInactive && !p.active) return false;
-      if (live === 'live' && !p.published) return false;
-      if (live === 'offline' && p.published) return false;
-      if (supplierId && p.supplier_id !== supplierId) return false;
-      if (category && p.category !== category) return false;
-      if (onlyThin) {
-        const { pct } = marginOf(p.price_cents, p.cost_cents);
-        if (pct == null || pct >= 15) return false;
-      }
-      if (!needle) return true;
-      return [p.sku, p.name, p.brand, p.category, p.supplier].some((v) => v && v.toLowerCase().includes(needle));
-    });
-  }, [products, q, supplierId, category, showInactive, onlyThin, live]);
-
-  const allShownSelected = rows.length > 0 && rows.every((p) => selected.has(p.id));
-
-  function toggle(p) {
-    setSelected((current) => {
-      const next = new Set(current);
-      if (next.has(p.id)) next.delete(p.id);
-      else next.add(p.id);
-      return next;
-    });
+  function change(patch) {
+    setFilters((f) => ({ ...f, ...patch, page: 1 }));
   }
 
+  function goToPage(page) {
+    setFilters((f) => ({ ...f, page: clampPage(page, data.total) }));
+  }
+
+  // What the filters offer and the totals beside them, after something changes.
+  const refreshFacets = useCallback(async () => {
+    try {
+      setFacets(await send('/api/admin/catalog/facets', 'GET'));
+    } catch {
+      // The counts stay as they were.
+    }
+  }, []);
+
+  const afterChange = useCallback(() => {
+    reload();
+    refreshFacets();
+  }, [reload, refreshFacets]);
+
+  const toggle = useCallback((id) => {
+    setSelected((current) => {
+      const next = new Set(current);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }, []);
+
   function toggleAll() {
-    setSelected(allShownSelected ? new Set() : new Set(rows.map((p) => p.id)));
+    setSelected((current) => togglePage(current, pageIds, !pageTicked));
+  }
+
+  // The id of every product the filters match, across all pages.
+  async function matchingIds() {
+    return send(`/api/admin/catalog/sheet/ids?${sheetQueryString(filters)}`, 'GET');
+  }
+
+  async function tickAllMatching() {
+    setWorking('Ticking every matching product…');
+    setError('');
+    try {
+      const result = await matchingIds();
+      setSelected(new Set(result.ids));
+      if (result.truncated) setError(`${number(result.ids.length)} of ${number(result.total)} ticked. Narrow the filters to tick the rest.`);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setWorking('');
+    }
+  }
+
+  async function getIds() {
+    const result = await matchingIds();
+    if (result.truncated) throw new Error('Too many products match. Narrow the filters first.');
+    return result.ids;
   }
 
   // Go live puts the ticked products on the website; Take offline removes them.
@@ -284,7 +102,7 @@ export default function AdminCatalogGrid({ products, tiers, tierPrices, supplier
     try {
       await send('/api/admin/catalog/publish', 'POST', { product_ids: ids, published });
       setSelected(new Set());
-      router.refresh();
+      afterChange();
     } catch (err) {
       setError(err.message);
     } finally {
@@ -292,25 +110,19 @@ export default function AdminCatalogGrid({ products, tiers, tierPrices, supplier
     }
   }
 
-  function draftOf(p) {
-    return drafts[p.id] || {};
-  }
+  const setDraft = useCallback((id, field, value) => {
+    setDrafts((all) => ({ ...all, [id]: { ...(all[id] || {}), [field]: value } }));
+  }, []);
 
-  function setDraft(p, field, value) {
-    setDrafts((d) => ({ ...d, [p.id]: { ...(d[p.id] || {}), [field]: value } }));
-  }
+  const discard = useCallback((id) => {
+    setDrafts((all) => {
+      const next = { ...all };
+      delete next[id];
+      return next;
+    });
+  }, []);
 
-  function current(p, field) {
-    const d = draftOf(p);
-    if (field in d) return d[field];
-    if (field === 'price') return dollars(p.price_cents);
-    if (field === 'cost') return dollars(p.cost_cents);
-    if (field === 'supplier_id') return p.supplier_id || '';
-    return p[field] ?? '';
-  }
-
-  async function save(p) {
-    const d = draftOf(p);
+  const save = useCallback(async (p, d) => {
     const body = {};
     if ('name' in d) body.name = d.name;
     if ('brand' in d) body.brand = d.brand || null;
@@ -326,109 +138,114 @@ export default function AdminCatalogGrid({ products, tiers, tierPrices, supplier
     setBusyId(p.id);
     setError('');
     try {
-      await send(`/api/admin/catalog/products/${p.id}`, 'PATCH', body);
-      setDrafts((all) => {
-        const next = { ...all };
-        delete next[p.id];
-        return next;
-      });
-      router.refresh();
+      const updated = await send(`/api/admin/catalog/products/${p.id}`, 'PATCH', body);
+      patchRow(updated);
+      discard(p.id);
+      afterChange();
     } catch (err) {
       setError(err.message);
     } finally {
       setBusyId(null);
     }
-  }
+  }, [patchRow, discard, afterChange]);
 
-  async function deleteForever(p) {
+  const deleteForever = useCallback(async (p) => {
     if (!window.confirm(`Delete ${p.sku} permanently? Its history goes with it, and if a supplier feed still lists this SKU the next pull will create it again.`)) return;
     setBusyId(p.id);
     setError('');
     try {
       const response = await fetch(`/api/admin/catalog/products/${p.id}?permanent=true`, { method: 'DELETE' });
-      const data = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(data.error || 'Unable to delete this product.');
-      router.refresh();
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(result.error || 'Unable to delete this product.');
+      afterChange();
     } catch (err) {
       setError(err.message);
     } finally {
       setBusyId(null);
     }
+  }, [afterChange]);
+
+  // Every product the filters match, not just this page.
+  async function exportCsv() {
+    setWorking('Preparing the export…');
+    setError('');
+    try {
+      const result = await send(`/api/admin/catalog/sheet?${sheetQueryString(filters, { all: true })}`, 'GET');
+      const blob = new Blob([catalogCsv(result.products, result.tiers)], { type: 'text/csv;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `teracom-store-catalog-${new Date().toISOString().slice(0, 10)}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setWorking('');
+    }
   }
 
-  function discard(p) {
-    setDrafts((all) => {
-      const next = { ...all };
-      delete next[p.id];
-      return next;
-    });
-  }
-
-  function exportCsv() {
-    const header = ['SKU', 'Name', 'Brand', 'Category', 'Supplier', 'Cost ex GST', 'RRP inc GST', 'RRP ex GST', 'Margin $', 'Margin %',
-      ...tiers.map((t) => t.label), 'Stock', 'Active', 'Live on website', 'Last imported'];
-    const lines = rows.map((p) => {
-      const { cents, pct } = marginOf(p.price_cents, p.cost_cents);
-      const tp = tierPrices[p.id] || {};
-      return [p.sku, p.name, p.brand, p.category, p.supplier, dollars(p.cost_cents), dollars(p.price_cents), (p.price_cents / GST / 100).toFixed(2),
-        cents == null ? '' : (cents / 100).toFixed(2), pct == null ? '' : pct.toFixed(1),
-        ...tiers.map((t) => dollars(tp[t.key])), p.stock, p.active ? 'yes' : 'no', p.published ? 'yes' : 'no', p.last_imported_at || ''].map(csvEscape).join(',');
-    });
-    const blob = new Blob([[header.join(','), ...lines].join('\n')], { type: 'text/csv;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `teracom-store-catalog-${new Date().toISOString().slice(0, 10)}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
-  }
-
-  const dirtyCount = Object.keys(drafts).length;
+  const shownError = error || loadError;
 
   return (
     <div>
-      {error && <p className="form-error" role="alert">{error}</p>}
+      {shownError && <p className="form-error" role="alert">{shownError}</p>}
 
       <div className="admin-refresh" style={{ gap: '10px' }}>
-        <input type="search" placeholder="Search SKU, name, brand, category, supplier" value={q} onChange={(e) => setQ(e.target.value)}
+        <input type="search" placeholder="Search SKU, name, brand, category, supplier" value={filters.q} onChange={(e) => change({ q: e.target.value })}
           style={{ ...inputStyle, minWidth: '280px', padding: '6px 10px' }} />
-        <select value={supplierId} onChange={(e) => setSupplierId(e.target.value)} aria-label="Supplier">
+        <select value={filters.supplierId} onChange={(e) => change({ supplierId: e.target.value })} aria-label="Supplier">
           <option value="">All suppliers</option>
           {suppliers.map((s) => <option key={s.supplier_id} value={s.supplier_id}>{s.supplier_name}</option>)}
         </select>
-        <select value={category} onChange={(e) => setCategory(e.target.value)} aria-label="Category">
+        <select value={filters.category} onChange={(e) => change({ category: e.target.value })} aria-label="Category">
           <option value="">All categories</option>
-          {categories.map((c) => <option key={c} value={c}>{c}</option>)}
+          {facets.categories.map((c) => <option key={c} value={c}>{c}</option>)}
         </select>
-        <select value={live} onChange={(e) => setLive(e.target.value)} aria-label="On the website">
+        <select value={filters.live} onChange={(e) => change({ live: e.target.value })} aria-label="On the website">
           <option value="">Live and offline</option>
           <option value="live">Live on the website</option>
           <option value="offline">Offline</option>
         </select>
         <label style={{ display: 'inline-flex', gap: '6px', alignItems: 'center' }}>
-          <input type="checkbox" checked={showInactive} onChange={(e) => setShowInactive(e.target.checked)} /> show inactive
+          <input type="checkbox" checked={filters.showInactive} onChange={(e) => change({ showInactive: e.target.checked })} /> show inactive
         </label>
         <label style={{ display: 'inline-flex', gap: '6px', alignItems: 'center' }}>
-          <input type="checkbox" checked={onlyThin} onChange={(e) => setOnlyThin(e.target.checked)} /> thin or negative margin only
+          <input type="checkbox" checked={filters.thin} onChange={(e) => change({ thin: e.target.checked })} /> thin or negative margin only
         </label>
-        <span className="admin-muted">{rows.length} of {products.length} products · {liveCount} live{dirtyCount ? ` · ${dirtyCount} unsaved` : ''}</span>
+        <span className="admin-muted">
+          {number(data.total)} of {number(facets.total)} products · {number(facets.live)} live{dirtyCount ? ` · ${dirtyCount} unsaved` : ''}{loading ? ' · loading…' : ''}
+        </span>
       </div>
 
       <div className="admin-actions" style={{ margin: '0 0 16px' }}>
         <button type="button" className="btn btn-primary btn-sm" onClick={() => publish(true)} disabled={publishing || selected.size === 0}>
-          {publishing ? 'Saving…' : `Go live${selected.size ? ` (${selected.size})` : ''}`}
+          {publishing ? 'Saving…' : `Go live${selected.size ? ` (${number(selected.size)})` : ''}`}
         </button>
         <button type="button" className="btn btn-secondary btn-sm" onClick={() => publish(false)} disabled={publishing || selected.size === 0}>Take offline</button>
-        <AddProductForm suppliers={suppliers} onDone={() => router.refresh()} />
-        <RepricePanel suppliers={suppliers} visibleIds={rows.map((p) => p.id)} onDone={() => router.refresh()} />
-        <button type="button" className="btn btn-secondary btn-sm" onClick={exportCsv} disabled={rows.length === 0}>Export CSV</button>
+        <AdminCatalogAddProduct suppliers={suppliers} onDone={afterChange} />
+        <AdminCatalogReprice suppliers={suppliers} total={data.total} getIds={getIds} onDone={afterChange} />
+        <button type="button" className="btn btn-secondary btn-sm" onClick={exportCsv} disabled={data.total === 0 || Boolean(working)}>Export CSV</button>
+        {working && <span className="admin-muted">{working}</span>}
       </div>
 
-      <div className="admin-table-wrap admin-sheet-wrap">
+      {(selected.size > 0 || (pageTicked && data.total > pageIds.length)) && (
+        <p className="admin-muted" style={{ margin: '0 0 12px' }}>
+          {selected.size > 0 ? `${number(selected.size)} ticked. ` : ''}
+          {pageTicked && data.total > pageIds.length && selected.size < data.total && (
+            <button type="button" className="admin-link-btn" onClick={tickAllMatching} disabled={Boolean(working)}>Tick all {number(data.total)} matching</button>
+          )}
+          {selected.size > 0 && (
+            <button type="button" className="admin-link-btn" style={{ marginLeft: '12px' }} onClick={() => setSelected(new Set())}>Clear ticks</button>
+          )}
+        </p>
+      )}
+
+      <div className="admin-table-wrap admin-sheet-wrap" style={{ opacity: loading ? 0.6 : 1 }}>
         <table className="admin-table admin-sheet">
           <thead>
             <tr>
-              <th><input type="checkbox" checked={allShownSelected} onChange={toggleAll} aria-label="Tick every product shown" /></th>
+              <th><input type="checkbox" checked={pageTicked} onChange={toggleAll} aria-label="Tick every product on this page" /></th>
               <th>Website</th>
               <th>SKU</th>
               <th>Product</th>
@@ -440,7 +257,7 @@ export default function AdminCatalogGrid({ products, tiers, tierPrices, supplier
               <th>Ex GST</th>
               <th>Margin</th>
               <th>Margin %</th>
-              {tiers.map((t) => <th key={t.key}>{t.label}</th>)}
+              {data.tiers.map((t) => <th key={t.key}>{t.label}</th>)}
               <th>Stock</th>
               <th>Weight kg</th>
               <th>L × W × H cm</th>
@@ -450,72 +267,30 @@ export default function AdminCatalogGrid({ products, tiers, tierPrices, supplier
             </tr>
           </thead>
           <tbody>
-            {rows.length === 0 && (
-              <tr><td colSpan={18 + tiers.length} className="admin-muted">No products match. Import a supplier price list or add one by hand.</td></tr>
+            {products.length === 0 && (
+              <tr><td colSpan={18 + data.tiers.length} className="admin-muted">No products match. Import a supplier price list or add one by hand.</td></tr>
             )}
-            {rows.map((p) => {
-              const d = draftOf(p);
-              const dirty = Object.keys(d).length > 0;
-              const priceCents = 'price' in d && d.price !== '' ? Math.round(Number(d.price) * 100) : p.price_cents;
-              const costCents = 'cost' in d ? (d.cost === '' ? null : Math.round(Number(d.cost) * 100)) : p.cost_cents;
-              const { cents, pct } = marginOf(priceCents, costCents);
-              const tp = tierPrices[p.id] || {};
-              return (
-                <tr key={p.id} className={dirty ? 'is-dirty' : undefined} style={p.active ? undefined : { opacity: 0.55 }}>
-                  <td><input type="checkbox" checked={selected.has(p.id)} onChange={() => toggle(p)} aria-label={`Tick ${p.sku}`} /></td>
-                  <td>{p.published ? <span style={liveStyle}>Live</span> : <span className="admin-muted">Offline</span>}</td>
-                  <td><code>{p.sku}</code></td>
-                  <td className="wrap" style={{ minWidth: '260px' }}>
-                    <span style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                      {p.image_url ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img src={p.image_url} alt="" loading="lazy" style={thumbStyle} />
-                      ) : null}
-                      <input type="text" value={current(p, 'name')} onChange={(e) => setDraft(p, 'name', e.target.value)} style={{ ...inputStyle, width: '100%' }} aria-label="Name" />
-                    </span>
-                  </td>
-                  <td><input type="text" value={current(p, 'brand')} onChange={(e) => setDraft(p, 'brand', e.target.value)} style={{ ...inputStyle, width: '110px' }} aria-label="Brand" /></td>
-                  <td><input type="text" value={current(p, 'category')} onChange={(e) => setDraft(p, 'category', e.target.value)} style={{ ...inputStyle, width: '130px' }} aria-label="Category" /></td>
-                  <td>
-                    <select value={current(p, 'supplier_id')} onChange={(e) => setDraft(p, 'supplier_id', e.target.value)} style={{ ...inputStyle, width: '150px' }} aria-label="Supplier">
-                      <option value="">{p.supplier && !p.supplier_id ? `${p.supplier} (feed)` : '—'}</option>
-                      {suppliers.map((s) => <option key={s.supplier_id} value={s.supplier_id}>{s.supplier_name}</option>)}
-                    </select>
-                  </td>
-                  <td><input type="number" min="0" step="0.01" value={current(p, 'cost')} onChange={(e) => setDraft(p, 'cost', e.target.value)} style={{ ...inputStyle, width: '90px' }} aria-label="Cost" /></td>
-                  <td><input type="number" min="0" step="0.01" value={current(p, 'price')} onChange={(e) => setDraft(p, 'price', e.target.value)} style={{ ...inputStyle, width: '90px' }} aria-label="RRP" /></td>
-                  <td>{money(priceCents / GST)}</td>
-                  <td className={marginClass(pct)}>{cents == null ? '—' : money(cents)}</td>
-                  <td className={marginClass(pct)}>{pct == null ? '—' : `${pct.toFixed(1)}%`}</td>
-                  {tiers.map((t) => <td key={t.key}>{money(tp[t.key])}</td>)}
-                  <td><input type="number" min="0" step="1" value={current(p, 'stock')} onChange={(e) => setDraft(p, 'stock', e.target.value)} style={{ ...inputStyle, width: '70px' }} aria-label="Stock" /></td>
-                  <td><input type="number" min="0" step="0.01" value={current(p, 'weight_kg')} onChange={(e) => setDraft(p, 'weight_kg', e.target.value)} style={{ ...inputStyle, width: '70px' }} aria-label="Shipping weight in kg" /></td>
-                  <td>
-                    <span style={{ display: 'inline-flex', gap: '4px' }}>
-                      <input type="number" min="0" step="0.1" value={current(p, 'length_cm')} onChange={(e) => setDraft(p, 'length_cm', e.target.value)} style={{ ...inputStyle, width: '58px' }} aria-label="Packed length in cm" />
-                      <input type="number" min="0" step="0.1" value={current(p, 'width_cm')} onChange={(e) => setDraft(p, 'width_cm', e.target.value)} style={{ ...inputStyle, width: '58px' }} aria-label="Packed width in cm" />
-                      <input type="number" min="0" step="0.1" value={current(p, 'height_cm')} onChange={(e) => setDraft(p, 'height_cm', e.target.value)} style={{ ...inputStyle, width: '58px' }} aria-label="Packed height in cm" />
-                    </span>
-                  </td>
-                  <td><input type="checkbox" checked={'active' in d ? Boolean(d.active) : p.active} onChange={(e) => setDraft(p, 'active', e.target.checked)} aria-label="Active" /></td>
-                  <td>{formatDateTime(p.last_imported_at, 'By hand')}</td>
-                  <td>
-                    {dirty && (
-                      <span className="admin-actions">
-                        <button type="button" className="btn btn-primary btn-sm" onClick={() => save(p)} disabled={busyId === p.id}>{busyId === p.id ? '…' : 'Save'}</button>
-                        <button type="button" className="admin-link-btn" onClick={() => discard(p)}>undo</button>
-                      </span>
-                    )}
-                    {!dirty && !p.active && (
-                      <button type="button" className="admin-link-btn" style={{ color: '#ff8a8a' }} onClick={() => deleteForever(p)} disabled={busyId === p.id}>Delete permanently</button>
-                    )}
-                  </td>
-                </tr>
-              );
-            })}
+            {products.map((p) => (
+              <AdminCatalogRow
+                key={p.id}
+                p={p}
+                tiers={data.tiers}
+                suppliers={suppliers}
+                draft={drafts[p.id]}
+                checked={selected.has(p.id)}
+                busy={busyId === p.id}
+                onToggle={toggle}
+                onDraft={setDraft}
+                onSave={save}
+                onDiscard={discard}
+                onDelete={deleteForever}
+              />
+            ))}
           </tbody>
         </table>
       </div>
+
+      <AdminSheetPager total={data.total} page={filters.page} onPage={goToPage} loading={loading} />
     </div>
   );
 }
