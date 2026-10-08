@@ -36,6 +36,7 @@ import { toolsForProduct } from '@/lib/toolSuggestions';
 import { getBrands } from '@/lib/storeBrands';
 import { brandForProduct } from '@/lib/storeBrandsMerge';
 import { findTool } from '@/lib/tools';
+import { THIN_ROBOTS, isThinProduct } from '@/lib/thinProducts';
 
 // The built-in products are prerendered; a product that only exists in the
 // admin catalogue renders on first request and is then cached. Either kind
@@ -56,11 +57,13 @@ export async function generateMetadata(props) {
   // number is how a trade buyer looks for a supplier.
   const description =
     `${product.description} Part number ${product.sku}. Priced in AUD inclusive of GST.`.slice(0, 155);
-  return pageMetadata({
+  const metadata = pageMetadata({
     title: `${product.name} | Teracom Store`,
     description,
     path: productPath(product),
   });
+  // A page with no photo or too little text stays out of Google until it has them.
+  return isThinProduct(product) ? { ...metadata, ...THIN_ROBOTS } : metadata;
 }
 
 // Every line here has to be something the business actually does today.
