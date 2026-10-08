@@ -9,6 +9,7 @@ import { requestForms } from '@/lib/requestForms';
 import { tools } from '@/lib/tools';
 import { absoluteUrl } from '@/lib/seo';
 import { isAdminPath } from '@/lib/adminIndexing';
+import { isThinProduct } from '@/lib/thinProducts';
 
 // Next's native App Router sitemap convention (no next-sitemap dependency --
 // the framework covers this on its own). Served at /sitemap.xml.
@@ -72,8 +73,10 @@ export default async function sitemap() {
     })),
 
     // Per-product pages. Part-number searches are how trade buyers find a
-    // supplier, so these are the store's highest-intent surface.
-    ...products.map((product) => ({
+    // supplier, so these are the store's highest-intent surface. A catalogue
+    // product with no photo or description is left out until it has them
+    // (lib/thinProducts.js): Google does not index thin pages.
+    ...products.filter((product) => !isThinProduct(product)).map((product) => ({
       path: `/store/product/${product.id}`,
       changeFrequency: 'weekly',
       priority: 0.7,
