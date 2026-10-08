@@ -1,98 +1,82 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import CheckoutButton from '@/components/CheckoutButton';
-import AddToCartButton from '@/components/AddToCartButton';
 import Link from 'next/link';
+import { Search } from 'lucide-react';
 
-import { formatMoney, productPath } from '@/lib/products';
-import { unitPriceCents } from '@/lib/catalogueMerge';
-import { availabilityText } from '@/lib/productDetails';
+import ProductTile, { TILE_GRID } from '@/components/ProductTile';
+import { searchHref, tileMatches } from '@/lib/storeSearch';
 
-// Small tiles, like the Brands page (Robert, 2026-10-03): a photo, the
-// brand, the name and the price, so a shopper can scan a category quickly.
-// The full description is on the product's own page, one click away.
+// A category's products as small tiles (Robert, 2026-10-03), with a search
+// box that narrows them as you type and brand tabs (Robert, 2026-10-08).
+// A category can hold hundreds of products: they show a page at a time.
 
-const GRID = { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(190px, 1fr))', gap: '16px' };
-const TILE = {
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'space-between',
-  gap: '10px',
-  padding: '14px',
-  border: '1px solid var(--line)',
-  borderRadius: '18px',
-  background: 'rgba(255,255,255,.04)',
-};
-const TILE_LINK = { display: 'flex', flexDirection: 'column', gap: '6px', color: 'inherit', textDecoration: 'none' };
-// Supplier photos come in every shape on a white background, so each sits
-// whole in the same small white box.
-const PHOTO_FRAME = {
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  height: '120px',
-  padding: '8px',
-  background: '#fff',
-  borderRadius: '12px',
-};
-const PHOTO = { maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' };
-const NO_PHOTO = { color: '#555', fontWeight: 700, fontSize: '14px', textAlign: 'center' };
-const BRAND = { color: 'var(--muted)', fontSize: '12px', fontWeight: 700, letterSpacing: '.06em', textTransform: 'uppercase' };
-const NAME = {
-  display: '-webkit-box',
-  WebkitLineClamp: 2,
-  WebkitBoxOrient: 'vertical',
-  overflow: 'hidden',
-  fontSize: '15px',
-  fontWeight: 700,
-  lineHeight: 1.3,
-  color: '#fff',
-};
-const PRICE = { margin: 0, fontSize: '17px', fontWeight: 800 };
 const NOTE = { color: 'var(--muted)', fontSize: '12px', fontWeight: 400 };
-// Out-of-stock products stay orderable and say when stock is expected.
-const IN_STOCK = { margin: '0 0 10px', fontSize: '12px', fontWeight: 700, color: '#7ee2a8' };
-const ON_ORDER = { margin: '0 0 10px', fontSize: '12px', fontWeight: 700, color: '#ffcc66' };
 const MORE = { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px', marginTop: '24px' };
-// A category can hold hundreds of products: show them a page at a time.
 const PAGE_SIZE = 24;
 
-export default function CategoryProductGrid({ products, isSignedIn = false, customer = null }) {
-  const brands = useMemo(
-    () => [...new Set(products.map((p) => p.brand).filter(Boolean))].sort(),
-    [products]
-  );
+export default function CategoryProductGrid({ products, isSignedIn = false, customer = null, categoryTitle = '' }) {
+  const [query, setQuery] = useState('');
   const [activeBrand, setActiveBrand] = useState('All');
   const [shown, setShown] = useState(PAGE_SIZE);
 
-  const matching = activeBrand === 'All' ? products : products.filter((p) => p.brand === activeBrand);
+  const found = useMemo(() => (query.trim() ? products.filter((p) => tileMatches(p, query)) : products), [products, query]);
+  const brands = useMemo(() => {
+    const counts = new Map();
+    for (const p of found) if (p.brand) counts.set(p.brand, (counts.get(p.brand) || 0) + 1);
+    return [...counts.entries()].sort((a, b) => a[0].localeCompare(b[0], 'en-AU', { sensitivity: 'base' }));
+  }, [found]);
+  const brand = brands.some(([name]) => name === activeBrand) ? activeBrand : 'All';
+  const matching = brand === 'All' ? found : found.filter((p) => p.brand === brand);
   const visible = matching.slice(0, shown);
+  const what = categoryTitle || 'these products';
 
-  function chooseBrand(brand) {
-    setActiveBrand(brand);
+  function typeQuery(value) {
+    setQuery(value);
+    setShown(PAGE_SIZE);
+  }
+
+  function chooseBrand(name) {
+    setActiveBrand(name);
     setShown(PAGE_SIZE);
   }
 
   return (
     <>
+      <form className="search-form" role="search" onSubmit={(event) => event.preventDefault()} style={{ marginBottom: '14px' }}>
+        <Search size={22} strokeWidth={2} aria-hidden="true" />
+        <label htmlFor="category-search" className="visually-hidden">Search {what}</label>
+        <input
+          id="category-search"
+          type="search"
+          value={query}
+          onChange={(event) => typeQuery(event.target.value)}
+          placeholder={`Search ${what} by name, brand or part number`}
+          autoComplete="off"
+        />
+      </form>
+      <p style={{ ...NOTE, margin: '0 0 18px' }}>
+        {query.trim() ? `${matching.length} of ${products.length} products match. ` : `${products.length} products. `}
+        <Link href={searchHref({ q: query.trim() })}>Search the whole store</Link>
+      </p>
       {brands.length > 1 && (
         <div className="brand-tabs" role="tablist" aria-label="Filter by brand">
           <button
             type="button"
-            className={activeBrand === 'All' ? 'brand-tab active' : 'brand-tab'}
+            className={brand === 'All' ? 'brand-tab active' : 'brand-tab'}
             onClick={() => chooseBrand('All')}
           >
             All
           </button>
-          {brands.map((brand) => (
+          {brands.map(([name, count]) => (
             <button
-              key={brand}
+              key={name}
               type="button"
-              className={activeBrand === brand ? 'brand-tab active' : 'brand-tab'}
-              onClick={() => chooseBrand(brand)}
+              className={brand === name ? 'brand-tab active' : 'brand-tab'}
+              onClick={() => chooseBrand(name)}
             >
-              {brand}
+              {name}
+              <span className="brand-tab-count">{count}</span>
             </button>
           ))}
         </div>
@@ -102,61 +86,18 @@ export default function CategoryProductGrid({ products, isSignedIn = false, cust
           Prices shown are RRP. <a href="/account/signup">Create a free account</a> for additional member discounts.
         </p>
       )}
-      <div style={GRID}>
-        {visible.map((p) => {
-          const isSubscription = p.type === 'subscription';
-          const memberPrice = isSignedIn && !isSubscription;
-          return (
-            <article key={p.id} style={TILE}>
-              <Link href={productPath(p)} style={TILE_LINK}>
-                <span style={PHOTO_FRAME}>
-                  {p.imageUrl ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={p.imageUrl} alt={p.name} loading="lazy" style={PHOTO} />
-                  ) : (
-                    <span style={NO_PHOTO}>{p.brand || 'Teracom'}</span>
-                  )}
-                </span>
-                {p.brand ? <span style={BRAND}>{p.brand}</span> : null}
-                <span style={NAME}>{p.name}</span>
-              </Link>
-              <div>
-                {p.priceCents === null ? (
-                  <p style={PRICE}>
-                    <a href="/account/login">Sign in for pricing</a>
-                  </p>
-                ) : (
-                  <>
-                    <p style={PRICE}>
-                      {formatMoney(memberPrice ? unitPriceCents(p, customer || { tier: null }) : p.priceCents)}
-                      <span style={NOTE}> inc. GST{isSubscription ? ' / month' : ''}</span>
-                    </p>
-                    <p style={{ ...NOTE, margin: '2px 0 10px' }}>
-                      {memberPrice ? (
-                        <>
-                          {customer?.tier ? `${customer.tier} price` : 'Member price'} · RRP <del>{formatMoney(p.priceCents)}</del>
-                        </>
-                      ) : isSubscription ? (
-                        'Subscription'
-                      ) : (
-                        'RRP'
-                      )}
-                    </p>
-                    {p.type === 'hardware' && p.stock !== null && p.stock !== undefined ? (
-                      <p style={Number(p.stock) > 0 ? IN_STOCK : ON_ORDER}>{availabilityText(p.stock, p.nextDelivery)}</p>
-                    ) : null}
-                    {isSubscription ? (
-                      <CheckoutButton productId={p.id} label="Subscribe" />
-                    ) : (
-                      <AddToCartButton productId={p.id} label="Add to Cart" />
-                    )}
-                  </>
-                )}
-              </div>
-            </article>
-          );
-        })}
-      </div>
+      {matching.length === 0 ? (
+        <p className="form-note">
+          Nothing in {what} matches that. <Link href={searchHref({ q: query.trim() })}>Try the whole store</Link> or{' '}
+          <Link href="/contact?interest=Teracom Store">ask us for a quote</Link>.
+        </p>
+      ) : (
+        <div style={TILE_GRID}>
+          {visible.map((p) => (
+            <ProductTile key={p.id} p={p} isSignedIn={isSignedIn} customer={customer} />
+          ))}
+        </div>
+      )}
       {matching.length > shown && (
         <div style={MORE}>
           <p style={NOTE}>Showing {shown} of {matching.length}</p>
