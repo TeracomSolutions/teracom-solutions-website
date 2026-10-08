@@ -1,12 +1,14 @@
 'use client';
 
 import { useCallback, useMemo, useState } from 'react';
+import Link from 'next/link';
 
 import AdminCatalogAddProduct from '@/components/AdminCatalogAddProduct';
 import AdminCatalogReprice from '@/components/AdminCatalogReprice';
 import AdminCatalogRow from '@/components/AdminCatalogRow';
 import AdminSheetPager from '@/components/AdminSheetPager';
 import { catalogCsv, inputStyle, send } from '@/lib/catalogShared';
+import { publishNotice, queueNotice } from '@/lib/content';
 import { DEFAULT_FILTERS, allTicked, clampPage, sheetQueryString, togglePage } from '@/lib/sheetQuery';
 import useSheet from '@/lib/useSheet';
 
@@ -27,6 +29,7 @@ export default function AdminCatalogGrid({ initial, facets: initialFacets, suppl
   const [selected, setSelected] = useState(() => new Set());
   const [publishing, setPublishing] = useState(false);
   const [working, setWorking] = useState('');
+  const [notice, setNotice] = useState('');
 
   const products = data.products;
   const pageIds = useMemo(() => products.map((p) => p.id), [products]);
@@ -99,14 +102,48 @@ export default function AdminCatalogGrid({ initial, facets: initialFacets, suppl
     if (ids.length === 0) return;
     setPublishing(true);
     setError('');
+    setNotice('');
     try {
-      await send('/api/admin/catalog/publish', 'POST', { product_ids: ids, published });
+      const result = await send('/api/admin/catalog/publish', 'POST', { product_ids: ids, published });
+      setNotice(publishNotice(result, published));
       setSelected(new Set());
       afterChange();
     } catch (err) {
       setError(err.message);
     } finally {
       setPublishing(false);
+    }
+  }
+
+  // Look the ticked products up on their manufacturers' websites, without putting them live.
+  async function findContent() {
+    const ids = [...selected];
+    if (ids.length === 0) return;
+    setWorking('Starting the search…');
+    setError('');
+    setNotice('');
+    try {
+      setNotice(queueNotice(await send('/api/admin/content/queue', 'POST', { product_ids: ids })));
+      setSelected(new Set());
+      afterChange();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setWorking('');
+    }
+  }
+
+  async function findAllMissing(liveOnly) {
+    setWorking('Starting the search…');
+    setError('');
+    setNotice('');
+    try {
+      setNotice(queueNotice(await send('/api/admin/content/queue-missing', 'POST', { live_only: liveOnly })));
+      afterChange();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setWorking('');
     }
   }
 
@@ -207,6 +244,11 @@ export default function AdminCatalogGrid({ initial, facets: initialFacets, suppl
           <option value="live">Live on the website</option>
           <option value="offline">Offline</option>
         </select>
+        <select value={filters.content} onChange={(e) => change({ content: e.target.value })} aria-label="Photo and description">
+          <option value="">Any photo and description</option>
+          <option value="missing">No photo or description</option>
+          <option value="complete">Has both</option>
+        </select>
         <label style={{ display: 'inline-flex', gap: '6px', alignItems: 'center' }}>
           <input type="checkbox" checked={filters.showInactive} onChange={(e) => change({ showInactive: e.target.checked })} /> show inactive
         </label>
@@ -218,11 +260,22 @@ export default function AdminCatalogGrid({ initial, facets: initialFacets, suppl
         </span>
       </div>
 
+      {notice ? <p className="form-note-banner" role="status">{notice}</p> : null}
+      {facets.missing_content > 0 ? (
+        <p className="admin-muted" style={{ margin: '0 0 12px' }}>
+          {number(facets.missing_content)} products have no photo or description ({number(facets.live_missing_content)} of them live).{' '}
+          <button type="button" className="admin-link-btn" onClick={() => findAllMissing(false)} disabled={Boolean(working)}>Find them all</button>
+          {' · '}
+          <Link href="/admin/content">Photos &amp; text</Link>
+        </p>
+      ) : null}
+
       <div className="admin-actions" style={{ margin: '0 0 16px' }}>
         <button type="button" className="btn btn-primary btn-sm" onClick={() => publish(true)} disabled={publishing || selected.size === 0}>
           {publishing ? 'Saving…' : `Go live${selected.size ? ` (${number(selected.size)})` : ''}`}
         </button>
         <button type="button" className="btn btn-secondary btn-sm" onClick={() => publish(false)} disabled={publishing || selected.size === 0}>Take offline</button>
+        <button type="button" className="btn btn-secondary btn-sm" onClick={findContent} disabled={Boolean(working) || selected.size === 0}>Find photos &amp; text</button>
         <AdminCatalogAddProduct suppliers={suppliers} onDone={afterChange} />
         <AdminCatalogReprice suppliers={suppliers} total={data.total} getIds={getIds} onDone={afterChange} />
         <button type="button" className="btn btn-secondary btn-sm" onClick={exportCsv} disabled={data.total === 0 || Boolean(working)}>Export CSV</button>
