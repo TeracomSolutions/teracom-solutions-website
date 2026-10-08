@@ -5,11 +5,13 @@ import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import { isAreaActive } from '@/lib/adminNavMatch';
+import { tabLabel as contentTabLabel } from '@/lib/content';
 import { tabLabel } from '@/lib/holds';
 
 export default function AdminStoreTabs() {
   const pathname = usePathname();
   const [waiting, setWaiting] = useState(0);
+  const [needsLook, setNeedsLook] = useState(0);
 
   // How many price list rows are held for review, for the Needs review tab.
   useEffect(() => {
@@ -18,6 +20,15 @@ export default function AdminStoreTabs() {
       .then((response) => (response.ok ? response.json() : null))
       .then((data) => {
         if (!cancelled && data && data.counts) setWaiting(data.counts.pending || 0);
+      })
+      .catch(() => {
+        // No count: the tab just has no number.
+      });
+    // How many products need a look on the Photos and text page.
+    fetch('/api/admin/content/count')
+      .then((response) => (response.ok ? response.json() : null))
+      .then((data) => {
+        if (!cancelled && data && data.counts) setNeedsLook(data.counts.attention || 0);
       })
       .catch(() => {
         // No count: the tab just has no number.
@@ -70,6 +81,13 @@ export default function AdminStoreTabs() {
         aria-current={isAreaActive({ href: '/admin/review' }, pathname) ? 'page' : undefined}
       >
         {tabLabel(waiting)}
+      </Link>
+      <Link
+        href="/admin/content"
+        className={isAreaActive({ href: '/admin/content' }, pathname) ? 'admin-tab active' : 'admin-tab'}
+        aria-current={isAreaActive({ href: '/admin/content' }, pathname) ? 'page' : undefined}
+      >
+        {contentTabLabel(needsLook)}
       </Link>
     </nav>
   );

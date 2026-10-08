@@ -4,6 +4,7 @@ import { memo } from 'react';
 
 import { formatDateTime } from '@/lib/adminFormat';
 import { GST, dollars, inputStyle, marginClass, marginOf, money } from '@/lib/catalogShared';
+import { contentStatusLabel } from '@/lib/content';
 
 // One product on the Store Catalog sheet. It only draws again when its own
 // product, draft, tick or busy state changes, so ticking one box or typing in
@@ -11,6 +12,7 @@ import { GST, dollars, inputStyle, marginClass, marginOf, money } from '@/lib/ca
 
 const liveStyle = { color: '#7ee2a8', fontWeight: 600 };
 const thumbStyle = { width: '36px', height: '36px', objectFit: 'contain', background: '#fff', borderRadius: '4px', flex: '0 0 auto' };
+const noPhotoStyle = { ...thumbStyle, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#555', fontSize: '9px', fontWeight: 700, textAlign: 'center' };
 
 function AdminCatalogRow({ p, tiers, suppliers, draft, checked, busy, onToggle, onDraft, onSave, onDiscard, onDelete }) {
   const d = draft || {};
@@ -39,8 +41,11 @@ function AdminCatalogRow({ p, tiers, suppliers, draft, checked, busy, onToggle, 
           {p.image_url ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={p.image_url} alt="" loading="lazy" style={thumbStyle} />
-          ) : null}
+          ) : (
+            <span style={noPhotoStyle} title="No photo yet">No photo</span>
+          )}
           <input type="text" value={current('name')} onChange={(e) => onDraft(p.id, 'name', e.target.value)} style={{ ...inputStyle, width: '100%' }} aria-label="Name" />
+          {contentStatusLabel(p.content_status) ? <span className="admin-muted" style={{ fontSize: '11px', whiteSpace: 'nowrap' }}>{contentStatusLabel(p.content_status)}</span> : null}
         </span>
       </td>
       <td><input type="text" value={current('brand')} onChange={(e) => onDraft(p.id, 'brand', e.target.value)} style={{ ...inputStyle, width: '110px' }} aria-label="Brand" /></td>
