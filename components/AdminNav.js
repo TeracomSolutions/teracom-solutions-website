@@ -18,6 +18,7 @@ export const ADMIN_AREAS = [
   { href: '/admin/leads', label: 'Leads' },
   { href: '/admin/resources', label: 'Resources' },
   { href: '/admin/scout', label: 'Scout' },
+  { href: '/admin/seo', label: 'Search' },
   { href: '/admin/social', label: 'Social' },
   { href: '/admin/support', label: 'Support' },
   { href: '/admin/suppliers', label: 'Store', match: ['/admin/catalog', '/admin/pricing', '/admin/brands', '/admin/freight', '/admin/review', '/admin/content'] },

@@ -7,6 +7,7 @@ import {
   FileText,
   Inbox,
   Radar,
+  Search,
   Share2,
   ShieldCheck,
   Sparkles,
@@ -86,6 +87,13 @@ const AREAS = [
     text: 'Research tasks for the website: run an AI researcher and critic, then approve or reject the report.',
     icon: Radar,
     hue: '#a78bfa',
+  },
+  {
+    href: '/admin/seo',
+    title: 'Search',
+    text: 'Old addresses Google still shows from the old shop, and the page on this website each one now goes to: confident ones are live already, the rest wait for your yes.',
+    icon: Search,
+    hue: '#34d399',
   },
   {
     href: '/admin/social',

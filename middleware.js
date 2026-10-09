@@ -10,6 +10,7 @@ import {
   replaceCookie,
   signOutReason,
 } from './lib/adminIdle.js';
+import { TIMEOUT_MS, createRedirectCache, isConsolePath, lookup } from './lib/seoRedirects.js';
 
 // Keeps a staff console session alive while it is being used. On any
 // console page or console API call, and on Ask Tera's calls (Tera answers
@@ -19,8 +20,18 @@ import {
 // staff member has been inactive for their chosen time. Then the person is
 // sent to the sign-in page (pages) or given a 401 (API calls).
 // A backend that cannot be reached never signs anyone out.
+//
+// Every other page: an old address that Google still shows (the old Zoho
+// shop's) is sent to the page that replaced it with a permanent redirect.
+// The list comes from the backend (Search on the console) and is kept for
+// five minutes; when the backend cannot be reached the last list is used.
 export const config = {
-  matcher: ['/admin/:path*', '/api/admin/:path*', '/api/tera/:path*'],
+  matcher: [
+    '/admin/:path*',
+    '/api/admin/:path*',
+    '/api/tera/:path*',
+    '/((?!_next/|api/|assets/|store-images/|favicon.ico|robots.txt|sitemap.xml).*)',
+  ],
 };
 
 const SKIP = [/^\/admin\/login(\/|$)/, /^\/api\/admin\/login(\/|$)/, /^\/api\/admin\/logout(\/|$)/];
@@ -29,6 +40,20 @@ const REFRESH_TIMEOUT_MS = 5000;
 function backendBase() {
   return (process.env.BACKEND_API_URL || 'http://localhost:8002').replace(/\/+$/, '');
 }
+
+async function loadRedirects() {
+  const token = process.env.WEBSITE_FRONTEND_SERVICE_TOKEN || '';
+  if (!token) return [];
+  const answer = await fetch(`${backendBase()}/internal/seo/redirects`, {
+    headers: { 'X-Internal-Service-Token': token, Accept: 'application/json' },
+    signal: AbortSignal.timeout(TIMEOUT_MS),
+    cache: 'no-store',
+  });
+  if (!answer.ok) throw new Error(`redirects ${answer.status}`);
+  return (await answer.json()).redirects;
+}
+
+const redirects = createRedirectCache({ load: loadRedirects });
 
 function clearCookies(response, options) {
   response.cookies.set(ACCESS_TOKEN_COOKIE, '', { ...options, maxAge: 0 });
@@ -39,6 +64,10 @@ function clearCookies(response, options) {
 
 export async function middleware(req) {
   const { pathname } = req.nextUrl;
+  if (!isConsolePath(pathname)) {
+    const target = lookup(await redirects(), pathname);
+    return target ? NextResponse.redirect(new URL(target, req.url), 308) : NextResponse.next();
+  }
   if (SKIP.some((re) => re.test(pathname))) return NextResponse.next();
 
   const refresh = req.cookies.get(REFRESH_TOKEN_COOKIE)?.value;
