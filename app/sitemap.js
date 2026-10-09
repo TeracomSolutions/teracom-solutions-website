@@ -2,6 +2,7 @@ import { getBrands } from '@/lib/storeBrands';
 import { categories } from '@/lib/categories';
 import { getAllProducts } from '@/lib/catalogue';
 import { aiCapabilities } from '@/lib/aiCapabilities';
+import { articles } from '@/lib/articles';
 import { resourcesSections } from '@/lib/resourcesSections';
 import { services } from '@/lib/services';
 import { monitoringServices } from '@/lib/monitoring';
@@ -62,6 +63,13 @@ export default async function sitemap() {
     ...resourcesSections.map((section) => ({
       path: `/resources/${section.slug}`,
       changeFrequency: 'monthly',
+      priority: 0.6,
+    })),
+
+    // Articles, one page each under /resources/articles.
+    ...articles.map((article) => ({
+      path: `/resources/articles/${article.slug}`,
+      changeFrequency: 'yearly',
       priority: 0.6,
     })),
 
