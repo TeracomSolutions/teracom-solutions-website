@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import AdminPriceList from '@/components/AdminPriceList';
+import AdminPricingBands from '@/components/AdminPricingBands';
 import { formatDateTime } from '@/lib/adminFormat';
 
 // The Pricing page: tier markups, per-supplier overrides, and the whole
@@ -223,7 +224,7 @@ function SupplierOverrides({ tiers, suppliers, onSaved }) {
   );
 }
 
-export default function AdminPricingManager({ tiers, suppliers, priceList, facets }) {
+export default function AdminPricingManager({ tiers, bandSets, suppliers, priceList, facets }) {
   const router = useRouter();
   // Counts up when a markup is saved, so the price list works its prices out again.
   const [listVersion, setListVersion] = useState(0);
@@ -234,6 +235,7 @@ export default function AdminPricingManager({ tiers, suppliers, priceList, facet
   return (
     <div>
       <TierEditor tiers={tiers} onSaved={saved} />
+      <AdminPricingBands sets={bandSets} suppliers={suppliers} tiers={tiers} onSaved={saved} />
       <SupplierOverrides tiers={tiers} suppliers={suppliers} onSaved={saved} />
       <AdminPriceList initial={priceList} facets={facets} suppliers={suppliers} reloadKey={listVersion} />
     </div>
