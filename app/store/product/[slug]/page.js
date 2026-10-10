@@ -37,6 +37,7 @@ import { toolsForProduct } from '@/lib/toolSuggestions';
 import { getBrands } from '@/lib/storeBrands';
 import { brandForProduct } from '@/lib/storeBrandsMerge';
 import { findTool } from '@/lib/tools';
+import { productDescription, productTitle } from '@/lib/seoText';
 import { THIN_ROBOTS, isThinProduct } from '@/lib/thinProducts';
 
 // The built-in products are prerendered; a product that only exists in the
@@ -56,10 +57,9 @@ export async function generateMetadata(props) {
   if (!product) return {};
   // The part number earns its place in the description: searching a part
   // number is how a trade buyer looks for a supplier.
-  const description =
-    `${product.description} Part number ${product.sku}. Priced in AUD inclusive of GST.`.slice(0, 155);
+  const description = productDescription(product.description, product.sku);
   const metadata = pageMetadata({
-    title: `${product.name} | Teracom Store`,
+    title: productTitle(product.name, product.sku),
     description,
     path: productPath(product),
   });
