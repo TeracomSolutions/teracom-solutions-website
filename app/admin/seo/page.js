@@ -44,6 +44,7 @@ export default async function AdminSeoOverviewPage() {
             <li><strong>Opportunities</strong> - searches and pages worth working on, with the extra clicks each could earn.</li>
             <li><strong>Titles</strong> - page titles and descriptions suggested to earn more clicks; a yes puts them on the website at once.</li>
             <li><strong>Indexing</strong> - whether Google has each page, and why not when it has not.</li>
+            <li><strong>Health</strong> - the website&apos;s own pages checked every week for broken pages and links, missing or repeated titles and slow pages.</li>
             <li><strong>Redirects</strong> - old addresses from the old shop that Google still shows, and where each now goes.</li>
           </ul>
         </AdminHelpIcon>

@@ -91,7 +91,7 @@ const AREAS = [
   {
     href: '/admin/seo',
     title: 'Search',
-    text: 'How Google shows the website: clicks and views, the searches worth working on, page titles to approve, whether Google has each page, and old shop addresses sent to the right page.',
+    text: 'How Google shows the website: clicks and views, the searches worth working on, page titles to approve, whether Google has each page, how healthy the pages of the website itself are, and old shop addresses sent to the right page.',
     icon: Search,
     hue: '#34d399',
   },
