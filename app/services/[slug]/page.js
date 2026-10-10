@@ -12,8 +12,11 @@ import { findService, serviceGroups, services } from '@/lib/services';
 import { findBrand } from '@/lib/brands';
 import { findCategory } from '@/lib/categories';
 import { SITE_ORIGIN, absoluteUrl, pageMetadata } from '@/lib/seo';
+import { withSeoTitle } from '@/lib/seoTitles';
 
 export const dynamicParams = false;
+// A title approved on the console's Search page shows within five minutes.
+export const revalidate = 300;
 
 export function generateStaticParams() {
   return services.map((service) => ({ slug: service.slug }));
@@ -24,11 +27,14 @@ export async function generateMetadata(props) {
   const service = findService(params.slug);
   if (!service) return {};
 
-  return pageMetadata({
-    title: service.seoTitle,
-    description: service.description,
-    path: `/services/${params.slug}`
-  });
+  return withSeoTitle(
+    pageMetadata({
+      title: service.seoTitle,
+      description: service.description,
+      path: `/services/${params.slug}`
+    }),
+    `/services/${params.slug}`,
+  );
 }
 
 export default async function ServicePage(props) {

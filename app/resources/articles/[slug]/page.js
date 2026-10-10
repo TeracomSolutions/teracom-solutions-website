@@ -7,6 +7,10 @@ import JsonLd from '@/components/JsonLd';
 import OrbitArt from '@/components/OrbitArt';
 import { articles, getArticle } from '@/lib/articles';
 import { SITE_NAME, absoluteUrl, pageMetadata } from '@/lib/seo';
+import { withSeoTitle } from '@/lib/seoTitles';
+
+// A title approved on the console's Search page shows within five minutes.
+export const revalidate = 300;
 
 const HEADING_2 = { fontSize: '28px', margin: '40px 0 12px' };
 const HEADING_3 = { fontSize: '21px', margin: '28px 0 8px' };
@@ -20,12 +24,15 @@ export async function generateMetadata(props) {
   const params = await props.params;
   const article = getArticle(params.slug);
   if (!article) return {};
-  return pageMetadata({
-    title: `${article.title} | ${SITE_NAME}`,
-    description: article.description,
-    path: `/resources/articles/${article.slug}`,
-    type: 'article',
-  });
+  return withSeoTitle(
+    pageMetadata({
+      title: `${article.title} | ${SITE_NAME}`,
+      description: article.description,
+      path: `/resources/articles/${article.slug}`,
+      type: 'article',
+    }),
+    `/resources/articles/${article.slug}`,
+  );
 }
 
 function Item({ item }) {

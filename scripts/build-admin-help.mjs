@@ -21,6 +21,11 @@ const TITLES = {
   'app/admin/catalog/page.js': 'Store: Catalog',
   'app/admin/pricing/page.js': 'Store: Pricing',
   'app/admin/freight/page.js': 'Store: Freight',
+  'app/admin/seo/page.js': 'Search',
+  'app/admin/seo/opportunities/page.js': 'Search: Opportunities',
+  'app/admin/seo/titles/page.js': 'Search: Titles',
+  'app/admin/seo/indexing/page.js': 'Search: Indexing',
+  'app/admin/seo/redirects/page.js': 'Search: Redirects',
   'app/admin/suppliers/[supplierId]/page.js': 'Data Feeds: one supplier',
   'app/admin/resources/[sourceId]/page.js': 'Resources: one watched website',
 };

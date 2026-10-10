@@ -32,6 +32,7 @@ import {
   weightText,
 } from '@/lib/productDetails';
 import { absoluteUrl, BUSINESS, pageMetadata } from '@/lib/seo';
+import { withSeoTitle } from '@/lib/seoTitles';
 import { toolsForProduct } from '@/lib/toolSuggestions';
 import { getBrands } from '@/lib/storeBrands';
 import { brandForProduct } from '@/lib/storeBrandsMerge';
@@ -63,7 +64,9 @@ export async function generateMetadata(props) {
     path: productPath(product),
   });
   // A page with no photo or too little text stays out of Google until it has them.
-  return isThinProduct(product) ? { ...metadata, ...THIN_ROBOTS } : metadata;
+  const withRobots = isThinProduct(product) ? { ...metadata, ...THIN_ROBOTS } : metadata;
+  // A title and description approved on the console's Search page win.
+  return withSeoTitle(withRobots, productPath(product));
 }
 
 // Every line here has to be something the business actually does today.

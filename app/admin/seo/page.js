@@ -1,26 +1,27 @@
 import { redirect } from 'next/navigation';
 
 import AdminHelpIcon from '@/components/AdminHelpIcon';
-import AdminSeo from '@/components/AdminSeo';
+import AdminSeoOverview from '@/components/AdminSeoOverview';
+import AdminSeoTabs from '@/components/AdminSeoTabs';
 import AdminShell from '@/components/AdminShell';
-import { listRedirects, seoOverview } from '@/lib/api/adminSeo';
+import { fetchIndexingSummary, fetchPerformance } from '@/lib/api/adminSeoInsights';
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
 
 export const metadata = {
   title: 'Search|Teracom Solutions',
 };
 
-export default async function AdminSeoPage() {
+export default async function AdminSeoOverviewPage() {
   const token = await requireAdminToken();
 
-  let initial = { overview: null, total: 0, redirects: [] };
+  let initial = { connected: true, stats: null, status: null, counts: {}, titles: {} };
+  let indexing = null;
   let loadError = '';
   try {
-    const [overview, list] = await Promise.all([seoOverview(token), listRedirects(token, 'proposed')]);
-    initial = { overview, ...list };
+    [initial, indexing] = await Promise.all([fetchPerformance(token), fetchIndexingSummary(token)]);
   } catch (err) {
     if (isSessionError(err)) redirect('/admin/login');
-    loadError = 'Unable to load the list from the backend.';
+    loadError = 'Unable to load the Search figures from the backend.';
   }
 
   return (
@@ -29,23 +30,28 @@ export default async function AdminSeoPage() {
         Search
         <AdminHelpIcon>
           <h4>What this page is for</h4>
-          <p>Google still shows people addresses from the old shop, and those pages no longer exist, so a visitor who clicks one sees &quot;not found&quot;. This page lists those old addresses (found from your Google Search Console connection) and the page on this website each one should go to. A <strong>redirect</strong> sends the visitor, and Google, from the old address to the new page.</p>
-          <h4>What goes live by itself</h4>
-          <p>When the old address names a category or a brand, is one of the old shop&apos;s own pages (Contact, About, Returns), or people reached it by searching for a product&apos;s part number, the redirect is turned on straight away. These are the <strong>Sure</strong>, <strong>Strong guess</strong> and <strong>Brand page</strong> kinds, and they show on the <em>Live</em> tab.</p>
-          <h4>What waits for your yes</h4>
-          <p><strong>Possible</strong> and <strong>General page</strong> guesses wait on the <em>Waiting for a yes</em> tab. A General page guess sends the visitor to the Store or Resources, which is better than a dead end but not a close match, so look at it before you say yes.</p>
+          <p>How Google shows the website, and what to do to get more visitors from it. The figures come from Google Search Console (connected under Connections) and are pulled once a day; <strong>Refresh</strong> pulls them again now.</p>
+          <h4>The numbers</h4>
           <ul>
-            <li><strong>Approve</strong> turns the redirect on.</li>
-            <li><strong>Change</strong> lets you type the page it should go to (like /store/cctv) and turns it on.</li>
-            <li><strong>Reject</strong> sets it aside: that old address is left alone and keeps saying not found.</li>
+            <li><strong>Clicks from Google</strong> - people who clicked the site in Google&apos;s results.</li>
+            <li><strong>Times shown in Google</strong> - how often the site appeared in results, whether or not anyone clicked.</li>
+            <li><strong>Click rate</strong> - clicks as a share of the times shown.</li>
+            <li><strong>Average position</strong> - where the site appears in the results: 1 is the very top; page one is 1 to 10. Lower is better.</li>
           </ul>
-          <h4>Looking again</h4>
-          <p><strong>Search now</strong> asks Google again which pages it shows and checks each one. It also runs by itself once a week. A redirect you have approved, changed or rejected is never changed by a later search. The Google connection is set up under Connections.</p>
+          <p>Each is the last 28 days against the 28 before. The charts show each week since July, so you can see whether things are recovering.</p>
+          <h4>The tabs</h4>
+          <ul>
+            <li><strong>Opportunities</strong> - searches and pages worth working on, with the extra clicks each could earn.</li>
+            <li><strong>Titles</strong> - page titles and descriptions suggested to earn more clicks; a yes puts them on the website at once.</li>
+            <li><strong>Indexing</strong> - whether Google has each page, and why not when it has not.</li>
+            <li><strong>Redirects</strong> - old addresses from the old shop that Google still shows, and where each now goes.</li>
+          </ul>
         </AdminHelpIcon>
       </h1>
-      <p className="lead">Old addresses Google still shows, and the page on this website each one now goes to.</p>
+      <p className="lead">How Google shows the website, and what to work on to get more visitors from it.</p>
+      <AdminSeoTabs />
 
-      {loadError ? <p className="form-error" role="alert">{loadError}</p> : <AdminSeo initial={initial} />}
+      {loadError ? <p className="form-error" role="alert">{loadError}</p> : <AdminSeoOverview initial={initial} indexing={indexing} />}
     </AdminShell>
   );
 }
