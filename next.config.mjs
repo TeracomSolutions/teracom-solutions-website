@@ -12,6 +12,14 @@ const nextConfig = {
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
   poweredByHeader: false,
+  // The AI pages used to live at /securityos-ai. Anyone arriving at the old
+  // address, and Google, is sent to the new one with a permanent redirect.
+  async redirects() {
+    return [
+      { source: '/securityos-ai', destination: '/teracom-ai', permanent: true },
+      { source: '/securityos-ai/:path*', destination: '/teracom-ai/:path*', permanent: true },
+    ];
+  },
   async headers() {
     return [
       {

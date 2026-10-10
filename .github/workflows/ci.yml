@@ -85,7 +85,7 @@ jobs:
       - name: Smoke-test backend-independent routes
         run: |
           set -e
-          for path in "/" "/robots.txt" "/sitemap.xml" "/securityos-ai" "/store"; do
+          for path in "/" "/robots.txt" "/sitemap.xml" "/teracom-ai" "/store"; do
             code=$(curl -s -o /dev/null -w "%{http_code}" "http://127.0.0.1:3001${path}")
             echo "GET ${path} -> ${code}"
             if [ "${code}" != "200" ]; then

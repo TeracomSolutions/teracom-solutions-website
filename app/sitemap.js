@@ -38,7 +38,7 @@ import { isThinProduct } from '@/lib/thinProducts';
 // to distrust the field entirely; no value is more honest than a false one.
 const staticRoutes = [
   { path: '/', changeFrequency: 'weekly', priority: 1.0 },
-  { path: '/securityos-ai', changeFrequency: 'weekly', priority: 0.9 },
+  { path: '/teracom-ai', changeFrequency: 'weekly', priority: 0.9 },
   { path: '/store', changeFrequency: 'weekly', priority: 0.9 },
   { path: '/brands', changeFrequency: 'monthly', priority: 0.8 },
   { path: '/services', changeFrequency: 'monthly', priority: 0.9 },
@@ -126,7 +126,7 @@ export default async function sitemap() {
     })),
 
     ...aiCapabilities.map((capability) => ({
-      path: `/securityos-ai/${capability.slug}`,
+      path: `/teracom-ai/${capability.slug}`,
       changeFrequency: 'monthly',
       priority: 0.8,
     })),

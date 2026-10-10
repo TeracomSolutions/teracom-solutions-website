@@ -42,7 +42,7 @@ const WHAT_WE_DO = [
     icon: BrainCircuit,
     title: 'Digital Innovation',
     text: 'AI solutions, the Teracom AI platform, knowledge management and technology platforms for the industry.',
-    href: '/securityos-ai',
+    href: '/teracom-ai',
   },
   {
     icon: DraftingCompass,
@@ -150,7 +150,7 @@ export default async function Home(props) {
       </section>
       <PlatformStack />
       <OrganisationalMemory />
-      <section className="section product-showcase" id="securityos">
+      <section className="section product-showcase" id="teracom-ai">
         <div className="container showcase-grid">
           <div className="showcase-image hero-blend">
             <Image src="/assets/teracom-ai-command-centre.webp" alt="Tera, the Teracom AI mascot, at a security command centre desk -- intelligence in action" width={1536} height={1024} sizes="(max-width: 980px) 100vw, 55vw" />
@@ -163,11 +163,11 @@ export default async function Home(props) {
             <ul className="tick-list tick-list-links">
               {aiCapabilities.map((c) => (
                 <li key={c.slug}>
-                  <Link href={`/securityos-ai/${c.slug}`}>{c.title}</Link>
+                  <Link href={`/teracom-ai/${c.slug}`}>{c.title}</Link>
                 </li>
               ))}
             </ul>
-            <Link className="btn btn-primary" href="/securityos-ai">View Teracom AI</Link>
+            <Link className="btn btn-primary" href="/teracom-ai">View Teracom AI</Link>
             <p className="form-note" style={{ marginTop: '28px' }}>Specialised modules for different parts of the business are in early access. Register your interest and we will include you in the preview.</p>
             <div className="mini-services">
               {EARLY_ACCESS_MODULES.map((module) => (

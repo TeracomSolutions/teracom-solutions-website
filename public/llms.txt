@@ -5,7 +5,7 @@
 ## Main pages
 
 - [Home](https://www.teracomsolutions.com.au/): overview of Teracom's technology expertise, software and integration development, consulting, hardware supply, installation and support.
-- [Teracom AI](https://www.teracomsolutions.com.au/securityos-ai): AI support agents, scope of works generation, estimation assistance, tender response support, technical design guidance, and training and knowledge tools.
+- [Teracom AI](https://www.teracomsolutions.com.au/teracom-ai): AI support agents, scope of works generation, estimation assistance, tender response support, technical design guidance, and training and knowledge tools.
 - [Brands](https://www.teracomsolutions.com.au/brands): the security and technology manufacturers Teracom supplies and works with, including Gallagher, Inner Range, Genetec, Milestone, HID, Axis, Hikvision, Hanwha Vision, Avigilon, Bosch, ASSA ABLOY and Tecom Challenger.
 - [Teracom Store](https://www.teracomsolutions.com.au/store): security products, digital resources, consulting services and Teracom AI subscriptions. Prices shown are RRP including GST; account holders receive additional member discounts.
 - [Resources](https://www.teracomsolutions.com.au/resources): help centre and FAQs, user manuals, datasheets, product videos and downloads.
