@@ -2836,9 +2836,9 @@ a.admin-status:hover { filter:brightness(1.15); }
     display:flex !important; align-items:center; gap:18px; padding:12px 16px; margin:0 0 10px;
     background:#0b0b0b !important; -webkit-print-color-adjust:exact; print-color-adjust:exact;
   }
-  .tool-print-header p, .tool-print-header h1 { margin:0; color:#fff !important; }
+  .tool-print-header p { margin:0; color:#fff !important; }
   .tool-print-header p { font-size:8.5pt; letter-spacing:.12em; text-transform:uppercase; }
-  .tool-print-header h1 { font-size:18pt; line-height:1.2; }
+  .tool-print-header p.tool-print-title { font-size:18pt; line-height:1.2; letter-spacing:normal; text-transform:none; }
   .tool-print-lead { margin:0 0 10px; font-size:10pt; }
   .calculator { display:grid !important; grid-template-columns:1fr 1fr; gap:6px 20px; font-size:10pt; }
   .calculator h2, .calculator-results, .calculator-row, .calculator .form-note-banner { grid-column:1 / -1; }

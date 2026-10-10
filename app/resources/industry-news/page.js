@@ -27,7 +27,7 @@ import { pageMetadata } from '@/lib/seo';
 export const revalidate = 3600;
 
 export const metadata = pageMetadata({
-  title: 'Industry News: Security, Electrical, AV, IT & More | Teracom Solutions',
+  title: 'Security, Electrical, AV & IT Industry News | Teracom',
   description:
     'The latest Australian industry headlines in one place -- security, electrical, plumbing, building and construction, audio visual, IT and cyber, AI, marketing and smart home -- updated automatically every hour.',
   path: '/resources/industry-news',

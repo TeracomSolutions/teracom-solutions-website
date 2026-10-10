@@ -8,6 +8,7 @@ import OrbitArt from '@/components/OrbitArt';
 import { articles, getArticle } from '@/lib/articles';
 import { SITE_NAME, absoluteUrl, pageMetadata } from '@/lib/seo';
 import { withSeoTitle } from '@/lib/seoTitles';
+import { fitTitle } from '@/lib/seoText';
 
 // A title approved on the console's Search page shows within five minutes.
 export const revalidate = 300;
@@ -26,7 +27,7 @@ export async function generateMetadata(props) {
   if (!article) return {};
   return withSeoTitle(
     pageMetadata({
-      title: `${article.title} | ${SITE_NAME}`,
+      title: fitTitle(article.title, SITE_NAME),
       description: article.description,
       path: `/resources/articles/${article.slug}`,
       type: 'article',

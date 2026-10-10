@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import { pageMetadata } from '@/lib/seo';
 export const metadata = pageMetadata({
-  title: 'About Teracom Solutions | Technology, Security & AI, Carrum Downs VIC',
+  title: 'About Teracom | Technology, Security & AI, Carrum Downs',
   description: 'Teracom Solutions are leaders in technology, security and AI solutions in Australia -- Australian owned and operated, with offices in Melbourne and Sydney.',
   path: '/about',
 });

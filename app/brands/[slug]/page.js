@@ -17,6 +17,7 @@ import { withSeoTitle } from '@/lib/seoTitles';
 import BrandProfile from '@/components/BrandProfile';
 import BrandArt from '@/components/BrandArt';
 import { findBrandProfile } from '@/lib/brandProfiles';
+import { brandDescription } from '@/lib/seoText';
 
 const THEME_FALLBACKS = { 'cctv': '/assets/brand-fallback-cctv.svg', 'access-control': '/assets/brand-fallback-access.svg', 'audio': '/assets/brand-fallback-audio.svg', 'power': '/assets/brand-fallback-power.svg', 'networking': '/assets/brand-fallback-network.svg', 'accessories': '/assets/brand-fallback-accessories.svg' };
 
@@ -43,7 +44,7 @@ export async function generateMetadata(props) {
   return withSeoTitle(
     pageMetadata({
       title: role ? `${brand.name} ${role}, Melbourne | Teracom` : `${brand.name} | Teracom Solutions, Melbourne`,
-      description: brand.tagline,
+      description: brandDescription(brand.name, brand.tagline),
       path: `/brands/${brand.slug}`,
       images: [{ url: `/brands/${brand.slug}/opengraph-image`, width: 1200, height: 630, alt: brand.name }]
     }),

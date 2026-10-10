@@ -69,7 +69,7 @@ export default async function ToolPage(props) {
         <Image src="/assets/teracom-logo.png" alt="Teracom Solutions" width={150} height={58} />
         <div>
           <p>Teracom Solutions free tools</p>
-          <h1>{tool.title}</h1>
+          <p className="tool-print-title">{tool.title}</p>
         </div>
       </div>
       <p className="print-only tool-print-lead">{tool.description}</p>
