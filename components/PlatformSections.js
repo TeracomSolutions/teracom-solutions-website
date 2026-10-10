@@ -14,7 +14,7 @@ import {
 // The platform sections from lib/platformMessaging: Teracom AI as the
 // platform under the services, organisational memory, outcomes, how it
 // differs from general AI assistants and its security. Used on the
-// homepage and on /securityos-ai.
+// homepage and on /teracom-ai.
 
 export function PlatformStack() {
   return (
@@ -92,7 +92,7 @@ export function BusinessOutcomes() {
           <h2>Outcomes for managers. Tools for technicians.</h2>
           <p>
             What changes when your organisation runs on Teracom AI. The tools behind each outcome are on the{' '}
-            <Link href="/securityos-ai">Teracom AI page</Link>.
+            <Link href="/teracom-ai">Teracom AI page</Link>.
           </p>
         </div>
         <ul className="outcome-grid">
@@ -143,7 +143,7 @@ export function AiComparison({ alt = false }) {
   );
 }
 
-// The homepage shows the short list; /securityos-ai shows each point with
+// The homepage shows the short list; /teracom-ai shows each point with
 // what it means.
 export function SecurityTrust({ detailed = false, alt = false }) {
   return (
@@ -176,7 +176,7 @@ export function SecurityTrust({ detailed = false, alt = false }) {
         )}
         {!detailed && (
           <p className="trust-more">
-            <Link href="/securityos-ai#security">How Teracom AI protects your data &rarr;</Link>
+            <Link href="/teracom-ai#security">How Teracom AI protects your data &rarr;</Link>
           </p>
         )}
       </div>

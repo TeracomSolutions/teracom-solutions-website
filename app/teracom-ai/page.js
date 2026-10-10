@@ -11,7 +11,7 @@ export const metadata = pageMetadata({
   title: 'Teracom AI | AI Platform for Security & Technical Teams',
   description:
     'Teracom AI is an AI operating system for technicians, engineers and project teams. Product-specific support agents, scope generation, documentation and knowledge tools for platforms including Gallagher, Genetec, Milestone, Inner Range and HID.',
-  path: '/securityos-ai',
+  path: '/teracom-ai',
 });
 
 // SoftwareApplication describes the product itself; the ItemList enumerates
@@ -24,7 +24,7 @@ const AI_PLATFORM_SCHEMA = {
   name: 'Teracom AI',
   applicationCategory: 'BusinessApplication',
   operatingSystem: 'Web',
-  url: absoluteUrl('/securityos-ai'),
+  url: absoluteUrl('/teracom-ai'),
   description:
     'An AI operating system for modern organisations. Teracom AI helps technicians, engineers, estimators and project teams access expert knowledge, generate documentation and solve technical challenges faster.',
   publisher: { '@id': `${SITE_ORIGIN}/#organisation` },
@@ -38,11 +38,11 @@ const AI_CAPABILITIES_SCHEMA = {
     '@type': 'ListItem',
     position: index + 1,
     name: capability.title,
-    url: absoluteUrl(`/securityos-ai/${capability.slug}`),
+    url: absoluteUrl(`/teracom-ai/${capability.slug}`),
   })),
 };
 
-export default function SecurityOSAI() {
+export default function TeracomAI() {
   return (
     <main id="main-content">
       <JsonLd schema={AI_PLATFORM_SCHEMA} />
@@ -113,7 +113,7 @@ export default function SecurityOSAI() {
                   <li key={b}>{b}</li>
                 ))}
               </ul>
-              <Link className="btn btn-secondary" href={`/securityos-ai/${c.slug}`}>
+              <Link className="btn btn-secondary" href={`/teracom-ai/${c.slug}`}>
                 Explore {c.title} &rarr;
               </Link>
             </div>

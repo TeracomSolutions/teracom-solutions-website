@@ -16,7 +16,7 @@ export async function generateMetadata(props) {
   return pageMetadata({
     title: `${capability.title} for Security Teams | Teracom AI`,
     description: capability.summary,
-    path: `/securityos-ai/${capability.slug}`,
+    path: `/teracom-ai/${capability.slug}`,
   });
 }
 
@@ -31,7 +31,7 @@ export default async function CapabilityPage(props) {
         <div className="container hero-layout">
           <div className="hero-copy">
             <Breadcrumbs
-              items={[{ name: 'Teracom AI', href: '/securityos-ai' }]}
+              items={[{ name: 'Teracom AI', href: '/teracom-ai' }]}
               current={capability.title}
             />
             <h1>{capability.title}</h1>
@@ -62,7 +62,7 @@ export default async function CapabilityPage(props) {
                 sizes="(max-width: 980px) 100vw, 45vw"
               />
             ) : (
-              <Image src="/assets/securityos-dashboard.svg" alt="Teracom AI dashboard concept" width={1200} height={760} />
+              <Image src="/assets/teracom-ai-dashboard.svg" alt="Teracom AI dashboard concept" width={1200} height={760} />
             )}
           </div>
         </div>
