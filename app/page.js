@@ -13,6 +13,7 @@ import { AiComparison, BusinessOutcomes, OrganisationalMemory, PlatformStack, Se
 import { EARLY_ACCESS_MODULES } from '@/lib/platformMessaging';
 import { ArrowUpRight, BrainCircuit, CodeXml, DraftingCompass, Layers, Workflow } from 'lucide-react';
 import { SITE_ORIGIN, absoluteUrl } from '@/lib/seo';
+import { withSeoTitle } from '@/lib/seoTitles';
 
 const partnerLogos = brands
   .filter((b) => b.logoFile)
@@ -122,6 +123,17 @@ const SERVICE_SCHEMA = {
     },
   })),
 };
+
+// The layout holds the home page's own title. Only a title and description
+// approved on the console's Search page replace it.
+export async function generateMetadata() {
+  const base = {
+    openGraph: { url: SITE_ORIGIN, siteName: 'Teracom Solutions', locale: 'en_AU', type: 'website' },
+    twitter: { card: 'summary_large_image' },
+  };
+  const changed = await withSeoTitle(base, '/');
+  return changed.title ? changed : {};
+}
 
 export default async function Home(props) {
   const searchParams = await props.searchParams;

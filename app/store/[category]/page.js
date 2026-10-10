@@ -8,6 +8,7 @@ import Breadcrumbs from '@/components/Breadcrumbs';
 import TeraPose from '@/components/TeraPose';
 import StoreCategoryArt from '@/components/StoreCategoryArt';
 import { pageMetadata } from '@/lib/seo';
+import { withSeoTitle } from '@/lib/seoTitles';
 import { getCategoryContent } from '@/lib/categoryContent';
 import { toolsForStoreCategory } from '@/lib/storeLinks';
 import { getCustomerPricing, getNewArrivalsAsync, getProductsByCategoryAsync } from '@/lib/catalogue';
@@ -27,11 +28,14 @@ export async function generateMetadata(props) {
   // Canonical matters most here: a category listing is the natural target for
   // filter/sort query strings, and without one every ?param variant is a
   // separate, competing URL in Google's index.
-  return pageMetadata({
-    title: category.seoTitle || `${category.title} | Teracom Store`,
-    description: category.description,
-    path: `/store/${category.slug}`,
-  });
+  return withSeoTitle(
+    pageMetadata({
+      title: category.seoTitle || `${category.title} | Teracom Store`,
+      description: category.description,
+      path: `/store/${category.slug}`,
+    }),
+    `/store/${category.slug}`,
+  );
 }
 
 export default async function CategoryPage(props) {

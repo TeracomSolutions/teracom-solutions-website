@@ -13,6 +13,7 @@ import CategoryProductGrid from '@/components/CategoryProductGrid';
 import CategoryIcon from '@/components/CategoryIcon';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import { pageMetadata } from '@/lib/seo';
+import { withSeoTitle } from '@/lib/seoTitles';
 import BrandProfile from '@/components/BrandProfile';
 import BrandArt from '@/components/BrandArt';
 import { findBrandProfile } from '@/lib/brandProfiles';
@@ -39,12 +40,15 @@ export async function generateMetadata(props) {
     : ['access-control', 'cctv'].includes(brand.theme)
       ? 'Supplier & Installer'
       : 'Supplier';
-  return pageMetadata({
-    title: role ? `${brand.name} ${role}, Melbourne | Teracom` : `${brand.name} | Teracom Solutions, Melbourne`,
-    description: brand.tagline,
-    path: `/brands/${brand.slug}`,
-    images: [{ url: `/brands/${brand.slug}/opengraph-image`, width: 1200, height: 630, alt: brand.name }]
-  });
+  return withSeoTitle(
+    pageMetadata({
+      title: role ? `${brand.name} ${role}, Melbourne | Teracom` : `${brand.name} | Teracom Solutions, Melbourne`,
+      description: brand.tagline,
+      path: `/brands/${brand.slug}`,
+      images: [{ url: `/brands/${brand.slug}/opengraph-image`, width: 1200, height: 630, alt: brand.name }]
+    }),
+    `/brands/${brand.slug}`,
+  );
 }
 
 export default async function BrandPage(props) {

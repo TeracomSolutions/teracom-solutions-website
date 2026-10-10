@@ -7,6 +7,10 @@ import MonitoringIcon from '@/components/MonitoringIcon';
 import StoreCategoryArt from '@/components/StoreCategoryArt';
 import { findMonitoringService, monitoringServices } from '@/lib/monitoring';
 import { absoluteUrl, BUSINESS, pageMetadata, SITE_NAME } from '@/lib/seo';
+import { withSeoTitle } from '@/lib/seoTitles';
+
+// A title approved on the console's Search page shows within five minutes.
+export const revalidate = 300;
 
 const ART = {
   'alarm-monitoring': 'intrusion',
@@ -24,11 +28,14 @@ export async function generateMetadata(props) {
   const params = await props.params;
   const service = findMonitoringService(params.slug);
   if (!service) return {};
-  return pageMetadata({
-    title: service.seoTitle,
-    description: service.description,
-    path: `/monitoring/${service.slug}`,
-  });
+  return withSeoTitle(
+    pageMetadata({
+      title: service.seoTitle,
+      description: service.description,
+      path: `/monitoring/${service.slug}`,
+    }),
+    `/monitoring/${service.slug}`,
+  );
 }
 
 export default async function MonitoringServicePage(props) {
