@@ -27,6 +27,7 @@ const TITLES = {
   'app/admin/seo/indexing/page.js': 'Search: Indexing',
   'app/admin/seo/health/page.js': 'Search: Health',
   'app/admin/seo/shopping/page.js': 'Search: Shopping',
+  'app/admin/seo/analytics/page.js': 'Search: Analytics',
   'app/admin/seo/redirects/page.js': 'Search: Redirects',
   'app/admin/suppliers/[supplierId]/page.js': 'Data Feeds: one supplier',
   'app/admin/resources/[sourceId]/page.js': 'Resources: one watched website',
