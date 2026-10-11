@@ -10,6 +10,7 @@ const TABS = [
   { href: '/admin/seo/titles', label: 'Titles' },
   { href: '/admin/seo/indexing', label: 'Indexing' },
   { href: '/admin/seo/health', label: 'Health' },
+  { href: '/admin/seo/shopping', label: 'Shopping' },
   { href: '/admin/seo/redirects', label: 'Redirects' },
 ];
 
