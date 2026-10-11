@@ -46,6 +46,7 @@ export default async function AdminSeoOverviewPage() {
             <li><strong>Indexing</strong> - whether Google has each page, and why not when it has not.</li>
             <li><strong>Health</strong> - the website&apos;s own pages checked every week for broken pages and links, missing or repeated titles and slow pages.</li>
             <li><strong>Shopping</strong> - which store products are ready to be sent to Google Shopping, and what stops the others.</li>
+            <li><strong>Analytics</strong> - how shoppers move from product to purchase, where visits come from and which pages bring orders.</li>
             <li><strong>Redirects</strong> - old addresses from the old shop that Google still shows, and where each now goes.</li>
           </ul>
         </AdminHelpIcon>
