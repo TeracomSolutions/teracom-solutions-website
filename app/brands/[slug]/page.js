@@ -7,7 +7,7 @@ import { CUSTOMER_ACCESS_TOKEN_COOKIE } from '@/lib/customerSession';
 // they see their own prices, so it is built on each visit. Visitors who are
 // not signed in get the saved copy at /g/brands/... (see middleware.js).
 export { generateMetadata, generateStaticParams } from '@/components/storePages/BrandPageView';
-export const revalidate = 300;
+export const revalidate = 3600;
 export const dynamicParams = true;
 
 export default async function BrandPage(props) {

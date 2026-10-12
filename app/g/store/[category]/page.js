@@ -5,7 +5,7 @@ import CategoryPageView from '@/components/storePages/CategoryPageView';
 // change). It never reads cookies, so Next.js keeps it and rebuilds it at
 // most every half hour.
 export { generateMetadata, generateStaticParams } from '@/components/storePages/CategoryPageView';
-export const revalidate = 1800;
+export const revalidate = 3600;
 export const dynamicParams = true;
 
 export default async function GuestCategoryPage(props) {
