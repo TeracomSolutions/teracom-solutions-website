@@ -7,7 +7,7 @@ import { isSessionError, requireAdminToken } from '@/lib/adminPage';
 import { fetchAnalytics } from '@/lib/api/adminSeoInsights';
 
 export const metadata = {
-  title: 'Search analytics|Teracom Solutions',
+  title: 'Website Data analytics|Teracom Solutions',
 };
 
 async function AdminSeoAnalyticsPage() {
@@ -27,7 +27,7 @@ async function AdminSeoAnalyticsPage() {
   return (
     <AdminShell>
       <h1 className="admin-heading">
-        Search
+        Website Data
         <AdminHelpIcon>
           <h4>What this page shows</h4>
           <p>

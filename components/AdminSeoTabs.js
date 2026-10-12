@@ -3,22 +3,23 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-// The tabs along the top of the Search page (Robert, 2026-10-10).
+// The tabs along the top of the Website Data page (Robert, 2026-10-10).
 const TABS = [
-  { href: '/admin/seo', label: 'Overview', exact: true },
-  { href: '/admin/seo/opportunities', label: 'Opportunities' },
-  { href: '/admin/seo/titles', label: 'Titles' },
-  { href: '/admin/seo/indexing', label: 'Indexing' },
-  { href: '/admin/seo/health', label: 'Health' },
-  { href: '/admin/seo/shopping', label: 'Shopping' },
-  { href: '/admin/seo/analytics', label: 'Analytics' },
-  { href: '/admin/seo/redirects', label: 'Redirects' },
+  { href: '/admin/website-data', label: 'Overview', exact: true },
+  { href: '/admin/website-data/visitors', label: 'Visitors' },
+  { href: '/admin/website-data/opportunities', label: 'Opportunities' },
+  { href: '/admin/website-data/titles', label: 'Titles' },
+  { href: '/admin/website-data/indexing', label: 'Indexing' },
+  { href: '/admin/website-data/health', label: 'Health' },
+  { href: '/admin/website-data/shopping', label: 'Shopping' },
+  { href: '/admin/website-data/analytics', label: 'Analytics' },
+  { href: '/admin/website-data/redirects', label: 'Redirects' },
 ];
 
 export default function AdminSeoTabs() {
   const pathname = usePathname();
   return (
-    <nav className="admin-tabs" aria-label="Search">
+    <nav className="admin-tabs" aria-label="Website Data">
       {TABS.map((tab) => {
         const active = tab.exact ? pathname === tab.href : pathname === tab.href || pathname.startsWith(`${tab.href}/`);
         return (

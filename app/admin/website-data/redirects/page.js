@@ -8,7 +8,7 @@ import { listRedirects, seoOverview } from '@/lib/api/adminSeo';
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
 
 export const metadata = {
-  title: 'Search redirects|Teracom Solutions',
+  title: 'Website Data redirects|Teracom Solutions',
 };
 
 export default async function AdminSeoRedirectsPage() {
@@ -27,7 +27,7 @@ export default async function AdminSeoRedirectsPage() {
   return (
     <AdminShell>
       <h1 className="admin-heading">
-        Search
+        Website Data
         <AdminHelpIcon>
           <h4>What this page is for</h4>
           <p>Google still shows people addresses from the old shop, and those pages no longer exist, so a visitor who clicks one sees &quot;not found&quot;. This page lists those old addresses (found from your Google Search Console connection) and the page on this website each one should go to. A <strong>redirect</strong> sends the visitor, and Google, from the old address to the new page.</p>

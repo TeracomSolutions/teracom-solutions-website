@@ -1,27 +1,27 @@
 import { redirect } from 'next/navigation';
 
 import AdminHelpIcon from '@/components/AdminHelpIcon';
+import AdminSeoOverview from '@/components/AdminSeoOverview';
+import AdminSeoTabs from '@/components/AdminSeoTabs';
 import AdminShell from '@/components/AdminShell';
-import AdminWebsiteData from '@/components/AdminWebsiteData';
-import { fetchAnalyticsSummary } from '@/lib/api/adminAnalytics';
+import { fetchIndexingSummary, fetchPerformance } from '@/lib/api/adminSeoInsights';
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
 
 export const metadata = {
   title: 'Website Data|Teracom Solutions',
 };
 
-export default async function AdminWebsiteDataPage({ searchParams }) {
+export default async function AdminSeoOverviewPage() {
   const token = await requireAdminToken();
-  const params = await searchParams;
-  const days = [7, 30, 90].includes(Number(params?.days)) ? Number(params.days) : 30;
 
-  let summary = null;
+  let initial = { connected: true, stats: null, status: null, counts: {}, titles: {} };
+  let indexing = null;
   let loadError = '';
   try {
-    summary = await fetchAnalyticsSummary(token, days);
+    [initial, indexing] = await Promise.all([fetchPerformance(token), fetchIndexingSummary(token)]);
   } catch (err) {
     if (isSessionError(err)) redirect('/admin/login');
-    loadError = 'Unable to load visitor data from the backend.';
+    loadError = 'Unable to load the Search figures from the backend.';
   }
 
   return (
@@ -30,23 +30,31 @@ export default async function AdminWebsiteDataPage({ searchParams }) {
         Website Data
         <AdminHelpIcon>
           <h4>What this page is for</h4>
-          <p>Who is visiting the website: how many page views and visitors, the daily trend, the most-read pages, where people arrived from, which countries and states, and what device they used. Each figure is compared with the period before it.</p>
-          <h4>Where the numbers come from</h4>
-          <p>The website itself records every public page view to our own backend on VM 101 (a small beacon on each page). A visitor is counted once per day by an anonymous code made from their address and browser with a daily salt -- nobody can be identified from it and no address is stored. Known bots and crawlers are ignored, and so are admin pages. Google Analytics keeps running alongside; this is the copy we own.</p>
-          <h4>Reading it</h4>
+          <p>How Google shows the website, and what to do to get more visitors from it. The figures come from Google Search Console (connected under Connections) and are pulled once a day; <strong>Refresh</strong> pulls them again now.</p>
+          <h4>The numbers</h4>
           <ul>
-            <li><strong>Page views</strong> - every page load. One person reading five pages is five views.</li>
-            <li><strong>Daily visitors</strong> - people, each counted once per day. Someone who comes back on another day is counted again on that day, so over a week or a month this is the number of daily visits added up, not the number of different people. The anonymous code changes every day on purpose, so nobody can be followed from one day to the next.</li>
-            <li>Example: Australia with 333 views and 120 daily visitors means 333 pages were loaded from Australia by people on 120 visitor-days; that could be 120 people once each, or fewer people coming back on several days.</li>
-            <li><strong>Where visitors came from</strong> - the site that linked to us; <em>(direct)</em> means they typed the address, used a bookmark, or came from an email or app that hides the source.</li>
-            <li><strong>Top pages</strong> - what people actually read; the Share bar is that page&apos;s slice of all views.</li>
-            <li>Days run midnight to midnight, Sydney time. Recording started the day this page went live, so the first comparison period will be short.</li>
+            <li><strong>Clicks from Google</strong> - people who clicked the site in Google&apos;s results.</li>
+            <li><strong>Times shown in Google</strong> - how often the site appeared in results, whether or not anyone clicked.</li>
+            <li><strong>Click rate</strong> - clicks as a share of the times shown.</li>
+            <li><strong>Average position</strong> - where the site appears in the results: 1 is the very top; page one is 1 to 10. Lower is better.</li>
+          </ul>
+          <p>Each is the last 28 days against the 28 before. The charts show each week since July, so you can see whether things are recovering.</p>
+          <h4>The tabs</h4>
+          <ul>
+            <li><strong>Opportunities</strong> - searches and pages worth working on, with the extra clicks each could earn.</li>
+            <li><strong>Titles</strong> - page titles and descriptions suggested to earn more clicks; a yes puts them on the website at once.</li>
+            <li><strong>Indexing</strong> - whether Google has each page, and why not when it has not.</li>
+            <li><strong>Health</strong> - the website&apos;s own pages checked every week for broken pages and links, missing or repeated titles and slow pages.</li>
+            <li><strong>Shopping</strong> - which store products are ready to be sent to Google Shopping, and what stops the others.</li>
+            <li><strong>Analytics</strong> - how shoppers move from product to purchase, where visits come from and which pages bring orders.</li>
+            <li><strong>Redirects</strong> - old addresses from the old shop that Google still shows, and where each now goes.</li>
           </ul>
         </AdminHelpIcon>
       </h1>
-      <p className="lead">Visitors, pages, sources and devices for the public website, from our own records.</p>
+      <p className="lead">How Google shows the website, and what to work on to get more visitors from it.</p>
+      <AdminSeoTabs />
 
-      {loadError ? <p className="form-error" role="alert">{loadError}</p> : <AdminWebsiteData summary={summary} days={days} />}
+      {loadError ? <p className="form-error" role="alert">{loadError}</p> : <AdminSeoOverview initial={initial} indexing={indexing} />}
     </AdminShell>
   );
 }

@@ -88,13 +88,7 @@ const AREAS = [
     icon: Radar,
     hue: '#a78bfa',
   },
-  {
-    href: '/admin/seo',
-    title: 'Search',
-    text: 'How Google shows the website: clicks and views, the searches worth working on, page titles to approve, whether Google has each page, how healthy the pages of the website itself are, and old shop addresses sent to the right page.',
-    icon: Search,
-    hue: '#34d399',
-  },
+
   {
     href: '/admin/social',
     title: 'Social',
@@ -119,7 +113,7 @@ const AREAS = [
   {
     href: '/admin/website-data',
     title: 'Website Data',
-    text: 'Visitors, page views, top pages, sources, countries and devices for the public website, from our own records.',
+    text: 'Who visits the website, from our own records, and how Google shows it: visitors and sources, the searches worth working on, page titles to approve, whether Google has each page, the health of the pages, Google Shopping, Google Analytics, and old shop addresses sent to the right page.',
     icon: ChartColumn,
     hue: '#22d3ee',
   },

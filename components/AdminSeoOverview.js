@@ -156,18 +156,18 @@ export default function AdminSeoOverview({ initial, indexing }) {
           <h2>Where to look next</h2>
           <div className="admin-stats">
             {OPPORTUNITY_TABS.map((tab) => (
-              <Link key={tab.key} href={`/admin/seo/opportunities?kind=${tab.key}`} className="admin-stat" style={{ textDecoration: 'none' }}>
+              <Link key={tab.key} href={`/admin/website-data/opportunities?kind=${tab.key}`} className="admin-stat" style={{ textDecoration: 'none' }}>
                 <span className="admin-stat-label">{tab.label}</span>
                 <strong className="admin-stat-value">{formatNumber((data.counts || {})[tab.key])}</strong>
                 <span className="admin-stat-delta">{tab.help}</span>
               </Link>
             ))}
-            <Link href="/admin/seo/titles" className="admin-stat" style={{ textDecoration: 'none' }}>
+            <Link href="/admin/website-data/titles" className="admin-stat" style={{ textDecoration: 'none' }}>
               <span className="admin-stat-label">Titles waiting for a yes</span>
               <strong className="admin-stat-value">{formatNumber((data.titles || {}).proposed)}</strong>
               <span className="admin-stat-delta">{formatNumber((data.titles || {}).active)} live</span>
             </Link>
-            <Link href="/admin/seo/indexing" className="admin-stat" style={{ textDecoration: 'none' }}>
+            <Link href="/admin/website-data/indexing" className="admin-stat" style={{ textDecoration: 'none' }}>
               <span className="admin-stat-label">Pages in Google</span>
               <strong className="admin-stat-value">{formatNumber(groups.indexed)}</strong>
               <span className="admin-stat-delta">
