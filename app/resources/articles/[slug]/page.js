@@ -11,7 +11,7 @@ import { withSeoTitle } from '@/lib/seoTitles';
 import { fitTitle } from '@/lib/seoText';
 
 // A title approved on the console's Search page shows within five minutes.
-export const revalidate = 300;
+export const revalidate = 3600;
 
 const HEADING_2 = { fontSize: '28px', margin: '40px 0 12px' };
 const HEADING_3 = { fontSize: '21px', margin: '28px 0 8px' };

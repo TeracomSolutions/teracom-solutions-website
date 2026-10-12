@@ -13,7 +13,7 @@ import { getCustomerPricing, getNewArrivalsAsync, getProductsByCategoryAsync } f
 import { forTiles } from '@/lib/catalogueMerge';
 
 // A product imported into the catalogue shows here within five minutes.
-export const revalidate = 300;
+export const revalidate = 3600;
 
 export function generateStaticParams() {
   return categories.map((c) => ({ category: c.slug }));

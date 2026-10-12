@@ -4,7 +4,7 @@ import BrandLogo from '@/components/BrandLogo';
 import { getBrands } from '@/lib/storeBrands';
 
 // A brand that arrives in a supplier's feed shows here within five minutes.
-export const revalidate = 300;
+export const revalidate = 3600;
 
 export const metadata = pageMetadata({
   title: 'Technology & Security Brands We Supply | Teracom Solutions',

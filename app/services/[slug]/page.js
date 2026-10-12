@@ -16,7 +16,7 @@ import { withSeoTitle } from '@/lib/seoTitles';
 
 export const dynamicParams = false;
 // A title approved on the console's Search page shows within five minutes.
-export const revalidate = 300;
+export const revalidate = 3600;
 
 export function generateStaticParams() {
   return services.map((service) => ({ slug: service.slug }));

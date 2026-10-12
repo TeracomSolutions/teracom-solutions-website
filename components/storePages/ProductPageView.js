@@ -42,7 +42,7 @@ import { THIN_ROBOTS, isThinProduct } from '@/lib/thinProducts';
 // admin catalogue renders on first request and is then cached. Either kind
 // refreshes within five minutes, so a data sheet or a price change published
 // in the admin shows up quickly.
-export const revalidate = 300;
+export const revalidate = 3600;
 export const dynamicParams = true;
 
 export function generateStaticParams() {

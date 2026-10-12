@@ -21,7 +21,7 @@ const THEME_FALLBACKS = { 'cctv': '/assets/brand-fallback-cctv.svg', 'access-con
 
 // A brand that arrives in a supplier's feed gets its page within five
 // minutes (the slugs below are only the hand-written ones).
-export const revalidate = 300;
+export const revalidate = 3600;
 
 export function generateStaticParams() {
   return brands.map((b) => ({ slug: b.slug }));

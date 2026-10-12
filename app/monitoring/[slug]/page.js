@@ -10,7 +10,7 @@ import { absoluteUrl, BUSINESS, pageMetadata, SITE_NAME } from '@/lib/seo';
 import { withSeoTitle } from '@/lib/seoTitles';
 
 // A title approved on the console's Search page shows within five minutes.
-export const revalidate = 300;
+export const revalidate = 3600;
 
 const ART = {
   'alarm-monitoring': 'intrusion',

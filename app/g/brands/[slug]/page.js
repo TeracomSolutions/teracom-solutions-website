@@ -5,7 +5,7 @@ import BrandPageView from '@/components/storePages/BrandPageView';
 // change). It never reads cookies, so Next.js keeps it and rebuilds it at
 // most every half hour.
 export { generateMetadata, generateStaticParams } from '@/components/storePages/BrandPageView';
-export const revalidate = 1800;
+export const revalidate = 3600;
 export const dynamicParams = true;
 
 export default async function GuestBrandPage(props) {
