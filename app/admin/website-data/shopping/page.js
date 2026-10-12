@@ -4,6 +4,8 @@ import AdminHelpIcon from '@/components/AdminHelpIcon';
 import AdminSeoTabs from '@/components/AdminSeoTabs';
 import AdminShell from '@/components/AdminShell';
 import AdminSeoShopping from '@/components/AdminSeoShopping';
+import AdminSeoMerchant from '@/components/AdminSeoMerchant';
+import { fetchMerchant } from '@/lib/api/adminSeoInsights';
 import { getAllProducts } from '@/lib/catalogue';
 import { summarise, FEED_CODES, listProducts } from '@/lib/shoppingFeed';
 import { SITE_ORIGIN } from '@/lib/seo';
@@ -17,7 +19,13 @@ export default async function AdminSeoShoppingPage() {
   const token = await requireAdminToken();
 
   let initial = { summary: { hardware: 0, ready: 0, counts: {}, codes: [] }, total: 0, products: [] };
+  let merchant = null;
   let loadError = '';
+  try {
+    merchant = await fetchMerchant(token);
+  } catch (err) {
+    merchant = null;
+  }
   try {
     const products = await getAllProducts();
     const summary = summarise(products);
@@ -68,6 +76,7 @@ export default async function AdminSeoShoppingPage() {
       <p className="lead">Check which products are ready to send to Google Shopping and fix any problems that prevent them from being sent.</p>
       <AdminSeoTabs />
 
+      {merchant ? <AdminSeoMerchant initial={merchant} /> : null}
       {loadError ? <p className="form-error" role="alert">{loadError}</p> : <AdminSeoShopping initial={initial} feedUrl={SITE_ORIGIN + '/feeds/google-shopping.xml'} />}
     </AdminShell>
   );
