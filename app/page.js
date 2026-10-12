@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import LeadSubmitted from '@/components/LeadSubmitted';
+import LeadStatusNote from '@/components/LeadStatusNote';
 import Link from 'next/link';
 import { brands } from '@/lib/brands';
 import { aiCapabilities } from '@/lib/aiCapabilities';
@@ -7,7 +8,7 @@ import HeroBanner from '@/components/HeroBanner';
 import HomeNewsTicker from '@/components/HomeNewsTicker';
 import { getHeroSlides } from '@/lib/heroSlides';
 import JsonLd from '@/components/JsonLd';
-import ContactForm from '@/components/ContactForm';
+import QueryContactForm from '@/components/QueryContactForm';
 import ProcessSteps from '@/components/ProcessSteps';
 import { AiComparison, BusinessOutcomes, OrganisationalMemory, PlatformStack, SecurityTrust } from '@/components/PlatformSections';
 import { EARLY_ACCESS_MODULES } from '@/lib/platformMessaging';
@@ -136,12 +137,6 @@ export async function generateMetadata() {
 }
 
 export default async function Home(props) {
-  const searchParams = await props.searchParams;
-  const leadStatus = searchParams?.lead;
-  const preselectedInterest = typeof searchParams?.interest === 'string' ? searchParams.interest : '';
-  // "Register interest" on an early-access module fills in the message too.
-  const earlyAccessModule = EARLY_ACCESS_MODULES.includes(searchParams?.module) ? searchParams.module : '';
-  const preselectedMessage = earlyAccessModule ? `Please include us in the early access preview of ${earlyAccessModule}.` : '';
   return (
     <main id="main-content">
       <LeadSubmitted source="home_contact_form" />
@@ -302,8 +297,7 @@ export default async function Home(props) {
             <span className="eyebrow">Contact</span>
             <h2>Let&apos;s start the conversation.</h2>
             <p>Whether you&apos;re interested in Teracom AI, technical consulting, partnerships or the Teracom Store, we&apos;d love to hear from you.</p>
-            {leadStatus === 'received' && <p className="form-note-banner" role="status">Thanks — we&apos;ve received your enquiry and will be in touch shortly.</p>}
-            {leadStatus === 'error' && <p className="form-error" role="alert">Something went wrong submitting your enquiry. Please try again, or email us directly.</p>}
+            <LeadStatusNote />
             <address className="contact-address">
               1B Yazaki Way, Carrum Downs
               <br />
@@ -315,7 +309,7 @@ export default async function Home(props) {
               <iframe src="https://maps.google.com/maps?q=1B%20Yazaki%20Way%2C%20Carrum%20Downs%20VIC%203201%2C%20Australia&t=&z=15&ie=UTF8&iwloc=&output=embed" title="Teracom Solutions location map" loading="lazy" referrerPolicy="no-referrer-when-downgrade" />
             </div>
           </div>
-          <ContactForm key={`${preselectedInterest}|${preselectedMessage}`} preselectedInterest={preselectedInterest} preselectedMessage={preselectedMessage} returnTo="/" />
+          <QueryContactForm returnTo="/" modules={EARLY_ACCESS_MODULES} />
         </div>
       </section>
     </main>
