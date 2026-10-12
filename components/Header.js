@@ -1,17 +1,14 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { cookies } from 'next/headers';
 import MobileNav from './MobileNav';
 import CartIndicator from './CartIndicator';
 import HeaderSearch from './HeaderSearch';
 import NavDropdownCloser from './NavDropdownCloser';
+import HeaderAccount from './HeaderAccount';
 import { resourcesSections } from '@/lib/resourcesSections';
 import { monitoringServices } from '@/lib/monitoring';
 import { services, serviceGroups } from '@/lib/services';
 
-import { CUSTOMER_ACCESS_TOKEN_COOKIE } from '@/lib/customerSession';
-import { getCurrentCustomer } from '@/lib/api/customerAuth';
-import { ApiError } from '@/lib/api/client';
 
 // The header is two rows rather than one.
 //
@@ -23,20 +20,7 @@ import { ApiError } from '@/lib/api/client';
 // The phone number and opening hours were briefly up here too; Robert moved
 // them to the footer on 2026-09-23, where they sit with the address and ABN.
 
-export default async function Header() {
-  const token = (await cookies()).get(CUSTOMER_ACCESS_TOKEN_COOKIE)?.value;
-  let customer = null;
-  if (token) {
-    try {
-      customer = await getCurrentCustomer(token);
-    } catch (err) {
-      // Any failure (expired token, backend unreachable, etc.) --
-      // fall back to showing "Sign In" rather than crashing the
-      // header on every single page. Do not rethrow; do not log
-      // anything special here that doesn't already exist elsewhere
-      // in this file.
-    }
-  }
+export default function Header() {
 
   return (
     <header className="site-header">
@@ -45,15 +29,7 @@ export default async function Header() {
         <div className="container header-utility-inner">
           <div className="header-utility-actions">
             <HeaderSearch />
-            {customer ? (
-              <Link href="/account" className="nav-signin-status">
-                Hi, {customer.first_name || customer.email}
-              </Link>
-            ) : (
-              <Link href="/account/login" className="nav-signin-status">
-                Sign In
-              </Link>
-            )}
+            <HeaderAccount />
             <CartIndicator />
           </div>
         </div>
