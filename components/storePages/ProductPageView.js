@@ -1,0 +1,426 @@
+import { notFound } from 'next/navigation';
+import Link from 'next/link';
+import { Headset, PackageSearch, ReceiptText, ShieldCheck, Truck } from 'lucide-react';
+
+import Breadcrumbs from '@/components/Breadcrumbs';
+import JsonLd from '@/components/JsonLd';
+import AddToCartButton from '@/components/AddToCartButton';
+import CategoryProductGrid from '@/components/CategoryProductGrid';
+import CheckoutButton from '@/components/CheckoutButton';
+import StoreCategoryArt from '@/components/StoreCategoryArt';
+import ProductViewed from '@/components/ProductViewed';
+import ProductResources from '@/components/ProductResources';
+import AskTeraNudge from '@/components/AskTeraNudge';
+import {
+  artSlugForProduct,
+  exGstCents,
+  formatMoney,
+  productPath,
+  products,
+  storeCategoryForProduct,
+} from '@/lib/products';
+import { findProductAsync, getAllProducts, getCustomerPricing } from '@/lib/catalogue';
+import { forTiles, unitPriceCents } from '@/lib/catalogueMerge';
+import {
+  availabilityText,
+  gtinOf,
+  productsForSkus,
+  sizeText,
+  warrantyText,
+  weightText,
+} from '@/lib/productDetails';
+import { absoluteUrl, BUSINESS, pageMetadata } from '@/lib/seo';
+import { withSeoTitle } from '@/lib/seoTitles';
+import { toolsForProduct } from '@/lib/toolSuggestions';
+import { getBrands } from '@/lib/storeBrands';
+import { brandForProduct } from '@/lib/storeBrandsMerge';
+import { findTool } from '@/lib/tools';
+import { productDescription, productTitle } from '@/lib/seoText';
+import { THIN_ROBOTS, isThinProduct } from '@/lib/thinProducts';
+
+// The built-in products are prerendered; a product that only exists in the
+// admin catalogue renders on first request and is then cached. Either kind
+// refreshes within five minutes, so a data sheet or a price change published
+// in the admin shows up quickly.
+export const revalidate = 300;
+export const dynamicParams = true;
+
+export function generateStaticParams() {
+  return products.map((p) => ({ slug: p.id }));
+}
+
+export async function generateMetadata(props) {
+  const params = await props.params;
+  const product = await findProductAsync(params.slug);
+  if (!product) return {};
+  // The part number earns its place in the description: searching a part
+  // number is how a trade buyer looks for a supplier.
+  const description = productDescription(product.description, product.sku);
+  const metadata = pageMetadata({
+    title: productTitle(product.name, product.sku),
+    description,
+    path: productPath(product),
+  });
+  // A page with no photo or too little text stays out of Google until it has them.
+  const withRobots = isThinProduct(product) ? { ...metadata, ...THIN_ROBOTS } : metadata;
+  // A title and description approved on the console's Search page win.
+  return withSeoTitle(withRobots, productPath(product));
+}
+
+// Every line here has to be something the business actually does today.
+// A tax-invoice promise was deliberately left out: Stripe sends a receipt,
+// not an ATO-compliant tax invoice, so claiming one would be a false
+// representation until that is built.
+// The supplier's photo, whole, in a white box where the category art goes.
+const PHOTO_FRAME = {
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  minHeight: 320,
+  padding: 24,
+  background: '#fff',
+  borderRadius: 16,
+};
+const PHOTO = { maxWidth: '100%', maxHeight: 360, objectFit: 'contain' };
+// Supplier descriptions run to pages: three lines up top, the rest below.
+const CLAMP = { display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' };
+
+// Out-of-stock products stay orderable and say when stock is expected.
+const IN_STOCK = { margin: '8px 0', fontWeight: 700, color: '#7ee2a8' };
+const ON_ORDER = { margin: '8px 0', fontWeight: 700, color: '#ffcc66' };
+
+// The supplier's description: spec tables, brochure images and long links
+// stay inside their column.
+const DESCRIPTION_CSS = `
+.product-description { overflow-wrap: anywhere; line-height: 1.6; }
+.product-description img { display: block; max-width: 100%; height: auto; margin: 12px 0; border-radius: 8px; }
+.product-description table { display: block; max-width: 100%; overflow-x: auto; border-collapse: collapse; margin: 12px 0; font-size: 14px; }
+.product-description th, .product-description td { border: 1px solid var(--line); padding: 6px 10px; text-align: left; vertical-align: top; }
+.product-description th { color: #fff; }
+.product-description a { color: var(--red2); }
+.product-description h3, .product-description h4 { margin: 18px 0 8px; }
+`;
+const ASSURANCES = [
+  { icon: ShieldCheck, text: 'Warranty support handled locally' },
+  { icon: ReceiptText, text: 'Priced in AUD, GST included, no card surcharge' },
+  { icon: Truck, text: 'Flat-rate delivery Australia-wide' },
+  { icon: Headset, text: 'Technical advice before you buy' },
+];
+
+export default async function ProductPageView(props, token) {
+  const params = await props.params;
+  const product = await findProductAsync(params.slug);
+  if (!product) notFound();
+
+  // The customer's pricing tier decides the price shown; a session the
+  // backend no longer recognises is priced as a guest.
+  const customer = await getCustomerPricing(token);
+  const isSignedIn = Boolean(customer);
+  const category = storeCategoryForProduct(product);
+  // The brand's own page, when it has one (every brand in the store does).
+  const brandPage = product.brand ? brandForProduct(await getBrands(), product.brand) : null;
+  // Help before people ask (Ask Tera phase 5): the calculators that fit.
+  const helpers = toolsForProduct(category?.slug, product.name).map(findTool).filter(Boolean);
+  const allProducts = await getAllProducts();
+  const related = allProducts
+    .filter((p) => p.id !== product.id && p.category === product.category)
+    .slice(0, 3);
+  // What the supplier's feed says beyond the price. Accessories and
+  // alternatives show only when they are live in the store too.
+  const accessories = productsForSkus(allProducts, product.accessorySkus, product.id);
+  const alternatives = productsForSkus(allProducts, product.alternativeSkus, product.id);
+  const warranty = warrantyText(product.warrantyMonths);
+  const weight = weightText(product.weightKg);
+  const size = sizeText(product.lengthCm, product.widthCm, product.heightCm);
+  const gtin = gtinOf(product.barcode);
+  const isSubscription = product.type === 'subscription';
+  const showMemberPrice = isSignedIn && !isSubscription;
+  const price = showMemberPrice ? unitPriceCents(product, customer) : product.priceCents;
+
+  // Product structured data. `availability` is asserted only for things that
+  // are always available -- subscriptions, digital downloads and services.
+  // Claiming stock we cannot verify would be a false availability
+  // representation under the ACL, and Search Console reporting a missing
+  // recommended field is much the cheaper of those two problems.
+  const alwaysAvailable = product.type !== 'hardware';
+  const priceText = (product.priceCents / 100).toFixed(2);
+  const schema = {
+    '@type': 'Product',
+    name: product.name,
+    description: product.description,
+    sku: product.sku,
+    url: absoluteUrl(productPath(product)),
+    ...(product.imageUrl ? { image: product.imageUrl } : {}),
+    ...(product.manufacturerSku ? { mpn: product.manufacturerSku } : {}),
+    ...(gtin ? { gtin } : {}),
+    ...(product.brand ? { brand: { '@type': 'Brand', name: product.brand } } : {}),
+    ...(category ? { category: category.title } : {}),
+    offers: {
+      '@type': 'Offer',
+      url: absoluteUrl(productPath(product)),
+      priceCurrency: 'AUD',
+      // Always the public RRP, never the signed-in member price: the price in
+      // structured data has to match what an anonymous visitor is shown.
+      price: priceText,
+      priceSpecification: {
+        '@type': 'PriceSpecification',
+        price: priceText,
+        priceCurrency: 'AUD',
+        valueAddedTaxIncluded: true,
+      },
+      ...(alwaysAvailable ? { availability: 'https://schema.org/InStock' } : {}),
+      seller: { '@type': 'Organization', name: BUSINESS.legalName },
+    },
+  };
+
+  return (
+    <main id="main-content">
+      <JsonLd schema={schema} />
+      <ProductViewed product={product} priceCents={price} />
+      <section className="hero hero-product hero-shallow tool-hero">
+        <div className="container hero-layout tool-hero-layout">
+          <div className="hero-copy">
+            <Breadcrumbs
+              items={[
+                { name: 'Teracom Store', href: '/store' },
+                ...(category ? [{ name: category.title, href: `/store/${category.slug}` }] : []),
+              ]}
+              current={product.name}
+            />
+            <span className="eyebrow">{category ? category.title : product.category}</span>
+            <h1>{product.name}</h1>
+            <p className="lead" style={CLAMP}>{product.description}</p>
+
+            <div className="product-buy">
+              {showMemberPrice ? (
+                <p className="price-rrp-struck">
+                  RRP <del>{formatMoney(product.priceCents)}</del>
+                </p>
+              ) : null}
+              <p className="price product-price">
+                {showMemberPrice ? <span className="price-gst-note">{customer?.tier ? `${customer.tier} price ` : 'Member price '}</span> : null}
+                {!showMemberPrice && !isSubscription ? <span className="price-gst-note">RRP </span> : null}
+                {formatMoney(price)}
+                <span className="price-gst-note"> inc. GST{isSubscription ? ' / month' : ''}</span>
+              </p>
+              {/* Trade buyers quote in ex-GST, so both figures are shown. The
+                  inclusive one stays the prominent figure, which is what the
+                  ACL requires on a page a consumer can also land on. */}
+              <p className="price-ex-gst">{formatMoney(exGstCents(price))} ex GST</p>
+
+              {product.type === 'hardware' && product.stock !== null && product.stock !== undefined ? (
+                <p style={Number(product.stock) > 0 ? IN_STOCK : ON_ORDER}>
+                  {availabilityText(product.stock, product.nextDelivery)}
+                </p>
+              ) : null}
+
+              {!isSignedIn && !isSubscription ? (
+                <p className="form-note">
+                  <Link href="/account/signup">Create a free account</Link> for additional member discounts.
+                </p>
+              ) : null}
+
+              <div className="product-buy-actions">
+                {isSubscription ? (
+                  <CheckoutButton productId={product.id} label="Subscribe" />
+                ) : (
+                  <AddToCartButton productId={product.id} label="Add to Cart" />
+                )}
+                <Link href="/contact" className="btn btn-secondary">
+                  Ask about this product
+                </Link>
+              </div>
+
+              {product.type === 'hardware' ? (
+                <p className="form-note product-stock-note">
+                  <PackageSearch size={16} strokeWidth={1.8} aria-hidden="true" focusable="false" />{' '}
+                  Stock moves quickly &mdash; <Link href="/contact">check current availability</Link> before you book
+                  the job.
+                </p>
+              ) : null}
+            </div>
+          </div>
+          {product.imageUrl ? (
+            <div style={PHOTO_FRAME}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={product.imageUrl} alt={product.name} style={PHOTO} />
+            </div>
+          ) : (
+            <StoreCategoryArt slug={artSlugForProduct(product)} />
+          )}
+        </div>
+      </section>
+
+      <section className="section section-spacious">
+        <div className="container product-detail-grid">
+          {product.features && product.features.length > 0 ? (
+            <div>
+              <h2>What you get</h2>
+              <ul className="tick-list">
+                {product.features.map((feature) => (
+                  <li key={feature}>{feature}</li>
+                ))}
+              </ul>
+            </div>
+          ) : (
+            <div style={{ minWidth: 0 }}>
+              <h2>About this product</h2>
+              {product.descriptionHtml ? (
+                <>
+                  <style>{DESCRIPTION_CSS}</style>
+                  {/* Cleaned by the backend to headings, paragraphs, lists, tables, links and images only
+                      (services/description_cleaner.py), with the supplier's own sales content removed. */}
+                  <div className="product-description" dangerouslySetInnerHTML={{ __html: product.descriptionHtml }} />
+                </>
+              ) : (
+                <div style={{ whiteSpace: 'pre-line', overflowWrap: 'anywhere' }}>{product.description}</div>
+              )}
+            </div>
+          )}
+          <div>
+            <h2>Product details</h2>
+            <dl className="product-spec-list">
+              <div>
+                <dt>Part number</dt>
+                <dd>{product.sku}</dd>
+              </div>
+              {product.manufacturerSku ? (
+                <div>
+                  <dt>Manufacturer part number</dt>
+                  <dd>{product.manufacturerSku}</dd>
+                </div>
+              ) : null}
+              {product.brand ? (
+                <div>
+                  <dt>Brand</dt>
+                  <dd>{brandPage ? <Link href={`/brands/${brandPage.slug}`}>{product.brand}</Link> : product.brand}</dd>
+                </div>
+              ) : null}
+              <div>
+                <dt>Category</dt>
+                <dd>
+                  {category ? <Link href={`/store/${category.slug}`}>{category.title}</Link> : product.category}
+                </dd>
+              </div>
+              <div>
+                <dt>Price</dt>
+                <dd>
+                  {formatMoney(product.priceCents)} inc. GST ({formatMoney(exGstCents(product.priceCents))} ex GST)
+                </dd>
+              </div>
+              {product.type === 'hardware' ? (
+                <div>
+                  <dt>Availability</dt>
+                  <dd>{availabilityText(product.stock, product.nextDelivery)}</dd>
+                </div>
+              ) : null}
+              <div>
+                <dt>Warranty</dt>
+                <dd>
+                  {warranty ? `${warranty} manufacturer's warranty. ` : null}
+                  <Link href="/warranty">Warranty &amp; returns</Link>
+                </dd>
+              </div>
+              {weight ? (
+                <div>
+                  <dt>Shipping weight</dt>
+                  <dd>{weight}</dd>
+                </div>
+              ) : null}
+              {size ? (
+                <div>
+                  <dt>Packed size</dt>
+                  <dd>{size}</dd>
+                </div>
+              ) : null}
+              {gtin ? (
+                <div>
+                  <dt>Barcode</dt>
+                  <dd>{gtin}</dd>
+                </div>
+              ) : null}
+            </dl>
+            <div className="tool-suggestions">
+              {helpers.length ? (
+                <>
+                  <h3>Plan it with a free calculator</h3>
+                  <ul>
+                    {helpers.map((tool) => (
+                      <li key={tool.slug}><Link href={`/tools/${tool.slug}`}>{tool.title}</Link></li>
+                    ))}
+                  </ul>
+                </>
+              ) : null}
+              <p>
+                Questions about this product?{' '}
+                <AskTeraNudge question={`Can you help me with the ${product.name}?`} label="Ask Tera" />, our AI support assistant.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <ProductResources sku={product.sku} />
+
+      {accessories.length > 0 ? (
+        <section className="section section-spacious">
+          <div className="container">
+            <div className="section-heading">
+              <span className="eyebrow">Optional accessories</span>
+              <h2>Made to go with it.</h2>
+            </div>
+            <CategoryProductGrid products={forTiles(accessories)} isSignedIn={isSignedIn} customer={customer} />
+          </div>
+        </section>
+      ) : null}
+
+      {alternatives.length > 0 ? (
+        <section className="section section-spacious">
+          <div className="container">
+            <div className="section-heading">
+              <span className="eyebrow">Alternatives</span>
+              <h2>Other models that do the same job.</h2>
+            </div>
+            <CategoryProductGrid products={forTiles(alternatives)} isSignedIn={isSignedIn} customer={customer} />
+          </div>
+        </section>
+      ) : null}
+
+      <section className="section section-spacious alt">
+        <div className="container">
+          <ul className="product-assurances">
+            {ASSURANCES.map(({ icon: Icon, text }) => (
+              <li key={text}>
+                <span className="tool-card-icon">
+                  <Icon size={20} strokeWidth={1.8} aria-hidden="true" focusable="false" />
+                </span>
+                {text}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      {related.length > 0 ? (
+        <section className="section section-spacious">
+          <div className="container">
+            <div className="section-heading">
+              <span className="eyebrow">More from this range</span>
+              <h2>Often specified alongside it.</h2>
+            </div>
+            <div className="feature-grid">
+              {related.map((r) => (
+                <Link href={productPath(r)} key={r.id}>
+                  <article>
+                    <h3>{r.name}</h3>
+                    <p style={CLAMP}>{r.description}</p>
+                  </article>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      ) : null}
+    </main>
+  );
+}

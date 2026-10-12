@@ -11,6 +11,8 @@ import {
   signOutReason,
 } from './lib/adminIdle.js';
 import { TIMEOUT_MS, createRedirectCache, isConsolePath, lookup } from './lib/seoRedirects.js';
+import { CUSTOMER_ACCESS_TOKEN_COOKIE } from './lib/customerSession.js';
+import { guestPathStripped, guestRewritePath } from './lib/guestPages.js';
 
 // Keeps a staff console session alive while it is being used. On any
 // console page or console API call, and on Ask Tera's calls (Tera answers
@@ -66,7 +68,13 @@ export async function middleware(req) {
   const { pathname } = req.nextUrl;
   if (!isConsolePath(pathname)) {
     const target = lookup(await redirects(), pathname);
-    return target ? NextResponse.redirect(new URL(target, req.url), 308) : NextResponse.next();
+    if (target) return NextResponse.redirect(new URL(target, req.url), 308);
+    // The saved-copy addresses are internal: send anyone who reaches one to the normal address.
+    const direct = guestPathStripped(pathname);
+    if (direct) return NextResponse.redirect(new URL(direct, req.url), 308);
+    // Visitors without a sign-in cookie get the saved copy of product, category and brand pages.
+    const guest = req.cookies.get(CUSTOMER_ACCESS_TOKEN_COOKIE) ? null : guestRewritePath(pathname);
+    return guest ? NextResponse.rewrite(new URL(guest, req.url)) : NextResponse.next();
   }
   if (SKIP.some((re) => re.test(pathname))) return NextResponse.next();
 
