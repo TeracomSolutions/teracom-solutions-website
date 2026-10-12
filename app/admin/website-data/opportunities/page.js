@@ -8,7 +8,7 @@ import { fetchOpportunities, fetchPerformance } from '@/lib/api/adminSeoInsights
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
 
 export const metadata = {
-  title: 'Search opportunities|Teracom Solutions',
+  title: 'Website Data opportunities|Teracom Solutions',
 };
 
 const KINDS = ['striking', 'ctr', 'gaps', 'rising', 'falling'];
@@ -33,7 +33,7 @@ export default async function AdminSeoOpportunitiesPage({ searchParams }) {
   return (
     <AdminShell>
       <h1 className="admin-heading">
-        Search
+        Website Data
         <AdminHelpIcon>
           <h4>What this page is for</h4>
           <p>Where the site can earn more visitors from Google, worked out from the searches Google reports for the last 90 days. Each list is the biggest first, with the extra clicks a month it could earn.</p>

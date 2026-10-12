@@ -150,7 +150,7 @@ export default function AdminWebsiteData({ summary, days }) {
       <div className="admin-refresh">
         <span className="admin-muted">Last</span>
         {RANGES.map((n) => (
-          <Link key={n} href={`/admin/website-data?days=${n}`} className={`admin-tab${n === days ? ' active' : ''}`} style={{ padding: '6px 12px' }}>
+          <Link key={n} href={`/admin/website-data/visitors?days=${n}`} className={`admin-tab${n === days ? ' active' : ''}`} style={{ padding: '6px 12px' }}>
             {n} days
           </Link>
         ))}

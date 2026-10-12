@@ -14,10 +14,14 @@ const nextConfig = {
   poweredByHeader: false,
   // The AI pages used to live at /securityos-ai. Anyone arriving at the old
   // address, and Google, is sent to the new one with a permanent redirect.
+  // The console's Search area was merged into Website Data and its old
+  // addresses are sent to the new ones.
   async redirects() {
     return [
       { source: '/securityos-ai', destination: '/teracom-ai', permanent: true },
       { source: '/securityos-ai/:path*', destination: '/teracom-ai/:path*', permanent: true },
+      { source: '/admin/seo', destination: '/admin/website-data', permanent: true },
+      { source: '/admin/seo/:path*', destination: '/admin/website-data/:path*', permanent: true },
     ];
   },
   async headers() {

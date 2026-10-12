@@ -10,7 +10,7 @@ import { SITE_ORIGIN } from '@/lib/seo';
 import { requireAdminToken } from '@/lib/adminPage';
 
 export const metadata = {
-  title: 'Search shopping|Teracom Solutions',
+  title: 'Website Data shopping|Teracom Solutions',
 };
 
 export default async function AdminSeoShoppingPage() {
@@ -46,7 +46,7 @@ export default async function AdminSeoShoppingPage() {
   return (
     <AdminShell>
       <h1 className="admin-heading">
-        Search
+        Website Data
         <AdminHelpIcon>
           <h4>What this page is for</h4>
           <p>The store&apos;s products can be sent to Google Merchant Center as a feed so they can appear in free Google Shopping listings. This page shows which products are ready and which are not.</p>

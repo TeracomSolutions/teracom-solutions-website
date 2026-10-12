@@ -8,7 +8,7 @@ import { fetchTitles } from '@/lib/api/adminSeoInsights';
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
 
 export const metadata = {
-  title: 'Search titles|Teracom Solutions',
+  title: 'Website Data titles|Teracom Solutions',
 };
 
 export default async function AdminSeoTitlesPage() {
@@ -26,7 +26,7 @@ export default async function AdminSeoTitlesPage() {
   return (
     <AdminShell>
       <h1 className="admin-heading">
-        Search
+        Website Data
         <AdminHelpIcon>
           <h4>What this page is for</h4>
           <p>The title and description of a page are what Google shows in its results, so wording that matches what people searched earns more clicks. Here you approve, change or set aside the wording suggested for a page. Once approved, the website uses it in place of the one the page was built with, within about five minutes.</p>

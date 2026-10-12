@@ -8,7 +8,7 @@ import { fetchHealthPages, fetchHealthSummary } from '@/lib/api/adminSeoInsights
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
 
 export const metadata = {
-  title: 'Search health|Teracom Solutions',
+  title: 'Website Data health|Teracom Solutions',
 };
 
 export default async function AdminSeoHealthPage() {
@@ -27,7 +27,7 @@ export default async function AdminSeoHealthPage() {
   return (
     <AdminShell>
       <h1 className="admin-heading">
-        Search
+        Website Data
         <AdminHelpIcon>
           <h4>What this page is for</h4>
           <p>Once a week the website checks every page of itself the way Google does, and lists what is wrong: pages that do not load, links that lead nowhere, missing or repeated titles and descriptions, pictures with no description, slow pages and more. It needs nothing from Google. <strong>Check now</strong> starts a check straight away; it takes about ten minutes.</p>

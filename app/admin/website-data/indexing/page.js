@@ -8,7 +8,7 @@ import { fetchIndexingPages, fetchIndexingSummary } from '@/lib/api/adminSeoInsi
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
 
 export const metadata = {
-  title: 'Search indexing|Teracom Solutions',
+  title: 'Website Data indexing|Teracom Solutions',
 };
 
 export default async function AdminSeoIndexingPage() {
@@ -27,7 +27,7 @@ export default async function AdminSeoIndexingPage() {
   return (
     <AdminShell>
       <h1 className="admin-heading">
-        Search
+        Website Data
         <AdminHelpIcon>
           <h4>What this page is for</h4>
           <p>A page that Google has not added to its index can never be found in a search. This lists every page of the website with Google&apos;s own verdict on it, a few thousand a day (Google allows 2,000 checks a day), so the whole site is covered over a few days and then re-checked every week.</p>

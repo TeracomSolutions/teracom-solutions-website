@@ -228,7 +228,7 @@ export default function AdminSeoHealth({ initial }) {
       ) : null}
 
       <p className="admin-muted">
-        For wording problems, the suggestions wait on the <Link href="/admin/seo/titles">Titles</Link> tab.
+        For wording problems, the suggestions wait on the <Link href="/admin/website-data/titles">Titles</Link> tab.
       </p>
     </div>
   );
