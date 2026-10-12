@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import LeadSubmitted from '@/components/LeadSubmitted';
-import ContactForm from '@/components/ContactForm';
+import LeadStatusNote from '@/components/LeadStatusNote';
+import QueryContactForm from '@/components/QueryContactForm';
 import ProcessSteps from '@/components/ProcessSteps';
 import { MailCheck, MessagesSquare, Signpost, Star } from 'lucide-react';
 import JsonLd from '@/components/JsonLd';
@@ -19,9 +20,6 @@ const NEXT_STEPS = [
 ];
 
 export default async function ContactPage(props) {
-  const searchParams = await props.searchParams;
-  const leadStatus = searchParams?.lead;
-  const preselectedInterest = typeof searchParams?.interest === 'string' ? searchParams.interest : '';
 
   return (
     <main id="main-content"><LeadSubmitted source="contact_form" />
@@ -55,12 +53,7 @@ export default async function ContactPage(props) {
       <section id="contact" className="section contact-section">
         <div className="container contact-card contact-card-stretch">
           <div>
-            {leadStatus === 'received' && (
-              <p className="form-note-banner" role="status">Thanks — we&apos;ve received your enquiry and will be in touch shortly.</p>
-            )}
-            {leadStatus === 'error' && (
-              <p className="form-error" role="alert">Something went wrong submitting your enquiry. Please try again, or email us directly.</p>
-            )}
+            <LeadStatusNote />
 
             <Image
               className="contact-logo"
@@ -83,16 +76,16 @@ export default async function ContactPage(props) {
             </p>
 
             <div className="contact-map">
-              <iframe 
-                src="https://maps.google.com/maps?q=1B%20Yazaki%20Way%2C%20Carrum%20Downs%20VIC%203201%2C%20Australia&t=&z=15&ie=UTF8&iwloc=&output=embed" 
-                title="Teracom Solutions location map" 
-                loading="lazy" 
+              <iframe
+                src="https://maps.google.com/maps?q=1B%20Yazaki%20Way%2C%20Carrum%20Downs%20VIC%203201%2C%20Australia&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                title="Teracom Solutions location map"
+                loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
               />
             </div>
           </div>
 
-          <ContactForm preselectedInterest={preselectedInterest} returnTo="/contact" />
+          <QueryContactForm returnTo="/contact" />
         </div>
       </section>
 
