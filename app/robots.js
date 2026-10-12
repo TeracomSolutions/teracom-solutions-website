@@ -17,6 +17,7 @@ import { absoluteUrl, SITE_ORIGIN } from '@/lib/seo';
 // omission is invisible to the next person otherwise.
 
 const disallow = [
+  '/g/',         // saved copies of store pages: internal addresses, never crawled
   '/api/',       // route handlers -- never useful in an index
   '/admin/',     // staff catalogue administration
   '/account/',   // authenticated customer area
