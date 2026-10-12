@@ -1,12 +1,24 @@
-import Script from 'next/script';
-import { GA_MEASUREMENT_ID } from '@/lib/analytics';
+'use client';
 
-// Loads gtag.js after the page is interactive, so it never delays rendering.
-// GA4's enhanced measurement records client-side route changes from browser
-// history events, so App Router navigations count as page views without any
-// extra wiring here.
+import Script from 'next/script';
+import { useEffect } from 'react';
+import { usePathname } from 'next/navigation';
+import { GA_MEASUREMENT_ID } from '@/lib/analytics';
+import { isAdminPath } from '@/lib/adminIndexing';
+
+// Staff pages are not counted (Robert, 2026-10-12)
 export default function GoogleAnalytics() {
-  if (!GA_MEASUREMENT_ID) return null;
+  const pathname = usePathname();
+  const admin = isAdminPath(pathname || '');
+
+  useEffect(() => {
+    if (GA_MEASUREMENT_ID) {
+      window['ga-disable-' + GA_MEASUREMENT_ID] = admin;
+    }
+  }, [admin]);
+
+  if (!GA_MEASUREMENT_ID || admin) return null;
+
   return (
     <>
       <Script src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`} strategy="afterInteractive" />
