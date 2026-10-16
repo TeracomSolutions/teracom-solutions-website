@@ -16,7 +16,7 @@ export async function GET() {
       return NextResponse.json({ signedIn: true, firstName: customer?.first_name || '' });
     }
     await staffMe(asker.token);
-    return NextResponse.json({ signedIn: true, firstName: '' });
+    return NextResponse.json({ signedIn: true, firstName: "", staff: true });
   } catch {
     return NextResponse.json({ signedIn: false });
   }
