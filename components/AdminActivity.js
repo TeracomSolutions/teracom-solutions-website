@@ -3,11 +3,15 @@
 import { Fragment, useState } from 'react';
 import { formatDateTime, humanise } from '@/lib/adminFormat';
 import AdminSystemEvents from '@/components/AdminSystemEvents';
+import AdminPager from '@/components/AdminPager';
+import { DEFAULT_PAGE_SIZE } from '@/lib/pageRange';
 
 export default function AdminActivity({ initial }) {
   const [tab, setTab] = useState('activity');
   const [rows, setRows] = useState(initial.rows || []);
-  const [nextBefore, setNextBefore] = useState(initial.next_before || null);
+  const [total, setTotal] = useState(initial.total || 0);
+  const [offset, setOffset] = useState(0);
+  const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const [q, setQ] = useState('');
   const [eventType, setEventType] = useState('');
   const [busy, setBusy] = useState(false);
@@ -19,25 +23,22 @@ export default function AdminActivity({ initial }) {
   const [log, setLog] = useState(null);
   const [logBusy, setLogBusy] = useState(false);
 
-  async function load(reset = false, before = null, query = q, type = eventType) {
+  async function load(nextOffset = 0, size = pageSize, query = q, type = eventType) {
     setBusy(true);
     setError('');
     try {
-      const params = new URLSearchParams({ limit: '50' });
+      const params = new URLSearchParams({ limit: String(size), offset: String(nextOffset) });
       if (query) params.set('q', query);
       if (type) params.set('event_type', type);
-      if (before) params.set('before', before);
 
       const response = await fetch(`/api/admin/activity?${params.toString()}`);
       const result = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(result.error || 'Unable to load the activity.');
 
-      if (reset) {
-        setRows(result.rows);
-      } else {
-        setRows((current) => [...current, ...result.rows]);
-      }
-      setNextBefore(result.next_before);
+      setRows(result.rows || []);
+      setTotal(result.total || 0);
+      setOffset(nextOffset);
+      setOpen('');
     } catch (err) {
       setError(err.message);
     } finally {
@@ -62,19 +63,18 @@ export default function AdminActivity({ initial }) {
 
   function handleSearch(event) {
     event.preventDefault();
-    load(true);
+    load(0);
   }
 
   function handleReset() {
     setQ('');
     setEventType('');
-    load(true, null, '', '');
+    load(0, pageSize, '', '');
   }
 
-  function handleLoadMore() {
-    if (nextBefore) {
-      load(false, nextBefore);
-    }
+  function changePageSize(size) {
+    setPageSize(size);
+    load(0, size);
   }
 
 
@@ -144,6 +144,7 @@ export default function AdminActivity({ initial }) {
           </form>
 
           {error ? <p className="form-error" role="alert">{error}</p> : null}
+          <AdminPager total={total} offset={offset} pageSize={pageSize} busy={busy} onPage={(next) => load(next)} onSize={changePageSize} />
 
           <div className="admin-table-wrap">
             <table className="admin-table">
@@ -192,17 +193,7 @@ export default function AdminActivity({ initial }) {
             </table>
           </div>
 
-          {nextBefore && (
-            <div className="admin-actions">
-              <button
-                type="button"
-                className="btn btn-secondary btn-sm"
-                onClick={handleLoadMore} disabled={busy}
-              >
-                Show older
-              </button>
-            </div>
-          )}
+          <AdminPager total={total} offset={offset} pageSize={pageSize} busy={busy} onPage={(next) => load(next)} onSize={changePageSize} />
         </div>
       ) : tab === 'system' ? (
         <AdminSystemEvents />
