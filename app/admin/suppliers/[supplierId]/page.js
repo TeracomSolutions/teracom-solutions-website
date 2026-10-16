@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation';
 
 import AdminBrandRule from '@/components/AdminBrandRule';
 import AdminCategoryMapping from '@/components/AdminCategoryMapping';
+import AdminColumnMatch from '@/components/AdminColumnMatch';
 import AdminHelpIcon from '@/components/AdminHelpIcon';
 import AdminImportUploadButton from '@/components/AdminImportUploadButton';
 import AdminRemoveUploadButton from "@/components/AdminRemoveUploadButton";
@@ -77,6 +78,8 @@ export default async function AdminSupplierPage({ params }) {
           <p>Each of the supplier&apos;s categories is filed under one of the store&apos;s categories (CCTV, Networking, NAS &amp; Storage and so on), which is where shoppers find its products. A guess is made from the category&apos;s name; choose a store category to confirm or change it, and its products move straight away and on every later import. <em>Not in a store category</em> keeps them off the category pages.</p>
           <h4>What the import reads</h4>
           <p>Column names are matched loosely: SKU / item code / stock code / part number, name / product / short description, RRP / price / retail, cost / trade / dealer / DBP, stock / qty / SOH / AT, category / category name, subcategory, brand / manufacturer / vendor, image / photo. Rows without a SKU, a name or a price are skipped and counted. Re-importing the same SKUs updates them. Sizes given in millimetres (as Leader&apos;s are) are converted to centimetres. New products arrive offline: put them on the website from Catalog with <em>Go live</em>.</p>
+          <h4>Match columns</h4>
+          <p>Press <em>Match columns</em> on a file in the upload history to say which column holds each field: tick the fields to use, untick the ones to ignore (for example the photo address), and choose the column for each. The choices are kept for this supplier and apply to every later upload and automatic feed. The part number and the name are always used.</p>
         </AdminHelpIcon>
       </h1>
       <AdminStoreTabs />
@@ -156,6 +159,7 @@ export default async function AdminSupplierPage({ params }) {
                         hasRule={hasRule}
                         supplierName={supplier.name}
                       />
+                      <AdminColumnMatch uploadId={upload.id} supplierId={supplierId} />
                       <AdminRemoveUploadButton uploadId={upload.id} productsAdded={upload.products_added || 0} />
                     </td>
                   </tr>
