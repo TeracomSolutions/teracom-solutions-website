@@ -25,6 +25,7 @@ export default async function AdminActivityPage() {
     initial = {
       rows: activity.rows || [],
       next_before: activity.next_before || null,
+      total: activity.total || 0,
       types: types.types || [],
       logs: logs.logs || []
     };

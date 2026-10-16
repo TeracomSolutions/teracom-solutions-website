@@ -2,10 +2,14 @@
 
 import { Fragment, useEffect, useState } from 'react';
 import { formatDateTime } from '@/lib/adminFormat';
+import AdminPager from '@/components/AdminPager';
+import { DEFAULT_PAGE_SIZE } from '@/lib/pageRange';
 
 export default function AdminSystemEvents() {
   const [rows, setRows] = useState([]);
-  const [nextBefore, setNextBefore] = useState(null);
+  const [total, setTotal] = useState(0);
+  const [offset, setOffset] = useState(0);
+  const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const [kinds, setKinds] = useState([]);
   const [q, setQ] = useState('');
   const [kind, setKind] = useState('');
@@ -14,32 +18,27 @@ export default function AdminSystemEvents() {
   const [open, setOpen] = useState(null);
   const [loaded, setLoaded] = useState(false);
 
-  async function load(reset, before, query = q, type = kind) {
+  async function load(nextOffset = 0, size = pageSize, query = q, type = kind) {
     setBusy(true);
     setError(null);
 
     const params = new URLSearchParams({
-      limit: 50,
+      limit: String(size),
+      offset: String(nextOffset),
       q: query,
       kind: type,
     });
-
-    if (before) {
-      params.append('before', before);
-    }
 
     try {
       const res = await fetch(`/api/admin/activity/system?${params}`);
       const result = await res.json();
 
       if (res.ok) {
-        if (reset) {
-          setRows(result.rows);
-        } else {
-          setRows(prev => [...prev, ...result.rows]);
-        }
-        setNextBefore(result.next_before);
+        setRows(result.rows);
+        setTotal(result.total || 0);
+        setOffset(nextOffset);
         setKinds(result.kinds);
+        setOpen(null);
       } else {
         setError(result.error || 'Unable to load the system events.');
       }
@@ -52,27 +51,28 @@ export default function AdminSystemEvents() {
   }
 
   useEffect(() => {
-    load(true);
+    load(0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   function handleSearch(e) {
     e.preventDefault();
-    load(true);
+    load(0);
   }
 
   function handleReset() {
     setQ('');
     setKind('');
-    load(true, null, '', '');
+    load(0, pageSize, '', '');
   }
 
   function toggleDetails(id) {
     setOpen(open === id ? null : id);
   }
 
-  function handleShowOlder() {
-    load(false, nextBefore);
+  function changePageSize(size) {
+    setPageSize(size);
+    load(0, size);
   }
 
   return (
@@ -116,6 +116,8 @@ export default function AdminSystemEvents() {
           {error}
         </p>
       )}
+
+      <AdminPager total={total} offset={offset} pageSize={pageSize} busy={busy} onPage={(next) => load(next)} onSize={changePageSize} />
 
       <table className="admin-table">
         <thead>
@@ -164,13 +166,7 @@ export default function AdminSystemEvents() {
         </tbody>
       </table>
 
-      {nextBefore && (
-        <div className="admin-actions">
-          <button onClick={handleShowOlder} className="btn btn-secondary btn-sm" disabled={busy}>
-            Show older
-          </button>
-        </div>
-      )}
+      <AdminPager total={total} offset={offset} pageSize={pageSize} busy={busy} onPage={(next) => load(next)} onSize={changePageSize} />
     </>
   );
 }

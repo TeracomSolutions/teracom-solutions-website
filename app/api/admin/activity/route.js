@@ -18,6 +18,16 @@ export const GET = withAdminSession(async ({ req, token }) => {
     }
   }
 
+  // offset = how many rows to skip, for the numbered pages (0 to 1,000,000)
+  let offset = 0
+  const offsetParam = params.get('offset')
+  if (offsetParam) {
+    const parsedOffset = parseInt(offsetParam, 10)
+    if (!isNaN(parsedOffset) && parsedOffset >= 0 && parsedOffset <= 1000000) {
+      offset = parsedOffset
+    }
+  }
+
   // before = the text of 'before' cut to 40 characters (empty text when missing)
   let before = ''
   const beforeParam = params.get('before')
@@ -53,5 +63,5 @@ export const GET = withAdminSession(async ({ req, token }) => {
     q = qParam.trim().substring(0, 100)
   }
 
-  return NextResponse.json(await fetchActivity(token, { limit, before, event_type, q }))
+  return NextResponse.json(await fetchActivity(token, { limit, offset, before, event_type, q }))
 })
