@@ -103,7 +103,7 @@ const DESCRIPTION_CSS = `
 const ASSURANCES = [
   { icon: ShieldCheck, text: 'Warranty support handled locally' },
   { icon: ReceiptText, text: 'Priced in AUD, GST included, no card surcharge' },
-  { icon: Truck, text: 'Flat-rate delivery Australia-wide' },
+  { icon: Truck, text: 'Delivery priced to your postcode at checkout' },
   { icon: Headset, text: 'Technical advice before you buy' },
 ];
 

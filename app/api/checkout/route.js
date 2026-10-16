@@ -70,7 +70,7 @@ export async function POST(req) {
     return NextResponse.json({ error: 'Invalid checkout request' }, { status: 400 });
   }
 
-  const product = await findProductAsync(parsed.data.productId);
+  const product = await findProductAsync(parsed.data.productId, { fresh: true });
   if (!product) {
     return NextResponse.json({ error: 'Product not found' }, { status: 404 });
   }

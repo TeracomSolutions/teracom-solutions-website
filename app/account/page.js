@@ -9,7 +9,7 @@ import { BadgePercent, CircleUserRound, ReceiptText, ShoppingCart } from 'lucide
 
 export default async function CustomerAccountPage() {
   const token = (await cookies()).get(CUSTOMER_ACCESS_TOKEN_COOKIE)?.value;
-  
+
   if (!token) {
     redirect('/account/login');
   }
@@ -37,12 +37,12 @@ export default async function CustomerAccountPage() {
         { icon: ShoppingCart, text: 'Your cart is kept on this device' },
       ]}
     >
-      
+
           {customer ? (
             <>
               <p className="lead">Welcome, {customer.email}!</p>
-              <p>Your account was created on {new Date(customer.created_at).toLocaleDateString()}.</p>
-              
+              <p>Your account was created on {new Date(customer.created_at).toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' })}.</p>
+
               <form action="/api/customer/logout" method="POST" style={{ marginTop: '24px' }}>
                 <button type="submit" className="btn btn-secondary">
                   Sign out

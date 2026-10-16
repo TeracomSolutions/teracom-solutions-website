@@ -77,7 +77,7 @@ export async function POST(req) {
 
   // Every line is priced from the merged catalogue on the server, never from
   // anything the browser sent.
-  const { products } = await getCatalogue();
+  const { products } = await getCatalogue({ fresh: true });
   const lines = parsed.data.items.map((item) => ({
     item,
     product: products.find((p) => p.id === item.productId) || null,
