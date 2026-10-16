@@ -11,6 +11,7 @@ import { isAreaActive } from '@/lib/adminNavMatch';
 export const ADMIN_AREAS = [
   { href: '/admin', label: 'Overview', exact: true },
   { href: '/admin/account', label: 'Account' },
+  { href: '/admin/activity', label: 'Activity' },
   { href: '/admin/ai-connections', label: 'AI Connections' },
   { href: '/admin/assistant', label: 'Assistant' },
   { href: '/admin/connections', label: 'Connections' },
