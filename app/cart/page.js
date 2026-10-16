@@ -7,7 +7,6 @@ import { cleanPostcode } from '@/lib/freightParcels';
 
 export default async function CartPage() {
   const token = (await cookies()).get(CUSTOMER_ACCESS_TOKEN_COOKIE)?.value;
-  const isMember = Boolean(token);
   const customer = await getCustomerPricing(token);
   // The delivery postcode on the account, as a starting point for the
   // delivery price. Any failure just leaves the box empty.
@@ -20,5 +19,5 @@ export default async function CartPage() {
       savedPostcode = '';
     }
   }
-  return <CartView isMember={isMember} customer={customer} savedPostcode={savedPostcode} />;
+  return <CartView isMember={Boolean(customer)} customer={customer} savedPostcode={savedPostcode} />;
 }

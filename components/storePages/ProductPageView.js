@@ -176,7 +176,7 @@ export default async function ProductPageView(props, token) {
   return (
     <main id="main-content">
       <JsonLd schema={schema} />
-      <ProductViewed product={product} priceCents={price} />
+      <ProductViewed product={{ sku: product.sku, name: product.name, category: product.category, type: product.type }} priceCents={price} />
       <section className="hero hero-product hero-shallow tool-hero">
         <div className="container hero-layout tool-hero-layout">
           <div className="hero-copy">
@@ -369,7 +369,7 @@ export default async function ProductPageView(props, token) {
               <span className="eyebrow">Optional accessories</span>
               <h2>Made to go with it.</h2>
             </div>
-            <CategoryProductGrid products={forTiles(accessories)} isSignedIn={isSignedIn} customer={customer} />
+            <CategoryProductGrid products={forTiles(accessories, customer)} isSignedIn={isSignedIn} customer={customer} />
           </div>
         </section>
       ) : null}
@@ -381,7 +381,7 @@ export default async function ProductPageView(props, token) {
               <span className="eyebrow">Alternatives</span>
               <h2>Other models that do the same job.</h2>
             </div>
-            <CategoryProductGrid products={forTiles(alternatives)} isSignedIn={isSignedIn} customer={customer} />
+            <CategoryProductGrid products={forTiles(alternatives, customer)} isSignedIn={isSignedIn} customer={customer} />
           </div>
         </section>
       ) : null}

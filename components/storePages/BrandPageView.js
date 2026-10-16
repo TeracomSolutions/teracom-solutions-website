@@ -158,7 +158,7 @@ export default async function BrandPageView(props, token) {
               <span className="eyebrow">Teracom Store</span>
               <h2>{brand.name} in the store.</h2>
             </div>
-            <CategoryProductGrid products={forTiles(storeProducts)} isSignedIn={Boolean(token)} customer={customer} />
+            <CategoryProductGrid products={forTiles(storeProducts, customer)} isSignedIn={Boolean(customer)} customer={customer} />
           </div>
         </section>
       )}

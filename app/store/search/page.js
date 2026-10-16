@@ -116,8 +116,8 @@ export default async function StoreSearchPage(props) {
               ) : null}
               {result.items.length > 0 ? (
                 <div style={TILE_GRID}>
-                  {forTiles(result.items).map((p) => (
-                    <ProductTile key={p.id} p={p} isSignedIn={Boolean(token)} customer={customer} />
+                  {forTiles(result.items, customer).map((p) => (
+                    <ProductTile key={p.id} p={p} isSignedIn={Boolean(customer)} customer={customer} />
                   ))}
                 </div>
               ) : (
