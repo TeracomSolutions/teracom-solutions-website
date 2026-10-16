@@ -183,7 +183,7 @@ export default function CartView({ isMember = false, customer = null, savedPostc
                           <Minus size={14} strokeWidth={2.4} aria-hidden="true" />
                         </button>
                         <span aria-live="polite">{l.quantity}</span>
-                        <button type="button" onClick={() => updateQuantity(l.productId, l.quantity + 1)} aria-label={`Increase quantity of ${l.product.name}`}>
+                        <button type="button" onClick={() => updateQuantity(l.productId, l.quantity + 1)} disabled={l.quantity >= 20} aria-label={`Increase quantity of ${l.product.name}`}>
                           <Plus size={14} strokeWidth={2.4} aria-hidden="true" />
                         </button>
                       </div>

@@ -7,7 +7,7 @@ export default function JsonLd({ schema }) {
     <script
       type="application/ld+json"
       dangerouslySetInnerHTML={{
-        __html: JSON.stringify({ '@context': 'https://schema.org', ...schema }),
+        __html: JSON.stringify({ '@context': 'https://schema.org', ...schema }).split("<").join(String.fromCharCode(92) + "u003c"),
       }}
     />
   );

@@ -28,6 +28,10 @@ export default function CheckoutButton({ productId, label }) {
       // must not crash this with a confusing "Unexpected end of JSON
       // input" -- fall back to a generic message instead.
       const data = await res.json().catch(() => ({}));
+      if (res.status === 401) {
+        window.location.href = '/account/login?next=' + encodeURIComponent(window.location.pathname);
+        return;
+      }
       if (!res.ok) throw new Error(data.error || 'Checkout failed');
       if (data.url) window.location.href = data.url;
     } catch (e) {
