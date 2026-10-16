@@ -34,4 +34,4 @@ export const GET = withAdminSession(async ({ req }) => {
     total: matches.length,
     products: matches.slice(skip, skip + 100)
   })
-})
+}, { verify: true })
