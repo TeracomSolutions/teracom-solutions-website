@@ -125,7 +125,7 @@ export default function AdminLeadsTable({ leads, loadError }) {
                     <button
                       type="button"
                       className="btn btn-secondary btn-sm"
-                      onClick={() => markContacted(lead.id)}
+                      onClick={() => { if (window.confirm('Mark this lead as contacted? There is no undo.')) markContacted(lead.id); }}
                       disabled={busyId === lead.id}
                     >
                       {busyId === lead.id ? 'Saving…' : 'Mark contacted'}

@@ -7,9 +7,9 @@ function Inline({ text }) {
       return <strong key={i}>{part.text}</strong>;
     } else if (part.type === 'link') {
       return (
-        <a 
-          key={i} 
-          href={part.href} 
+        <a
+          key={i}
+          href={part.href}
           {...(part.href.startsWith('http') ? { target: '_blank', rel: 'noreferrer' } : {})}
         >
           {part.text}
@@ -48,7 +48,7 @@ export default function GuideContent({ markdown, idPrefix = '' }) {
                     {item.sub && item.sub.length > 0 && (
                       <ul>
                         {item.sub.map((subItem, subIndex) => (
-                          <li key={subIndex}><Inline text={subItem} /></li>
+                          <li key={subIndex}><Inline text={subItem.text} /></li>
                         ))}
                       </ul>
                     )}

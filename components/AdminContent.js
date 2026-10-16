@@ -219,7 +219,7 @@ export default function AdminContent({ initial }) {
                             </button>
                           ) : null}
                           {['review', 'not_found', 'left'].includes(job.status) ? (
-                            <button type="button" className="admin-link-btn" disabled={busy} onClick={() => resolve([job.id], 'go_live_anyway', 'put live.')}>Go live anyway</button>
+                            <button type="button" className="admin-link-btn" disabled={busy} onClick={() => { if (window.confirm('Put this product live without a full photo and description?')) resolve([job.id], 'go_live_anyway', 'put live.'); }}>Go live anyway</button>
                           ) : null}
                           {['review', 'not_found'].includes(job.status) ? (
                             <button type="button" className="admin-link-btn" disabled={busy} onClick={() => resolve([job.id], 'leave_offline', 'left offline.')}>Leave offline</button>

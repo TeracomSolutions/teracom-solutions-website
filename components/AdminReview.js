@@ -161,7 +161,7 @@ export default function AdminReview({ initial }) {
                     {waiting ? (
                       <td>
                         <div className="admin-actions">
-                          <button type="button" className="btn btn-secondary btn-sm" disabled={busy} onClick={() => resolve([hold.id], 'import')}>Import anyway</button>
+                          <button type="button" className="btn btn-secondary btn-sm" disabled={busy} onClick={() => { if (window.confirm('Import this product as supplied, even though it is priced below cost?')) resolve([hold.id], 'import'); }}>Import anyway</button>
                           <button type="button" className="btn btn-secondary btn-sm" disabled={busy} onClick={() => resolve([hold.id], 'leave_out')}>Leave out</button>
                         </div>
                       </td>

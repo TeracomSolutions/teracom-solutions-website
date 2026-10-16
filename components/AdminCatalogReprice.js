@@ -36,7 +36,7 @@ export default function AdminCatalogReprice({ suppliers, total, getIds, onDone }
     try {
       const result = await send('/api/admin/catalog/reprice', 'POST', await body(isPreview));
       if (isPreview) {
-        setPreview(result);
+        setPreview({ ...result, forTotal: total });
       } else {
         setPreview(null);
         setOpen(false);
@@ -65,7 +65,7 @@ export default function AdminCatalogReprice({ suppliers, total, getIds, onDone }
         <label style={{ display: 'inline-flex', gap: '6px', alignItems: 'center' }}>
           <input type="radio" name="scope" checked={scope === 'supplier'} onChange={() => { setScope('supplier'); setPreview(null); }} style={{ width: 'auto' }} />
           one supplier
-          <select value={supplierId} onChange={(e) => setSupplierId(e.target.value)} disabled={scope !== 'supplier'} style={{ width: 'auto' }}>
+          <select value={supplierId} onChange={(e) => { setSupplierId(e.target.value); setPreview(null); }} disabled={scope !== 'supplier'} style={{ width: 'auto' }}>
             <option value="">choose…</option>
             {suppliers.map((s) => <option key={s.supplier_id} value={s.supplier_id}>{s.supplier_name}</option>)}
           </select>
@@ -100,7 +100,7 @@ export default function AdminCatalogReprice({ suppliers, total, getIds, onDone }
       {error && <p className="form-error" role="alert">{error}</p>}
       <div className="admin-actions">
         <button type="button" className="btn btn-secondary btn-sm" onClick={() => run(true)} disabled={busy}>Preview</button>
-        <button type="button" className="btn btn-primary btn-sm" onClick={() => run(false)} disabled={busy || !preview || preview.updated === 0}>Apply</button>
+        <button type="button" className="btn btn-primary btn-sm" onClick={() => run(false)} disabled={busy || !preview || preview.updated === 0 || (scope === 'visible' ? preview.forTotal !== total : false)}>Apply</button>
         <button type="button" className="btn btn-secondary btn-sm" onClick={() => { setOpen(false); setPreview(null); }}>Close</button>
       </div>
     </div>

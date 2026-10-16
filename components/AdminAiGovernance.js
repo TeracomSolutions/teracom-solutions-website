@@ -82,8 +82,10 @@ export default function AdminAiGovernance({ initialRules, providers, loadError }
       await action();
       await reload();
       if (done) setNotice(done);
+      return true;
     } catch (err) {
       setError(err.message);
+      return false;
     } finally {
       setBusy('');
     }
@@ -94,7 +96,7 @@ export default function AdminAiGovernance({ initialRules, providers, loadError }
     const found = validateRule(draft);
     setErrors(found);
     if (found.length) return;
-    run('add', () => send('/api/admin/ai-connections/governance', 'POST', { ...draft, enabled: true }), 'Rule added. It applies from the next request.').then(() => setDraft(EMPTY));
+    run('add', () => send('/api/admin/ai-connections/governance', 'POST', { ...draft, enabled: true }), 'Rule added. It applies from the next request.').then((ok) => { if (ok) setDraft(EMPTY); });
   }
 
   function saveEdit(event) {
@@ -103,7 +105,7 @@ export default function AdminAiGovernance({ initialRules, providers, loadError }
     setErrors(found);
     if (found.length) return;
     const { id, title, rule_text: ruleText, category, mode, scope } = editing;
-    run(`save:${id}`, () => send(`/api/admin/ai-connections/governance/${id}`, 'PUT', { title, rule_text: ruleText, category, mode, scope }), 'Rule saved.').then(() => setEditing(null));
+    run(`save:${id}`, () => send(`/api/admin/ai-connections/governance/${id}`, 'PUT', { title, rule_text: ruleText, category, mode, scope }), 'Rule saved.').then((ok) => { if (ok) setEditing(null); });
   }
 
   function toggle(rule) {
