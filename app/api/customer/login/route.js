@@ -32,7 +32,7 @@ export async function POST(req) {
 
   let data;
   try {
-    data = await customerLogin(parsed.data.email, parsed.data.password);
+    data = await customerLogin(parsed.data.email, parsed.data.password, clientIpFromRequest(req));
   } catch (err) {
     if (err instanceof ApiError) {
       if (err.status === 401) {
