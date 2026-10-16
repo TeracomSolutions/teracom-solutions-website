@@ -5,6 +5,7 @@ import AdminBrandRule from '@/components/AdminBrandRule';
 import AdminCategoryMapping from '@/components/AdminCategoryMapping';
 import AdminHelpIcon from '@/components/AdminHelpIcon';
 import AdminImportUploadButton from '@/components/AdminImportUploadButton';
+import AdminRemoveUploadButton from "@/components/AdminRemoveUploadButton";
 import AdminShell from '@/components/AdminShell';
 import AdminStoreTabs from '@/components/AdminStoreTabs';
 import AdminSupplierFeeds from '@/components/AdminSupplierFeeds';
@@ -155,6 +156,7 @@ export default async function AdminSupplierPage({ params }) {
                         hasRule={hasRule}
                         supplierName={supplier.name}
                       />
+                      <AdminRemoveUploadButton uploadId={upload.id} productsAdded={upload.products_added || 0} />
                     </td>
                   </tr>
                 ))}
