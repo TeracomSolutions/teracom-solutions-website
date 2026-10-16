@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation';
 
 import { listCoupons } from '@/lib/api/adminCoupons';
 import { ACCESS_TOKEN_COOKIE } from '@/lib/adminSession';
+import { staffSessionIsValid } from '@/lib/adminApi';
 import AdminCouponManager from '@/components/AdminCouponManager';
 import AdminNav from '@/components/AdminNav';
 import AdminBrand from '@/components/AdminBrand';
@@ -15,6 +16,10 @@ export default async function AdminCouponsPage() {
   const token = (await cookies()).get(ACCESS_TOKEN_COOKIE)?.value;
 
   if (!token) {
+    redirect('/admin/login');
+  }
+
+  if (!(await staffSessionIsValid(token))) {
     redirect('/admin/login');
   }
 

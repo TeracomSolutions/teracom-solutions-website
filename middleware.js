@@ -36,7 +36,7 @@ export const config = {
   ],
 };
 
-const SKIP = [/^\/admin\/login(\/|$)/, /^\/api\/admin\/login(\/|$)/, /^\/api\/admin\/logout(\/|$)/];
+const SKIP = [/^\/admin\/login(\/|$)/, /^\/api\/admin\/login(\/|$)/, /^\/api\/admin\/logout(\/|$)/, /^\/admin\/(forgot|reset)-password(\/|$)/, /^\/api\/admin\/password\/(forgot|reset)(\/|$)/];
 const REFRESH_TIMEOUT_MS = 5000;
 
 function backendBase() {

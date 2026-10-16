@@ -1,10 +1,9 @@
 import { NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
 import { z } from 'zod';
 
 import { createCoupon, listCoupons, updateCoupon } from '@/lib/api/adminCoupons';
 import { ApiError } from '@/lib/api/client';
-import { ACCESS_TOKEN_COOKIE } from '@/lib/adminSession';
+import { adminSessionToken, staffSessionIsValid } from '@/lib/adminApi';
 
 // Staff-only. The service token that reaches the backend lives on the server;
 // a signed-in staff session is what authorises using it. A browser never sees
@@ -38,8 +37,8 @@ const CouponUpdate = z.object({
 }).refine(d => Object.keys(d).length > 1, { message: 'Nothing to change.' });
 
 async function requireStaff() {
-  const token = (await cookies()).get(ACCESS_TOKEN_COOKIE)?.value;
-  return token || null;
+  const token = await adminSessionToken();
+  return (await staffSessionIsValid(token)) ? token : null;
 }
 
 export async function GET() {

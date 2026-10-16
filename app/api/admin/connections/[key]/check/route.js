@@ -11,4 +11,4 @@ export const POST = withAdminSession(async ({ token, params }) => {
     return NextResponse.json(await testWebsiteConnection(params.key));
   }
   return NextResponse.json(await testConnection(token, params.key));
-});
+}, { verify: true });
