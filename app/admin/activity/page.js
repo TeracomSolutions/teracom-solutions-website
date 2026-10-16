@@ -67,7 +67,7 @@ export default async function AdminActivityPage() {
 
           <h4>Things to know</h4>
           <p>
-            Only staff actions are recorded here so far; jobs the system runs on its own show in Job logs.
+            The System tab lists what the system did by itself: each background job started, the Google jobs finishing or failing, and server errors. It starts empty and fills as jobs run.
           </p>
           <p>
             Anyone with this page open can read it, so nothing secret is shown.
