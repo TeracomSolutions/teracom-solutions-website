@@ -2,6 +2,7 @@
 
 import { Fragment, useState } from 'react';
 import { formatDateTime, humanise } from '@/lib/adminFormat';
+import AdminSystemEvents from '@/components/AdminSystemEvents';
 
 export default function AdminActivity({ initial }) {
   const [tab, setTab] = useState('activity');
@@ -18,13 +19,13 @@ export default function AdminActivity({ initial }) {
   const [log, setLog] = useState(null);
   const [logBusy, setLogBusy] = useState(false);
 
-  async function load(reset = false, before = null) {
+  async function load(reset = false, before = null, query = q, type = eventType) {
     setBusy(true);
     setError('');
     try {
       const params = new URLSearchParams({ limit: '50' });
-      if (q) params.set('q', q);
-      if (eventType) params.set('event_type', eventType);
+      if (query) params.set('q', query);
+      if (type) params.set('event_type', type);
       if (before) params.set('before', before);
 
       const response = await fetch(`/api/admin/activity?${params.toString()}`);
@@ -67,7 +68,7 @@ export default function AdminActivity({ initial }) {
   function handleReset() {
     setQ('');
     setEventType('');
-    load(true);
+    load(true, null, '', '');
   }
 
   function handleLoadMore() {
@@ -93,6 +94,13 @@ export default function AdminActivity({ initial }) {
           onClick={() => setTab('logs')}
         >
           Job logs
+        </button>
+        <button
+          type="button"
+          className={`btn btn-sm ${tab === 'system' ? 'btn-primary' : 'btn-secondary'}`}
+          onClick={() => setTab('system')}
+        >
+          System
         </button>
       </div>
 
@@ -196,6 +204,8 @@ export default function AdminActivity({ initial }) {
             </div>
           )}
         </div>
+      ) : tab === 'system' ? (
+        <AdminSystemEvents />
       ) : (
         <div>
           <div className="admin-table-wrap">
