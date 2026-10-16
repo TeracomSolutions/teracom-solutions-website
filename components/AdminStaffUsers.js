@@ -50,8 +50,8 @@ export default function AdminStaffUsers({ initialUsers, currentId }) {
         setError(data.error || data.detail || 'That did not work.');
         return;
       }
-      await reload();
       onDone(data);
+      await reload();
     } catch {
       setError('That did not work. Check your connection and try again.');
     } finally {

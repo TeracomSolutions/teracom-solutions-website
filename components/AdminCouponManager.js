@@ -97,6 +97,11 @@ export default function AdminCouponManager({ initialCoupons = [] }) {
       return;
     }
 
+    if (form.discount_type === 'percent' && !Number.isInteger(value)) {
+      setError('A percentage must be a whole number.');
+      return;
+    }
+
     const payload = {
       code: form.code.trim().toUpperCase(),
       label: form.label.trim(),
@@ -108,6 +113,11 @@ export default function AdminCouponManager({ initialCoupons = [] }) {
 
     if (form.max_discount_cents) payload.max_discount_cents = dollarsToCents(form.max_discount_cents);
     if (form.min_subtotal_cents) payload.min_subtotal_cents = dollarsToCents(form.min_subtotal_cents);
+    if (form.max_redemptions && !(Number.isInteger(Number(form.max_redemptions)) && Number(form.max_redemptions) > 0)) {
+      setError('Total uses must be a whole number, such as 1 or 50.');
+      return;
+    }
+
     if (form.max_redemptions) payload.max_redemptions = Number(form.max_redemptions);
     if (form.restricted_to_tier) payload.restricted_to_tier = form.restricted_to_tier;
     if (form.internal_note.trim()) payload.internal_note = form.internal_note.trim();

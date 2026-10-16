@@ -22,6 +22,7 @@ export default function AdminSeoShopping({ initial, feedUrl }) {
   const [q, setQ] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  const [copied, setCopied] = useState(false);
 
   const summary = data.summary || {};
   const codes = summary.codes || [];
@@ -55,14 +56,8 @@ export default function AdminSeoShopping({ initial, feedUrl }) {
   async function copyAddress() {
     try {
       await navigator.clipboard.writeText(feedUrl);
-      const button = document.activeElement;
-      if (button) {
-        const originalText = button.textContent;
-        button.textContent = 'Copied.';
-        setTimeout(() => {
-          button.textContent = originalText;
-        }, 2000);
-      }
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
     } catch (err) {
       setError('Could not copy. Select the address and copy it by hand.');
     }
@@ -94,7 +89,7 @@ export default function AdminSeoShopping({ initial, feedUrl }) {
 
       <p>Google Merchant Center reads the products from this address: <code>{feedUrl}</code></p>
       <div className="admin-actions">
-        <button type="button" className="btn btn-secondary btn-sm" onClick={copyAddress}>Copy address</button>
+        <button type="button" className="btn btn-secondary btn-sm" onClick={copyAddress}>{copied ? 'Copied.' : 'Copy address'}</button>
         <a href={feedUrl} target="_blank" rel="noopener noreferrer" className="admin-link">Open the feed</a>
       </div>
 

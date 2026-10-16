@@ -197,7 +197,7 @@ export default function AdminActivity({ initial }) {
               <button
                 type="button"
                 className="btn btn-secondary btn-sm"
-                onClick={handleLoadMore}
+                onClick={handleLoadMore} disabled={busy}
               >
                 Show older
               </button>

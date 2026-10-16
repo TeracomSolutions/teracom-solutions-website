@@ -100,6 +100,10 @@ export default function AdminCatalogGrid({ initial, facets: initialFacets, suppl
   async function publish(published) {
     const ids = [...selected];
     if (ids.length === 0) return;
+    const question = published
+      ? `Put ${number(ids.length)} product${ids.length === 1 ? '' : 's'} live on the website?`
+      : `Take ${number(ids.length)} product${ids.length === 1 ? '' : 's'} off the website?`;
+    if ((!published || ids.length > 25) && !window.confirm(question)) return;
     setPublishing(true);
     setError('');
     setNotice('');
