@@ -82,7 +82,7 @@ function Panel({ uploadId, supplierId, onClose }) {
       aria-label="Match columns"
       style={{ position: 'fixed', inset: 0, background: 'rgba(0, 0, 0, 0.75)', zIndex: 1000, overflowY: 'auto', padding: '24px 12px' }}
     >
-      <div className="admin-card" style={{ maxWidth: '960px', margin: '0 auto', textAlign: 'left' }}>
+      <div className="admin-card" style={{ maxWidth: '960px', margin: '0 auto', textAlign: 'left', background: 'rgb(11, 11, 13)', border: '1px solid rgba(255, 255, 255, 0.2)', borderRadius: '10px', padding: '20px' }}>
         <h3 style={{ margin: 0 }}>Match columns{data ? `: ${data.file}` : ''}</h3>
         <p className="admin-muted" style={{ margin: '6px 0 12px' }}>
           Tick the fields to use and choose which column of this file holds each one. Untick a field to ignore it.
