@@ -175,7 +175,7 @@ export default function AskTeraWidget() {
           id: newId(),
           type: 'assistant',
           pose: 'wink',
-          text: `Hi${data.firstName ? ` ${data.firstName}` : ''}, I'm Tera, Teracom's AI support assistant. Ask me about our products, setting them up, or the free calculators. I answer from Teracom's manuals and help pages, and I'll tell you if I'm not sure.`,
+          text: `Hi${data.firstName ? ` ${data.firstName}` : ''}, I'm Tera, Teracom's AI support assistant. Ask me about our products, setting them up, or the free calculators. ${data.staff ? "As staff you can also ask me to look things up live: imports, products, photo jobs and Google Shopping." : "I answer from Teracom manuals and help pages, and I will tell you if I am not sure."}`,
         }]);
       }
     } catch {
@@ -209,7 +209,7 @@ export default function AskTeraWidget() {
       const res = await fetch('/api/tera/stream', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: text, conversationId }),
+        body: JSON.stringify({ message: text, conversationId, history: messages.filter((m) => !m.pending).filter((m) => m.text).slice(-10).map((m) => ({ role: m.type === "user" ? "user" : "assistant", content: m.text })) }),
       });
       if (!res.ok || !res.body) {
         const data = await res.json().catch(() => ({}));
