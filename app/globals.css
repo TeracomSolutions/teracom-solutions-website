@@ -874,8 +874,8 @@ a {
   position: fixed;
   bottom: 100px;
   right: 24px;
-  width: 360px;
-  max-height: 500px;
+  width: min(640px, calc(100vw - 48px));
+  height: min(calc(100vh - 130px), 780px);
   background: var(--bg);
   border: 1px solid var(--line);
   border-radius: 14px;
@@ -959,6 +959,7 @@ a {
 }
 
 .tera-messages {
+  min-height: 0;
   flex: 1;
   padding: 16px 20px;
   overflow-y: auto;

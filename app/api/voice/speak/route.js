@@ -4,17 +4,17 @@ import { z } from 'zod';
 import { apiErrorResponse } from '@/lib/adminApi';
 import { speakText } from '@/lib/api/voice';
 import { checkRateLimit, clientIpFromRequest, rateLimitResponse } from '@/lib/rateLimit';
-import { teraAsker } from '@/lib/teraSession';
+import { voiceAsker } from '@/lib/teraSession';
 import { staffMe } from '@/lib/api/adminAuth';
 import { getCurrentCustomer } from '@/lib/api/customerAuth';
 
-// Tera's spoken answers, for anyone signed in: the same people who can ask
-// Tera (Robert, 2026-10-06). The cloud voice is charged by the character, so
+// Spoken answers, for customers hearing Tera and staff hearing the console
+// Assistant (Robert, 2026-10-06). The cloud voice is charged by the character, so
 // a signed-out request is refused, and the browser uses its own voice.
 const SpeakRequest = z.object({ text: z.string().trim().min(1).max(1200) });
 
 export async function POST(req) {
-  const asker = await teraAsker();
+  const asker = await voiceAsker();
   if (!asker) {
     return NextResponse.json({ error: 'Sign in to hear Tera.' }, { status: 401 });
   }
