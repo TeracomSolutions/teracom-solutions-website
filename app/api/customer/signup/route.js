@@ -41,7 +41,7 @@ export async function POST(req) {
 
   let data;
   try {
-    data = await customerSignup(parsed.data);
+    data = await customerSignup(parsed.data, clientIpFromRequest(req));
   } catch (err) {
     if (err instanceof ApiError) {
       if (err.status === 409) {

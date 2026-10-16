@@ -49,7 +49,7 @@ export async function POST(req) {
   }
 
   try {
-    await requestPasswordReset(parsed.data.email);
+    await requestPasswordReset(parsed.data.email, clientIpFromRequest(req));
   } catch (err) {
     // Deliberately swallowed. A backend outage must not produce a different
     // answer from "no such account" -- and the customer is told the same

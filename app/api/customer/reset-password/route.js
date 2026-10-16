@@ -36,7 +36,7 @@ export async function POST(req) {
   }
 
   try {
-    await resetPassword(parsed.data.token, parsed.data.password);
+    await resetPassword(parsed.data.token, parsed.data.password, clientIpFromRequest(req));
   } catch (err) {
     if (err instanceof ApiError) {
       // The backend already returns one message for every bad-token case
