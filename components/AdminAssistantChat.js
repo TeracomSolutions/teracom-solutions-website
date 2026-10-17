@@ -1,13 +1,16 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { MessageCircle, Mic, MicOff, Square, Volume2, VolumeX } from 'lucide-react';
+import { MessageCircle, Mic, MicOff, Paperclip, Square, Volume2, VolumeX } from 'lucide-react';
 
 import AdminAssistantAvatar from './AdminAssistantAvatar';
+import AdminAttachmentBar, { AttachmentChips } from './AdminAttachmentBar';
+import { ACCEPT, forSend } from '@/lib/attachments';
 import { nextState } from '@/lib/assistantVoice';
 import { LISTEN_DELAY_MS, conversationNotice, conversationStep } from '@/lib/assistantConversation';
 import { PAUSE_BEFORE_SEND_MS, endsDictation, joinSpeech } from '@/lib/dictation';
 import { speakReply, speechControl } from '@/lib/voicePlayer';
+import { useAttachments } from '@/lib/useAttachments';
 
 // Chat with the console. Each turn sends the whole conversation (the
 // backend keeps no session), shows the reply, and lists any actions the
@@ -46,6 +49,7 @@ function synth() {
 }
 
 export default function AdminAssistantChat() {
+  const attach = useAttachments({ onError: setError });
   const [messages, setMessages] = useState([]);
   const [draft, setDraft] = useState('');
   const [busy, setBusy] = useState(false);
@@ -59,6 +63,7 @@ export default function AdminAssistantChat() {
   const [copied, setCopied] = useState(null);
   const [conversation, setConversation] = useState(false);
   const [notice, setNotice] = useState('');
+  const fileInputRef = useRef(null);
   const endRef = useRef(null);
   const recognitionRef = useRef(null);
   // The recogniser's callbacks outlive a render, so they read the latest
@@ -130,12 +135,15 @@ export default function AdminAssistantChat() {
   }
 
   async function send(text) {
-    const content = (text ?? draft).trim();
-    if (!content || busy) return;
+    const typed = (text ?? draft).trim();
+    const files = attach.items;
+    if ((!typed && files.length === 0) || busy) return;
+    const content = typed || 'See the attached file.';
     synth()?.cancel();
-    const history = [...messages, { role: 'user', content }];
+    const history = [...messages, { role: 'user', content, attachments: files }];
     setMessages(history);
     setDraft('');
+    attach.clear();
     setBusy(true);
     setError('');
     setNotice('');
@@ -147,7 +155,7 @@ export default function AdminAssistantChat() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          messages: history.slice(-24).map(({ role, content: c }) => ({ role, content: c })),
+          messages: forSend(history.slice(-24)),
           voice: conversationRef.current,
         }),
         signal: controller.signal,
@@ -163,7 +171,8 @@ export default function AdminAssistantChat() {
       if (controller.signal.aborted) {
         // Stop was pressed: the words go back in the box to be corrected.
         setMessages(messages);
-        setDraft(content);
+        setDraft(typed);
+        attach.restore(files);
         setNotice('Stopped. If a change was already under way it may still have gone through: check the Audit log under Activity.');
         dispatch('error');
         return;
@@ -365,6 +374,7 @@ export default function AdminAssistantChat() {
     stopRequestedRef.current = true;
     recognitionRef.current?.stop();
     setMessages([]);
+    attach.clear();
     setError('');
     setAvatarState('idle');
   }
@@ -372,7 +382,8 @@ export default function AdminAssistantChat() {
   const stoppable = listening || busy || conversation || avatarState === 'speaking';
 
   return (
-    <div className="admin-assistant">
+    <div className={attach.dragging ? 'admin-assistant is-dragging' : 'admin-assistant'} {...attach.dropProps}>
+      {attach.dragging && <div className="admin-assistant-drop">Drop pictures or files here to attach them</div>}
       <div className="admin-assistant-log" aria-live="polite">
         <div className="admin-assistant-head">
           <AdminAssistantAvatar state={avatarState} size={44} />
@@ -395,6 +406,7 @@ export default function AdminAssistantChat() {
           <div key={i} className={`admin-assistant-msg ${m.role}`}>
             {m.role === 'assistant' && <AdminAssistantAvatar state="idle" size={26} />}
             <div className="admin-assistant-bubble">
+              <AttachmentChips attachments={m.attachments} />
               {m.content.split(String.fromCharCode(10)).map((line, j) => <p key={j}>{line || ' '}</p>)}
               {m.actions && m.actions.length > 0 && (
                 <ul className="admin-assistant-actions">
@@ -432,10 +444,12 @@ export default function AdminAssistantChat() {
       {!conversation && notice && <p className="admin-muted" role="status">{notice}</p>}
       {error && <p className="form-error" role="alert">{error}</p>}
       <form className="admin-assistant-form" onSubmit={(e) => { e.preventDefault(); send(); }}>
+        <AdminAttachmentBar items={attach.items} reading={attach.reading} onRemove={attach.remove} />
         <textarea
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
           onKeyDown={onKeyDown}
+          onPaste={attach.onPaste}
           rows={2}
           placeholder={conversation
             ? 'Conversation is on: just talk, and the answer is read aloud.'
@@ -445,7 +459,7 @@ export default function AdminAssistantChat() {
           disabled={busy || conversation}
         />
         <div className="admin-actions">
-          <button type="submit" className="btn btn-primary btn-sm" disabled={busy || conversation || !draft.trim()}>{busy ? 'Working…' : 'Send'}</button>
+          <button type="submit" className="btn btn-primary btn-sm" disabled={busy || conversation || (!draft.trim() && attach.items.length === 0)}>{busy ? 'Working…' : 'Send'}</button>
           {stoppable && (
             <button
               type="button"
@@ -457,6 +471,11 @@ export default function AdminAssistantChat() {
               {' '}Stop
             </button>
           )}
+          <button type="button" className="btn btn-secondary btn-sm" onClick={() => fileInputRef.current?.click()} disabled={busy || conversation} title="Attach pictures or files, or drag them onto this box">
+            <Paperclip size={15} strokeWidth={2} aria-hidden="true" />
+            {' '}Attach
+          </button>
+          <input ref={fileInputRef} type="file" multiple accept={ACCEPT} hidden onChange={(e) => { attach.addFiles(e.target.files); e.target.value = ''; }} />
           <button
             type="button"
             className="btn btn-secondary btn-sm admin-assistant-mic"
