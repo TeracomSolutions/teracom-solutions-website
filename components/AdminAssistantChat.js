@@ -49,7 +49,6 @@ function synth() {
 }
 
 export default function AdminAssistantChat() {
-  const attach = useAttachments({ onError: setError });
   const [messages, setMessages] = useState([]);
   const [draft, setDraft] = useState('');
   const [busy, setBusy] = useState(false);
@@ -63,6 +62,7 @@ export default function AdminAssistantChat() {
   const [copied, setCopied] = useState(null);
   const [conversation, setConversation] = useState(false);
   const [notice, setNotice] = useState('');
+  const attach = useAttachments({ onError: setError });
   const fileInputRef = useRef(null);
   const endRef = useRef(null);
   const recognitionRef = useRef(null);
