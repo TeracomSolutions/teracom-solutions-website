@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { Mic, MicOff, ThumbsDown, ThumbsUp, Volume2, VolumeX } from 'lucide-react';
 
 import TeraHandover from '@/components/TeraHandover';
@@ -40,6 +41,7 @@ function synth() {
 
 export default function AskTeraWidget() {
   const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname();
   const [status, setStatus] = useState(null); // null while checking, then { signedIn, firstName }
   const [messages, setMessages] = useState([]);
   const [conversationId, setConversationId] = useState(null);
@@ -175,7 +177,7 @@ export default function AskTeraWidget() {
           id: newId(),
           type: 'assistant',
           pose: 'wink',
-          text: `Hi${data.firstName ? ` ${data.firstName}` : ''}, I'm Tera, Teracom's AI support assistant. Ask me about our products, setting them up, or the free calculators. ${data.staff ? "As staff you can also ask me to look things up live: imports, products, photo jobs and Google Shopping." : "I answer from Teracom manuals and help pages, and I will tell you if I am not sure."}`,
+          text: `Hi${data.firstName ? ` ${data.firstName}` : ''}, I'm Tera, Teracom's AI support assistant. Ask me about our products, setting them up, or the free calculators. I answer from Teracom manuals and help pages, and I will tell you if I am not sure.`,
         }]);
       }
     } catch {
@@ -269,6 +271,8 @@ export default function AskTeraWidget() {
       // A lost rating is not worth interrupting the chat for.
     }
   }
+
+  if (pathname?.startsWith('/admin')) return null;
 
   return (
     <>

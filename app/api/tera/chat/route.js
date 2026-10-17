@@ -5,8 +5,8 @@ import { apiErrorResponse } from '@/lib/adminApi';
 import { askTera } from '@/lib/api/support';
 import { teraAsker } from '@/lib/teraSession';
 
-// Ask Tera is for anyone signed in: customers on the website, and staff
-// signed in to the console (Robert, 2026-10-04). The backend answers from
+// Ask Tera is for customers signed in to the website only (Robert,
+// 2026-10-17). The backend answers from
 // Teracom's own library with that session's token.
 const ChatRequest = z.object({
   message: z.string().trim().min(1).max(1000),
