@@ -8,9 +8,10 @@ import { assistantChat } from '@/lib/api/adminAssistant';
 // allowed to run longer than the default.
 export const maxDuration = 60;
 
+const Attachment = z.object({ kind: z.enum(['image', 'pdf', 'text', 'sheet']), name: z.string().min(1).max(200), mediaType: z.string().max(100).optional(), data: z.string().max(6100000).optional(), text: z.string().max(60000).optional() });
 const ChatRequest = z.object({
   messages: z
-    .array(z.object({ role: z.enum(['user', 'assistant']), content: z.string().min(1).max(8000) }))
+    .array(z.object({ role: z.enum(['user', 'assistant']), content: z.string().min(1).max(8000), attachments: z.array(Attachment).max(6).optional() }))
     .min(1)
     .max(24),
   voice: z.boolean().optional(),

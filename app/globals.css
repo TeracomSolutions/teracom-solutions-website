@@ -2862,3 +2862,11 @@ a.admin-status:hover { filter:brightness(1.15); }
 .admin-assistant-conversation-dot { width:10px; height:10px; border-radius:50%; background:#c084fc; animation:assistant-pulse 1.2s ease-out infinite; }
 .admin-assistant-conversation .btn { margin-left:auto; }
 @media (prefers-reduced-motion: reduce) { .admin-assistant-conversation-dot { animation:none; } }
+/* Assistant: dropped pictures and files (Robert, 2026-10-17). */
+.admin-assistant { position:relative; }
+.admin-assistant-drop { position:absolute; inset:0; z-index:5; display:flex; align-items:center; justify-content:center; border:2px dashed #c084fc; border-radius:16px; background:rgba(11,11,13,.88); color:#fff; font-size:18px; pointer-events:none; }
+.admin-assistant-attachments { display:grid; gap:4px; }
+.admin-assistant-files { display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin:0 0 8px; }
+.admin-assistant-file { display:inline-flex; align-items:center; gap:6px; max-width:100%; padding:4px 10px; border:1px solid var(--line); border-radius:999px; background:rgba(255,255,255,.05); font-size:12px; }
+.admin-assistant-file-remove { display:inline-flex; background:none; border:0; color:#ddd; cursor:pointer; padding:2px; }
+.admin-assistant-file-remove:hover { color:#fff; }
