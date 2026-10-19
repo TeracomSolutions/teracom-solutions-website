@@ -83,6 +83,13 @@ export default function AdminStoreTabs() {
         {tabLabel(waiting)}
       </Link>
       <Link
+        href="/admin/orders"
+        className={isAreaActive({ href: '/admin/orders' }, pathname) ? 'admin-tab active' : 'admin-tab'}
+        aria-current={isAreaActive({ href: '/admin/orders' }, pathname) ? 'page' : undefined}
+      >
+        Orders
+      </Link>
+      <Link
         href="/admin/content"
         className={isAreaActive({ href: '/admin/content' }, pathname) ? 'admin-tab active' : 'admin-tab'}
         aria-current={isAreaActive({ href: '/admin/content' }, pathname) ? 'page' : undefined}
