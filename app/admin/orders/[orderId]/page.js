@@ -3,11 +3,13 @@ import { notFound, redirect } from 'next/navigation';
 
 import AdminOrderBanner from '@/components/AdminOrderBanner';
 import AdminOrderDetail from '@/components/AdminOrderDetail';
+import AdminOrderPurchaseOrders from '@/components/AdminOrderPurchaseOrders';
 import AdminShell from '@/components/AdminShell';
 import AdminStoreTabs from '@/components/AdminStoreTabs';
 
 import { fetchOrder, fetchOrderBanner } from '@/lib/api/adminOrders';
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
+import { fetchPurchaseOrders } from '@/lib/api/adminPurchaseOrders';
 
 export const metadata = {
   title: 'Order|Teracom Solutions',
@@ -33,6 +35,13 @@ export default async function AdminOrderPage({ params }) {
     loadError = 'Unable to load this order from the backend.';
   }
 
+  let purchaseOrders = { purchase_orders: [] };
+  try {
+    purchaseOrders = await fetchPurchaseOrders(token, orderId);
+  } catch (err) {
+    purchaseOrders = { purchase_orders: [] };
+  }
+
   return (
     <AdminShell>
       <p className="admin-muted">
@@ -48,6 +57,7 @@ export default async function AdminOrderPage({ params }) {
       {loadError && <p className="form-error" role="alert">{loadError}</p>}
 
       {!loadError && detail && <AdminOrderDetail detail={detail} />}
+      <AdminOrderPurchaseOrders orderId={orderId} initial={purchaseOrders} />
     </AdminShell>
   );
 }
