@@ -5,7 +5,7 @@ import AdminHelpIcon from '@/components/AdminHelpIcon';
 import AdminShell from '@/components/AdminShell';
 import { listConnections } from '@/lib/api/adminConnections';
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
-import { websiteConnections } from '@/lib/websiteConnections';
+import { websiteConnectionsFor } from '@/lib/websiteConnections';
 
 export const metadata = {
   title: 'Connections|Teracom Solutions',
@@ -23,7 +23,7 @@ export default async function AdminConnectionsPage({ searchParams }) {
   let connections = null;
   let loadError = '';
   try {
-    connections = [...(await listConnections(token)), ...websiteConnections()];
+    connections = [...(await listConnections(token)), ...(await websiteConnectionsFor(token))];
   } catch (err) {
     if (isSessionError(err)) redirect('/admin/login');
     loadError = 'Unable to load the connections from the backend.';
