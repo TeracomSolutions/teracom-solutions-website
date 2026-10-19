@@ -60,7 +60,7 @@ export default async function AdminOrdersPage({ searchParams }) {
       <h1 className="admin-heading">Orders</h1>
       <p className="lead">Every paid order, the steps to Zoho Books, and what needs you.</p>
 
-      {banner && <AdminOrderBanner banner={banner} counts={banner.counts} />}
+      <p className="admin-muted"><Link href="/admin/orders/test-tools" className="admin-link">Test tools</Link> (make a test order, clean up test records)</p>      {banner && <AdminOrderBanner banner={banner} counts={banner.counts} />}
 
       {alerts.length > 0 && (
         <section className="admin-card">
