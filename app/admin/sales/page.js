@@ -1,0 +1,28 @@
+import { redirect } from 'next/navigation';
+
+import AdminShell from '@/components/AdminShell';
+import AdminSalesDashboard from '@/components/AdminSalesDashboard';
+
+import { isSessionError, requireAdminToken } from '@/lib/adminPage';
+
+export const metadata = {
+  title: 'Sales|Teracom Solutions',
+};
+
+// Sales page.
+export default async function AdminSalesPage() {
+  const token = await requireAdminToken();
+
+  // Handle session errors (redirect to login)
+  if (isSessionError(token)) {
+    redirect('/admin/login');
+  }
+
+  return (
+    <AdminShell>
+      <h1 className="admin-heading">Sales</h1>
+      <p className="lead">What was sold, to whom, and what it earned, from live orders only. Test and simulated orders are never counted.</p>
+      <AdminSalesDashboard />
+    </AdminShell>
+  );
+}
