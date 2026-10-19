@@ -5,6 +5,8 @@ import { unitPriceCents } from '@/lib/catalogueMerge';
 import { createZohoContact, createZohoInvoice, findZohoContactByEmail } from '@/lib/zoho';
 import { linkLicenceBillingReference } from '@/lib/api/commerceLicensing';
 import { recordCouponRedemption } from '@/lib/api/coupons';
+import { forwardCheckoutSession } from '@/lib/api/orderFlow';
+import { SESSION_EXPANSIONS, shouldForward, describeForwardResult } from '@/lib/orderFlowForward';
 
 export const runtime = 'nodejs';
 
@@ -260,6 +262,19 @@ async function handleSubscriptionDeleted(subscription) {
   });
 }
 
+// Hands a completed checkout to the backend order flow. Off unless ORDER_FLOW_FORWARD is 'true'.
+// Never throws: the existing handling above must not depend on it.
+async function forwardToOrderFlow(event) {
+  if (!shouldForward(process.env)) return;
+  try {
+    const session = await stripe.checkout.sessions.retrieve(event.data.object.id, { expand: SESSION_EXPANSIONS });
+    const result = await forwardCheckoutSession(session, event.id);
+    console.log(describeForwardResult(result));
+  } catch (error) {
+    console.error('Order flow forward failed', error);
+  }
+}
+
 export async function POST(req) {
   const body = await req.text();
   const signature = req.headers.get('stripe-signature');
@@ -279,6 +294,7 @@ export async function POST(req) {
   switch (event.type) {
     case 'checkout.session.completed':
       await handleCheckoutSessionCompleted(event.data.object);
+      await forwardToOrderFlow(event);
       break;
     case 'invoice.paid':
       await handleInvoicePaid(event.data.object);
