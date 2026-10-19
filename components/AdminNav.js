@@ -18,7 +18,7 @@ export const ADMIN_AREAS = [
   { href: '/admin/coupons', label: 'Coupons' },
   { href: '/admin/leads', label: 'Leads' },
   { href: '/admin/resources', label: 'Resources' },
-  { href: '/admin/sales', label: 'Sales' },
+  { href: '/admin/sales', label: 'Sales', match: ['/admin/orders'] },
   { href: '/admin/scout', label: 'Scout' },
   { href: '/admin/social', label: 'Social' },
   { href: '/admin/support', label: 'Support' },

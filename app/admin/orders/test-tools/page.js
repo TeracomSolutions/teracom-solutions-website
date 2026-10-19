@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
 import AdminShell from '@/components/AdminShell';
-import AdminStoreTabs from '@/components/AdminStoreTabs';
+import AdminSalesTabs from '@/components/AdminSalesTabs';
 import AdminTestTools from '@/components/AdminTestTools';
 
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
@@ -37,7 +37,7 @@ export default async function AdminTestToolsPage() {
       </p>
       <h1 className="admin-heading">Test tools</h1>
       <p className="lead">Try the whole order flow without a real purchase, then clean up what it made.</p>
-      <AdminStoreTabs />
+      <AdminSalesTabs />
 
       {loadError && <p className="form-error" role="alert">{loadError}</p>}
 

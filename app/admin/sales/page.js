@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation';
 
 import AdminShell from '@/components/AdminShell';
+import AdminSalesTabs from '@/components/AdminSalesTabs';
 import AdminSalesDashboard from '@/components/AdminSalesDashboard';
 
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
@@ -20,6 +21,7 @@ export default async function AdminSalesPage() {
 
   return (
     <AdminShell>
+      <AdminSalesTabs />
       <h1 className="admin-heading">Sales</h1>
       <p className="lead">What was sold, to whom, and what it earned, from live orders only. Test and simulated orders are never counted.</p>
       <AdminSalesDashboard />
