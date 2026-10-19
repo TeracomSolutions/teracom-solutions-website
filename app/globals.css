@@ -2884,3 +2884,15 @@ a.admin-status:hover { filter:brightness(1.15); }
 .order-dash-bar { height:10px; border-radius:999px; background:rgba(128,128,128,.22); overflow:hidden; margin-top:4px; }
 .order-dash-fill { height:100%; border-radius:999px; background:#4aa3ff; }
 @media (max-width: 600px) { .order-dash .admin-stat-value { font-size:26px; } }
+
+/* ---- Store page: tighter top so the search and categories show on first load ---- */
+.store-hero { padding-bottom:20px; }
+.gst-highlight.store-gst { font-size:16px!important; }
+.store-search-section { padding:18px 0 0; }
+.store-categories-section { padding:26px 0 88px; }
+@media (max-width: 760px) {
+  .store-hero { padding-bottom:12px; }
+  .gst-highlight.store-gst { font-size:15px!important; }
+  .store-search-section { padding:12px 0 0; }
+  .store-categories-section { padding:20px 0 64px; }
+}
