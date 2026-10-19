@@ -10,9 +10,11 @@ import AdminRemoveUploadButton from "@/components/AdminRemoveUploadButton";
 import AdminShell from '@/components/AdminShell';
 import AdminStoreTabs from '@/components/AdminStoreTabs';
 import AdminSupplierFeeds from '@/components/AdminSupplierFeeds';
+import AdminSupplierOrdering from '@/components/AdminSupplierOrdering';
 import AdminUploadFeedForm from '@/components/AdminUploadFeedForm';
 import { fetchSupplierFeeds } from '@/lib/api/adminSupplierFeeds';
 import { fetchSupplier, fetchSupplierCategories, fetchSupplierUploads } from '@/lib/api/adminSuppliers';
+import { fetchSupplierOrdering } from '@/lib/api/adminSupplierOrdering';
 import { formatDateTime, humanise } from '@/lib/adminFormat';
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
 
@@ -35,6 +37,7 @@ export default async function AdminSupplierPage({ params }) {
   let uploads = [];
   let feeds = [];
   let categoryMap = null;
+  let ordering = null;
   let loadError = null;
 
   try {
@@ -54,6 +57,14 @@ export default async function AdminSupplierPage({ params }) {
       categoryMap = await fetchSupplierCategories(token, supplierId);
     } catch {
       categoryMap = null;
+    }
+  }
+
+  if (!loadError) {
+    try {
+      ordering = await fetchSupplierOrdering(token, supplierId);
+    } catch {
+      ordering = null;
     }
   }
 
@@ -107,6 +118,13 @@ export default async function AdminSupplierPage({ params }) {
             />
           ) : (
             <p className="admin-muted">Store categories could not be loaded just now.</p>
+          )}
+
+          <h2>Ordering details</h2>
+          {ordering ? (
+            <AdminSupplierOrdering supplierId={supplierId} initial={ordering} />
+          ) : (
+            <p className="admin-muted">Ordering details could not be loaded just now.</p>
           )}
 
           <h2>Direct link or automatic feed</h2>

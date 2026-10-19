@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
 import AdminCatalogGrid from '@/components/AdminCatalogGrid';
@@ -66,6 +67,7 @@ export default async function AdminCatalogPage() {
           <p><em>Export CSV</em> downloads every product the filters match, on all pages, with every column.</p>
         </AdminHelpIcon>
       </h1>
+      <p className="admin-muted"><Link href="/admin/catalog/merge" className="admin-link">Merge duplicate products</Link> (the same product from two suppliers)</p>
       <AdminStoreTabs />
       <p className="lead">Every product with cost, RRP, margin and tier prices. Tick products and press Go live to put them on the website; edit in place, add a one-off, or re-price a set from cost.</p>
 
