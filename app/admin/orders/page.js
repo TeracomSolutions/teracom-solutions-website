@@ -4,10 +4,12 @@ import { redirect } from 'next/navigation';
 import AdminShell from '@/components/AdminShell';
 import AdminSalesTabs from '@/components/AdminSalesTabs';
 import AdminOrderBanner from '@/components/AdminOrderBanner';
+import AdminOrderDashboard from '@/components/AdminOrderDashboard';
 
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
-import { fetchOrders, fetchOrderBanner, fetchOrderAlerts } from '@/lib/api/adminOrders';
+import { fetchOrders, fetchOrderBanner, fetchOrderAlerts, fetchOrdersDashboard } from '@/lib/api/adminOrders';
 import { formatDateTime } from '@/lib/adminFormat';
+import { stageLabel } from '@/lib/orderDashboardView';
 
 import {
   orderStatusLabel,
@@ -27,19 +29,20 @@ export const metadata = {
 
 export default async function AdminOrdersPage({ searchParams }) {
   const params = await searchParams;
-  const { status = '', mode = '', q = '', page = '0' } = params;
+  const { status = '', mode = '', q = '', stage = '', page = '0' } = params;
 
   const token = await requireAdminToken();
 
   let orders = [];
   let banner = null;
   let alerts = [];
+  let dashboard = null;
   let total = 0;
   let loadError = '';
 
   try {
     const [ordersData, bannerData, alertsData] = await Promise.all([
-      fetchOrders(token, { status, mode, q, skip: pageToSkip(page), limit: PAGE_SIZE }),
+      fetchOrders(token, { status, mode, q, stage, skip: pageToSkip(page), limit: PAGE_SIZE }),
       fetchOrderBanner(token),
       fetchOrderAlerts(token)
     ]);
@@ -48,6 +51,13 @@ export default async function AdminOrdersPage({ searchParams }) {
     total = ordersData.total || 0;
     banner = bannerData.banner || null;
     alerts = alertsData.alerts || [];
+
+    try {
+      dashboard = await fetchOrdersDashboard(token, { mode: 'live' });
+    } catch (err) {
+      if (isSessionError(err)) redirect('/admin/login');
+      dashboard = null;
+    }
   } catch (err) {
     if (isSessionError(err)) redirect('/admin/login');
     loadError = 'Unable to load the orders from the backend.';
@@ -61,6 +71,12 @@ export default async function AdminOrdersPage({ searchParams }) {
       <p className="lead">Every paid order, the steps to Zoho Books, and what needs you.</p>
 
       <p className="admin-muted"><Link href="/admin/orders/test-tools" className="admin-link">Test tools</Link> (make a test order, clean up test records)</p>      {banner && <AdminOrderBanner banner={banner} counts={banner.counts} />}
+      <AdminOrderDashboard dashboard={dashboard} />
+      {stage && (
+        <p className="admin-muted">
+          Showing: {stageLabel(stage) || stage}. <Link href="/admin/orders" className="admin-link">Show all orders</Link>
+        </p>
+      )}
 
       {alerts.length > 0 && (
         <section className="admin-card">
@@ -154,11 +170,11 @@ export default async function AdminOrdersPage({ searchParams }) {
       {total > 0 && (
         <div className="admin-actions">
           {page > '0' && (
-            <Link href={buildOrdersQuery({ status, mode, q, page: parseInt(page) - 1 })} className="btn btn-secondary btn-sm">Previous</Link>
+            <Link href={buildOrdersQuery({ status, mode, q, stage, page: parseInt(page) - 1 })} className="btn btn-secondary btn-sm">Previous</Link>
           )}
 
           {orders.length === PAGE_SIZE && (
-            <Link href={buildOrdersQuery({ status, mode, q, page: parseInt(page) + 1 })} className="btn btn-secondary btn-sm">Next</Link>
+            <Link href={buildOrdersQuery({ status, mode, q, stage, page: parseInt(page) + 1 })} className="btn btn-secondary btn-sm">Next</Link>
           )}
         </div>
       )}

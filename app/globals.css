@@ -2870,3 +2870,17 @@ a.admin-status:hover { filter:brightness(1.15); }
 .admin-assistant-file { display:inline-flex; align-items:center; gap:6px; max-width:100%; padding:4px 10px; border:1px solid var(--line); border-radius:999px; background:rgba(255,255,255,.05); font-size:12px; }
 .admin-assistant-file-remove { display:inline-flex; background:none; border:0; color:#ddd; cursor:pointer; padding:2px; }
 .admin-assistant-file-remove:hover { color:#fff; }
+
+/* ---- Admin: Orders dashboard ---- */
+.order-dash { display:grid; gap:14px; margin:0 0 22px; }
+.order-dash .admin-stats { margin:0; }
+.order-dash-tile { text-decoration:none; color:inherit; transition:border-color .15s, transform .15s; }
+.order-dash-tile:hover { border-color:var(--muted); transform:translateY(-1px); }
+.order-dash-tile.is-warn .admin-stat-value { color:#ffd75e; }
+.order-dash-tile.is-bad .admin-stat-value { color:#ff8a8a; }
+.order-dash-tile.is-good .admin-stat-value { color:#7ee29a; }
+.order-dash-tile.is-muted .admin-stat-value { color:var(--muted); }
+.order-dash-bars { list-style:none; margin:8px 0 0; padding:0; display:grid; gap:10px; }
+.order-dash-bar { height:10px; border-radius:999px; background:rgba(128,128,128,.22); overflow:hidden; margin-top:4px; }
+.order-dash-fill { height:100%; border-radius:999px; background:#4aa3ff; }
+@media (max-width: 600px) { .order-dash .admin-stat-value { font-size:26px; } }
