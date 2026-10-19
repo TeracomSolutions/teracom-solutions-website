@@ -5,7 +5,7 @@ import AdminOrderBanner from '@/components/AdminOrderBanner';
 import AdminOrderDetail from '@/components/AdminOrderDetail';
 import AdminOrderPurchaseOrders from '@/components/AdminOrderPurchaseOrders';
 import AdminShell from '@/components/AdminShell';
-import AdminStoreTabs from '@/components/AdminStoreTabs';
+import AdminSalesTabs from '@/components/AdminSalesTabs';
 
 import { fetchOrder, fetchOrderBanner } from '@/lib/api/adminOrders';
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
@@ -50,7 +50,7 @@ export default async function AdminOrderPage({ params }) {
       <h1 className="admin-heading">
         Order <span className="admin-muted">{orderId.substring(0, 12)}</span>
       </h1>
-      <AdminStoreTabs />
+      <AdminSalesTabs />
 
       <AdminOrderBanner banner={banner?.banner} counts={banner?.counts} />
 

@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
 import AdminShell from '@/components/AdminShell';
-import AdminStoreTabs from '@/components/AdminStoreTabs';
+import AdminSalesTabs from '@/components/AdminSalesTabs';
 import AdminOrderBanner from '@/components/AdminOrderBanner';
 
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
@@ -55,7 +55,7 @@ export default async function AdminOrdersPage({ searchParams }) {
 
   return (
     <AdminShell>
-      <AdminStoreTabs />
+      <AdminSalesTabs />
 
       <h1 className="admin-heading">Orders</h1>
       <p className="lead">Every paid order, the steps to Zoho Books, and what needs you.</p>
