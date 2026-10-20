@@ -3,10 +3,13 @@
 import { Fragment, useState } from 'react';
 
 import { formatDateTime } from '@/lib/adminFormat';
+import AdminPermissions from '@/components/AdminPermissions';
+import { summarisePermissions } from '../lib/permissionsView.js';
 
 const ROLES = [
   ['platform_admin', 'Administrator'],
   ['licensing_approver', 'Licensing approver'],
+  ['operator', 'Limited access'],
 ];
 const EMPTY_FORM = { email: '', first_name: '', last_name: '', staff_role: 'platform_admin' };
 
@@ -19,13 +22,14 @@ function fullName(user) {
   return [user.first_name, user.last_name].filter(Boolean).join(' ') || '—';
 }
 
-export default function AdminStaffUsers({ initialUsers, currentId }) {
+export default function AdminStaffUsers({ initialUsers, currentId, catalogue }) {
   const [users, setUsers] = useState(initialUsers || []);
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
   const [busy, setBusy] = useState('');
   const [form, setForm] = useState(EMPTY_FORM);
   const [editing, setEditing] = useState(null);
+  const [permissionsFor, setPermissionsFor] = useState(null);
   const [editForm, setEditForm] = useState(EMPTY_FORM);
   const [shownPassword, setShownPassword] = useState(null);
   const [copied, setCopied] = useState(false);

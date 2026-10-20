@@ -1,10 +1,12 @@
 'use client';
 
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 
 import AdminSessionTimer from '@/components/AdminSessionTimer';
 import { isAreaActive } from '@/lib/adminNavMatch';
+import { areaVisible } from '../lib/permissionsView.js';
 
 // The admin's own menu. Every area is listed here and nowhere else: the
 // public site never links to /admin, only the footer's double-click does.
@@ -29,6 +31,23 @@ export const ADMIN_AREAS = [
 export default function AdminNav() {
   const pathname = usePathname();
   const router = useRouter();
+  const [permissions, setPermissions] = useState(null);
+
+  // What this person may see: Administrators see everything; a Limited access user only the sections they were given.
+  useEffect(() => {
+    let cancelled = false;
+    fetch('/api/admin/me', { cache: 'no-store' })
+      .then((response) => (response.ok ? response.json() : null))
+      .then((data) => {
+        if (!cancelled && data && data.staff_role === 'operator') setPermissions(data.permissions || {});
+      })
+      .catch(() => {
+        // No answer: the menu stays complete; the backend still refuses what is not allowed.
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   async function handleSignOut() {
     await fetch('/api/admin/logout', { method: 'POST' });
@@ -38,7 +57,7 @@ export default function AdminNav() {
 
   return (
     <nav className="admin-nav" aria-label="Administration">
-      {ADMIN_AREAS.map((area) => {
+      {ADMIN_AREAS.filter((area) => areaVisible(area.href, permissions)).map((area) => {
         const active = isAreaActive(area, pathname);
         return (
           <Link key={area.href} href={area.href} className={active ? 'active' : undefined} aria-current={active ? 'page' : undefined}>
