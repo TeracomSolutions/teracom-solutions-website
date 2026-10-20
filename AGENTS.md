@@ -28,3 +28,7 @@ experiment.
 ## If you are unsure
 
 Say so and stop. This is the public face of the company.
+
+## Documentation
+
+All Teracom documentation lives in the `teracom-ai-docs` repository; its `README.md` is the map. Before you start, read `Handover/Current/MASTER_HANDOVER.md` for the current state of the estate. Do not edit documentation unless your task names the file. Anything a major change should record (a repository, service, database, port, authentication boundary or architecture decision) goes in your final message, so the person reviewing can add it to `MASTER_HANDOVER.md` before the work is called complete. Do not create handover files anywhere else.
