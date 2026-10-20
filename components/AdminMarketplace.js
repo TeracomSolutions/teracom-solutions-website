@@ -61,6 +61,9 @@ export default function AdminMarketplace({ initial }) {
 
   return (
     <div className="order-dash">
+      {initial && initial.notice ? (
+        <p className={initial.notice.tone === 'bad' ? 'form-error' : 'admin-muted'} role="status">{initial.notice.text}</p>
+      ) : null}
       {(error || !status) ? (
         <p className="form-error" role="alert">{!status ? 'Unable to load all of the marketplace settings.' : error}</p>
       ) : null}
