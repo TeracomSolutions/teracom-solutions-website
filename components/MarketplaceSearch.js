@@ -5,11 +5,7 @@ import { marketplaceRequest } from '../lib/marketplaceClient.js';
 import { priceSummary, originNote } from '../lib/marketplaceView.js';
 import { cents } from '../lib/orderView.js';
 
-export default function MarketplaceSearch({ status, onImported }) {
-  const providers = (status && status.providers) || [];
-  const firstProvider = providers.length ? providers[0].name : '';
-
-  const [provider, setProvider] = useState(firstProvider);
+export default function MarketplaceSearch({ status, suppliers, selected, defaultMarkup, onImported }) {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [searched, setSearched] = useState(false);
@@ -26,8 +22,18 @@ export default function MarketplaceSearch({ status, onImported }) {
     );
   }
 
+  const card = (suppliers || []).find((s) => s.name === selected) || null;
+
+  if (!card || card.can_search !== true) {
+    return (
+      <div className="admin-card">
+        <p className="admin-muted">{(card ? card.label : 'That supplier') + ' cannot be searched. Pick a supplier marked Connected, or import a spreadsheet below.'}</p>
+      </div>
+    );
+  }
+
   function draftFor(row) {
-    return drafts[row.provider_product_id] || { markup: '40', shipping: '0', price: null };
+    return drafts[row.provider_product_id] || { markup: String(defaultMarkup || 40), shipping: '0', price: null };
   }
 
   function updateDraft(id, patch) {
@@ -43,7 +49,7 @@ export default function MarketplaceSearch({ status, onImported }) {
     setError('');
     setMessage('');
     try {
-      const res = await marketplaceRequest('search', { query: { provider, q: query } });
+      const res = await marketplaceRequest('search', { query: { provider: selected, q: query } });
       if (res.ok) {
         setResults(res.data.products || []);
         setSearched(true);
@@ -110,21 +116,8 @@ export default function MarketplaceSearch({ status, onImported }) {
   return (
     <>
       <section className="admin-card">
-        <h2>Find supplier products</h2>
+        <h2>Search {card.label}</h2>
         <form onSubmit={handleSearch} className="admin-form">
-          <div className="mb-3">
-            <label className="form-label">Supplier</label>
-            <select
-              className="form-control"
-              value={provider}
-              onChange={(e) => setProvider(e.target.value)}
-            >
-              {providers.map((p) => (
-                <option key={p.name} value={p.name}>{p.label}</option>
-              ))}
-            </select>
-          </div>
-
           <div className="mb-3">
             <label className="form-label">Search</label>
             <input
