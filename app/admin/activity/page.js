@@ -6,7 +6,7 @@ import { fetchActivity, fetchActivityTypes, fetchJobLogs } from '@/lib/api/admin
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
 
 export const metadata = {
-  title: 'Activity|Teracom Solutions',
+  title: 'Audit log|Teracom Solutions',
 };
 
 export default async function AdminActivityPage() {
@@ -40,12 +40,13 @@ export default async function AdminActivityPage() {
   return (
     <AdminShell>
       <h1 className="admin-heading">
-        Activity <AdminHelpIcon>
+        Audit log <AdminHelpIcon>
           <h4>What this page is for</h4>
           <p>
-            Everything staff and the system did, newest first: imports, uploads,
-            publishing, price changes, questions put to the assistant and more.
-            Use it to see exactly what happened, and when, while looking into a problem.
+            Everything staff and the system did, newest first, as an audit trail:
+            imports, uploads, publishing, price changes, questions put to the
+            assistant and more. Use it to see exactly what happened, and when,
+            while looking into a problem.
           </p>
 
           <h4>How to read it</h4>
@@ -77,7 +78,9 @@ export default async function AdminActivityPage() {
       </h1>
 
       <p className="lead">
-        What staff and the system did, and how the background jobs are going.
+        Who did what, and when: what staff and the system did, and how the
+        background jobs are going. Filter by kind, person or date, open a line
+        for everything recorded about it, and export what you see to a CSV file.
       </p>
 
       {loadError ? (

@@ -63,5 +63,12 @@ export const GET = withAdminSession(async ({ req, token }) => {
     q = qParam.trim().substring(0, 100)
   }
 
-  return NextResponse.json(await fetchActivity(token, { limit, offset, before, event_type, q }))
+  // since and until = a day written YYYY-MM-DD (empty text when missing or not in that form)
+  const dayPattern = /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/
+  const sinceParam = params.get('since') || ''
+  const untilParam = params.get('until') || ''
+  const since = dayPattern.test(sinceParam) ? sinceParam : ''
+  const until = dayPattern.test(untilParam) ? untilParam : ''
+
+  return NextResponse.json(await fetchActivity(token, { limit, offset, before, event_type, q, since, until }))
 })

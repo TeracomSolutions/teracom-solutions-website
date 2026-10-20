@@ -2903,3 +2903,11 @@ a.admin-status:hover { filter:brightness(1.15); }
 .admin-status.is-warn { background:rgba(255,193,7,.18); color:#ffd75e; }
 .admin-status.is-bad { background:rgba(255,23,23,.18); color:#ff8a8a; }
 .admin-status.is-muted { background:rgba(255,255,255,.08); color:var(--muted); }
+
+/* ---- Admin: Audit log ---- */
+.audit-log-row { cursor:pointer; }
+.audit-log-row:hover { background:rgba(255,255,255,.04); }
+.audit-log-row:focus-visible { outline:2px solid #4aa3ff; outline-offset:-2px; }
+.audit-detail-list { display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:8px 20px; margin:0; padding:8px 4px; }
+.audit-detail-item dt { font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); }
+.audit-detail-item dd { margin:0; overflow-wrap:anywhere; }
