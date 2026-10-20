@@ -3,8 +3,8 @@ import { withAdminSession } from '@/lib/adminApi';
 import { marketplaceCall } from '@/lib/api/adminMarketplace';
 
 const UUID = '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}';
-const GET_PATHS = new RegExp('^(status|search|price-check|products|orders|products/' + UUID + '/review)$');
-const POST_PATHS = new RegExp('^(import|orders/prepare|products/' + UUID + '/(approve|reject)|orders/' + UUID + '/(submit|tracking))$');
+const GET_PATHS = new RegExp('^(status|suppliers|search|price-check|products|orders|products/' + UUID + '/review)$');
+const POST_PATHS = new RegExp('^(import|products/manual|orders/prepare|products/' + UUID + '/(approve|reject)|orders/' + UUID + '/(submit|tracking))$');
 
 function pathOf(params) {
   return (params.path || []).join('/');

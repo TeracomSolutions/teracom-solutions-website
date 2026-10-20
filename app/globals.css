@@ -2896,3 +2896,10 @@ a.admin-status:hover { filter:brightness(1.15); }
   .store-search-section { padding:12px 0 0; }
   .store-categories-section { padding:20px 0 64px; }
 }
+
+/* ---- Admin: Marketplace supplier cards ---- */
+.admin-card.is-selected { border-color:#4aa3ff; box-shadow:0 0 0 1px #4aa3ff inset; }
+.admin-status.is-good { background:rgba(40,167,69,.2); color:#7ee29a; }
+.admin-status.is-warn { background:rgba(255,193,7,.18); color:#ffd75e; }
+.admin-status.is-bad { background:rgba(255,23,23,.18); color:#ff8a8a; }
+.admin-status.is-muted { background:rgba(255,255,255,.08); color:var(--muted); }
