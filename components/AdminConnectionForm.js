@@ -37,6 +37,26 @@ const HOW_TO = {
     'When it has deployed, open the resource and go to Keys and Endpoint. Copy KEY 1 into the Azure Speech key box here. The region box should match the one you chose, australiaeast for Australia East.',
     'Set Voice engine to azure, pick a voice (Natasha is the default Australian one), Save, press Test, then Hear it to listen.',
   ],
+  marketplace: [
+    'Read-only lets you search suppliers and import drafts. Sending orders to suppliers stays off until you switch it on here, and each order still needs your approval and a tick.',
+    'Supplier prices are converted to Australian dollars at the rate below; update it when the exchange rate moves.',
+  ],
+  mp_cj: [
+    'Sign in to CJ Dropshipping (cjdropshipping.com). In the left menu open Apps, then Install App, and under Others install the API app (skip this if it already shows a green tick).',
+    'Open the API tab of your CJ account and press Add API. Name it Teracom, set Type to API Key and press Confirm.',
+    'Copy the API Key from that row and paste it into the CJ API key box here. Leave Test mode on until you are happy: in test mode CJ makes sandbox orders that are not real and not paid.',
+    'Press Save, then Test.',
+  ],
+  mp_aliexpress: [
+    'Create a developer account at openservice.aliexpress.com, open App Console and apply for the Dropshipping Developer application category. AliExpress reviews and approves it.',
+    'When it is approved, create your app. Callback URL: https://www.teracomsolutions.com.au/api/admin/marketplace/aliexpress/callback',
+    'Copy the App Key and App Secret from the app into the boxes here and press Save.',
+    'On the Marketplace page press Connect AliExpress and sign in with the AliExpress account that will place the orders. In test mode orders are created but not paid.',
+  ],
+  mp_banggood: [
+    'Banggood only gives API access to approved dropshippers. Apply through the Banggood Open Platform (api.banggood.com); your server address has to be registered with them.',
+    'When you are approved, copy the App ID and App Secret into the boxes here and press Save. The Banggood connector is not built yet; the keys are kept safely until it is.',
+  ],
 };
 
 export default function AdminConnectionForm({ connection, onSaved, onCancel }) {

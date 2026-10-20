@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import AdminConnectionForm from '@/components/AdminConnectionForm';
 import { supplierBadge, findConnection } from '../lib/marketplaceView.js';
+import { marketplaceRequest } from '../lib/marketplaceClient.js';
 
 export default function MarketplaceSuppliers({ suppliers, connections, selected, onSelect, onChanged }) {
   const [editing, setEditing] = useState('');
@@ -27,6 +28,18 @@ export default function MarketplaceSuppliers({ suppliers, connections, selected,
     } finally {
       setBusy('');
     }
+  }
+
+  async function connect(name) {
+    setBusy(name);
+    setError('');
+    const res = await marketplaceRequest(name + '/authorize', { method: 'POST' });
+    if (res.ok && res.data && res.data.url) {
+      window.location.href = res.data.url;
+      return;
+    }
+    setError(res.error || 'Could not start the sign-in.');
+    setBusy('');
   }
 
   const list = suppliers || [];
@@ -83,6 +96,14 @@ export default function MarketplaceSuppliers({ suppliers, connections, selected,
                   </button>
                 ) : null}
               </div>
+              {supplier.connect === 'oauth' && supplier.status !== 'not_set_up' ? (
+                <div>
+                  <p className="admin-muted">{supplier.connected ? 'Signed in to ' + supplier.label + '.' : 'Not signed in to ' + supplier.label + ' yet.'}</p>
+                  <button type="button" className="btn btn-sm btn-primary" disabled={busy === supplier.name} onClick={() => connect(supplier.name)}>
+                    {(supplier.connected ? 'Sign in again to ' : 'Connect ') + supplier.label}
+                  </button>
+                </div>
+              ) : null}
               {editing === key && key ? (
                 conn ? (
                   <AdminConnectionForm
