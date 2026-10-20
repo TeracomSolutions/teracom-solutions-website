@@ -2916,3 +2916,13 @@ a.admin-status:hover { filter:brightness(1.15); }
 .admin-permission-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:10px; margin:10px 0; }
 .admin-permission-grid .admin-card { padding:12px 14px; }
 .admin-permission-grid select { width:100%; margin-top:6px; }
+
+/* ---- Admin: Audit log layout and spacing ---- */
+.audit-filters { display:flex; flex-wrap:wrap; gap:14px 16px; align-items:flex-end; margin:18px 0 20px; padding:16px 18px; border:1px solid var(--line); border-radius:14px; background:rgba(255,255,255,.03); }
+.audit-filter { display:grid; gap:6px; min-width:150px; font-size:12px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); }
+.audit-filter input, .audit-filter select { font-size:14px; font-weight:400; letter-spacing:normal; text-transform:none; color:inherit; }
+.audit-filter-wide { flex:1 1 260px; }
+.audit-filter-actions { display:flex; flex-wrap:wrap; gap:10px; align-items:center; }
+.audit-pager { margin:14px 0; }
+.audit-log-table th, .audit-log-table td { padding:12px 14px; vertical-align:top; }
+@media (max-width: 600px) { .audit-filter { min-width:100%; } .audit-filters { padding:14px; } }
