@@ -90,6 +90,13 @@ export default function AdminStoreTabs() {
       >
         {contentTabLabel(needsLook)}
       </Link>
+      <Link
+        href="/admin/marketplace"
+        className={isAreaActive({ href: '/admin/marketplace' }, pathname) ? 'admin-tab active' : 'admin-tab'}
+        aria-current={isAreaActive({ href: '/admin/marketplace' }, pathname) ? 'page' : undefined}
+      >
+        Marketplace
+      </Link>
     </nav>
   );
 }
