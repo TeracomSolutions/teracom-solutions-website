@@ -57,6 +57,13 @@ const HOW_TO = {
     'Banggood only gives API access to approved dropshippers. Apply through the Banggood Open Platform (api.banggood.com); your server address has to be registered with them.',
     'When you are approved, copy the App ID and App Secret into the boxes here and press Save. The Banggood connector is not built yet; the keys are kept safely until it is.',
   ],
+  web_search: [
+    'DuckDuckGo needs no key but often returns nothing. For reliable results pick another engine and paste its key.',
+    'Serper (serper.dev) gives Google results: sign up, copy the API key from the dashboard (2,500 free searches, then pay as you go).',
+    'Tavily (tavily.com) is built for AI: sign up and copy the API key that starts with tvly- (1,000 free searches a month).',
+    'Brave Search (api-dashboard.search.brave.com): create a subscription token (it has a free plan); Scout research falls back to DuckDuckGo with Brave, Tera and the checks use it.',
+    'Choose the engine, paste the key, Save, then press Test. If the chosen engine ever fails, DuckDuckGo is used instead.',
+  ],
 };
 
 export default function AdminConnectionForm({ connection, onSaved, onCancel }) {
