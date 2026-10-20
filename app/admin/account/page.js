@@ -8,7 +8,7 @@ import AdminStaffUsers from '@/components/AdminStaffUsers';
 import AdminTabs from '@/components/AdminTabs';
 import AdminTwoFactor from '@/components/AdminTwoFactor';
 import { getStaffSession, staffMe, staffMfaStatus } from '@/lib/api/adminAuth';
-import { listStaffUsers } from '@/lib/api/adminStaffUsers';
+import { listStaffUsers, fetchPermissionsCatalogue } from '@/lib/api/adminStaffUsers';
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
 
 export const metadata = {
@@ -46,9 +46,11 @@ export default async function AdminAccountPage() {
   // Load users only for platform_admin
   let users = null;
   let usersError = '';
+  let catalogue = null;
   if (staffRole === 'platform_admin') {
     try {
       users = await listStaffUsers(token);
+      try { catalogue = await fetchPermissionsCatalogue(token); } catch (err) { if (isSessionError(err)) redirect('/admin/login'); catalogue = null; }
     } catch (err) {
       if (isSessionError(err)) redirect('/admin/login');
       users = null;
@@ -57,15 +59,15 @@ export default async function AdminAccountPage() {
   }
 
   const tabs = [
-    { 
-      key: 'me', 
-      label: 'My account', 
+    {
+      key: 'me',
+      label: 'My account',
       content: (
         <>
           <AdminSessionSettings initial={session} />
           {loadError ? <p className="form-error" role="alert">{loadError}</p> : <> <AdminChangePassword mfaEnabled={Boolean(status?.enabled)} /> <AdminTwoFactor initialStatus={status} email={email} /></>}
         </>
-      ) 
+      )
     }
   ];
 
@@ -73,9 +75,9 @@ export default async function AdminAccountPage() {
     tabs.push({
       key: 'users',
       label: 'Users',
-      content: usersError ? 
-        <p className="form-error" role="alert">{usersError}</p> : 
-        <AdminStaffUsers initialUsers={users} currentId={meId} />
+      content: usersError ?
+        <p className="form-error" role="alert">{usersError}</p> :
+        <AdminStaffUsers initialUsers={users} currentId={meId} catalogue={catalogue} />
     });
   }
 
@@ -105,6 +107,7 @@ export default async function AdminAccountPage() {
             <li>The Users tab lists everyone who can sign in</li>
             <li>Add a user gives a temporary password shown once (copy it and give it to them privately; they change it under Change password)</li>
             <li>Edit changes name, email or role</li>
+            <li>Permissions sets what a user can do: Administrators can do everything; a Limited access user gets No access, Read only or Read and write for each section, or starts from a preset (Manager, Viewer). The backend enforces it, and every change is in the Audit log</li>
             <li>Switch off stops someone signing in without deleting them</li>
             <li>Reset password gives a new temporary password and signs them out</li>
             <li>Reset two-factor clears their two-factor so they can set it up again</li>

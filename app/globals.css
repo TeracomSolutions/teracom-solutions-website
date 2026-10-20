@@ -2911,3 +2911,8 @@ a.admin-status:hover { filter:brightness(1.15); }
 .audit-detail-list { display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:8px 20px; margin:0; padding:8px 4px; }
 .audit-detail-item dt { font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); }
 .audit-detail-item dd { margin:0; overflow-wrap:anywhere; }
+
+/* ---- Admin: staff permissions ---- */
+.admin-permission-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:10px; margin:10px 0; }
+.admin-permission-grid .admin-card { padding:12px 14px; }
+.admin-permission-grid select { width:100%; margin-top:6px; }
