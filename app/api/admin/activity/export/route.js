@@ -17,6 +17,8 @@ export const GET = withAdminSession(async ({ req, token }) => {
   if (DAY.test(since)) forward.set('since', since)
   const until = incoming.get('until') || ''
   if (DAY.test(until)) forward.set('until', until)
+  const who = incoming.get('who') || ''
+  if (who === 'system' || /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(who)) forward.set('who', who)
   const query = forward.toString()
   const url = BACKEND_API_URL.replace(/[/]$/, '') + '/staff/activity/export' + (query ? '?' + query : '')
   const response = await fetch(url, { headers: { Authorization: 'Bearer ' + token }, cache: 'no-store' })

@@ -15,7 +15,9 @@ export default function AdminAuditLog({ initial }) {
   const [eventType, setEventType] = useState('');
   const [since, setSince] = useState('');
   const [until, setUntil] = useState('');
-  const [applied, setApplied] = useState({ q: '', eventType: '', since: '', until: '' });
+  const [who, setWho] = useState('');
+  const people = initial.people || [];
+  const [applied, setApplied] = useState({ q: '', eventType: '', since: '', until: '', who: '' });
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [open, setOpen] = useState('');
@@ -29,6 +31,7 @@ export default function AdminAuditLog({ initial }) {
       if (filters.eventType) params.set('event_type', filters.eventType);
       if (filters.since) params.set('since', filters.since);
       if (filters.until) params.set('until', filters.until);
+      if (filters.who) params.set('who', filters.who);
 
       const response = await fetch('/api/admin/activity?' + params.toString());
       const result = await response.json().catch(() => ({}));
@@ -48,7 +51,7 @@ export default function AdminAuditLog({ initial }) {
 
   function handleSearch(event) {
     event.preventDefault();
-    load(0, pageSize, { q, eventType, since, until });
+    load(0, pageSize, { q, eventType, since, until, who });
   }
 
   function handleReset() {
@@ -56,7 +59,8 @@ export default function AdminAuditLog({ initial }) {
     setEventType('');
     setSince('');
     setUntil('');
-    load(0, pageSize, { q: '', eventType: '', since: '', until: '' });
+    setWho('');
+    load(0, pageSize, { q: '', eventType: '', since: '', until: '', who: '' });
   }
 
   function changePageSize(size) {
@@ -70,69 +74,90 @@ export default function AdminAuditLog({ initial }) {
 
   return (
     <div>
-      <form onSubmit={handleSearch} className="admin-form">
-        <input
-          type="text"
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-          placeholder="Search: a product, file, supplier, person..."
-          maxLength="100"
-          className="form-control"
-        />
-        <select
-          value={eventType}
-          onChange={(e) => setEventType(e.target.value)}
-          className="form-control"
-        >
-          <option value="">All kinds</option>
-          {(initial.types || []).map((type) => (
-            <option key={type.type} value={type.type}>
-              {type.label} ({type.count})
-            </option>
-          ))}
-        </select>
-        <label>
+      <form className="audit-filters" onSubmit={handleSearch}>
+        <label className="audit-filter audit-filter-wide">
+          Search
+          <input
+            type="text"
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder="A product, file, supplier, person..."
+            maxLength="100"
+          />
+        </label>
+        <label className="audit-filter">
+          Who
+          <select
+            value={who}
+            onChange={(e) => setWho(e.target.value)}
+          >
+            <option value="">Everyone</option>
+            <option value="system">The system on its own</option>
+            {people.map((person) => (
+              <option key={person.id} value={person.id}>
+                {person.label}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className="audit-filter">
+          What kind
+          <select
+            value={eventType}
+            onChange={(e) => setEventType(e.target.value)}
+          >
+            <option value="">All kinds</option>
+            {(initial.types || []).map((type) => (
+              <option key={type.type} value={type.type}>
+                {type.label} ({type.count})
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className="audit-filter">
           From
           <input
             type="date"
             value={since}
             onChange={(e) => setSince(e.target.value)}
-            className="form-control"
           />
         </label>
-        <label>
+        <label className="audit-filter">
           To
           <input
             type="date"
             value={until}
             onChange={(e) => setUntil(e.target.value)}
-            className="form-control"
           />
         </label>
-        <button type="submit" className="btn btn-primary btn-sm" disabled={busy}>
-          Search
-        </button>
-        <button type="button" className="btn btn-secondary btn-sm" onClick={handleReset}>
-          Reset
-        </button>
-        <a
-          className="btn btn-secondary btn-sm"
-          href={'/api/admin/activity/export' + exportQuery(applied)}
-        >
-          Export to CSV
-        </a>
+        <div className="audit-filter-actions">
+          <button type="submit" className="btn btn-primary btn-sm" disabled={busy}>
+            Search
+          </button>
+          <button type="button" className="btn btn-secondary btn-sm" onClick={handleReset}>
+            Reset
+          </button>
+          <a
+            className="btn btn-secondary btn-sm"
+            href={'/api/admin/activity/export' + exportQuery(applied)}
+          >
+            Export to CSV
+          </a>
+        </div>
       </form>
 
       {error ? <p className="form-error" role="alert">{error}</p> : null}
 
-      <AdminPager
-        total={total}
-        offset={offset}
-        pageSize={pageSize}
-        busy={busy}
-        onPage={(next) => load(next)}
-        onSize={changePageSize}
-      />
+      <div className="audit-pager">
+        <AdminPager
+          total={total}
+          offset={offset}
+          pageSize={pageSize}
+          busy={busy}
+          onPage={(next) => load(next)}
+          onSize={changePageSize}
+        />
+      </div>
 
       <div className="admin-table-wrap">
         <table className="admin-table audit-log-table">
@@ -193,14 +218,16 @@ export default function AdminAuditLog({ initial }) {
         </table>
       </div>
 
-      <AdminPager
-        total={total}
-        offset={offset}
-        pageSize={pageSize}
-        busy={busy}
-        onPage={(next) => load(next)}
-        onSize={changePageSize}
-      />
+      <div className="audit-pager">
+        <AdminPager
+          total={total}
+          offset={offset}
+          pageSize={pageSize}
+          busy={busy}
+          onPage={(next) => load(next)}
+          onSize={changePageSize}
+        />
+      </div>
     </div>
   );
 }

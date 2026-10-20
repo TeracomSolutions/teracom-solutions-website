@@ -70,5 +70,9 @@ export const GET = withAdminSession(async ({ req, token }) => {
   const since = dayPattern.test(sinceParam) ? sinceParam : ''
   const until = dayPattern.test(untilParam) ? untilParam : ''
 
-  return NextResponse.json(await fetchActivity(token, { limit, offset, before, event_type, q, since, until }))
+  // who = one staff member's id, or the word system (empty text when missing or not in that form)
+  const whoParam = params.get('who') || ''
+  const who = whoParam === 'system' || /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(whoParam) ? whoParam : ''
+
+  return NextResponse.json(await fetchActivity(token, { limit, offset, before, event_type, q, since, until, who }))
 })

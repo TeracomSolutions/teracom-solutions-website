@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation';
 import AdminActivity from '@/components/AdminActivity';
 import AdminHelpIcon from '@/components/AdminHelpIcon';
 import AdminShell from '@/components/AdminShell';
-import { fetchActivity, fetchActivityTypes, fetchJobLogs } from '@/lib/api/adminActivity';
+import { fetchActivity, fetchActivityPeople, fetchActivityTypes, fetchJobLogs } from '@/lib/api/adminActivity';
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
 
 export const metadata = {
@@ -12,7 +12,7 @@ export const metadata = {
 export default async function AdminActivityPage() {
   const token = await requireAdminToken();
 
-  let initial = { rows: [], next_before: null, types: [], logs: [] };
+  let initial = { rows: [], next_before: null, types: [], logs: [], people: [] };
   let loadError = '';
 
   try {
@@ -29,6 +29,15 @@ export default async function AdminActivityPage() {
       types: types.types || [],
       logs: logs.logs || []
     };
+
+    try {
+      const who = await fetchActivityPeople(token);
+      initial.people = who.people || [];
+    } catch (err) {
+      if (isSessionError(err)) {
+        redirect('/admin/login');
+      }
+    }
   } catch (err) {
     if (isSessionError(err)) {
       redirect('/admin/login');
