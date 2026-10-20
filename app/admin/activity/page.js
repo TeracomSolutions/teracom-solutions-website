@@ -87,9 +87,7 @@ export default async function AdminActivityPage() {
       </h1>
 
       <p className="lead">
-        Who did what, and when: what staff and the system did, and how the
-        background jobs are going. Filter by kind, person or date, open a line
-        for everything recorded about it, and export what you see to a CSV file.
+        Who did what, and when. Filter the list by person, kind or date, click a line to see everything recorded, and export what you see to a CSV file. The Job logs and System tabs show what the background jobs and the server did on their own.
       </p>
 
       {loadError ? (
