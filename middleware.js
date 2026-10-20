@@ -8,6 +8,7 @@ import {
   decodeJwtPayload,
   needsRefresh,
   replaceCookie,
+  secureCookies,
   signOutReason,
 } from './lib/adminIdle.js';
 import { TIMEOUT_MS, createRedirectCache, isConsolePath, lookup } from './lib/seoRedirects.js';
@@ -97,7 +98,7 @@ export async function middleware(req) {
     return NextResponse.next();
   }
 
-  const options = cookieOptions(process.env.NODE_ENV === 'production');
+  const options = cookieOptions(secureCookies());
 
   if (answer.status === 401) {
     const data = await answer.json().catch(() => ({}));

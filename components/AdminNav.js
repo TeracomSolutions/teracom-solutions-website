@@ -26,6 +26,7 @@ export const ADMIN_AREAS = [
   { href: '/admin/support', label: 'Support' },
   { href: '/admin/suppliers', label: 'Store', match: ['/admin/catalog', '/admin/pricing', '/admin/brands', '/admin/freight', '/admin/review', '/admin/content', '/admin/marketplace'] },
   { href: '/admin/website-data', label: 'Website Data' },
+  { href: '/admin/about', label: 'About' },
 ];
 
 export default function AdminNav() {
