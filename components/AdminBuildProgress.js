@@ -200,6 +200,31 @@ export default function AdminBuildProgress({ initial }) {
         <Jobs title="Running now" jobs={running} empty="Nothing is running." />
         <Jobs title="Waiting in the queue" jobs={pending} empty="Nothing is waiting." />
         <Jobs title="Recent jobs" jobs={jobs} empty="No recent jobs reported." />
+        <div className="bp-panel-block">
+          <h4>Recent OpenHands conversations</h4>
+          {(factory.recent_conversations || []).length === 0 ? (
+            <p className="admin-muted">None in the last day.</p>
+          ) : (
+            <div className="admin-table-wrap">
+              <table className="admin-table">
+                <thead>
+                  <tr><th>Conversation</th><th>Status</th><th>Steps</th><th>Time</th><th>Tokens</th></tr>
+                </thead>
+                <tbody>
+                  {factory.recent_conversations.map((c) => (
+                    <tr key={c.id}>
+                      <td>{c.id}</td>
+                      <td><span className={`bp-chip is-${jobTone(c.status)}`}>{c.status}</span></td>
+                      <td>{c.events}</td>
+                      <td>{formatDuration(c.duration_s)}</td>
+                      <td>{formatTokens(c.tokens)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
       </section>
 
       <section className="admin-card bp-group">
