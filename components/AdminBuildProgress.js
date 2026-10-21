@@ -34,12 +34,19 @@ function Bar({ index }) {
   );
 }
 
-function Item({ item }) {
+function Item({ item, onMove, busy, isFirst, isLast }) {
   return (
     <div className="bp-item">
       <div className="bp-item-head">
         <strong>{item.title}</strong>
         <span className="bp-owner">{item.owner}</span>
+      </div>
+      <div className="bp-move">
+        <span className="bp-rank" title="Place in the coding order">#{item.rank}</span>
+        <button type="button" className="btn btn-secondary btn-sm" onClick={() => onMove(item.id, 'up')} disabled={busy || isFirst} aria-label={`Move ${item.title} up`}>Up</button>
+        <button type="button" className="btn btn-secondary btn-sm" onClick={() => onMove(item.id, 'down')} disabled={busy || isLast} aria-label={`Move ${item.title} down`}>Down</button>
+        <button type="button" className="btn btn-secondary btn-sm" onClick={() => onMove(item.id, 'top')} disabled={busy || isFirst}>Do next in this group</button>
+        <button type="button" className="btn btn-primary btn-sm" onClick={() => onMove(item.id, 'first')} disabled={busy || item.rank === 1}>Do first</button>
       </div>
       <Bar index={item.stage_index} />
       <p className="admin-muted bp-note">
@@ -111,6 +118,25 @@ function Jobs({ title, jobs, empty }) {
 export default function AdminBuildProgress({ initial }) {
   const [data, setData] = useState(initial);
   const [error, setError] = useState('');
+  const [moving, setMoving] = useState(false);
+
+  async function move(itemId, to) {
+    setMoving(true);
+    try {
+      const response = await fetch('/api/admin/build-progress/move', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ item_id: itemId, to }),
+      });
+      if (!response.ok) throw new Error('move failed');
+      setData(await response.json());
+      setError('');
+    } catch {
+      setError('Could not change the order. Try again.');
+    } finally {
+      setMoving(false);
+    }
+  }
 
   useEffect(() => {
     let cancelled = false;
@@ -159,6 +185,10 @@ export default function AdminBuildProgress({ initial }) {
         Factory information {data.factory_age ? formatAge(data.factory_age.age_minutes) : 'not received'}; GitHub information {data.github_age ? formatAge(data.github_age.age_minutes) : 'not received'}. This page refreshes every minute.
       </p>
 
+      <p className="admin-muted">
+        Use Up, Down, Do next or Do first to choose what is coded first. The number is the place in the coding order. Queued coding tasks that belong to an item follow this order; every change is recorded in the Audit log.
+      </p>
+
       <div className="bp-chips" aria-label="Summary">
         <span className="bp-chip">{(data.summary && data.summary.total) || 0} items</span>
         {STAGES.map((stage) => (
@@ -172,7 +202,9 @@ export default function AdminBuildProgress({ initial }) {
         groups.map((group) => (
           <section key={group.name} className="admin-card bp-group">
             <h2>{group.name}</h2>
-            {group.items.map((item) => <Item key={item.id} item={item} />)}
+            {group.items.map((item, n) => (
+              <Item key={item.id} item={item} onMove={move} busy={moving} isFirst={n === 0} isLast={n === group.items.length - 1} />
+            ))}
           </section>
         ))
       )}

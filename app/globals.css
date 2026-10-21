@@ -2963,3 +2963,5 @@ a.admin-status:hover { filter:brightness(1.15); }
 .ai-env span { font-size:12px; color:var(--soft); }
 .ai-env.active { border-color:var(--red); background:rgba(255,23,23,.12); }
 @media (max-width: 600px) { .ai-env-switch { grid-template-columns:1fr; } }
+.bp-move { display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin:8px 0 2px; }
+.bp-rank { font-weight:800; font-size:13px; padding:2px 8px; border-radius:8px; background:rgba(255,255,255,.1); }
