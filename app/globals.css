@@ -2929,3 +2929,30 @@ a.admin-status:hover { filter:brightness(1.15); }
 
 /* ---- Admin: Audit log tab bar ---- */
 .admin-main .admin-actions + .audit-filters, .admin-main .admin-actions + div > .audit-filters { margin-top:16px; }
+
+/* ---- Admin: Build progress (Robert, 2026-10-22) ---- */
+.bp-page { display:grid; gap:18px; }
+.bp-chips { display:flex; flex-wrap:wrap; gap:8px; margin:6px 0 4px; }
+.bp-chip { display:inline-block; padding:3px 10px; border-radius:999px; font-size:12px; font-weight:700; background:rgba(255,255,255,.08); color:#fff; white-space:nowrap; }
+.bp-chip.is-ok { background:rgba(40,167,69,.2); color:#7ee29a; }
+.bp-chip.is-bad { background:rgba(255,23,23,.18); color:#ff8a8a; }
+.bp-chip.is-busy { background:rgba(80,160,255,.2); color:#9cc9ff; }
+.bp-chip.is-wait { background:rgba(255,193,7,.15); color:#ffd75e; }
+.bp-group h2 { margin-top:0; }
+.bp-item { padding:14px 0; border-top:1px solid var(--line); }
+.bp-item:first-of-type { border-top:0; }
+.bp-item-head { display:flex; justify-content:space-between; gap:12px; align-items:baseline; flex-wrap:wrap; }
+.bp-owner { font-size:12px; color:var(--soft); }
+.bp-bar { list-style:none; display:grid; grid-template-columns:repeat(5, 1fr); gap:4px; margin:10px 0 6px; padding:0; }
+.bp-bar li { border-radius:6px; padding:5px 6px; font-size:11px; font-weight:700; text-align:center; background:rgba(255,255,255,.06); color:var(--soft); }
+.bp-bar li.is-done { background:rgba(40,167,69,.22); color:#9be7b0; }
+.bp-bar li.is-current { background:var(--red); color:#fff; }
+.bp-note { margin:4px 0; }
+.bp-prs { display:flex; flex-wrap:wrap; gap:6px; margin:6px 0 0; }
+.bp-panel-block { margin-top:16px; }
+.bp-panel-block h4 { margin:0 0 8px; }
+.bp-meter { position:relative; display:inline-block; width:120px; height:16px; border-radius:8px; background:rgba(255,255,255,.1); overflow:hidden; vertical-align:middle; }
+.bp-meter span { position:absolute; inset:0 auto 0 0; background:rgba(80,160,255,.55); }
+.bp-meter em { position:relative; display:block; text-align:center; font-size:11px; font-style:normal; line-height:16px; }
+.bp-sessions { margin:0; padding-left:18px; }
+@media (max-width: 600px) { .bp-bar { grid-template-columns:repeat(5, minmax(0, 1fr)); } .bp-bar li { font-size:10px; padding:4px 2px; } }
