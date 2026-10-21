@@ -1,11 +1,12 @@
 import { redirect } from 'next/navigation';
 
+import AdminAiAutoCheck from '@/components/AdminAiAutoCheck';
 import AdminAiConnectionsPanel from '@/components/AdminAiConnectionsPanel';
 import AdminAiGovernance from '@/components/AdminAiGovernance';
 import AdminAiTabs from '@/components/AdminAiTabs';
 import AdminHelpIcon from '@/components/AdminHelpIcon';
 import AdminShell from '@/components/AdminShell';
-import { fetchAiProviders, fetchAiRouting, fetchGovernanceRules, listAiConnections } from '@/lib/api/adminAiConnections';
+import { fetchAiAutoCheck, fetchAiProviders, fetchAiRouting, fetchGovernanceRules, listAiConnections } from '@/lib/api/adminAiConnections';
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
 
 export const metadata = {
@@ -19,6 +20,7 @@ export default async function AdminAiConnectionsPage() {
   let providers = [];
   let routing = null;
   let rules = [];
+  let autoCheck = null;
   let loadError = '';
   let rulesError = '';
 
@@ -38,6 +40,11 @@ export default async function AdminAiConnectionsPage() {
   } catch (err) {
     if (isSessionError(err)) redirect('/admin/login');
     routing = null;
+  }
+  try {
+    autoCheck = await fetchAiAutoCheck(token);
+  } catch {
+    autoCheck = null;
   }
   try {
     rules = await fetchGovernanceRules(token);
@@ -66,6 +73,7 @@ export default async function AdminAiConnectionsPage() {
             <li><strong>Order</strong>: the arrows move a connection earlier or later; both the Assistant and Scout follow the new order from the next request. A provider that fails is skipped for that request and tried again on the next one.</li>
             <li><strong>Key</strong> shows only the last four characters of a stored key, <em>host</em> for a self-hosted model, or <em>none needed</em> for the Internet.</li>
             <li><strong>Status</strong> and <strong>Last message from the provider</strong> come from the last real call or check: out of credit and key rejected both need a visit to that provider&apos;s console.</li>
+            <li><strong>Automatic checks</strong> (below the table) check every enabled connection on the schedule you choose and retry a failing one up to five times, so a dropped connection comes back by itself; <strong>Check all now</strong> does the same straight away.</li>
             <li><strong>Check now</strong> sends one tiny real request (for the Internet, one real search). <strong>Edit</strong> fills the form below; <strong>Remove</strong> deletes the connection and its key.</li>
           </ul>
           <h4>Adding or changing a connection</h4>
@@ -87,12 +95,15 @@ export default async function AdminAiConnectionsPage() {
 
       <AdminAiTabs
         connections={(
-          <AdminAiConnectionsPanel
-            initialConnections={connections}
-            initialRouting={routing}
-            providers={providers}
-            loadError={loadError}
-          />
+          <>
+            <AdminAiConnectionsPanel
+              initialConnections={connections}
+              initialRouting={routing}
+              providers={providers}
+              loadError={loadError}
+            />
+            <AdminAiAutoCheck initial={autoCheck} />
+          </>
         )}
         governance={<AdminAiGovernance initialRules={rules} providers={modelProviders} loadError={rulesError} />}
       />
