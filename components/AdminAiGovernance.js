@@ -19,7 +19,8 @@ async function send(url, method, body) {
   return data;
 }
 
-const EMPTY = { title: '', rule_text: '', category: 'conduct', mode: 'instruct', scope: 'all' };
+const EMPTY = { title: '', rule_text: '', category: 'conduct', mode: 'instruct', scope: 'all', audience: 'both' };
+const AUDIENCES = [['both', 'Both (website and back end)'], ['website', 'Website only (Tera)'], ['console', 'Back end only (Assistant, Scout, lead drafts)']];
 
 function RuleFields({ value, onChange }) {
   const set = (field) => (event) => onChange({ ...value, [field]: event.target.value });
@@ -50,6 +51,12 @@ function RuleFields({ value, onChange }) {
           Applies to
           <select value={value.scope} onChange={set('scope')}>
             {SCOPES.map(([k, l]) => <option key={k} value={k}>{l}</option>)}
+          </select>
+        </label>
+        <label>
+          Audience
+          <select value={value.audience || 'both'} onChange={set('audience')}>
+            {AUDIENCES.map(([k, l]) => <option key={k} value={k}>{l}</option>)}
           </select>
         </label>
       </div>
@@ -104,8 +111,8 @@ export default function AdminAiGovernance({ initialRules, providers, loadError }
     const found = validateRule(editing);
     setErrors(found);
     if (found.length) return;
-    const { id, title, rule_text: ruleText, category, mode, scope } = editing;
-    run(`save:${id}`, () => send(`/api/admin/ai-connections/governance/${id}`, 'PUT', { title, rule_text: ruleText, category, mode, scope }), 'Rule saved.').then((ok) => { if (ok) setEditing(null); });
+    const { id, title, rule_text: ruleText, category, mode, scope, audience } = editing;
+    run(`save:${id}`, () => send(`/api/admin/ai-connections/governance/${id}`, 'PUT', { title, rule_text: ruleText, category, mode, scope, audience }), 'Rule saved.').then((ok) => { if (ok) setEditing(null); });
   }
 
   function toggle(rule) {
@@ -154,6 +161,7 @@ export default function AdminAiGovernance({ initialRules, providers, loadError }
               <th>Category</th>
               <th>Enforcement</th>
               <th>Applies to</th>
+              <th>Audience</th>
               <th>On</th>
               <th></th>
             </tr>
@@ -189,6 +197,7 @@ export default function AdminAiGovernance({ initialRules, providers, loadError }
                 <td>{labelFor(CATEGORIES, rule.category)}</td>
                 <td>{labelFor(MODES, rule.mode)}</td>
                 <td>{labelFor(SCOPES, rule.scope)}</td>
+                <td>{labelFor(AUDIENCES, rule.audience || 'both')}</td>
                 <td>
                   <button type="button" className={`btn btn-sm ${rule.enabled ? 'btn-primary' : 'btn-secondary'}`} onClick={() => toggle(rule)} disabled={Boolean(busy)} aria-pressed={rule.enabled}>
                     {rule.enabled ? 'On' : 'Off'}

@@ -6,6 +6,8 @@ import AdminAiRoutingDiagram from '@/components/AdminAiRoutingDiagram';
 import { formatDateTime } from '@/lib/adminFormat';
 import { STATE_COLOURS, connectionRows, moveInOrder } from '@/lib/aiConnectionRows';
 
+const USED_FOR = { both: 'Both', website: 'Website (Tera)', console: 'Back end' };
+
 // Admin -> AI Connections, laid out the same as the TeracomAI Global
 // Platform's AI Provider Connections so the settings carry across one to
 // one: the diagram, one table in the order of preference, and one form.
@@ -33,6 +35,7 @@ export default function AdminAiConnectionsPanel({ initialConnections, initialRou
   const [apiKey, setApiKey] = useState('');
   const [baseUrl, setBaseUrl] = useState('');
   const [enabled, setEnabled] = useState(true);
+  const [audience, setAudience] = useState('both');
   const [isEditing, setIsEditing] = useState(false);
   const [saving, setSaving] = useState(false);
 
@@ -65,6 +68,7 @@ export default function AdminAiConnectionsPanel({ initialConnections, initialRou
     setApiKey('');
     setBaseUrl('');
     setEnabled(true);
+    setAudience('both');
     setIsEditing(false);
   }
 
@@ -82,7 +86,7 @@ export default function AdminAiConnectionsPanel({ initialConnections, initialRou
     setSaving(true);
     setError('');
     setNotice('');
-    const payload = { enabled };
+    const payload = { enabled, audience };
     if (defaultModel !== '') payload.default_model = defaultModel;
     if (baseUrl !== '') payload.base_url = baseUrl;
     if (apiKey !== '') payload.api_key = apiKey;
@@ -112,6 +116,7 @@ export default function AdminAiConnectionsPanel({ initialConnections, initialRou
     setBaseUrl(connection.base_url || '');
     setApiKey('');
     setEnabled(Boolean(connection.enabled));
+    setAudience(connection.audience || 'both');
     setIsEditing(true);
     document.getElementById('ai-connection-form')?.scrollIntoView({ behavior: 'smooth' });
   }
@@ -203,6 +208,7 @@ export default function AdminAiConnectionsPanel({ initialConnections, initialRou
               <tr>
                 <th>Order</th>
                 <th>Provider</th>
+                <th>Used for</th>
                 <th>Default model</th>
                 <th>Key</th>
                 <th>Status</th>
@@ -241,6 +247,7 @@ export default function AdminAiConnectionsPanel({ initialConnections, initialRou
                     {row.label}
                     <span className="admin-ai-kind">{row.kind.replace('_', '-')}</span>
                   </td>
+                  <td>{USED_FOR[connections.find((c) => c.provider === row.provider)?.audience || 'both']}</td>
                   <td className="admin-ai-wrap">{row.model || '-'}</td>
                   <td>{row.keyText}</td>
                   <td>
@@ -348,6 +355,14 @@ export default function AdminAiConnectionsPanel({ initialConnections, initialRou
         <label className="admin-check">
           <input type="checkbox" checked={enabled} onChange={(event) => setEnabled(event.target.checked)} />
           Enabled
+        </label>
+        <label>
+          Used for
+          <select value={audience} onChange={(event) => setAudience(event.target.value)}>
+            <option value="both">Both (the website and the back end)</option>
+            <option value="website">Website only (Tera, for visitors and customers)</option>
+            <option value="console">Back end only (the staff Assistant, Scout and lead drafts)</option>
+          </select>
         </label>
 
         <div className="admin-actions">
