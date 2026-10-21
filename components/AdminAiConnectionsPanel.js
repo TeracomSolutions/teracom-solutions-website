@@ -6,7 +6,7 @@ import AdminAiRoutingDiagram from '@/components/AdminAiRoutingDiagram';
 import { formatDateTime } from '@/lib/adminFormat';
 import { STATE_COLOURS, connectionRows, moveInOrder } from '@/lib/aiConnectionRows';
 
-const USED_FOR = { both: 'Both', website: 'Website (Tera)', console: 'Back end' };
+const USED_FOR = { both: 'Both (shared)', website: 'Front end (Tera)', console: 'Back end' };
 
 // Admin -> AI Connections, laid out the same as the TeracomAI Global
 // Platform's AI Provider Connections so the settings carry across one to
@@ -22,7 +22,7 @@ const PROVIDER_KINDS = [
 
 const needsKey = (kind) => kind === 'native' || kind === 'hosted';
 
-export default function AdminAiConnectionsPanel({ initialConnections, initialRouting, providers, loadError }) {
+export default function AdminAiConnectionsPanel({ initialConnections, initialRouting, providers, loadError, side }) {
   const [connections, setConnections] = useState(initialConnections || []);
   const [routing, setRouting] = useState(initialRouting || null);
   const [error, setError] = useState(loadError || '');
@@ -35,7 +35,7 @@ export default function AdminAiConnectionsPanel({ initialConnections, initialRou
   const [apiKey, setApiKey] = useState('');
   const [baseUrl, setBaseUrl] = useState('');
   const [enabled, setEnabled] = useState(true);
-  const [audience, setAudience] = useState('both');
+  const [audience, setAudience] = useState(side || 'both');
   const [isEditing, setIsEditing] = useState(false);
   const [saving, setSaving] = useState(false);
 
@@ -43,7 +43,12 @@ export default function AdminAiConnectionsPanel({ initialConnections, initialRou
   const entryFor = (name) => catalogue.find((p) => p.key === name) || null;
   const kindOf = (name) => entryFor(name)?.kind || (name === 'internet' ? 'source' : 'hosted');
   const labelFor = (name) => entryFor(name)?.label || name;
-  const rows = connectionRows(connections, routing, catalogue);
+  // One side at a time: the front end (website) or the back end (console). A shared connection shows on both.
+  const audienceOf = (c) => c.audience || 'both';
+  const shown = side
+    ? connections.filter((c) => (c.provider === 'internet' ? side === 'console' : audienceOf(c) === side || audienceOf(c) === 'both'))
+    : connections;
+  const rows = connectionRows(shown, routing, catalogue);
   const order = rows.map((row) => row.provider);
 
   // Refreshes the rows and the health without reloading the page, so the
@@ -68,7 +73,7 @@ export default function AdminAiConnectionsPanel({ initialConnections, initialRou
     setApiKey('');
     setBaseUrl('');
     setEnabled(true);
-    setAudience('both');
+    setAudience(side || 'both');
     setIsEditing(false);
   }
 
@@ -183,7 +188,14 @@ export default function AdminAiConnectionsPanel({ initialConnections, initialRou
 
   return (
     <section className="admin-card admin-ai-panel">
-      <h2>AI Provider Connections</h2>
+      <h2>{side === 'website' ? 'AI assistant for the front end: connections' : side === 'console' ? 'AI assistant for the back end: connections' : 'AI Provider Connections'}</h2>
+      {side && (
+        <p className="admin-muted">
+          {side === 'website'
+            ? 'The models Tera on the website may use. A connection is used by one assistant only; set Used for to Front end here. One that says Both (shared) is used by both assistants until you move it.'
+            : 'The models the staff Assistant, Scout and drafting may use. A connection is used by one assistant only; set Used for to Back end here. One that says Both (shared) is used by both assistants until you move it.'}
+        </p>
+      )}
       {error && <p className="form-error" role="alert">{error}</p>}
       {notice && <p className="form-note-banner" role="status">{notice}</p>}
 
@@ -359,9 +371,9 @@ export default function AdminAiConnectionsPanel({ initialConnections, initialRou
         <label>
           Used for
           <select value={audience} onChange={(event) => setAudience(event.target.value)}>
-            <option value="both">Both (the website and the back end)</option>
-            <option value="website">Website only (Tera, for visitors and customers)</option>
-            <option value="console">Back end only (the staff Assistant, Scout and lead drafts)</option>
+            <option value="both">Both assistants (shared)</option>
+            <option value="website">Front end only (Tera, for visitors and customers)</option>
+            <option value="console">Back end only (the staff Assistant, Scout and drafting)</option>
           </select>
         </label>
 

@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation';
 
 import AdminAiAutoCheck from '@/components/AdminAiAutoCheck';
 import AdminAiConnectionsPanel from '@/components/AdminAiConnectionsPanel';
+import AdminAiEnvironments from '@/components/AdminAiEnvironments';
 import AdminAiGovernance from '@/components/AdminAiGovernance';
 import AdminAiTabs from '@/components/AdminAiTabs';
 import AdminHelpIcon from '@/components/AdminHelpIcon';
@@ -61,6 +62,8 @@ export default async function AdminAiConnectionsPage() {
       <h1 className="admin-heading">
         AI Connections
         <AdminHelpIcon>
+          <h4>Two separate assistants</h4>
+          <p>Pick <strong>AI assistant for the front end</strong> (Tera, which visitors and customers talk to on the website) or <strong>AI assistant for the back end</strong> (the staff Assistant, Scout and drafting). Each has its own connections and its own governance rules. The front-end assistant only answers questions about the products and the website; it cannot reach the back end, supplier or cost prices, staff or customer records, or write code. A connection or rule marked Both (shared) applies to both until you move it to one side. Each provider (for example Anthropic) can be used by one assistant at a time.</p>
           <h4>What this section is for</h4>
           <p>The AI providers the <strong>Assistant</strong> and <strong>Scout</strong> use, laid out the same as the TeracomAI Global Platform so settings carry across one to one. One order of preference applies to both; the Assistant skips the Internet, and Scout critiques with a different provider from the one that researched.</p>
           <h4>The diagram</h4>
@@ -92,22 +95,31 @@ export default async function AdminAiConnectionsPage() {
           </ul>
         </AdminHelpIcon>
       </h1>
-      <p className="lead">The AI providers the Assistant and Scout use, the Internet in their order of preference, and the rules they all follow.</p>
+      <p className="lead">Two separate AI assistants, each with its own connections and its own governance rules: one for the front end (Tera, on the website) and one for the back end (the staff Assistant and Scout).</p>
 
-      <AdminAiTabs
-        connections={(
-          <>
-            <AdminAiConnectionsPanel
-              initialConnections={connections}
-              initialRouting={routing}
-              providers={providers}
-              loadError={loadError}
-            />
-            <AdminAiAutoCheck initial={autoCheck} />
-          </>
+      <AdminAiEnvironments
+        website={(
+          <AdminAiTabs
+            idPrefix="fe-"
+            useHash={false}
+            connections={(
+              <AdminAiConnectionsPanel initialConnections={connections} initialRouting={routing} providers={providers} loadError={loadError} side="website" />
+            )}
+            governance={<AdminAiGovernance initialRules={rules} providers={modelProviders} loadError={rulesError} side="website" />}
+          />
         )}
-        governance={<AdminAiGovernance initialRules={rules} providers={modelProviders} loadError={rulesError} />}
+        console={(
+          <AdminAiTabs
+            idPrefix="be-"
+            useHash={false}
+            connections={(
+              <AdminAiConnectionsPanel initialConnections={connections} initialRouting={routing} providers={providers} loadError={loadError} side="console" />
+            )}
+            governance={<AdminAiGovernance initialRules={rules} providers={modelProviders} loadError={rulesError} side="console" />}
+          />
+        )}
       />
+      <AdminAiAutoCheck initial={autoCheck} />
     </AdminShell>
   );
 }

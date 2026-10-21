@@ -10,16 +10,16 @@ const TABS = [
   { key: 'governance', label: 'Governance' },
 ];
 
-export default function AdminAiTabs({ connections, governance }) {
+export default function AdminAiTabs({ connections, governance, idPrefix = '', useHash = true }) {
   const [active, setActive] = useState('connections');
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && window.location.hash === '#governance') setActive('governance');
+    if (useHash && typeof window !== 'undefined' && window.location.hash === '#governance') setActive('governance');
   }, []);
 
   function choose(key) {
     setActive(key);
-    if (typeof window !== 'undefined') {
+    if (useHash && typeof window !== 'undefined') {
       const url = `${window.location.pathname}${key === 'governance' ? '#governance' : ''}`;
       window.history.replaceState(null, '', url);
     }
@@ -33,9 +33,9 @@ export default function AdminAiTabs({ connections, governance }) {
             key={tab.key}
             type="button"
             role="tab"
-            id={`ai-tab-${tab.key}`}
+            id={`${idPrefix}ai-tab-${tab.key}`}
             aria-selected={active === tab.key}
-            aria-controls={`ai-panel-${tab.key}`}
+            aria-controls={`${idPrefix}ai-panel-${tab.key}`}
             className={active === tab.key ? 'admin-tab active' : 'admin-tab'}
             onClick={() => choose(tab.key)}
           >
@@ -43,10 +43,10 @@ export default function AdminAiTabs({ connections, governance }) {
           </button>
         ))}
       </div>
-      <div role="tabpanel" id="ai-panel-connections" aria-labelledby="ai-tab-connections" hidden={active !== 'connections'}>
+      <div role="tabpanel" id={`${idPrefix}ai-panel-connections`} aria-labelledby={`${idPrefix}ai-tab-connections`} hidden={active !== 'connections'}>
         {connections}
       </div>
-      <div role="tabpanel" id="ai-panel-governance" aria-labelledby="ai-tab-governance" hidden={active !== 'governance'}>
+      <div role="tabpanel" id={`${idPrefix}ai-panel-governance`} aria-labelledby={`${idPrefix}ai-tab-governance`} hidden={active !== 'governance'}>
         {governance}
       </div>
     </div>
