@@ -20,7 +20,7 @@ async function send(url, method, body) {
 }
 
 const EMPTY = { title: '', rule_text: '', category: 'conduct', mode: 'instruct', scope: 'all', audience: 'both' };
-const AUDIENCES = [['both', 'Both (website and back end)'], ['website', 'Website only (Tera)'], ['console', 'Back end only (Assistant, Scout, lead drafts)']];
+const AUDIENCES = [['both', 'Both assistants (shared)'], ['website', 'Front end only (Tera)'], ['console', 'Back end only (staff Assistant, Scout)']];
 
 function RuleFields({ value, onChange }) {
   const set = (field) => (event) => onChange({ ...value, [field]: event.target.value });
@@ -64,9 +64,11 @@ function RuleFields({ value, onChange }) {
   );
 }
 
-export default function AdminAiGovernance({ initialRules, providers, loadError }) {
+export default function AdminAiGovernance({ initialRules, providers, loadError, side }) {
   const [rules, setRules] = useState(initialRules || []);
-  const [draft, setDraft] = useState(EMPTY);
+  const visibleRules = side ? rules.filter((r) => (r.audience || 'both') === side || (r.audience || 'both') === 'both') : rules;
+  const emptyDraft = side ? { ...EMPTY, audience: side } : EMPTY;
+  const [draft, setDraft] = useState(side ? { ...EMPTY, audience: side } : EMPTY);
   const [editing, setEditing] = useState(null); // { id, ...fields }
   const [errors, setErrors] = useState([]);
   const [error, setError] = useState(loadError || '');
@@ -103,7 +105,7 @@ export default function AdminAiGovernance({ initialRules, providers, loadError }
     const found = validateRule(draft);
     setErrors(found);
     if (found.length) return;
-    run('add', () => send('/api/admin/ai-connections/governance', 'POST', { ...draft, enabled: true }), 'Rule added. It applies from the next request.').then((ok) => { if (ok) setDraft(EMPTY); });
+    run('add', () => send('/api/admin/ai-connections/governance', 'POST', { ...draft, enabled: true }), 'Rule added. It applies from the next request.').then((ok) => { if (ok) setDraft(emptyDraft); });
   }
 
   function saveEdit(event) {
@@ -126,8 +128,8 @@ export default function AdminAiGovernance({ initialRules, providers, loadError }
 
   function move(index, direction) {
     const target = index + direction;
-    if (target < 0 || target >= rules.length) return;
-    const ids = rules.map((r) => r.id);
+    if (target < 0 || target >= visibleRules.length) return;
+    const ids = visibleRules.map((r) => r.id);
     [ids[index], ids[target]] = [ids[target], ids[index]];
     run('order', () => send('/api/admin/ai-connections/governance/order', 'PUT', { ids }));
   }
@@ -148,7 +150,14 @@ export default function AdminAiGovernance({ initialRules, providers, loadError }
 
   return (
     <section className="admin-governance">
-      <p className="lead">The rules every AI call follows. Each enabled rule is placed in front of the model on every Assistant, Scout and critique request; a rule marked Filter also strips the matching details out of anything before it leaves for a provider.</p>
+      <p className="lead">
+        {side === 'website'
+          ? 'The rules the front-end assistant (Tera) follows. Each enabled rule is placed in front of the model on every website question; a rule marked Filter also strips the matching details out of anything before it leaves for a provider.'
+          : side === 'console'
+            ? 'The rules the back-end assistant follows (the staff Assistant, Scout and drafting). Each enabled rule is placed in front of the model on every request; a rule marked Filter also strips the matching details out of anything before it leaves for a provider.'
+            : 'The rules every AI call follows.'}
+        {side ? ' A rule marked Both assistants (shared) applies on both sides.' : ''}
+      </p>
       {error && <p className="form-error" role="alert">{error}</p>}
       {notice && <p className="form-note-banner" role="status">{notice}</p>}
 
@@ -167,13 +176,13 @@ export default function AdminAiGovernance({ initialRules, providers, loadError }
             </tr>
           </thead>
           <tbody>
-            {rules.length === 0 && <tr><td colSpan={7} className="admin-muted">No rules yet.</td></tr>}
-            {rules.map((rule, index) => (
+            {visibleRules.length === 0 && <tr><td colSpan={7} className="admin-muted">No rules yet.</td></tr>}
+            {visibleRules.map((rule, index) => (
               <tr key={rule.id} className={rule.enabled ? undefined : 'admin-gov-off'}>
                 <td>
                   <span className="admin-actions">
                     <button type="button" className="btn btn-secondary btn-sm" onClick={() => move(index, -1)} disabled={index === 0 || Boolean(busy)} aria-label={`Move ${rule.title} up`}><ArrowUp size={14} strokeWidth={2} aria-hidden="true" /></button>
-                    <button type="button" className="btn btn-secondary btn-sm" onClick={() => move(index, 1)} disabled={index === rules.length - 1 || Boolean(busy)} aria-label={`Move ${rule.title} down`}><ArrowDown size={14} strokeWidth={2} aria-hidden="true" /></button>
+                    <button type="button" className="btn btn-secondary btn-sm" onClick={() => move(index, 1)} disabled={index === visibleRules.length - 1 || Boolean(busy)} aria-label={`Move ${rule.title} down`}><ArrowDown size={14} strokeWidth={2} aria-hidden="true" /></button>
                   </span>
                 </td>
                 <td className="wrap">
