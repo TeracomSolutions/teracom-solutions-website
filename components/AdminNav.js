@@ -26,6 +26,7 @@ export const ADMIN_AREAS = [
   { href: '/admin/support', label: 'Support' },
   { href: '/admin/suppliers', label: 'Store', match: ['/admin/catalog', '/admin/pricing', '/admin/brands', '/admin/freight', '/admin/review', '/admin/content', '/admin/marketplace'] },
   { href: '/admin/website-data', label: 'Website Data' },
+  { href: '/admin/build-progress', label: 'Build progress' },
   { href: '/admin/about', label: 'About' },
 ];
 
@@ -58,7 +59,7 @@ export default function AdminNav() {
 
   return (
     <nav className="admin-nav" aria-label="Administration">
-      {ADMIN_AREAS.filter((area) => areaVisible(area.href, permissions)).map((area) => {
+      {ADMIN_AREAS.filter((area) => areaVisible(area.href, permissions) && !(area.href === '/admin/build-progress' && process.env.NEXT_PUBLIC_BUILD_PROGRESS === 'off')).map((area) => {
         const active = isAreaActive(area, pathname);
         return (
           <Link key={area.href} href={area.href} className={active ? 'active' : undefined} aria-current={active ? 'page' : undefined}>
