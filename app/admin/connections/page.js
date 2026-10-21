@@ -3,7 +3,9 @@ import { redirect } from 'next/navigation';
 import AdminConnections from '@/components/AdminConnections';
 import AdminHelpIcon from '@/components/AdminHelpIcon';
 import AdminShell from '@/components/AdminShell';
+import AdminZohoFlow from '@/components/AdminZohoFlow';
 import { listConnections } from '@/lib/api/adminConnections';
+import { fetchZohoFlow } from '@/lib/api/adminZohoFlow';
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
 import { websiteConnectionsFor } from '@/lib/websiteConnections';
 
@@ -27,6 +29,13 @@ export default async function AdminConnectionsPage({ searchParams }) {
   } catch (err) {
     if (isSessionError(err)) redirect('/admin/login');
     loadError = 'Unable to load the connections from the backend.';
+  }
+
+  let zohoFlow = null;
+  try {
+    zohoFlow = await fetchZohoFlow(token);
+  } catch {
+    zohoFlow = null;
   }
 
   let notice = null;
@@ -64,6 +73,7 @@ export default async function AdminConnectionsPage({ searchParams }) {
       <p className="lead">The outside services, servers and computers the website depends on, whether each is working, and the keys for them.</p>
 
       {loadError ? <p className="form-error" role="alert">{loadError}</p> : <AdminConnections initial={connections} notice={notice} />}
+      <AdminZohoFlow initial={zohoFlow} />
     </AdminShell>
   );
 }
