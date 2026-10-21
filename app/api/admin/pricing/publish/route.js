@@ -1,4 +1,4 @@
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 import { NextResponse } from 'next/server';
 
 import { withAdminSession } from '@/lib/adminApi';
@@ -15,6 +15,7 @@ export const GET = withAdminSession(async ({ token }) => {
 
 export const POST = withAdminSession(async ({ token }) => {
   invalidateCatalogueCache();
+  revalidateTag('storefront-catalogue');
   for (const path of PRICE_PAGES) {
     revalidatePath(path, 'layout');
   }
