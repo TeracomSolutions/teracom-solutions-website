@@ -80,6 +80,7 @@ export default async function AdminAiConnectionsPage() {
           <ul>
             <li>Choose the <strong>Provider</strong> (grouped by what it needs: a key, a host, or nothing), check the <strong>Default Model</strong>, add the <strong>API Key</strong> or <strong>Host</strong>, and tick <strong>Enabled</strong>. When editing, leave the key blank to keep the current one.</li>
             <li>Untick <strong>Enabled</strong> to keep a connection but take it out of the running order, including switching the Internet off.</li>
+            <li><strong>Used for</strong> chooses who may use a connection: <em>Both</em> (the default), <em>Website only</em> (Tera, the assistant visitors and customers talk to) or <em>Back end only</em> (the staff Assistant, Scout and lead drafts). A connection is never used for the other side, and each governance rule has the same Audience setting, so the website and the back end can follow different rules.</li>
             <li>Keys are stored encrypted and never shown again. Every change is recorded in the audit log.</li>
           </ul>
           <h4>Governance</h4>

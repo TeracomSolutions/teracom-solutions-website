@@ -17,6 +17,7 @@ const UpdateRequest = z
     base_url: z.string().trim().url().max(500).optional(),
     default_model: z.string().trim().min(1).max(200).optional(),
     enabled: z.boolean().optional(),
+    audience: z.enum(['both', 'website', 'console']).optional(),
   })
   .refine((data) => Object.keys(data).length > 0, { message: 'Nothing to change.' });
 
