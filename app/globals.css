@@ -2965,3 +2965,13 @@ a.admin-status:hover { filter:brightness(1.15); }
 @media (max-width: 600px) { .ai-env-switch { grid-template-columns:1fr; } }
 .bp-move { display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin:8px 0 2px; }
 .bp-rank { font-weight:800; font-size:13px; padding:2px 8px; border-radius:8px; background:rgba(255,255,255,.1); }
+
+/* ---- Admin: Assistant code changes (Robert, 2026-10-23) ---- */
+.cr-list { list-style:none; margin:0; padding:0; display:grid; gap:12px; }
+.cr-item { border-top:1px solid var(--line); padding-top:10px; }
+.cr-head { display:flex; justify-content:space-between; gap:12px; align-items:baseline; flex-wrap:wrap; }
+.cr-item p { margin:4px 0; }
+.bp-chip { display:inline-block; padding:3px 10px; border-radius:999px; font-size:12px; font-weight:700; background:rgba(255,255,255,.08); color:#fff; white-space:nowrap; }
+.bp-chip.is-ok { background:rgba(40,167,69,.2); color:#7ee29a; }
+.bp-chip.is-bad { background:rgba(255,23,23,.18); color:#ff8a8a; }
+.bp-chip.is-busy { background:rgba(80,160,255,.2); color:#9cc9ff; }
