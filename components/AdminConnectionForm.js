@@ -15,10 +15,11 @@ const HOW_TO = {
     'Press Test afterwards: it signs in to the mail server without sending anything.',
   ],
   zoho_books: [
-    'Open the Zoho API Console at api-console.zoho.com.au and click Get Started, or Add Client if it already has one.',
-    'Hover over Server-based Applications and click Create Now.',
-    'Client Name: Teracom website. Homepage URL: https://www.teracomsolutions.com.au. Authorized Redirect URI: the address below. Click Create.',
-    'Copy the Client ID and Client Secret from its Client Secret tab into the boxes here, Save, then press Connect to Zoho Books.',
+    'Open the Zoho API Console for your data centre: api-console.zoho.com (US), api-console.zoho.com.au (Australia), api-console.zoho.eu (Europe), api-console.zoho.in (India) or api-console.zoho.jp (Japan). Set Data centre below to the same one.',
+    'Click Add Client and choose Server-based Applications. Do not use Self Client: it has no redirect address and fails with Invalid Redirect Uri. To reuse an existing Server-based client, open it and add the address below to its Authorized Redirect URIs.',
+    'Client Name: Teracom website. Homepage URL: https://www.teracomsolutions.com.au. Authorized Redirect URI: the address shown below, exactly as written. Click Create.',
+    'Copy the Client ID (it starts 1000.) and the Client Secret into the boxes here. The Organisation ID is a different number: in Zoho Books open Settings, then Organization Profile, and copy the Organization ID (for testing, use the ID of your test sandbox organisation).',
+    'Save, then press Connect to Zoho Books.',
   ],
   cloudflare: [
     'In the Cloudflare dashboard go to My Profile, API Tokens, and select Create Token, then Create Custom Token.',
