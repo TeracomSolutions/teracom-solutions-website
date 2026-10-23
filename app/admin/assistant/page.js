@@ -41,7 +41,7 @@ export default async function AdminAssistantPage() {
           <h4>What it knows</h4>
           <p>It answers questions about any console setting from the same guide and page help you can read: for each question, the matching help is found and handed to it. If the help does not cover something, it says so rather than guessing.</p>
           <h4>What it will not do</h4>
-          <p>It cannot delete anything, upload files or change AI keys; those stay as clicks on their pages. The chat itself cannot change the website. To ask for a change to the website&apos;s front end, use <strong>Code changes</strong> below the chat: OpenHands writes it on a copy, it is tested and arrives as a pull request, and nothing is merged or deployed without a person. It runs on the connections under AI Connections, in the order of preference set there, and says which one answered.</p>
+          <p>It cannot delete anything, upload files or change AI keys; those stay as clicks on their pages. It cannot edit the website directly. To ask for a change to the website&apos;s front end, tell the chat what you want (or use <strong>Code changes</strong> below it): the request goes to OpenHands, which writes it on a copy; it is tested and arrives as a pull request, and nothing is merged or deployed without a person. It runs on the connections under AI Connections, in the order of preference set there, and says which one answered.</p>
         </AdminHelpIcon>
       </h1>
       <p className="lead">Tell the console what you want in plain English.</p>
