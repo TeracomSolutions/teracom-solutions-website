@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { BRAND } from '@/lib/brand';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
@@ -101,7 +102,7 @@ export default function AdminLoginPage() {
           {!challengeToken ? (
             <>
               <h1>Staff Login</h1>
-              <p className="lead">Teracom Solutions staff only. Sign in with your @teracomsolutions.com.au account.</p>
+              <p className="lead">{BRAND.name} staff only. Sign in with your @{BRAND.staffDomain} account.</p>
               {notice && <p className="form-note-banner" role="status">{notice}</p>}
 
               <form onSubmit={handlePassword} style={{ marginTop: '24px' }}>

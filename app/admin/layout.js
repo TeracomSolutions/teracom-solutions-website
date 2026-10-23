@@ -1,3 +1,4 @@
+import BrandTitle from '@/components/BrandTitle';
 import { NOINDEX } from '@/lib/seo';
 
 // Pass-through layout that exists purely to attach a noindex directive to
@@ -19,5 +20,10 @@ export const metadata = {
 };
 
 export default function NoIndexLayout({ children }) {
-  return children;
+  return (
+    <>
+      <BrandTitle />
+      {children}
+    </>
+  );
 }
