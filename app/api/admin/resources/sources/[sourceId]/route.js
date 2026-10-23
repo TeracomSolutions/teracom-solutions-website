@@ -20,7 +20,7 @@ const UpdateRequest = z
     active: z.boolean().optional(),
     brand: z.string().trim().max(100).nullable().optional(),
     site_publish: z.boolean().optional(),
-    section_map: z.record(z.enum(DOC_TYPES), z.enum(SITE_SECTIONS).nullable()).optional(),
+    section_map: z.partialRecord(z.enum(DOC_TYPES), z.enum(SITE_SECTIONS).nullable()).optional(),
     publish_existing: z.boolean().optional(),
   })
   .refine((data) => Object.keys(data).length > 0, { message: 'Nothing to change.' });
