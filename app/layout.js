@@ -1,3 +1,4 @@
+import { BRAND } from '@/lib/brand';
 import { Inter } from 'next/font/google';
 
 import './globals.css';
@@ -30,7 +31,7 @@ const DEFAULT_TITLE = 'Teracom Solutions | Technology, Security & AI Solutions A
 const DEFAULT_DESCRIPTION =
   'Australian-owned technology specialists. Security systems, audio visual, electrical, automation, networking, software and systems integration, technical consulting, and the Teracom AI platform. Melbourne and Sydney.';
 
-export const metadata = {
+const baseMetadata = {
   // Deliberately NOT a title.template. Several pages already ship their own
   // fully-branded titles (e.g. 'About Us | Teracom Solutions'), and a template
   // would append the brand a second time. Each page owns its complete title
@@ -72,13 +73,18 @@ export const metadata = {
   },
 };
 
+// A copy of the site for another business (Luneva's console) says nothing about Teracom in its page source.
+export const metadata = BRAND.custom
+  ? { title: BRAND.name, description: `${BRAND.name} administration console.`, applicationName: BRAND.name, robots: { index: false, follow: false } }
+  : baseMetadata;
+
 export default function MarketingRootLayout({ children }) {
   return (
     // en-AU rather than plain en: it is the accurate regional signal for an
     // Australian business and it matches the og:locale already declared above.
     <html lang="en-AU" className={inter.variable}>
       <body>
-        <StructuredData />
+        {!BRAND.custom && <StructuredData />}
         <GoogleAnalytics />
         <AnalyticsEvents />
         <VisitBeacon />

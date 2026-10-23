@@ -1,3 +1,4 @@
+import BrandText from '@/components/BrandText';
 import BrandTitle from '@/components/BrandTitle';
 import { NOINDEX } from '@/lib/seo';
 
@@ -23,6 +24,7 @@ export default function NoIndexLayout({ children }) {
   return (
     <>
       <BrandTitle />
+      <BrandText />
       {children}
     </>
   );
