@@ -1,3 +1,4 @@
+import { BRAND, retitle } from '@/lib/brand';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
@@ -9,7 +10,7 @@ import { isSessionError, requireAdminToken } from '@/lib/adminPage';
 import { fetchScenarios, fetchTestRecords } from '@/lib/api/adminTestTools';
 
 export const metadata = {
-  title: 'Test tools|Teracom Solutions',
+  title: retitle('Test tools|Teracom Solutions', BRAND),
 };
 
 // Test tools page.

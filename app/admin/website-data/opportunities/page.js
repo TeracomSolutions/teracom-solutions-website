@@ -1,3 +1,4 @@
+import { BRAND, retitle } from '@/lib/brand';
 import { redirect } from 'next/navigation';
 
 import AdminHelpIcon from '@/components/AdminHelpIcon';
@@ -8,7 +9,7 @@ import { fetchOpportunities, fetchPerformance } from '@/lib/api/adminSeoInsights
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
 
 export const metadata = {
-  title: 'Website Data opportunities|Teracom Solutions',
+  title: retitle('Website Data opportunities|Teracom Solutions', BRAND),
 };
 
 const KINDS = ['striking', 'ctr', 'gaps', 'rising', 'falling'];

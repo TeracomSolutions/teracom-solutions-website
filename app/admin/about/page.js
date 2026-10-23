@@ -1,3 +1,4 @@
+import { BRAND, retitle } from '@/lib/brand';
 import { redirect } from 'next/navigation';
 
 import AboutVersions from '@/components/AboutVersions';
@@ -9,7 +10,7 @@ import { CONSOLE_VERSION, CONSOLE_VERSIONS } from '@/lib/consoleVersions';
 import { fromBackend } from '@/lib/versionList';
 
 export const metadata = {
-  title: 'About|Teracom Solutions',
+  title: retitle('About|Teracom Solutions', BRAND),
 };
 
 function Facts({ rows }) {

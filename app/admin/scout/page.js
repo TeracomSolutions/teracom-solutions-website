@@ -1,9 +1,10 @@
+import { BRAND, retitle } from '@/lib/brand';
 import AdminShell from '@/components/AdminShell';
 import AdminScoutTabs from '@/components/AdminScoutTabs';
 import { requireAdminToken } from '@/lib/adminPage';
 
 export const metadata = {
-  title: 'Scout|Teracom Solutions',
+  title: retitle('Scout|Teracom Solutions', BRAND),
 };
 
 // The tabs themselves load their data in the browser, so this page only

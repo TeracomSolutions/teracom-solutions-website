@@ -1,3 +1,4 @@
+import { BRAND, retitle } from '@/lib/brand';
 import { redirect } from 'next/navigation';
 
 import AdminHelpIcon from '@/components/AdminHelpIcon';
@@ -8,7 +9,7 @@ import { fetchIndexingPages, fetchIndexingSummary } from '@/lib/api/adminSeoInsi
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
 
 export const metadata = {
-  title: 'Website Data indexing|Teracom Solutions',
+  title: retitle('Website Data indexing|Teracom Solutions', BRAND),
 };
 
 export default async function AdminSeoIndexingPage() {

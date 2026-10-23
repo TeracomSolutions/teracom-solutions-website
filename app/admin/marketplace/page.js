@@ -1,3 +1,4 @@
+import { BRAND, retitle } from '@/lib/brand';
 import { redirect } from 'next/navigation';
 
 import AdminShell from '@/components/AdminShell';
@@ -8,7 +9,7 @@ import { isSessionError, requireAdminToken } from '@/lib/adminPage';
 import { fetchMarketplaceStatus, fetchMarketplaceSuppliers, fetchMarketplaceConnections } from '@/lib/api/adminMarketplace';
 
 export const metadata = {
-  title: 'Marketplace|Teracom Solutions',
+  title: retitle('Marketplace|Teracom Solutions', BRAND),
 };
 
 // Marketplace admin page.

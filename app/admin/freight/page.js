@@ -1,3 +1,4 @@
+import { BRAND, retitle } from '@/lib/brand';
 import { redirect } from 'next/navigation';
 
 import AdminFreightSettings from '@/components/AdminFreightSettings';
@@ -8,7 +9,7 @@ import { getFreightSettings } from '@/lib/api/adminFreight';
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
 
 export const metadata = {
-  title: 'Freight|Teracom Solutions',
+  title: retitle('Freight|Teracom Solutions', BRAND),
 };
 
 export default async function AdminFreightPage() {

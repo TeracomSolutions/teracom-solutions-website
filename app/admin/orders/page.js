@@ -1,3 +1,4 @@
+import { BRAND, retitle } from '@/lib/brand';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
@@ -24,7 +25,7 @@ import {
 } from '@/lib/orderView';
 
 export const metadata = {
-  title: 'Orders|Teracom Solutions',
+  title: retitle('Orders|Teracom Solutions', BRAND),
 };
 
 export default async function AdminOrdersPage({ searchParams }) {

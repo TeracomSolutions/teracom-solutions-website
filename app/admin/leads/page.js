@@ -1,3 +1,4 @@
+import { BRAND, retitle } from '@/lib/brand';
 import { redirect } from 'next/navigation';
 
 import AdminHelpIcon from '@/components/AdminHelpIcon';
@@ -7,7 +8,7 @@ import { fetchLeads } from '@/lib/api/adminLeads';
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
 
 export const metadata = {
-  title: 'Leads|Teracom Solutions',
+  title: retitle('Leads|Teracom Solutions', BRAND),
 };
 
 export default async function AdminLeadsPage() {

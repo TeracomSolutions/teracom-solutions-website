@@ -1,3 +1,4 @@
+import { BRAND, retitle } from '@/lib/brand';
 import { redirect } from 'next/navigation';
 
 import AdminHelpIcon from '@/components/AdminHelpIcon';
@@ -9,7 +10,7 @@ import { fetchResourceSources, resourceBrands } from '@/lib/api/adminResources';
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
 
 export const metadata = {
-  title: 'Resources|Teracom Solutions',
+  title: retitle('Resources|Teracom Solutions', BRAND),
 };
 
 export default async function AdminResourcesPage() {

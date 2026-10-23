@@ -1,3 +1,4 @@
+import { BRAND, retitle } from '@/lib/brand';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
@@ -7,7 +8,7 @@ import { fetchResearchRun } from '@/lib/api/adminScout';
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
 
 export const metadata = {
-  title: 'Scout Research Run|Teracom Solutions',
+  title: retitle('Scout Research Run|Teracom Solutions', BRAND),
 };
 
 export default async function AdminReviewRunPage({ params }) {

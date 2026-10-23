@@ -1,3 +1,4 @@
+import { BRAND, retitle } from '@/lib/brand';
 import { redirect } from 'next/navigation';
 
 import AdminShell from '@/components/AdminShell';
@@ -7,7 +8,7 @@ import AdminSalesDashboard from '@/components/AdminSalesDashboard';
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
 
 export const metadata = {
-  title: 'Sales|Teracom Solutions',
+  title: retitle('Sales|Teracom Solutions', BRAND),
 };
 
 // Sales page.

@@ -1,3 +1,4 @@
+import { BRAND, retitle } from '@/lib/brand';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
@@ -7,7 +8,7 @@ import { isSessionError, requireAdminToken } from '@/lib/adminPage';
 import { fetchMergeCandidates, fetchMergeHistory } from '@/lib/api/adminProductMerge';
 
 export const metadata = {
-  title: 'Merge duplicate products|Teracom Solutions',
+  title: retitle('Merge duplicate products|Teracom Solutions', BRAND),
 };
 
 export default async function AdminProductMergePage() {

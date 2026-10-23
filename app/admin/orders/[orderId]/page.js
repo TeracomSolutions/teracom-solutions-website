@@ -1,3 +1,4 @@
+import { BRAND, retitle } from '@/lib/brand';
 import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
 
@@ -12,7 +13,7 @@ import { isSessionError, requireAdminToken } from '@/lib/adminPage';
 import { fetchPurchaseOrders } from '@/lib/api/adminPurchaseOrders';
 
 export const metadata = {
-  title: 'Order|Teracom Solutions',
+  title: retitle('Order|Teracom Solutions', BRAND),
 };
 
 // One order details page.

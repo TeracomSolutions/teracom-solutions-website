@@ -1,3 +1,4 @@
+import { BRAND, retitle } from '@/lib/brand';
 import BrandText from '@/components/BrandText';
 import BrandTitle from '@/components/BrandTitle';
 import { NOINDEX } from '@/lib/seo';
@@ -14,7 +15,7 @@ import { NOINDEX } from '@/lib/seo';
 // disallowed URL can still be indexed without a snippet if something links to
 // it. The page-level directive is what actually keeps it out of the index.
 export const metadata = {
-  title: 'Administration|Teracom Solutions',
+  title: retitle('Administration|Teracom Solutions', BRAND),
   ...NOINDEX,
   // Belt and braces on top of NOINDEX: no caching, and the same for Googlebot by name.
   robots: { index: false, follow: false, nocache: true, googleBot: { index: false, follow: false } },

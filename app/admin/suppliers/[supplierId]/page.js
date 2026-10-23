@@ -1,3 +1,4 @@
+import { BRAND, retitle } from '@/lib/brand';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
@@ -19,7 +20,7 @@ import { formatDateTime, humanise } from '@/lib/adminFormat';
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
 
 export const metadata = {
-  title: 'Supplier data feed|Teracom Solutions',
+  title: retitle('Supplier data feed|Teracom Solutions', BRAND),
 };
 
 const STATUS_CLASS = {

@@ -1,3 +1,4 @@
+import { BRAND, retitle } from '@/lib/brand';
 import { redirect } from 'next/navigation';
 
 import AdminConnections from '@/components/AdminConnections';
@@ -10,7 +11,7 @@ import { isSessionError, requireAdminToken } from '@/lib/adminPage';
 import { websiteConnectionsFor } from '@/lib/websiteConnections';
 
 export const metadata = {
-  title: 'Connections|Teracom Solutions',
+  title: retitle('Connections|Teracom Solutions', BRAND),
 };
 
 const ZOHO_NOTICES = {

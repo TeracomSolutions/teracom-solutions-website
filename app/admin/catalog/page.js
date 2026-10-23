@@ -1,3 +1,4 @@
+import { BRAND, retitle } from '@/lib/brand';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
@@ -11,7 +12,7 @@ import { isSessionError, requireAdminToken } from '@/lib/adminPage';
 import { DEFAULT_FILTERS, sheetParams } from '@/lib/sheetQuery';
 
 export const metadata = {
-  title: 'Store Catalog|Teracom Solutions',
+  title: retitle('Store Catalog|Teracom Solutions', BRAND),
 };
 
 // The catalogue as one working sheet, 100 products at a time: every column,
