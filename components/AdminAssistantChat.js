@@ -11,6 +11,8 @@ import { LISTEN_DELAY_MS, conversationNotice, conversationStep } from '@/lib/ass
 import { PAUSE_BEFORE_SEND_MS, endsDictation, joinSpeech } from '@/lib/dictation';
 import { speakReply, speechControl } from '@/lib/voicePlayer';
 import { useAttachments } from '@/lib/useAttachments';
+import ChatCodeRequestCard from '@/components/ChatCodeRequestCard';
+import ChatMarkdown from '@/components/ChatMarkdown';
 
 // Chat with the console. Each turn sends the whole conversation (the
 // backend keeps no session), shows the reply, and lists any actions the
@@ -32,6 +34,7 @@ const SUGGESTIONS = [
   'Show me the new leads and summarise what each one wants.',
   'How did the website do in the last 7 days compared with the week before?',
   'Write a master prompt to add a stock level column to the Store catalogue.',
+  'Change the wording of the main heading on the home page (a front-end change OpenHands will write).',
   'Which AI model are you running on, and what do you remember?',
 ];
 
@@ -162,7 +165,7 @@ export default function AdminAssistantChat() {
       });
       const data = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(data.error || 'The assistant did not answer.');
-      setMessages([...history, { role: 'assistant', content: data.reply, actions: data.actions || [], model: data.model }]);
+      setMessages([...history, { role: 'assistant', content: data.reply, actions: data.actions || [], artifacts: data.artifacts || [], model: data.model }]);
       const wantSpeech = readAloudRef.current && Boolean(data.reply);
       dispatch({ type: 'reply', speak: wantSpeech });
       if (wantSpeech) speak(data.reply);
@@ -388,7 +391,7 @@ export default function AdminAssistantChat() {
         <div className="admin-assistant-head">
           <AdminAssistantAvatar state={avatarState} size={44} />
           <div>
-            <strong>Teracom assistant</strong>
+            <strong>Console assistant</strong>
             <span className="admin-muted"> · {STATE_LABEL[avatarState] || 'Ready'}</span>
           </div>
         </div>
@@ -407,7 +410,12 @@ export default function AdminAssistantChat() {
             {m.role === 'assistant' && <AdminAssistantAvatar state="idle" size={26} />}
             <div className="admin-assistant-bubble">
               <AttachmentChips attachments={m.attachments} />
-              {m.content.split(String.fromCharCode(10)).map((line, j) => <p key={j}>{line || ' '}</p>)}
+              {m.role === 'assistant'
+                ? <ChatMarkdown text={m.content} />
+                : m.content.split(String.fromCharCode(10)).map((line, j) => <p key={j}>{line || ' '}</p>)}
+              {(m.artifacts || []).map((artifact) => (
+                artifact.type === 'code_request' ? <ChatCodeRequestCard key={artifact.id} id={artifact.id} title={artifact.title} /> : null
+              ))}
               {m.actions && m.actions.length > 0 && (
                 <ul className="admin-assistant-actions">
                   {m.actions.map((a, j) => <li key={j}>✓ {a}</li>)}

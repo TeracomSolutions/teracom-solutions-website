@@ -2998,3 +2998,34 @@ a.admin-status:hover { filter:brightness(1.15); }
 .about-version:first-child { border-top:0; }
 .about-version h3 { margin:0 0 4px; font-size:15px; }
 .about-version p { margin:2px 0; font-size:13px; }
+
+/* ---- Admin: Assistant as a proper chat (Robert, 2026-10-24) ---- */
+.admin-assistant { display:flex; flex-direction:column; height:calc(100vh - 230px); min-height:560px; gap:12px; }
+.admin-assistant-log { flex:1; max-height:none; min-height:0; padding:20px 0 8px; background:none; border:0; border-radius:0; display:flex; flex-direction:column; gap:22px; align-items:center; }
+.admin-assistant-log > * { width:min(820px, 100%); }
+.admin-assistant-head { justify-content:center; }
+.admin-assistant-empty { text-align:center; padding:24px 0; }
+.admin-assistant-empty .admin-actions { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:10px; }
+.admin-assistant-empty .admin-actions .btn { text-align:left; white-space:normal; line-height:1.4; padding:12px 14px; border-radius:12px; min-height:64px; }
+.admin-assistant-msg { gap:12px; align-items:flex-start; }
+.admin-assistant-msg.user .admin-assistant-bubble { max-width:min(640px, 88%); background:rgba(255,255,255,.08); border:0; border-radius:20px 20px 4px 20px; padding:12px 18px; }
+.admin-assistant-msg.assistant .admin-assistant-bubble { background:none; border:0; padding:2px 0; max-width:100%; flex:1; min-width:0; }
+.admin-assistant-msg.assistant { align-items:flex-start; }
+.chat-md p, .chat-md ul, .chat-md ol { margin:0 0 10px; line-height:1.65; }
+.chat-md ul, .chat-md ol { padding-left:22px; }
+.chat-md-heading { font-weight:800; font-size:1.05em; margin-top:6px; }
+.chat-inline-code { background:rgba(255,255,255,.1); border-radius:6px; padding:1px 6px; font-size:.92em; }
+.chat-code { margin:8px 0 12px; border:1px solid var(--line); border-radius:12px; overflow:hidden; background:#0b0b0b; }
+.chat-code-bar { display:flex; justify-content:space-between; align-items:center; padding:6px 12px; font-size:12px; color:var(--muted); background:rgba(255,255,255,.05); }
+.chat-code-bar button { background:none; border:1px solid var(--line); border-radius:999px; color:#ddd; padding:2px 10px; cursor:pointer; font-size:12px; }
+.chat-code pre { margin:0; padding:12px 14px; overflow:auto; font-size:13px; line-height:1.55; }
+.chat-card { margin:10px 0 4px; padding:12px 14px; border:1px solid var(--line); border-radius:14px; background:rgba(255,255,255,.04); }
+.chat-card-head { display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; }
+.chat-card-title { margin:6px 0 2px; font-weight:700; }
+.admin-assistant-form { width:min(820px, 100%); margin:0 auto; padding:10px 12px 8px; border:1px solid rgba(255,255,255,.18); border-radius:20px; background:rgba(255,255,255,.05); }
+.admin-assistant-form textarea { border:0; background:transparent; padding:6px 4px; resize:none; min-height:52px; max-height:220px; box-shadow:none; }
+.admin-assistant-form textarea:focus { outline:none; }
+.admin-assistant-form .admin-actions { display:flex; flex-wrap:wrap; align-items:center; gap:8px; justify-content:flex-start; }
+.admin-assistant-form .admin-actions button[type="submit"] { order:99; margin-left:auto; border-radius:999px; padding-left:20px; padding-right:20px; }
+.admin-assistant-voice { width:min(820px, 100%); margin:0 auto; justify-content:center; }
+@media (max-width: 700px) { .admin-assistant { height:auto; min-height:70vh; } .admin-assistant-empty .admin-actions { grid-template-columns:1fr; } }
