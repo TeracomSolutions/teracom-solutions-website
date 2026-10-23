@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 
 import AdminAiRoutingDiagram from '@/components/AdminAiRoutingDiagram';
 import { formatDateTime } from '@/lib/adminFormat';
@@ -28,6 +28,7 @@ export default function AdminAiConnectionsPanel({ initialConnections, initialRou
   const [error, setError] = useState(loadError || '');
   const [notice, setNotice] = useState('');
   const [rowBusy, setRowBusy] = useState('');
+  const [openRow, setOpenRow] = useState('');
   const [checkResult, setCheckResult] = useState({});
 
   const [provider, setProvider] = useState('');
@@ -46,7 +47,7 @@ export default function AdminAiConnectionsPanel({ initialConnections, initialRou
   // One side at a time: the front end (website) or the back end (console). A shared connection shows on both.
   const audienceOf = (c) => c.audience || 'both';
   const shown = side
-    ? connections.filter((c) => (c.provider === 'internet' ? side === 'console' : audienceOf(c) === side || audienceOf(c) === 'both'))
+    ? connections.filter((c) => audienceOf(c) === side || audienceOf(c) === 'both')
     : connections;
   const rows = connectionRows(shown, routing, catalogue);
   const order = rows.map((row) => row.provider);
@@ -205,93 +206,94 @@ export default function AdminAiConnectionsPanel({ initialConnections, initialRou
         <p>No AI provider connections configured yet. Add one below -- the Provider list offers every provider the website supports.</p>
       ) : (
         <div className="admin-table-wrap">
-          <table className="admin-ai-table">
-            <colgroup>
-              <col style={{ width: '5.5rem' }} />
-              <col style={{ width: '11rem' }} />
-              <col style={{ width: '10rem' }} />
-              <col style={{ width: '6.5rem' }} />
-              <col style={{ width: '9rem' }} />
-              <col />
-              <col style={{ width: '6.5rem' }} />
-              <col style={{ width: '13rem' }} />
-            </colgroup>
+          <table className="admin-ai-table admin-ai-compact">
             <thead>
               <tr>
                 <th>Order</th>
                 <th>Provider</th>
                 <th>Used for</th>
                 <th>Default model</th>
-                <th>Key</th>
                 <th>Status</th>
-                <th>Last message from the provider</th>
-                <th>Checked</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {rows.map((row, index) => (
-                <tr key={row.provider}>
-                  <td>
-                    <div className="admin-ai-move">
-                      <span>{row.position}</span>
-                      <button
-                        type="button"
-                        onClick={() => reorder(row.provider, -1)}
-                        disabled={index === 0 || Boolean(rowBusy)}
-                        aria-label={`Move ${row.label} up`}
-                        title="Try this one earlier"
-                      >
-                        &#9650;
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => reorder(row.provider, 1)}
-                        disabled={index === rows.length - 1 || Boolean(rowBusy)}
-                        aria-label={`Move ${row.label} down`}
-                        title="Try this one later"
-                      >
-                        &#9660;
-                      </button>
-                    </div>
-                  </td>
-                  <td>
-                    {row.label}
-                    <span className="admin-ai-kind">{row.kind.replace('_', '-')}</span>
-                  </td>
-                  <td>{USED_FOR[connections.find((c) => c.provider === row.provider)?.audience || 'both']}</td>
-                  <td className="admin-ai-wrap">{row.model || '-'}</td>
-                  <td>{row.keyText}</td>
-                  <td>
-                    <span className="admin-ai-state">
-                      <span className="admin-ai-dot" style={{ background: STATE_COLOURS[row.state] }} />
-                      {row.stateText}
-                    </span>
-                    {checkResult[row.provider] && (
-                      <span className="admin-ai-just-checked">just now: {checkResult[row.provider]}</span>
+              {rows.map((row, index) => {
+                const expanded = openRow === row.provider;
+                const stop = (event) => event.stopPropagation();
+                return (
+                  <Fragment key={row.provider}>
+                    <tr
+                      className={expanded ? 'admin-ai-row is-open' : 'admin-ai-row'}
+                      onClick={() => setOpenRow(expanded ? '' : row.provider)}
+                      title="Click for more detail"
+                    >
+                      <td onClick={stop}>
+                        <div className="admin-ai-move">
+                          <span>{row.position}</span>
+                          <button
+                            type="button"
+                            onClick={() => reorder(row.provider, -1)}
+                            disabled={index === 0 || Boolean(rowBusy)}
+                            aria-label={`Move ${row.label} up`}
+                            title="Try this one earlier"
+                          >
+                            &#9650;
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => reorder(row.provider, 1)}
+                            disabled={index === rows.length - 1 || Boolean(rowBusy)}
+                            aria-label={`Move ${row.label} down`}
+                            title="Try this one later"
+                          >
+                            &#9660;
+                          </button>
+                        </div>
+                      </td>
+                      <td className="admin-ai-one">
+                        <span className="admin-ai-caret" aria-hidden="true">{expanded ? '\u25BE' : '\u25B8'}</span>
+                        {row.label}
+                        <span className="admin-ai-kind">{row.kind.replace('_', '-')}</span>
+                      </td>
+                      <td className="admin-ai-one">{USED_FOR[connections.find((c) => c.provider === row.provider)?.audience || 'both']}</td>
+                      <td className="admin-ai-wrap admin-ai-one">{row.model || '-'}</td>
+                      <td className="admin-ai-one">
+                        <span className="admin-ai-state">
+                          <span className="admin-ai-dot" style={{ background: STATE_COLOURS[row.state] }} />
+                          {row.stateText}
+                        </span>
+                      </td>
+                      <td onClick={stop}>
+                        <div className="admin-ai-actions">
+                          <button type="button" className="btn btn-secondary btn-sm" onClick={() => checkNow(row.provider)} disabled={Boolean(rowBusy)}>
+                            {rowBusy === `check:${row.provider}` ? 'Checking\u2026' : 'Check now'}
+                          </button>
+                          <button type="button" className="btn btn-secondary btn-sm" onClick={() => handleEdit(row.provider)} disabled={Boolean(rowBusy)}>
+                            Edit
+                          </button>
+                          <button type="button" className="btn btn-secondary btn-sm" onClick={() => handleDelete(row.provider)} disabled={Boolean(rowBusy)}>
+                            Remove
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                    {expanded && (
+                      <tr className="admin-ai-details">
+                        <td colSpan={6}>
+                          <dl className="admin-ai-detail-list">
+                            <div><dt>Key</dt><dd>{row.keyText}</dd></div>
+                            <div><dt>Status</dt><dd>{row.stateText}</dd></div>
+                            <div><dt>Last message from the provider</dt><dd>{row.detail || '-'}</dd></div>
+                            <div><dt>Last checked</dt><dd>{row.checkedAt ? formatDateTime(row.checkedAt) : 'not yet'}</dd></div>
+                            {checkResult[row.provider] ? <div><dt>Just now</dt><dd>{checkResult[row.provider]}</dd></div> : null}
+                          </dl>
+                        </td>
+                      </tr>
                     )}
-                  </td>
-                  <td>
-                    {row.detail
-                      ? <span className="admin-ai-detail" title={row.detail}>{row.detail}</span>
-                      : <span className="admin-muted">-</span>}
-                  </td>
-                  <td className="admin-ai-wrap">{row.checkedAt ? formatDateTime(row.checkedAt) : '-'}</td>
-                  <td>
-                    <div className="admin-ai-actions">
-                      <button type="button" className="btn btn-secondary btn-sm" onClick={() => checkNow(row.provider)} disabled={Boolean(rowBusy)}>
-                        {rowBusy === `check:${row.provider}` ? 'Checking…' : 'Check now'}
-                      </button>
-                      <button type="button" className="btn btn-secondary btn-sm" onClick={() => handleEdit(row.provider)} disabled={Boolean(rowBusy)}>
-                        Edit
-                      </button>
-                      <button type="button" className="btn btn-secondary btn-sm" onClick={() => handleDelete(row.provider)} disabled={Boolean(rowBusy)}>
-                        Remove
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+                  </Fragment>
+                );
+              })}
             </tbody>
           </table>
         </div>
