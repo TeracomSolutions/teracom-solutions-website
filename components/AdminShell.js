@@ -1,5 +1,6 @@
 import AdminBrand from './AdminBrand';
 import AdminNav from './AdminNav';
+import AdminPageInfo from './AdminPageInfo';
 
 // The frame every admin page sits in: the console's own brand bar and menu,
 // then the page. A server component, so pages stay server components too
@@ -12,6 +13,7 @@ export default function AdminShell({ children }) {
         <div className="container admin-container">
           <AdminBrand />
           <AdminNav />
+          <AdminPageInfo />
           {children}
         </div>
       </section>

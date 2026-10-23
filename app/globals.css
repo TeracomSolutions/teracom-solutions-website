@@ -3050,3 +3050,23 @@ a.admin-status:hover { filter:brightness(1.15); }
 .admin-overview-mascot { position:relative; z-index:1; flex:none; height:auto; filter:drop-shadow(0 12px 28px rgba(255,23,23,.35)); }
 @media (max-width: 700px) { .admin-overview-mascot { display:none; } .admin-overview-hero { min-height:0; } }
 .admin-brand-logo img { width:195px; }
+
+/* ---- Admin: About this page, Where to find everything, What's new (Robert, 2026-10-25) ---- */
+.admin-page-info { display:flex; flex-direction:column; align-items:flex-end; margin:-6px 0 10px; }
+.admin-page-info-button { background:none; border:1px solid var(--line); color:var(--muted); border-radius:999px; padding:4px 12px; font-size:12px; font-weight:700; cursor:pointer; display:inline-flex; gap:6px; align-items:center; }
+.admin-page-info-button span { display:inline-grid; place-items:center; width:16px; height:16px; border-radius:50%; background:rgba(255,255,255,.12); font-style:italic; font-family:Georgia, serif; }
+.admin-page-info-button:hover, .admin-page-info-button[aria-expanded="true"] { color:#fff; border-color:rgba(255,23,23,.6); }
+.admin-page-info-panel { margin-top:8px; width:min(560px, 100%); padding:14px 16px; border:1px solid var(--line); border-radius:14px; background:rgba(16,16,18,.96); box-shadow:0 18px 40px rgba(0,0,0,.5); }
+.admin-page-info-title { margin:0 0 8px; font-weight:800; }
+.admin-page-info-panel dl { display:grid; grid-template-columns:150px 1fr; gap:6px 12px; margin:0; font-size:14px; }
+.admin-page-info-panel dt { color:var(--muted); }
+.admin-page-info-panel dd { margin:0; }
+.admin-page-info-links { display:flex; gap:16px; flex-wrap:wrap; margin:10px 0 0; font-size:14px; }
+@media (max-width: 700px) { .admin-page-info-panel dl { grid-template-columns:1fr; } }
+.admin-where-group { margin-top:28px; }
+.admin-where-group h2 { font-size:20px; margin:0 0 10px; }
+.admin-where-table td { vertical-align:top; font-size:14px; }
+.admin-whats-new { margin:18px 0 6px; padding:14px 18px; border:1px solid var(--line); border-radius:16px; background:rgba(10,10,12,.6); }
+.admin-whats-new h2 { font-size:16px; margin:0 0 6px; }
+.admin-whats-new ul { margin:0 0 6px; padding-left:18px; font-size:14px; line-height:1.6; }
+.admin-whats-new p { margin:0; font-size:14px; }
