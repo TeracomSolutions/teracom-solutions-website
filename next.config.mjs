@@ -1,5 +1,19 @@
+import { execSync } from 'node:child_process';
+
+// Which commit this build is and when it was made (shown on the About page). Vercel supplies the
+// commit; elsewhere it is read from git.
+function buildCommit() {
+  if (process.env.VERCEL_GIT_COMMIT_SHA) return process.env.VERCEL_GIT_COMMIT_SHA;
+  try {
+    return execSync('git rev-parse HEAD', { stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim();
+  } catch {
+    return '';
+  }
+}
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  env: { BUILD_COMMIT: buildCommit(), BUILD_TIME: new Date().toISOString() },
   reactStrictMode: true,
   // next/image's optimizer rejects local SVGs by default (400 at request
   // time even though the build itself doesn't catch it) -- the five files
