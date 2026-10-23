@@ -6,10 +6,13 @@ import {
   ChartColumn,
   Cpu,
   FileText,
+  Gauge,
   Inbox,
+  Info,
   Radar,
-  Search,
+  ScrollText,
   Share2,
+  ShoppingCart,
   ShieldCheck,
   Sparkles,
   Headset,
@@ -32,6 +35,13 @@ const AREAS = [
     text: 'Your own sign-in: turn two-factor on with an authenticator app or Zoho Vault, and keep your backup codes.',
     icon: ShieldCheck,
     hue: '#f97316',
+  },
+  {
+    href: '/admin/activity',
+    title: 'Audit log',
+    text: 'Who did what and when: sign-ins, changes made in the console, jobs that ran and system events, with a CSV export.',
+    icon: ScrollText,
+    hue: '#94a3b8',
   },
   {
     href: '/admin/ai-connections',
@@ -62,13 +72,6 @@ const AREAS = [
     hue: '#f472b6',
   },
   {
-    href: '/admin/guide',
-    title: 'Help',
-    text: 'How every part of this console works, step by step.',
-    icon: FileText,
-    hue: '#3b82f6',
-  },
-  {
     href: '/admin/leads',
     title: 'Leads',
     text: 'Enquiries from the contact form on this website, newest first, with Mark contacted.',
@@ -83,13 +86,19 @@ const AREAS = [
     hue: '#fbbf24',
   },
   {
+    href: '/admin/sales',
+    title: 'Sales',
+    text: 'Orders, carts and abandoned carts, with graphs and the detail of every order.',
+    icon: ShoppingCart,
+    hue: '#4ade80',
+  },
+  {
     href: '/admin/scout',
     title: 'Scout',
     text: 'Research tasks for the website: run an AI researcher and critic, then approve or reject the report.',
     icon: Radar,
     hue: '#a78bfa',
   },
-
   {
     href: '/admin/social',
     title: 'Social',
@@ -118,18 +127,36 @@ const AREAS = [
     icon: ChartColumn,
     hue: '#22d3ee',
   },
+  {
+    href: '/admin/build-progress',
+    title: 'Build progress',
+    text: 'Every job being built for the website, how far along it is, the time and tokens it took, and its priority.',
+    icon: Gauge,
+    hue: '#facc15',
+  },
+  {
+    href: '/admin/about',
+    title: 'About',
+    text: 'Which versions of the console and the backend are running, and what changed in each.',
+    icon: Info,
+    hue: '#a3a3a3',
+  },
 ];
+
+// The blocks follow the top menu: same areas, same order (Robert, 2026-10-25).
+const VISIBLE_AREAS = AREAS.filter((area) => !(area.href === '/admin/build-progress' && process.env.NEXT_PUBLIC_BUILD_PROGRESS === 'off'));
 
 export default async function AdminHomePage() {
   await requireAdminToken();
 
   return (
     <AdminShell>
+      <div className="admin-overview">
       <h1>Teracom Administration Console</h1>
       <p className="lead">Staff tools for the Teracom Solutions website and store, all served from our own backend. Choose an area.</p>
 
       <div className="admin-cards">
-        {AREAS.map(({ href, title, text, icon: Icon, hue }) => (
+        {VISIBLE_AREAS.map(({ href, title, text, icon: Icon, hue }) => (
           <Link key={href} href={href} style={{ '--hue': hue }}>
             <span className="admin-card-icon" aria-hidden="true">
               <Icon size={22} strokeWidth={1.8} focusable="false" />
@@ -138,6 +165,7 @@ export default async function AdminHomePage() {
             <p>{text}</p>
           </Link>
         ))}
+      </div>
       </div>
     </AdminShell>
   );
