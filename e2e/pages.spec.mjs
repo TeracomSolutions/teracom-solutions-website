@@ -8,7 +8,8 @@ const PATHS = (process.env.E2E_PATHS || '').split(',').map((path) => path.trim()
 
 for (const path of PATHS.length ? PATHS : DEFAULT_PATHS) {
   test(`${path} looks right`, async ({ page }, testInfo) => {
-    const response = await page.goto(path, { waitUntil: 'networkidle' });
+    const response = await page.goto(path, { waitUntil: 'load' });
+    await page.waitForTimeout(800);
     expect(response && response.status(), `${path} answered`).toBeLessThan(400);
     const problems = await layoutProblems(page);
     await testInfo.attach(`${testInfo.project.name}${path.replace(/[^a-z0-9]+/gi, '-')}.png`, {
@@ -23,7 +24,8 @@ for (const path of PATHS.length ? PATHS : DEFAULT_PATHS) {
 test('a page with no stylesheet fails the check', async ({ page }) => {
   await page.route(/[.]css([?].*)?$/, (route) => route.abort());
   const path = PATHS.length ? PATHS[0] : '/';
-  await page.goto(path, { waitUntil: 'networkidle' });
+  await page.goto(path, { waitUntil: 'load' });
+  await page.waitForTimeout(800);
   const problems = await layoutProblems(page);
   expect(problems).toContain('the page shows browser default styling');
 });
