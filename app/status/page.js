@@ -60,7 +60,7 @@ export default async function StatusPage() {
             <Row
               name="Online store, accounts and checkout"
               ok={health.ok}
-              detail={health.ok ? `Answered in ${health.ms} ms.` : 'Did not answer within 5 seconds. We are notified and looking at it.'}
+              detail={health.ok ? `Answered in ${health.ms} ms.` : 'Did not answer within 5 seconds. Please try again in a few minutes.'}
             />
           </tbody>
         </table>
