@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 
 import AdminShell from '@/components/AdminShell';
+import TeraPose from '@/components/TeraPose';
 import { requireAdminToken } from '@/lib/adminPage';
 
 export const metadata = {
@@ -152,8 +153,32 @@ export default async function AdminHomePage() {
   return (
     <AdminShell>
       <div className="admin-overview">
-      <h1>Teracom Administration Console</h1>
-      <p className="lead">Staff tools for the Teracom Solutions website and store, all served from our own backend. Choose an area.</p>
+      <section className="admin-overview-hero">
+        <svg className="admin-overview-wave" viewBox="0 0 1200 260" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+          <defs>
+            <linearGradient id="overview-wave-red" x1="0" x2="1" y1="0" y2="0">
+              <stop offset="0" stopColor="#ff1717" stopOpacity="0.05" />
+              <stop offset="0.35" stopColor="#ff1717" stopOpacity="0.85" />
+              <stop offset="0.7" stopColor="#ff3b3b" stopOpacity="0.6" />
+              <stop offset="1" stopColor="#ff1717" stopOpacity="0.1" />
+            </linearGradient>
+            <linearGradient id="overview-wave-grey" x1="0" x2="1" y1="0" y2="0">
+              <stop offset="0" stopColor="#ffffff" stopOpacity="0.02" />
+              <stop offset="0.5" stopColor="#d4d4d8" stopOpacity="0.35" />
+              <stop offset="1" stopColor="#ffffff" stopOpacity="0.04" />
+            </linearGradient>
+          </defs>
+          <path d="M0 170 C 220 60, 420 60, 600 140 S 980 230, 1200 90 L 1200 130 C 980 260, 760 200, 600 175 S 220 110, 0 210 Z" fill="url(#overview-wave-red)" />
+          <path d="M0 190 C 260 110, 440 120, 620 160 S 1000 200, 1200 120" fill="none" stroke="url(#overview-wave-grey)" strokeWidth="10" />
+          <path d="M0 150 C 240 40, 460 70, 640 130 S 1010 210, 1200 70" fill="none" stroke="url(#overview-wave-red)" strokeWidth="2" />
+          <path d="M0 230 C 300 150, 520 170, 700 190 S 1020 160, 1200 150" fill="none" stroke="url(#overview-wave-red)" strokeWidth="1.5" />
+        </svg>
+        <div className="admin-overview-hero-text">
+          <h1>Teracom Administration Console</h1>
+          <p className="lead">Staff tools for the Teracom Solutions website and store, all served from our own backend. Choose an area.</p>
+        </div>
+        {!BRAND.custom && <TeraPose pose="walking" size={190} className="admin-overview-mascot" />}
+      </section>
 
       <div className="admin-cards">
         {VISIBLE_AREAS.map(({ href, title, text, icon: Icon, hue }) => (
