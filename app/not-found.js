@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Compass, LifeBuoy, Search, ShoppingBag, Wrench } from 'lucide-react';
 import TeraPose from '@/components/TeraPose';
+import { BRAND } from '@/lib/brand';
 
 const POPULAR = [
   { label: 'What we do', href: '/services' },
@@ -12,6 +13,18 @@ const POPULAR = [
 ];
 
 export default function NotFound() {
+  if (BRAND.custom) {
+    return (
+      <main id="main-content" className="cart-page">
+        <section className="section">
+          <div className="container">
+            <h1>We can&apos;t find that page.</h1>
+            <p className="lead"><Link href="/admin">Back to the console</Link></p>
+          </div>
+        </section>
+      </main>
+    );
+  }
   return (
     <main id="main-content" className="cart-page">
       <section className="section">
