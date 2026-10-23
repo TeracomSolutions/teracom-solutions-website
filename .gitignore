@@ -10,6 +10,10 @@
 .env.local
 .env.*.local
 
+# Playwright screenshot tests (npm run e2e)
+/e2e-results/
+/e2e-report/
+
 # misc
 .DS_Store
 *.log
