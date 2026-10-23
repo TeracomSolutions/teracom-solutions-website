@@ -25,5 +25,5 @@ test('a page with no stylesheet fails the check', async ({ page }) => {
   const path = PATHS.length ? PATHS[0] : '/';
   await page.goto(path, { waitUntil: 'networkidle' });
   const problems = await layoutProblems(page);
-  expect(problems).toContain('no stylesheet is applied');
+  expect(problems).toContain('the page shows browser default styling');
 });
