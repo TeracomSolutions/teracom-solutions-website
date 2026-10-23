@@ -16,7 +16,8 @@ export default function AdminBrand({ signedIn = true }) {
         )}
       </Link>
       <span className="admin-brand-title">Administration Console</span>
-      {signedIn && <Link href="/admin/guide" className="admin-brand-link admin-brand-help">Help</Link>}
+      {signedIn && <Link href="/admin/where" className="admin-brand-link admin-brand-help">Where to find</Link>}
+      {signedIn && <Link href="/admin/guide" className="admin-brand-link">Help</Link>}
       <a href={BRAND.siteUrl} target="_blank" rel="noopener noreferrer" className={signedIn ? 'admin-brand-link' : 'admin-brand-link admin-brand-help'}>
         View website ↗
       </a>

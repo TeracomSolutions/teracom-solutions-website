@@ -22,6 +22,7 @@ import {
 import AdminShell from '@/components/AdminShell';
 import TeraPose from '@/components/TeraPose';
 import { requireAdminToken } from '@/lib/adminPage';
+import { CONSOLE_VERSIONS } from '@/lib/consoleVersions';
 
 export const metadata = {
   title: retitle('Administration|Teracom Solutions', BRAND),
@@ -178,6 +179,18 @@ export default async function AdminHomePage() {
           <p className="lead">Staff tools for the Teracom Solutions website and store, all served from our own backend. Choose an area.</p>
         </div>
         {!BRAND.custom && <TeraPose pose="walking" size={190} className="admin-overview-mascot" />}
+      </section>
+
+      <section className="admin-whats-new" aria-label="What's new">
+        <h2>What&apos;s new</h2>
+        <ul>
+          {CONSOLE_VERSIONS.slice(0, 3).map((entry) => (
+            <li key={entry.version}>
+              <span className="admin-muted">{entry.version} · {entry.date}</span> {entry.notes[0]}
+            </li>
+          ))}
+        </ul>
+        <p><Link href="/admin/about">Every change</Link> · <Link href="/admin/where">Where to find everything</Link></p>
       </section>
 
       <div className="admin-cards">
