@@ -96,11 +96,11 @@ export default function MarketingRootLayout({ children }) {
           Skip to main content
         </a>
         <CartProvider>
-          <PublicChrome><Header /></PublicChrome>
+          {!BRAND.custom && <PublicChrome><Header /></PublicChrome>}
           {children}
-          <PublicChrome><Footer /></PublicChrome>
+          {!BRAND.custom && <PublicChrome><Footer /></PublicChrome>}
           {/* Ask Tera: answers signed-in customers; asks everyone else to sign in. */}
-          <AskTeraWidget />
+          {!BRAND.custom && <AskTeraWidget />}
         </CartProvider>
       </body>
     </html>

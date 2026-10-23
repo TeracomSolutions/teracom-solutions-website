@@ -1,6 +1,8 @@
 import { ImageResponse } from 'next/og';
 
-export const alt = 'Teracom Solutions -- technology, security and AI';
+export const alt = process.env.NEXT_PUBLIC_BRAND_NAME
+  ? `${process.env.NEXT_PUBLIC_BRAND_NAME} administration console`
+  : 'Teracom Solutions -- technology, security and AI';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
