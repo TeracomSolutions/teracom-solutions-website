@@ -2987,3 +2987,5 @@ a.admin-status:hover { filter:brightness(1.15); }
 .admin-ai-detail-list { display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:10px 24px; margin:0; }
 .admin-ai-detail-list dt { font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
 .admin-ai-detail-list dd { margin:2px 0 0; overflow-wrap:anywhere; }
+
+.admin-brand-name { font-size:22px; font-weight:900; letter-spacing:.06em; color:var(--text); }
