@@ -94,6 +94,28 @@ jobs:
             fi
           done
 
+      # Screenshot tests (best-practice roadmap item 8): every page must have its stylesheet
+      # applied, fit the screen and show content, on a desktop and a phone; a page with its
+      # stylesheet blocked must fail the same check. Screenshots are kept as an artifact.
+      - name: Install the test browser
+        working-directory: teracom-solutions-website
+        run: npx playwright install --with-deps chromium
+
+      - name: Screenshot tests
+        working-directory: teracom-solutions-website
+        run: npm run e2e
+
+      - name: Keep the screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-screenshots
+          path: |
+            teracom-solutions-website/e2e-report
+            teracom-solutions-website/e2e-results
+          retention-days: 14
+          if-no-files-found: ignore
+
       # `npm start` spawns `next start` as a child process — the PID `$!`
       # captures is npm's own wrapper, not the actual server, so this
       # kills by matching the real process instead of a tracked PID.
