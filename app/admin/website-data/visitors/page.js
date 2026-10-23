@@ -1,3 +1,4 @@
+import { BRAND, retitle } from '@/lib/brand';
 import { redirect } from 'next/navigation';
 
 import AdminHelpIcon from '@/components/AdminHelpIcon';
@@ -8,7 +9,7 @@ import { fetchAnalyticsSummary } from '@/lib/api/adminAnalytics';
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
 
 export const metadata = {
-  title: 'Website Data|Teracom Solutions',
+  title: retitle('Website Data|Teracom Solutions', BRAND),
 };
 
 export default async function AdminWebsiteDataPage({ searchParams }) {

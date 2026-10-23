@@ -1,3 +1,4 @@
+import { BRAND, retitle } from '@/lib/brand';
 import { redirect } from 'next/navigation';
 
 import AdminHelpIcon from '@/components/AdminHelpIcon';
@@ -11,7 +12,7 @@ import { isSessionError, requireAdminToken } from '@/lib/adminPage';
 import { DEFAULT_FILTERS, sheetParams } from '@/lib/sheetQuery';
 
 export const metadata = {
-  title: 'Pricing|Teracom Solutions',
+  title: retitle('Pricing|Teracom Solutions', BRAND),
 };
 
 export default async function AdminPricingPage() {

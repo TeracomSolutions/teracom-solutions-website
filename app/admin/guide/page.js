@@ -1,3 +1,4 @@
+import { BRAND, retitle } from '@/lib/brand'
 import AdminShell from '@/components/AdminShell'
 import GuideContent from '@/components/GuideContent'
 import { GUIDE_SECTIONS } from '@/lib/adminGuide'
@@ -5,7 +6,7 @@ import { requireAdminToken } from '@/lib/adminPage'
 import { guideOutline } from '@/lib/guideReader'
 
 export const metadata = {
-  title: 'Help|Teracom Solutions'
+  title: retitle('Help|Teracom Solutions', BRAND)
 }
 
 export default async function AdminGuidePage() {

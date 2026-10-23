@@ -1,3 +1,4 @@
+import { BRAND, retitle } from '@/lib/brand';
 import { redirect } from 'next/navigation';
 
 import AdminBrands from '@/components/AdminBrands';
@@ -8,7 +9,7 @@ import { listStoreBrands } from '@/lib/api/adminBrands';
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
 
 export const metadata = {
-  title: 'Brands|Teracom Solutions',
+  title: retitle('Brands|Teracom Solutions', BRAND),
 };
 
 export default async function AdminBrandsPage() {

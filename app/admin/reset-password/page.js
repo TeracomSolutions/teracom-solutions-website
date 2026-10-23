@@ -1,8 +1,9 @@
+import { BRAND, retitle } from '@/lib/brand';
 import AdminBrand from '@/components/AdminBrand';
 import AdminResetPassword from '@/components/AdminResetPassword';
 
 export const metadata = {
-  title: 'Choose a new password|Teracom Solutions',
+  title: retitle('Choose a new password|Teracom Solutions', BRAND),
   robots: { index: false, follow: false },
 };
 

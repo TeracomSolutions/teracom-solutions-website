@@ -1,3 +1,4 @@
+import { BRAND, retitle } from '@/lib/brand';
 import { redirect } from 'next/navigation';
 import AdminActivity from '@/components/AdminActivity';
 import AdminHelpIcon from '@/components/AdminHelpIcon';
@@ -6,7 +7,7 @@ import { fetchActivity, fetchActivityPeople, fetchActivityTypes, fetchJobLogs } 
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
 
 export const metadata = {
-  title: 'Audit log|Teracom Solutions',
+  title: retitle('Audit log|Teracom Solutions', BRAND),
 };
 
 export default async function AdminActivityPage() {

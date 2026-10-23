@@ -1,3 +1,4 @@
+import { BRAND, retitle } from '@/lib/brand';
 import { redirect } from 'next/navigation';
 
 import AdminHelpIcon from '@/components/AdminHelpIcon';
@@ -8,7 +9,7 @@ import { listRedirects, seoOverview } from '@/lib/api/adminSeo';
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
 
 export const metadata = {
-  title: 'Website Data redirects|Teracom Solutions',
+  title: retitle('Website Data redirects|Teracom Solutions', BRAND),
 };
 
 export default async function AdminSeoRedirectsPage() {

@@ -1,3 +1,4 @@
+import { BRAND, retitle } from '@/lib/brand';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
@@ -10,7 +11,7 @@ import { formatDateTime, humanise } from '@/lib/adminFormat';
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
 
 export const metadata = {
-  title: 'Resource documents|Teracom Solutions',
+  title: retitle('Resource documents|Teracom Solutions', BRAND),
 };
 
 // Public download links go straight to the backend, the same way the store

@@ -1,3 +1,4 @@
+import { BRAND, retitle } from '@/lib/brand';
 import Link from 'next/link';
 import {
   Activity,
@@ -19,7 +20,7 @@ import AdminShell from '@/components/AdminShell';
 import { requireAdminToken } from '@/lib/adminPage';
 
 export const metadata = {
-  title: 'Administration|Teracom Solutions',
+  title: retitle('Administration|Teracom Solutions', BRAND),
 };
 
 // Each area has its own icon and colour so the console reads at a glance,

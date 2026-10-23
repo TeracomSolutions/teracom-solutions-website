@@ -1,3 +1,4 @@
+import { BRAND, retitle } from '@/lib/brand';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
@@ -9,7 +10,7 @@ import AdminNav from '@/components/AdminNav';
 import AdminBrand from '@/components/AdminBrand';
 
 export const metadata = {
-  title: 'Discount Codes|Teracom Solutions',
+  title: retitle('Discount Codes|Teracom Solutions', BRAND),
 };
 
 export default async function AdminCouponsPage() {

@@ -1,3 +1,4 @@
+import { BRAND, retitle } from '@/lib/brand';
 import { redirect } from 'next/navigation';
 import AdminShell from '@/components/AdminShell';
 import AdminSeoTabs from '@/components/AdminSeoTabs';
@@ -7,7 +8,7 @@ import { isSessionError, requireAdminToken } from '@/lib/adminPage';
 import { fetchAnalytics } from '@/lib/api/adminSeoInsights';
 
 export const metadata = {
-  title: 'Website Data analytics|Teracom Solutions',
+  title: retitle('Website Data analytics|Teracom Solutions', BRAND),
 };
 
 async function AdminSeoAnalyticsPage() {

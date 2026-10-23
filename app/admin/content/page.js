@@ -1,3 +1,4 @@
+import { BRAND, retitle } from '@/lib/brand';
 import { redirect } from 'next/navigation';
 
 import AdminContent from '@/components/AdminContent';
@@ -8,7 +9,7 @@ import { listContent } from '@/lib/api/adminContent';
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
 
 export const metadata = {
-  title: 'Photos & text|Teracom Solutions',
+  title: retitle('Photos & text|Teracom Solutions', BRAND),
 };
 
 export default async function AdminContentPage() {

@@ -1,3 +1,4 @@
+import { BRAND, retitle } from '@/lib/brand';
 import AdminAssistantChat from '@/components/AdminAssistantChat';
 import AdminCodeRequests from '@/components/AdminCodeRequests';
 import AdminHelpIcon from '@/components/AdminHelpIcon';
@@ -6,7 +7,7 @@ import { fetchCodeRequests } from '@/lib/api/adminCodeRequests';
 import { requireAdminToken } from '@/lib/adminPage';
 
 export const metadata = {
-  title: 'Assistant|Teracom Solutions',
+  title: retitle('Assistant|Teracom Solutions', BRAND),
 };
 
 export default async function AdminAssistantPage() {

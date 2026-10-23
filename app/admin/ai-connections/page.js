@@ -1,3 +1,4 @@
+import { BRAND, retitle } from '@/lib/brand';
 import { redirect } from 'next/navigation';
 
 import AdminAiAutoCheck from '@/components/AdminAiAutoCheck';
@@ -11,7 +12,7 @@ import { fetchAiAutoCheck, fetchAiProviders, fetchAiRouting, fetchGovernanceRule
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
 
 export const metadata = {
-  title: 'AI Connections|Teracom Solutions',
+  title: retitle('AI Connections|Teracom Solutions', BRAND),
 };
 
 export default async function AdminAiConnectionsPage() {

@@ -1,3 +1,4 @@
+import { BRAND, retitle } from '@/lib/brand';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
@@ -11,7 +12,7 @@ import { formatDateTime, humanise } from '@/lib/adminFormat';
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
 
 export const metadata = {
-  title: 'Data Feeds|Teracom Solutions',
+  title: retitle('Data Feeds|Teracom Solutions', BRAND),
 };
 
 // Store opens on Data Feeds (Robert, 2026-10-03): the suppliers whose

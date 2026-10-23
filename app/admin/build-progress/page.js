@@ -1,3 +1,4 @@
+import { BRAND, retitle } from '@/lib/brand';
 import { redirect } from 'next/navigation';
 
 import AdminBuildProgress from '@/components/AdminBuildProgress';
@@ -7,7 +8,7 @@ import { fetchBuildProgress } from '@/lib/api/adminBuildProgress';
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
 
 export const metadata = {
-  title: 'Build progress|Teracom Solutions',
+  title: retitle('Build progress|Teracom Solutions', BRAND),
 };
 
 export default async function AdminBuildProgressPage() {

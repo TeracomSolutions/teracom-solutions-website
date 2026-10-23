@@ -1,3 +1,4 @@
+import { BRAND, retitle } from '@/lib/brand';
 import { redirect } from 'next/navigation';
 
 import AdminHelpIcon from '@/components/AdminHelpIcon';
@@ -8,7 +9,7 @@ import { listHolds } from '@/lib/api/adminHolds';
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
 
 export const metadata = {
-  title: 'Needs review|Teracom Solutions',
+  title: retitle('Needs review|Teracom Solutions', BRAND),
 };
 
 export default async function AdminReviewPage() {

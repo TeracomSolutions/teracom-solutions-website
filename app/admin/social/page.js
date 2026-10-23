@@ -1,3 +1,4 @@
+import { BRAND, retitle } from '@/lib/brand';
 import { redirect } from 'next/navigation';
 
 import AdminHelpIcon from '@/components/AdminHelpIcon';
@@ -12,7 +13,7 @@ import { getCadence, listSocialAccounts, listSocialUpdates } from '@/lib/api/adm
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
 
 export const metadata = {
-  title: 'Social|Teracom Solutions',
+  title: retitle('Social|Teracom Solutions', BRAND),
 };
 
 export default async function AdminSocialPage() {

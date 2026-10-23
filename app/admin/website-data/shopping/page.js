@@ -1,3 +1,4 @@
+import { BRAND, retitle } from '@/lib/brand';
 import { redirect } from 'next/navigation';
 
 import AdminHelpIcon from '@/components/AdminHelpIcon';
@@ -12,7 +13,7 @@ import { SITE_ORIGIN } from '@/lib/seo';
 import { requireAdminToken } from '@/lib/adminPage';
 
 export const metadata = {
-  title: 'Website Data shopping|Teracom Solutions',
+  title: retitle('Website Data shopping|Teracom Solutions', BRAND),
 };
 
 export default async function AdminSeoShoppingPage() {

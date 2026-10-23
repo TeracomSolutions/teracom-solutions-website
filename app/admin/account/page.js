@@ -1,3 +1,4 @@
+import { BRAND, retitle } from '@/lib/brand';
 import { redirect } from 'next/navigation';
 
 import AdminChangePassword from '@/components/AdminChangePassword';
@@ -12,7 +13,7 @@ import { listStaffUsers, fetchPermissionsCatalogue } from '@/lib/api/adminStaffU
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
 
 export const metadata = {
-  title: 'Your account|Teracom Solutions',
+  title: retitle('Your account|Teracom Solutions', BRAND),
 };
 
 export default async function AdminAccountPage() {
