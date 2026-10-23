@@ -2989,3 +2989,12 @@ a.admin-status:hover { filter:brightness(1.15); }
 .admin-ai-detail-list dd { margin:2px 0 0; overflow-wrap:anywhere; }
 
 .admin-brand-name { font-size:22px; font-weight:900; letter-spacing:.06em; color:var(--text); }
+
+/* ---- Admin: About, version lists (Robert, 2026-10-24) ---- */
+.about-versions-head { display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; }
+.about-versions-head h2 { margin:0; }
+.about-versions-list { max-height:420px; overflow:auto; margin-top:12px; padding-right:8px; }
+.about-version { padding:10px 0; border-top:1px solid var(--line); }
+.about-version:first-child { border-top:0; }
+.about-version h3 { margin:0 0 4px; font-size:15px; }
+.about-version p { margin:2px 0; font-size:13px; }
