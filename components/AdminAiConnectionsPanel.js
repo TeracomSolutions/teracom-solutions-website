@@ -1,6 +1,6 @@
 'use client';
 
-import { Fragment, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 
 import AdminAiRoutingDiagram from '@/components/AdminAiRoutingDiagram';
 import { formatDateTime } from '@/lib/adminFormat';
@@ -54,7 +54,7 @@ export default function AdminAiConnectionsPanel({ initialConnections, initialRou
 
   // Refreshes the rows and the health without reloading the page, so the
   // browser does not jump back to the top after every button.
-  async function reload() {
+  async function reload(announce = true) {
     const [listRes, routingRes] = await Promise.all([
       fetch('/api/admin/ai-connections', { cache: 'no-store' }),
       fetch('/api/admin/ai-connections/routing', { cache: 'no-store' }),
@@ -66,7 +66,19 @@ export default function AdminAiConnectionsPanel({ initialConnections, initialRou
       const fresh = await routingRes.json().catch(() => null);
       if (fresh) setRouting(fresh);
     }
+    // The front end and back end lists are two copies on this page: tell the other one to refresh too.
+    if (announce && typeof window !== 'undefined') window.dispatchEvent(new Event('ai-connections-changed'));
   }
+
+  useEffect(() => {
+    const onChanged = () => {
+      reload(false).catch(() => {});
+    };
+    window.addEventListener('ai-connections-changed', onChanged);
+    return () => window.removeEventListener('ai-connections-changed', onChanged);
+    // reload only reads state setters, so one subscription for the life of the panel is enough.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   function resetForm() {
     setProvider('');
