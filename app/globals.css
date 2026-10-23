@@ -3070,3 +3070,11 @@ a.admin-status:hover { filter:brightness(1.15); }
 .admin-whats-new h2 { font-size:16px; margin:0 0 6px; }
 .admin-whats-new ul { margin:0 0 6px; padding-left:18px; font-size:14px; line-height:1.6; }
 .admin-whats-new p { margin:0; font-size:14px; }
+
+/* Where to find everything: the table wraps instead of scrolling sideways; top-bar links sit together. */
+.admin-where-table { table-layout:fixed; width:100%; min-width:0; }
+.admin-where-table th, .admin-where-table td { white-space:normal; overflow-wrap:anywhere; }
+.admin-where-table th:nth-child(1) { width:24%; } .admin-where-table th:nth-child(2) { width:16%; }
+.admin-where-table th:nth-child(3) { width:26%; } .admin-where-table th:nth-child(4) { width:24%; } .admin-where-table th:nth-child(5) { width:10%; }
+.admin-brand .admin-brand-link + .admin-brand-link { margin-left:16px; }
+@media (max-width: 700px) { .admin-where-table { table-layout:auto; min-width:640px; } }
