@@ -3106,3 +3106,20 @@ a.admin-status:hover { filter:brightness(1.15); }
 .zoho-flow-diagram { list-style:none; margin:0 0 12px; padding:0; display:grid; gap:6px; counter-reset:flow; }
 .zoho-flow-stage { display:grid; grid-template-columns:90px 1fr; gap:10px; align-items:start; padding:6px 10px; border-left:3px solid var(--line); }
 .zoho-flow-stage.is-on { border-left-color:#4ade80; } .zoho-flow-stage.is-preview { border-left-color:#facc15; } .zoho-flow-stage.is-off { border-left-color:rgba(255,255,255,.2); }
+
+/* ---- Marketing: the specials banner and the console page (Robert, 2026-10-25) ---- */
+.campaign-banner { background:linear-gradient(90deg, #b30000, #ff1717 50%, #b30000); color:#fff; font-size:14px; }
+.campaign-banner-inner { display:flex; align-items:center; justify-content:center; gap:12px; min-height:38px; padding-top:6px; padding-bottom:6px; text-align:center; }
+.campaign-banner-link { color:#fff; text-decoration:none; }
+.campaign-banner-link:hover strong { text-decoration:underline; }
+.campaign-banner-code { margin-left:8px; padding:1px 8px; border:1px dashed rgba(255,255,255,.8); border-radius:6px; font-weight:700; }
+.campaign-banner-close { background:none; border:0; color:#fff; font-size:20px; line-height:1; cursor:pointer; padding:0 4px; margin-left:auto; }
+.marketing-head { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:12px; }
+.marketing-form { display:grid; gap:10px; margin:12px 0 18px; }
+.marketing-form label { display:grid; gap:4px; }
+.marketing-form-row { display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:10px; }
+.marketing-check { display:flex !important; gap:8px; align-items:center; margin:6px 0; }
+.marketing-channels { border:1px solid var(--line); border-radius:12px; padding:8px 14px; margin:10px 0; }
+.marketing-preview { white-space:pre-wrap; background:rgba(255,255,255,.04); border:1px solid var(--line); border-radius:12px; padding:12px 14px; font-family:inherit; }
+.campaign-banner-preview p { margin:4px 0; }
+@media (max-width: 700px) { .marketing-form-row { grid-template-columns:1fr; } }
