@@ -4,6 +4,8 @@ import { z } from 'zod';
 import { createCoupon, listCoupons, updateCoupon } from '@/lib/api/adminCoupons';
 import { ApiError } from '@/lib/api/client';
 import { adminSessionToken, staffSessionIsValid } from '@/lib/adminApi';
+import { staffMe } from '@/lib/api/adminAuth';
+import { levelAllows, sectionLevel } from '@/lib/staffAccessRules';
 
 // Staff-only. The service token that reaches the backend lives on the server;
 // a signed-in staff session is what authorises using it. A browser never sees
@@ -41,10 +43,26 @@ async function requireStaff() {
   return (await staffSessionIsValid(token)) ? token : null;
 }
 
-export async function GET() {
-  if (!(await requireStaff())) {
-    return NextResponse.json({ error: 'Not signed in.' }, { status: 401 });
+// Coupons reach the backend with the website's service token, so the staff member's own Coupons
+// permission is checked here: Read only may list, Read and write may also create and change.
+async function couponAccess(needed) {
+  const token = await requireStaff();
+  if (!token) return NextResponse.json({ error: 'Not signed in.' }, { status: 401 });
+  let me = null;
+  try {
+    me = await staffMe(token);
+  } catch {
+    me = null;
   }
+  if (!levelAllows(sectionLevel(me, 'coupons'), needed)) {
+    return NextResponse.json({ error: needed === 'read' ? 'You do not have access to Coupons.' : 'You can look at Coupons but not change them.' }, { status: 403 });
+  }
+  return null;
+}
+
+export async function GET() {
+  const refused = await couponAccess('read');
+  if (refused) return refused;
   try {
     return NextResponse.json(await listCoupons());
   } catch (err) {
@@ -54,9 +72,8 @@ export async function GET() {
 }
 
 export async function POST(req) {
-  if (!(await requireStaff())) {
-    return NextResponse.json({ error: 'Not signed in.' }, { status: 401 });
-  }
+  const refused = await couponAccess('write');
+  if (refused) return refused;
 
   const parsed = CouponCreate.safeParse(await req.json().catch(() => null));
   if (!parsed.success) {
@@ -84,9 +101,8 @@ export async function POST(req) {
 }
 
 export async function PATCH(req) {
-  if (!(await requireStaff())) {
-    return NextResponse.json({ error: 'Not signed in.' }, { status: 401 });
-  }
+  const refused = await couponAccess('write');
+  if (refused) return refused;
 
   const parsed = CouponUpdate.safeParse(await req.json().catch(() => null));
   if (!parsed.success) {
