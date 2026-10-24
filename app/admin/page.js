@@ -8,6 +8,7 @@ import {
   FileText,
   Gauge,
   Inbox,
+  Megaphone,
   Info,
   Radar,
   ScrollText,
@@ -79,6 +80,13 @@ const AREAS = [
     text: 'Enquiries from the contact form on this website, newest first, with Mark contacted.',
     icon: Inbox,
     hue: '#60a5fa',
+  },
+  {
+    href: '/admin/marketing',
+    title: 'Marketing',
+    text: 'The specials and offers that are on: a banner across the website while they run, and a weekly update to customers and every social network.',
+    icon: Megaphone,
+    hue: '#f43f5e',
   },
   {
     href: '/admin/resources',

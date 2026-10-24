@@ -5,6 +5,7 @@ import './globals.css';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import PublicChrome from '@/components/PublicChrome';
+import CampaignBanner from '@/components/CampaignBanner';
 import { CartProvider } from '@/lib/cart-context';
 import AskTeraWidget from '@/components/AskTeraWidget';
 import StructuredData from '@/components/StructuredData';
@@ -96,6 +97,7 @@ export default function MarketingRootLayout({ children }) {
           Skip to main content
         </a>
         <CartProvider>
+          {!BRAND.custom && <PublicChrome><CampaignBanner /></PublicChrome>}
           {!BRAND.custom && <PublicChrome><Header /></PublicChrome>}
           {children}
           {!BRAND.custom && <PublicChrome><Footer /></PublicChrome>}
