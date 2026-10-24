@@ -58,7 +58,9 @@ export default async function AdminOrderPage({ params }) {
       {loadError && <p className="form-error" role="alert">{loadError}</p>}
 
       {!loadError && detail && <AdminOrderDetail detail={detail} />}
-      <AdminOrderPurchaseOrders orderId={orderId} initial={purchaseOrders} />
+      <div id="purchase-orders">
+        <AdminOrderPurchaseOrders orderId={orderId} initial={purchaseOrders} />
+      </div>
     </AdminShell>
   );
 }

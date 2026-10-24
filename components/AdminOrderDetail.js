@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { stepLabel, statusLabel, statusTone, nextStep, stepButtons, describeCall, cents, orderStatusLabel } from '@/lib/orderView';
 import { formatDateTime } from '@/lib/adminFormat';
+import OrderStageStrip from '@/components/OrderStageStrip';
 
 export default function AdminOrderDetail({ detail }) {
   const router = useRouter();
@@ -210,6 +211,7 @@ export default function AdminOrderDetail({ detail }) {
 
   return (
     <>
+      <OrderStageStrip orderId={order.id} stages={detail.stages} current={detail.current_stage} stuck={detail.stuck} />
       {renderOrderCard()}
       {renderLinesTable()}
       {renderSteps()}

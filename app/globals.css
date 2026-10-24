@@ -3086,3 +3086,23 @@ a.admin-status:hover { filter:brightness(1.15); }
 .status-ok { color:#4ade80; } .status-bad { color:#f87171; }
 .status-detail { color:var(--muted); font-size:14px; }
 .status-list { line-height:1.8; padding-left:20px; }
+
+/* ---- Orders: the stage strip, and the Zoho flow diagram (Robert, 2026-10-25) ---- */
+.order-strip-compact { display:inline-flex; gap:3px; align-items:center; flex-wrap:wrap; }
+.order-strip-dot { display:inline-grid; place-items:center; width:20px; height:20px; border-radius:6px; font-size:12px; font-weight:800; background:rgba(255,255,255,.06); color:var(--muted); }
+.order-strip-dot.is-good { background:rgba(74,222,128,.18); color:#4ade80; }
+.order-strip-dot.is-warn { background:rgba(250,204,21,.18); color:#facc15; }
+.order-strip-dot.is-bad { background:rgba(248,113,113,.2); color:#f87171; }
+.order-strip-dot.is-current { outline:2px solid rgba(255,255,255,.6); }
+.order-strip-stuck { margin-left:6px; }
+.order-strip-list { list-style:none; margin:0; padding:0; display:grid; gap:8px; }
+.order-strip-step { display:grid; grid-template-columns:28px 1fr auto; gap:10px; align-items:start; padding:8px 10px; border:1px solid var(--line); border-radius:12px; }
+.order-strip-step.is-current { border-color:rgba(255,255,255,.4); }
+.order-strip-step.is-bad { border-color:rgba(248,113,113,.5); }
+.order-strip-mark { display:inline-grid; place-items:center; width:24px; height:24px; border-radius:50%; background:rgba(255,255,255,.08); font-weight:800; }
+.order-strip-step.is-good .order-strip-mark { background:rgba(74,222,128,.2); color:#4ade80; }
+.order-strip-step.is-warn .order-strip-mark { background:rgba(250,204,21,.2); color:#facc15; }
+.order-strip-step.is-bad .order-strip-mark { background:rgba(248,113,113,.22); color:#f87171; }
+.zoho-flow-diagram { list-style:none; margin:0 0 12px; padding:0; display:grid; gap:6px; counter-reset:flow; }
+.zoho-flow-stage { display:grid; grid-template-columns:90px 1fr; gap:10px; align-items:start; padding:6px 10px; border-left:3px solid var(--line); }
+.zoho-flow-stage.is-on { border-left-color:#4ade80; } .zoho-flow-stage.is-preview { border-left-color:#facc15; } .zoho-flow-stage.is-off { border-left-color:rgba(255,255,255,.2); }

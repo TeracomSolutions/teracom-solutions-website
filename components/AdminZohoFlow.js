@@ -97,15 +97,30 @@ export default function AdminZohoFlow({ initial }) {
         </label>
       </p>
 
+      {state.flow && (
+        <>
+          <h3>How the flow works</h3>
+          <p><strong>{state.flow.next_order}</strong></p>
+          <ol className="zoho-flow-diagram">
+            {state.flow.stages.map((stage) => (
+              <li key={stage.key} className={`zoho-flow-stage is-${stage.state.toLowerCase()}`}>
+                <span className={`admin-status is-${stage.state === 'ON' ? 'good' : stage.state === 'PREVIEW' ? 'warn' : 'muted'}`}>{stage.state}</span>
+                <span><strong>{stage.label}</strong> <span className="admin-muted">{stage.off_text || stage.text}</span></span>
+              </li>
+            ))}
+          </ol>
+        </>
+      )}
+
       <h3>What it may create in Zoho</h3>
       {state.functions.map((fn) => (
         <Switch
           key={fn.key}
           label={fn.label}
-          hint={fn.description}
+          hint={fn.description + (fn.off_text ? ' ' + fn.off_text : '')}
           checked={fn.enabled}
           disabled={busy}
-          onChange={(value) => change({ functions: { [fn.key]: value } }, fn.label + (value ? ' are on.' : ' are off.'))}
+          onChange={(value) => change({ functions: { [fn.key]: value } }, fn.label + (value ? ': on.' : ': off.'))}
         />
       ))}
     </section>
