@@ -5,6 +5,8 @@ import { redirect } from 'next/navigation';
 import { listCoupons } from '@/lib/api/adminCoupons';
 import { ACCESS_TOKEN_COOKIE } from '@/lib/adminSession';
 import { staffSessionIsValid } from '@/lib/adminApi';
+import { staffMe } from '@/lib/api/adminAuth';
+import { levelAllows, sectionLevel } from '@/lib/staffAccessRules';
 import AdminCouponManager from '@/components/AdminCouponManager';
 import AdminNav from '@/components/AdminNav';
 import AdminBrand from '@/components/AdminBrand';
@@ -24,8 +26,17 @@ export default async function AdminCouponsPage() {
     redirect('/admin/login');
   }
 
+  let me = null;
+  try {
+    me = await staffMe(token);
+  } catch {
+    me = null;
+  }
+  const allowed = levelAllows(sectionLevel(me, 'coupons'), 'read');
+
   let coupons = [];
   try {
+    if (!allowed) throw new Error('no access');
     const data = await listCoupons();
     coupons = data.coupons || [];
   } catch {
@@ -47,7 +58,7 @@ export default async function AdminCouponsPage() {
             Stripe -- Stripe is only told the amount.
           </p>
 
-          <AdminCouponManager initialCoupons={coupons} />
+          {allowed ? <AdminCouponManager initialCoupons={coupons} /> : <p className="form-error" role="alert">You do not have access to Coupons. An Administrator can give it to you under Account.</p>}
         </div>
       </section>
     </main>
