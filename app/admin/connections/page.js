@@ -59,7 +59,7 @@ export default async function AdminConnectionsPage({ searchParams }) {
             <li><strong>Connected</strong>: the last check worked.</li>
             <li><strong>Needs attention</strong>: working, but something should be done (a test-mode key, a certificate close to expiry, a full disk).</li>
             <li><strong>Failing</strong>: the last check did not work; the message says why.</li>
-            <li><strong>Not set up</strong> and <strong>Not checked yet</strong>: no key yet, or press Test.</li>
+            <li><strong>Not set up</strong> and <strong>Not checked yet</strong>: no key yet, or press Test. Stripe and Cloudflare Turnstile are checked again by themselves when their last check is more than a day old.</li>
           </ul>
           <h4>Edit</h4>
           <p>Every card has an Edit button. Zoho Books, Cloudflare, Vercel and Email sending open their settings here; the website server, database, website and backend API cards set when they turn amber or red; a watched server or PC can be renamed or given a new check-in interval. Freight carriers and supplier feeds open their own pages, and Stripe, Turnstile and this deployment open their Vercel settings.</p>
