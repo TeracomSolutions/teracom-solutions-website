@@ -11,10 +11,11 @@ export default function AdminShell({ children }) {
     <main id="main-content" className="admin-main">
       <div className="admin-layout">
         <aside className="admin-sidebar">
+          <AdminBrand part="logo" />
           <AdminNav />
         </aside>
         <section className="admin-section admin-content">
-          <AdminBrand />
+          <AdminBrand part="bar" />
           <AdminPageInfo />
           {children}
         </section>
