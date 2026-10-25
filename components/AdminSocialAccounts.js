@@ -3,6 +3,7 @@
 import { useState } from 'react';
 
 import { formatDateTime } from '@/lib/adminFormat';
+import SocialSetupHelp from '@/components/SocialSetupHelp';
 import { NETWORKS, statusLabel, statusTone } from '@/lib/socialFormat';
 
 // One card per network: the profile link the footer shows, whether to show
@@ -93,7 +94,7 @@ function AccountCard({ network, account, onChange }) {
   return (
     <form className="admin-form admin-card admin-social-card" onSubmit={save}>
       <div className="admin-social-head">
-        <h3>{network.label}</h3>
+        <h3>{network.label} <SocialSetupHelp network={network.key} /></h3>
         <span className={`admin-pill admin-pill-${statusTone(status)}`}>{statusLabel(status)}</span>
       </div>
       <p className="admin-muted">{network.help}</p>

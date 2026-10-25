@@ -3,11 +3,11 @@ import { redirect } from 'next/navigation';
 
 import AdminHelpIcon from '@/components/AdminHelpIcon';
 import AdminShell from '@/components/AdminShell';
-import AdminSocialAccounts from '@/components/AdminSocialAccounts';
 import AdminSocialCalendar from '@/components/AdminSocialCalendar';
 import AdminSocialCustomers from '@/components/AdminSocialCustomers';
 import AdminSocialPosting from '@/components/AdminSocialPosting';
 import AdminTabs from '@/components/AdminTabs';
+import Link from 'next/link';
 import { listCustomers } from '@/lib/api/adminCustomers';
 import { getCadence, listSocialAccounts, listSocialUpdates } from '@/lib/api/adminSocial';
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
@@ -57,58 +57,11 @@ export default async function AdminSocialPage() {
           <h4>What this section is for</h4>
           <p>Our presence on <strong>LinkedIn, Facebook, Instagram, X and YouTube</strong>: the profile links the website footer shows, the accounts we can post to, <strong>Posting</strong> that goes out in one go to the networks and to customers who asked to hear from us, and the <strong>Customers</strong> those emails go to.</p>
           <h4>Accounts</h4>
-          <ul>
-            <li><strong>Profile link</strong> is what the footer icon points to; untick <strong>Show</strong> to hide a network from the footer without losing anything.</li>
-            <li><strong>Posting credentials</strong> come from each network&apos;s developer console (the steps for each network are below). They are stored encrypted and never shown again; the card only says which fields are set. Leaving a field blank keeps the saved value.</li>
-            <li><strong>Check</strong> sends one small real request to the network and shows the account it is signed in as, or the exact error.</li>
-          </ul>
-          <h4>Setting up LinkedIn</h4>
-          <ol>
-            <li>You need to be an admin of the Teracom Solutions company page on LinkedIn.</li>
-            <li>Go to <a href="https://www.linkedin.com/developers/apps" target="_blank" rel="noreferrer">linkedin.com/developers/apps</a> and click <strong>Create app</strong>: name &ldquo;Teracom Solutions website&rdquo;, LinkedIn Page &ldquo;Teracom Solutions&rdquo;, the Teracom logo, tick the agreement, <strong>Create app</strong>.</li>
-            <li>On the app&apos;s <strong>Settings</strong> tab, click <strong>Verify</strong> next to the company page and open the link as a page admin.</li>
-            <li>On the <strong>Products</strong> tab, request <strong>Community Management API</strong> and fill in the form (Teracom&apos;s legal name, website and a business email). LinkedIn reviews it; allow a few days. It must be the only product on this app.</li>
-            <li>On the <strong>Auth</strong> tab, add <code>https://www.linkedin.com/developers/tools/oauth/redirect</code> under <strong>Authorized redirect URLs</strong>.</li>
-            <li>Once approved, open <a href="https://www.linkedin.com/developers/tools/oauth" target="_blank" rel="noreferrer">OAuth Token Tools</a>, <strong>Create token</strong>, choose the app, tick <code>w_organization_social</code> and <code>r_organization_social</code>, <strong>Request access token</strong>, sign in as a page admin and <strong>Allow</strong>. Copy the token.</li>
-            <li>Open the company page as an admin: the address looks like <code>linkedin.com/company/12345678/admin</code>. The number is the page ID.</li>
-            <li>Here under <strong>Accounts &rarr; LinkedIn</strong>: paste the token into <strong>Access token</strong> and <code>urn:li:organization:12345678</code> (with your number) into <strong>Author URN</strong>. <strong>Save</strong>, then <strong>Check</strong>.</li>
-            <li>The token lasts 60 days. Put a reminder in the calendar and repeat steps 6 and 8 before it runs out.</li>
-          </ol>
-          <h4>Setting up Facebook</h4>
-          <ol>
-            <li>You need to be an admin of the Teracom Solutions Facebook Page, signed in to <a href="https://developers.facebook.com" target="_blank" rel="noreferrer">developers.facebook.com</a> (register as a developer if it asks).</li>
-            <li><strong>My Apps &rarr; Create app</strong>: name &ldquo;Teracom Solutions website&rdquo;, use case <strong>Manage everything on your Page</strong>, connect it to Teracom&apos;s business portfolio if asked, <strong>Create app</strong>.</li>
-            <li>In the app&apos;s <strong>App settings &rarr; Basic</strong>, set the privacy policy address to <code>https://www.teracomsolutions.com.au/privacy</code>, save, and switch the app to <strong>Live</strong> at the top (posts from an app still in development are only seen by the people on the app).</li>
-            <li>Open the <a href="https://developers.facebook.com/tools/explorer" target="_blank" rel="noreferrer">Graph API Explorer</a>, choose the app, then <strong>Get User Access Token</strong> with these permissions: <code>pages_show_list</code>, <code>pages_read_engagement</code>, <code>pages_manage_posts</code>, and for Instagram also <code>instagram_basic</code>, <code>instagram_content_publish</code>, <code>business_management</code>. <strong>Generate Access Token</strong>, choose the Teracom page (and the Instagram account) and continue.</li>
-            <li>Copy that token into the <a href="https://developers.facebook.com/tools/debug/accesstoken" target="_blank" rel="noreferrer">Access Token Debugger</a>, click <strong>Debug</strong>, then <strong>Extend Access Token</strong> at the bottom. Copy the long-lived token it shows.</li>
-            <li>Back in the Graph API Explorer, paste the long-lived token into <strong>Access Token</strong>, change the request to <code>me/accounts</code> and <strong>Submit</strong>. Under Teracom Solutions copy the <code>access_token</code> (the Page access token; it does not expire) and the <code>id</code> (the Page ID).</li>
-            <li>Here under <strong>Accounts &rarr; Facebook</strong>: paste them into <strong>Page access token</strong> and <strong>Page ID</strong>. <strong>Save</strong>, then <strong>Check</strong>.</li>
-            <li>So the token never runs out: in the app&apos;s <strong>App settings &rarr; Basic</strong> copy the <strong>App ID</strong> and the <strong>App secret</strong> (click Show) into the same card and <strong>Save</strong>. From then on any token you paste, even one straight from the Graph API Explorer, is swapped on Save for the Page&apos;s own token, which does not expire; Instagram&apos;s token is swapped the same way.</li>
-          </ol>
-          <h4>Setting up Instagram</h4>
-          <ol>
-            <li>In the Instagram app: <strong>Settings &rarr; Account type and tools &rarr; Switch to professional account &rarr; Business</strong>.</li>
-            <li>Link it to the Teracom Facebook Page: on Facebook open the Page, <strong>Settings &rarr; Linked accounts &rarr; Instagram &rarr; Connect</strong>.</li>
-            <li>Do the Facebook steps above with the Instagram permissions ticked and the Instagram account chosen. Instagram uses the same Page access token.</li>
-            <li>In the Graph API Explorer, with the Page access token, run <code>&lt;Page ID&gt;?fields=instagram_business_account</code> and copy the <code>id</code> inside <code>instagram_business_account</code>.</li>
-            <li>Here under <strong>Accounts &rarr; Instagram</strong>: paste the Page access token into <strong>Access token</strong> and that id into <strong>Instagram business account ID</strong>. <strong>Save</strong>, then <strong>Check</strong>.</li>
-          </ol>
-          <h4>Setting up X</h4>
-          <ol>
-            <li>Sign in to <a href="https://developer.x.com" target="_blank" rel="noreferrer">developer.x.com</a> with the Teracom X account and sign up for the <strong>Free</strong> plan (it allows posting, with a monthly limit). Describe the use as posting Teracom&apos;s own news from our website console.</li>
-            <li>In the Developer Portal open <strong>Projects &amp; Apps</strong>, the app, <strong>Settings &rarr; User authentication settings &rarr; Set up</strong>: App permissions <strong>Read and write</strong>, Type of App <strong>Web App, Automated App or Bot</strong>, Callback URL <code>https://www.teracomsolutions.com.au/admin/social</code>, Website <code>https://www.teracomsolutions.com.au</code>. <strong>Save</strong>.</li>
-            <li>On the app&apos;s <strong>Keys and tokens</strong> tab, under <strong>Consumer Keys</strong>, click <strong>Regenerate</strong> (or <strong>Generate</strong>) and copy the <strong>API Key</strong> and <strong>API Key Secret</strong>.</li>
-            <li>On the same tab, under <strong>Authentication Tokens</strong>, generate the <strong>Access Token and Secret</strong> for the Teracom X account. Check they say <strong>Read and Write</strong>; if they were made before step 2, regenerate them. Copy both.</li>
-            <li>Here under <strong>Accounts &rarr; X</strong>: paste the four values into <strong>API key</strong>, <strong>API key secret</strong>, <strong>Access token</strong> and <strong>Access token secret</strong>. <strong>Save</strong>, then <strong>Check</strong>. These keys do not expire; X shows each secret only once, so keep them in the password manager.</li>
-          </ol>
-          <h4>YouTube</h4>
-          <ul>
-            <li>Link only: paste the channel&apos;s address into <strong>Profile link</strong> so the footer icon points to it. Nothing is posted to YouTube.</li>
-          </ul>
+          <p>The networks&apos; profile links and posting credentials are under <strong>Connections &gt; Social</strong>. Each card there has a <strong>Help</strong> button with that network&apos;s setup steps.</p>
           <h4>Posting</h4>
           <ul>
             <li>Write the title and text once, add a link if there is one, then add <strong>pictures</strong> (JPEG, PNG or WebP, up to 8 MB each, up to 20) or <strong>one video</strong> (MP4 or MOV, up to 100 MB). Each network takes what it allows: X up to 4 pictures, Facebook and Instagram up to 10.</li>
-            <li>Tick where it goes. A network without posting credentials cannot be ticked; set it up under Accounts first. <strong>Customer email</strong> goes to every customer who agreed to hear from us, or only to the pricing tiers you name, with an unsubscribe link in every email.</li>
+            <li>Tick where it goes. A network without posting credentials cannot be ticked; set it up under Connections &gt; Social first. <strong>Customer email</strong> goes to every customer who agreed to hear from us, or only to the pricing tiers you name, with an unsubscribe link in every email.</li>
             <li>Each ticked network has a tab with its <strong>preview</strong> and a <strong>checklist</strong> of what it will accept. Untick <em>Use the main text</em> to write different text for that network only.</li>
             <li><strong>Send now</strong> runs in the background; each network reports sent, failed or skipped within a minute. A <strong>scheduled</strong> post goes within 15 minutes of its time (Melbourne). The history links to each live post.</li>
             <li>Drafts and scheduled posts can be cancelled; sent ones stay as history.</li>
@@ -130,11 +83,11 @@ export default async function AdminSocialPage() {
         </AdminHelpIcon>
       </h1>
       <p className="lead">The social networks we post to, the updates sent to them and to our customers, and the customer list.</p>
+      <p className="admin-muted">The accounts and their credentials are under <Link href="/admin/connections#social">Connections &gt; Social</Link>.</p>
 
       <AdminTabs
         ariaLabel="Social sections"
         tabs={[
-          { key: 'accounts', label: 'Accounts', content: <AdminSocialAccounts initialAccounts={accounts} loadError={loadError} /> },
           {
             key: 'posting',
             label: 'Posting',

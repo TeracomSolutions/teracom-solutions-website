@@ -5,7 +5,8 @@ import { useEffect, useState } from 'react';
 // A "?" beside a heading that opens the page's own explanation. Copied
 // from the the previous platform's components/HelpIcon.js; the styling moved
 // from inline to the .admin-help-* classes in globals.css.
-export default function AdminHelpIcon({ children }) {
+// label: show that word on the button instead of "?" (the Help button on each social network card).
+export default function AdminHelpIcon({ children, label }) {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
@@ -21,12 +22,12 @@ export default function AdminHelpIcon({ children }) {
     <span className="admin-help">
       <button
         type="button"
-        className="admin-help-btn"
+        className={label ? 'admin-help-btn admin-help-btn-text' : 'admin-help-btn'}
         onClick={() => setIsOpen((open) => !open)}
-        aria-label="Help"
+        aria-label={label || 'Help'}
         aria-expanded={isOpen}
       >
-        ?
+        {label || '?'}
       </button>
 
       {isOpen && (
