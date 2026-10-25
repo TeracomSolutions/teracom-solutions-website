@@ -9,6 +9,9 @@ import { invalidateCatalogueCache } from '@/lib/catalogue';
 // stale is cheap: each page is rebuilt the next time somebody opens it.
 const PRICE_PAGES = ['/store', '/g/store', '/brands', '/g/brands'];
 
+// Making prices live also runs the price check on the backend.
+export const maxDuration = 60;
+
 export const GET = withAdminSession(async ({ token }) => {
   return NextResponse.json(await fetchPublishStatus(token));
 });

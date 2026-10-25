@@ -8,6 +8,7 @@ export default function AdminPricePublish({ initial }) {
   const [running, setRunning] = useState(false);
   const [error, setError] = useState('');
   const [justDone, setJustDone] = useState(false);
+  const [check, setCheck] = useState(null);
 
   async function makeLive() {
     setRunning(true);
@@ -21,6 +22,8 @@ export default function AdminPricePublish({ initial }) {
         const result = await response.json();
         setStatus(result);
         setJustDone(true);
+        setCheck(result.check || null);
+        window.dispatchEvent(new Event('price-check-updated'));
       }
     } catch (err) {
       setError('Could not make prices live. Try again.');
@@ -62,7 +65,7 @@ export default function AdminPricePublish({ initial }) {
         </>
       )}
       {justDone && !error && !running && (
-        <p role="status">Done. The website is refreshing its saved pages now. New prices should show within about a minute, and at most about five minutes. Refresh the store page to see them.</p>
+        <p role="status">{check ? `Checked every live price: ${check.matching} of ${check.products} match the markups exactly${check.counts?.below_cost ? `, ${check.counts.below_cost} below cost` : ''}. See Price check below. ` : ''}Done. The website is refreshing its saved pages now. New prices should show within about a minute, and at most about five minutes. Refresh the store page to see them.</p>
       )}
       {error && <p className="form-error" role="alert">{error}</p>}
       <p className="admin-muted">How long it takes: the website rebuilds its saved store pages and clears its price cache straight away, but each page is rebuilt when somebody next opens it, and the price list a signed-in customer sees can be held for up to five minutes. Expect new prices within about a minute, at most five. Visitors who are not signed in see RRP, so only RRP changes show for them.</p>

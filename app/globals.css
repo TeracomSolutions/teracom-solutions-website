@@ -3296,3 +3296,12 @@ a.admin-status:hover { filter:brightness(1.15); }
 /* Add a brand by hand (Robert, 2026-10-26). */
 .brand-admin-add { display:grid; gap:8px; margin-bottom:14px; }
 .brand-admin-add input { min-width:220px; flex:1; }
+
+/* Store > Pricing > Price check (Robert, 2026-10-26). */
+.admin-price-check-counts { display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:8px; margin:10px 0 14px; }
+.admin-price-check-count { display:grid; gap:2px; padding:10px 12px; border:1px solid var(--line); border-radius:12px; background:rgba(255,255,255,.03); color:#fff; font:inherit; text-align:left; cursor:pointer; }
+.admin-price-check-count strong { font-size:22px; }
+.admin-price-check-count span { font-size:12px; color:var(--muted); }
+.admin-price-check-count.is-red strong { color:#f87171; }
+.admin-price-check-count.is-amber strong { color:#fbbf24; }
+.admin-price-check-count.is-on { border-color:var(--red); background:rgba(255,23,23,.12); }
