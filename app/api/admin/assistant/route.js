@@ -15,6 +15,7 @@ const ChatRequest = z.object({
     .min(1)
     .max(24),
   voice: z.boolean().optional(),
+  chat_id: z.string().uuid().nullable().optional(),
 });
 
 export const POST = withAdminSession(async ({ req, token }) => {
@@ -22,5 +23,5 @@ export const POST = withAdminSession(async ({ req, token }) => {
   if (!parsed.success) {
     return NextResponse.json({ error: 'Type a message first.' }, { status: 400 });
   }
-  return NextResponse.json(await assistantChat(token, parsed.data.messages, parsed.data.voice === true));
+  return NextResponse.json(await assistantChat(token, parsed.data.messages, parsed.data.voice === true, parsed.data.chat_id || null));
 }, { fallback: 'The assistant did not answer in time. Try a shorter request.' });

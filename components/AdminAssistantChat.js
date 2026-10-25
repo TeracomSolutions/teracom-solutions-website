@@ -14,8 +14,8 @@ import { useAttachments } from '@/lib/useAttachments';
 import ChatCodeRequestCard from '@/components/ChatCodeRequestCard';
 import ChatMarkdown from '@/components/ChatMarkdown';
 
-// Chat with the console. Each turn sends the whole conversation (the
-// backend keeps no session), shows the reply, and lists any actions the
+// Chat with the console. Each turn sends the whole conversation and the
+// backend saves it under its chat id (the list on the left), shows the reply, and lists any actions the
 // assistant took so nothing happens silently. Voice is the browser's own
 // Web Speech API (Chrome and Edge): the mic button dictates into the box
 // and, by default, sends after a few seconds of quiet (untick that to keep
@@ -51,8 +51,11 @@ function synth() {
   return speechControl();
 }
 
-export default function AdminAssistantChat() {
-  const [messages, setMessages] = useState([]);
+// chatId and initialMessages: the saved chat this continues (components/AdminAssistantWorkspace.js);
+// onSaved(id, title) when the backend has saved a turn; onNewChat when New chat is pressed here.
+export default function AdminAssistantChat({ chatId = null, initialMessages = [], onSaved, onNewChat }) {
+  const [messages, setMessages] = useState(initialMessages);
+  const chatIdRef = useRef(chatId);
   const [draft, setDraft] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
@@ -160,11 +163,16 @@ export default function AdminAssistantChat() {
         body: JSON.stringify({
           messages: forSend(history.slice(-24)),
           voice: conversationRef.current,
+          chat_id: chatIdRef.current,
         }),
         signal: controller.signal,
       });
       const data = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(data.error || 'The assistant did not answer.');
+      if (data.chat_id) {
+        chatIdRef.current = data.chat_id;
+        onSaved?.(data.chat_id, data.chat_title);
+      }
       setMessages([...history, { role: 'assistant', content: data.reply, actions: data.actions || [], artifacts: data.artifacts || [], model: data.model }]);
       const wantSpeech = readAloudRef.current && Boolean(data.reply);
       dispatch({ type: 'reply', speak: wantSpeech });
@@ -380,6 +388,8 @@ export default function AdminAssistantChat() {
     attach.clear();
     setError('');
     setAvatarState('idle');
+    chatIdRef.current = null;
+    onNewChat?.();
   }
 
   const stoppable = listening || busy || conversation || avatarState === 'speaking';
@@ -410,6 +420,7 @@ export default function AdminAssistantChat() {
             {m.role === 'assistant' && <AdminAssistantAvatar state="idle" size={26} />}
             <div className="admin-assistant-bubble">
               <AttachmentChips attachments={m.attachments} />
+              {m.savedFiles && m.savedFiles.length > 0 && <p className="admin-muted admin-assistant-saved-files">Attached: {m.savedFiles.join(', ')}</p>}
               {m.role === 'assistant'
                 ? <ChatMarkdown text={m.content} />
                 : m.content.split(String.fromCharCode(10)).map((line, j) => <p key={j}>{line || ' '}</p>)}
@@ -508,7 +519,7 @@ export default function AdminAssistantChat() {
             </button>
           )}
           {messages.length > 0 && (
-            <button type="button" className="btn btn-secondary btn-sm" onClick={reset} disabled={busy}>New conversation</button>
+            <button type="button" className="btn btn-secondary btn-sm" onClick={reset} disabled={busy}>New chat</button>
           )}
         </div>
         <div className="admin-assistant-voice">

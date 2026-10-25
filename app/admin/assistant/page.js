@@ -1,5 +1,5 @@
 import { BRAND, retitle } from '@/lib/brand';
-import AdminAssistantChat from '@/components/AdminAssistantChat';
+import AdminAssistantWorkspace from '@/components/AdminAssistantWorkspace';
 import AdminCodeRequests from '@/components/AdminCodeRequests';
 import AdminHelpIcon from '@/components/AdminHelpIcon';
 import AdminShell from '@/components/AdminShell';
@@ -39,6 +39,8 @@ export default async function AdminAssistantPage() {
           <p><strong>Speak</strong> dictates into the box. <strong>Hold a conversation</strong> goes further: it listens, sends what you said when you pause, reads the answer aloud, then listens again, so you can ask follow-up questions back and forth without touching the keyboard. It keeps going until you press <strong>End conversation</strong> or <strong>Stop</strong>. <strong>Stop</strong> also cuts off the microphone, the spoken answer or an answer still being written, and keeps your words in the box. It needs Chrome or Edge.</p>
           <h4>Attach pictures and files</h4>
           <p>Drag a picture or file onto the box, paste a screenshot into it, or press <strong>Attach</strong>, then ask your question. Pictures, PDFs, spreadsheets (.xlsx) and text files work. Text is cleaned by the privacy rules; pictures and PDFs go to the AI as they are, so do not attach anything showing customers personal details.</p>
+          <h4>Chats and memory</h4>
+          <p>Every chat is saved and listed on the left, newest first: open one to carry on where you left off, search them, rename them with the pencil or remove one from the list with the bin. <strong>New chat</strong> starts a fresh one. <strong>Memory</strong> holds short notes the Assistant keeps from earlier chats (things you told it to remember, how you like things done, what worked) and reads in every new chat, so it learns over time. Everyone using the console shares the same memory; add a note yourself or forget one with the bin. Passwords, keys and card numbers are never kept.</p>
           <h4>What it knows</h4>
           <p>It answers questions about any console setting from the same guide and page help you can read: for each question, the matching help is found and handed to it. If the help does not cover something, it says so rather than guessing.</p>
           <h4>What it will not do</h4>
@@ -46,7 +48,7 @@ export default async function AdminAssistantPage() {
         </AdminHelpIcon>
       </h1>
       <p className="lead">Tell the console what you want in plain English.</p>
-      <AdminAssistantChat />
+      <AdminAssistantWorkspace />
       <AdminCodeRequests initial={codeRequests} />
     </AdminShell>
   );
