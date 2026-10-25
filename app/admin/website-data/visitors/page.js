@@ -34,7 +34,7 @@ export default async function AdminWebsiteDataPage({ searchParams }) {
           <h4>What this page is for</h4>
           <p>Who is visiting the website: how many page views and visitors, the daily trend, the most-read pages, where people arrived from, which countries and states, and what device they used. Each figure is compared with the period before it.</p>
           <h4>Where the numbers come from</h4>
-          <p>The website itself records every public page view to our own backend on VM 101 (a small beacon on each page). A visitor is counted once per day by an anonymous code made from their address and browser with a daily salt -- nobody can be identified from it and no address is stored. Known bots and crawlers are ignored, and so are admin pages. Google Analytics keeps running alongside; this is the copy we own.</p>
+          <p>The website itself records every public page view to our own backend on the website server (a small beacon on each page). A visitor is counted once per day by an anonymous code made from their address and browser with a daily salt -- nobody can be identified from it and no address is stored. Known bots and crawlers are ignored, and so are admin pages. Google Analytics keeps running alongside; this is the copy we own.</p>
           <h4>Reading it</h4>
           <ul>
             <li><strong>Page views</strong> - every page load. One person reading five pages is five views.</li>
