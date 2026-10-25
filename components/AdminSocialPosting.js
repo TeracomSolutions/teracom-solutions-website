@@ -273,7 +273,7 @@ export default function AdminSocialPosting({ initialUpdates, accounts, audienceC
                   disabled={!available}
                 />
                 {channel.label}
-                {!available && <span className="admin-muted"> (set up under Accounts)</span>}
+                {!available && <span className="admin-muted"> (set up under Connections &gt; Social)</span>}
               </label>
             );
           })}

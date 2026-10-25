@@ -2224,6 +2224,7 @@ a.admin-status:hover { filter:brightness(1.15); }
 .admin-help { position:relative; display:inline-block; }
 .admin-help-btn { width:22px; height:22px; border-radius:50%; border:1px solid var(--line); background:transparent; color:var(--muted); font-size:12px; font-weight:900; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; line-height:1; padding:0; vertical-align:middle; }
 .admin-help-btn:hover { color:#fff; border-color:#fff; }
+.admin-help-btn-text { width:auto; border-radius:999px; padding:0 10px; font-size:12px; font-weight:700; }
 .admin-help-backdrop { position:fixed; inset:0; background:rgba(0,0,0,.65); display:flex; align-items:center; justify-content:center; padding:16px; z-index:1000; }
 .admin-help-modal { position:relative; background:#111; border:1px solid var(--line); border-radius:14px; padding:22px 26px; max-width:820px; width:100%; max-height:80vh; overflow-y:auto; color:#fff; font-size:14px; font-weight:400; text-align:left; line-height:1.6; box-shadow:0 20px 60px rgba(0,0,0,.6); }
 .admin-help-modal h4 { margin:18px 0 6px; font-size:14px; }

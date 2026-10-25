@@ -4,9 +4,12 @@ import { redirect } from 'next/navigation';
 import AdminConnections from '@/components/AdminConnections';
 import AdminHelpIcon from '@/components/AdminHelpIcon';
 import AdminShell from '@/components/AdminShell';
+import AdminSocialAccounts from '@/components/AdminSocialAccounts';
+import AdminTabs from '@/components/AdminTabs';
 import AdminZohoFlow from '@/components/AdminZohoFlow';
 import { listConnections } from '@/lib/api/adminConnections';
 import { fetchZohoFlow } from '@/lib/api/adminZohoFlow';
+import { listSocialAccounts } from '@/lib/api/adminSocial';
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
 import { websiteConnectionsFor } from '@/lib/websiteConnections';
 
@@ -39,6 +42,16 @@ export default async function AdminConnectionsPage({ searchParams }) {
     zohoFlow = null;
   }
 
+  // The Social tab, loaded on its own so a failure there leaves the services tab working.
+  let socialAccounts = [];
+  let socialError = '';
+  try {
+    socialAccounts = await listSocialAccounts(token);
+  } catch (err) {
+    if (isSessionError(err)) redirect('/admin/login');
+    socialError = 'Unable to load the social accounts from the backend.';
+  }
+
   let notice = null;
   if (ZOHO_NOTICES[query.zoho]) {
     notice = {
@@ -67,14 +80,30 @@ export default async function AdminConnectionsPage({ searchParams }) {
           <p>Zoho Books, Cloudflare and Vercel keys are entered here with <strong>Edit</strong>; they are stored encrypted and never shown again, only their last four characters. Other connections link to the page that holds their keys. Stripe and Turnstile keys live in the website&apos;s Vercel settings.</p>
           <h4>Voice</h4>
           <p>The voice Tera and the Assistant speak with. The card shows whether visitors hear the voice built into their own browser (free, but it differs by device and can sound robotic) or a natural Australian voice from Microsoft Azure Speech. <strong>Edit</strong> sets the voice engine, the Azure key and region, which Azure voice, the speaking speed and a monthly limit on characters; after that limit, or if Azure does not answer, visitors hear their browser voice instead. <strong>Hear it</strong> speaks a sample the way visitors will hear it and says which voice answered.</p>
+          <h4>Social</h4>
+          <p>The <strong>Social</strong> tab holds LinkedIn, Facebook, Instagram, X and YouTube: the profile link the website footer shows and the credentials we post with. Each card has a <strong>Help</strong> button with the exact steps to get that network&apos;s credentials. Posting itself is on the Social page.</p>
           <h4>Servers and computers</h4>
           <p>This server and its database are checked whenever the page opens. Add any other server or PC with <strong>Add a server or computer</strong>: paste the line it gives you on that machine and it checks in by itself. It turns red when it misses two check-ins.</p>
         </AdminHelpIcon>
       </h1>
       <p className="lead">The outside services, servers and computers the website depends on, whether each is working, and the keys for them.</p>
 
-      {loadError ? <p className="form-error" role="alert">{loadError}</p> : <AdminConnections initial={connections} notice={notice} />}
-      <AdminZohoFlow initial={zohoFlow} />
+      <AdminTabs
+        ariaLabel="Connection groups"
+        tabs={[
+          {
+            key: 'services',
+            label: 'Services',
+            content: (
+              <>
+                {loadError ? <p className="form-error" role="alert">{loadError}</p> : <AdminConnections initial={connections} notice={notice} />}
+                <AdminZohoFlow initial={zohoFlow} />
+              </>
+            ),
+          },
+          { key: 'social', label: 'Social', content: <AdminSocialAccounts initialAccounts={socialAccounts} loadError={socialError} /> },
+        ]}
+      />
     </AdminShell>
   );
 }
