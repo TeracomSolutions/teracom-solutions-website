@@ -28,6 +28,8 @@ const SECTIONS = [
       { label: 'Enquiries', text: 'When you use our contact form we collect your name, email address, company (optional), the area you are interested in and your message.' },
       { label: 'Customer accounts', text: 'When you create an account we collect your first and last name, email address, password and postal address.' },
       { label: 'Orders', text: 'When you buy from the Teracom Store we collect your name, email address, delivery details and what you ordered. Card payments are processed by Stripe; we never see or store your card details.' },
+      { label: 'Saved carts', text: 'If you are signed in to your account, we keep a copy of what is in your cart (the products, quantities and prices) linked to your account, so we can see which products people are interested in and which carts were left. A cart is marked abandoned after an hour without changes, expired after 30 days, and deleted after 90 days. Nothing is kept for visitors who are not signed in.' },
+      { label: 'Unfinished checkouts', text: 'If a checkout expires or its payment fails, we keep a record of it for up to 90 days: your email address, what was in the order and its value. We use it to follow up problems with payments and to understand why orders are not completed.' },
       { label: 'Form security', text: 'When you submit a form we use Cloudflare Turnstile to check that the submission comes from a person rather than an automated script. Cloudflare receives your IP address and some technical information about your browser for that check. It does not use it to build an advertising profile of you.' },
       { label: 'Website use', text: 'We use Google Analytics to understand how the website is used -- for example the pages visited, how long visitors stay, the type of device and browser, the website that referred them and their approximate location (city or region). This information does not identify you by name.' },
     ],
@@ -107,7 +109,7 @@ export default function Privacy() {
       icon={ShieldCheck}
       title="Privacy Policy"
       lead="How Teracom Solutions Pty Ltd handles personal information collected through this website."
-      updated="22 September 2026"
+      updated="25 October 2026"
       highlights={HIGHLIGHTS}
       sections={SECTIONS}
     />
