@@ -47,7 +47,6 @@ export default async function AdminAssistantPage() {
           <p>It cannot delete anything, upload files or change AI keys; those stay as clicks on their pages. It cannot edit the website directly. To ask for a change to the website&apos;s front end, tell the chat what you want (or use <strong>Code changes</strong> below it): the request goes to OpenHands, which writes it on a copy; it is tested and arrives as a pull request, and nothing is merged or deployed without a person. It runs on the connections under AI Connections, in the order of preference set there, and says which one answered.</p>
         </AdminHelpIcon>
       </h1>
-      <p className="lead">Tell the console what you want in plain English.</p>
       <AdminAssistantWorkspace />
       <AdminCodeRequests initial={codeRequests} />
     </AdminShell>
