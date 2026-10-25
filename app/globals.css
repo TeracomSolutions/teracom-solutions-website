@@ -3123,3 +3123,13 @@ a.admin-status:hover { filter:brightness(1.15); }
 .marketing-preview { white-space:pre-wrap; background:rgba(255,255,255,.04); border:1px solid var(--line); border-radius:12px; padding:12px 14px; font-family:inherit; }
 .campaign-banner-preview p { margin:4px 0; }
 @media (max-width: 700px) { .marketing-form-row { grid-template-columns:1fr; } }
+
+/* ---- Account: operator permission sets and the permission tick boxes (Robert, 2026-10-25) ---- */
+.permission-grid { display:grid; gap:8px; margin:10px 0; }
+.permission-row { display:grid; grid-template-columns:1fr 180px; gap:10px; align-items:center; padding:10px 12px; border:1px solid var(--line); border-radius:12px; }
+.permission-row.is-on { border-color:rgba(74,222,128,.35); }
+.permission-tick { display:flex; gap:10px; align-items:flex-start; }
+.permission-parts { grid-column:1 / -1; display:grid; gap:6px; padding:6px 0 0 28px; border-top:1px dashed var(--line); }
+.permission-part { display:grid; grid-template-columns:1fr 180px; gap:10px; align-items:center; font-size:14px; }
+.permission-set-form { margin:12px 0 20px; }
+@media (max-width: 700px) { .permission-row, .permission-part { grid-template-columns:1fr; } }

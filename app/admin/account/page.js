@@ -6,10 +6,11 @@ import AdminHelpIcon from '@/components/AdminHelpIcon';
 import AdminShell from '@/components/AdminShell';
 import AdminSessionSettings from '@/components/AdminSessionSettings';
 import AdminStaffUsers from '@/components/AdminStaffUsers';
+import AdminPermissionSets from '@/components/AdminPermissionSets';
 import AdminTabs from '@/components/AdminTabs';
 import AdminTwoFactor from '@/components/AdminTwoFactor';
 import { getStaffSession, staffMe, staffMfaStatus } from '@/lib/api/adminAuth';
-import { listStaffUsers, fetchPermissionsCatalogue } from '@/lib/api/adminStaffUsers';
+import { listStaffUsers, fetchPermissionsCatalogue, listPermissionProfiles } from '@/lib/api/adminStaffUsers';
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
 
 export const metadata = {
@@ -48,10 +49,12 @@ export default async function AdminAccountPage() {
   let users = null;
   let usersError = '';
   let catalogue = null;
+  let permissionSets = [];
   if (staffRole === 'platform_admin') {
     try {
       users = await listStaffUsers(token);
       try { catalogue = await fetchPermissionsCatalogue(token); } catch (err) { if (isSessionError(err)) redirect('/admin/login'); catalogue = null; }
+      try { permissionSets = await listPermissionProfiles(token); } catch (err) { if (isSessionError(err)) redirect('/admin/login'); permissionSets = []; }
     } catch (err) {
       if (isSessionError(err)) redirect('/admin/login');
       users = null;
@@ -79,6 +82,11 @@ export default async function AdminAccountPage() {
       content: usersError ?
         <p className="form-error" role="alert">{usersError}</p> :
         <AdminStaffUsers initialUsers={users} currentId={meId} catalogue={catalogue} />
+    });
+    tabs.push({
+      key: 'permission-sets',
+      label: 'Operator permissions',
+      content: <AdminPermissionSets initialSets={permissionSets} catalogue={catalogue} />
     });
   }
 

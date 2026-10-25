@@ -1,42 +1,49 @@
 'use client';
 
-import { useState } from 'react';
-import { applyPreset, presetFor, summarisePermissions, levelLabel } from '../lib/permissionsView.js';
+import { useEffect, useState } from 'react';
 
+import PermissionGrid from '@/components/PermissionGrid';
+import { summarisePermissions } from '../lib/permissionsView.js';
+
+// One user's role, and for Limited access the operator permission set they are on (Account > Operator
+// permissions) or permissions for this person only.
 export default function AdminPermissions({ user, catalogue, onSaved, onCancel }) {
   const [role, setRole] = useState(user.staff_role === 'platform_admin' ? 'platform_admin' : 'operator');
+  const [setId, setSetId] = useState(user.permission_profile_id || 'custom');
+  const [sets, setSets] = useState([]);
   const [permissions, setPermissions] = useState(() => ({ ...(user.permissions || {}) }));
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch('/api/admin/staff-users/permission-profiles', { cache: 'no-store' })
+      .then((response) => (response.ok ? response.json() : []))
+      .then((data) => { if (!cancelled) setSets(Array.isArray(data) ? data : []); })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, []);
 
   if (!catalogue) {
     return <p className="form-error" role="alert">The permission list could not be loaded. Reload the page.</p>;
   }
 
-  const presets = catalogue.presets || [];
   const sections = catalogue.sections || [];
-  const levels = catalogue.levels || [];
-  const currentPreset = presetFor(permissions, presets);
-  const selectedPreset = presets.find((preset) => preset.key === currentPreset) || null;
-
-  function handlePresetChange(value) {
-    if (value === 'custom') return;
-    const preset = presets.find((item) => item.key === value);
-    if (preset) setPermissions(applyPreset(preset));
-  }
-
-  function handleSectionChange(key, value) {
-    setPermissions((current) => ({ ...current, [key]: value }));
-  }
+  const chosenSet = sets.find((item) => item.id === setId) || null;
 
   async function save() {
     setBusy(true);
     setError('');
     try {
+      const onSet = role === 'operator' && setId !== 'custom';
       const res = await fetch('/api/admin/staff-users/' + user.id + '/permissions', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ staff_role: role, permissions: role === 'operator' ? permissions : {} }),
+        body: JSON.stringify({
+          staff_role: role,
+          permissions: role === 'operator' && !onSet ? permissions : {},
+          permission_profile_id: onSet ? setId : null,
+        }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
@@ -51,15 +58,8 @@ export default function AdminPermissions({ user, catalogue, onSaved, onCancel })
     }
   }
 
-  function submit(event) {
-    event.preventDefault();
-    save();
-  }
-
-  const summaryLines = summarisePermissions(permissions, sections);
-
   return (
-    <form className="admin-form" onSubmit={submit}>
+    <form className="admin-form" onSubmit={(event) => { event.preventDefault(); save(); }}>
       <label>
         Role
         <select value={role} onChange={(event) => setRole(event.target.value)}>
@@ -69,42 +69,26 @@ export default function AdminPermissions({ user, catalogue, onSaved, onCancel })
       </label>
 
       {role === 'platform_admin' ? (
-        <p className="admin-muted">Administrators can read and write everything, including Account. Robert and Sharon stay Administrators.</p>
+        <p className="admin-muted">Administrators can read and write everything, including Account.</p>
       ) : (
         <>
           <label>
-            Start from
-            <select value={currentPreset} onChange={(event) => handlePresetChange(event.target.value)}>
-              {presets.map((preset) => (
-                <option key={preset.key} value={preset.key}>{preset.label}</option>
-              ))}
-              <option value="custom">Custom</option>
+            Permission set
+            <select value={setId} onChange={(event) => setSetId(event.target.value)}>
+              {sets.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}
+              <option value="custom">Custom for this person only</option>
             </select>
           </label>
-
-          {selectedPreset && selectedPreset.description ? (
-            <p className="admin-muted">{selectedPreset.description}</p>
-          ) : null}
-
-          <div className="admin-permission-grid">
-            {sections.map((section) => (
-              <div key={section.key} className="admin-card">
-                <strong>{section.label}</strong>
-                <p className="admin-muted">{section.description}</p>
-                <select
-                  aria-label={section.label + ' access'}
-                  value={permissions[section.key] || 'none'}
-                  onChange={(event) => handleSectionChange(section.key, event.target.value)}
-                >
-                  {levels.map((level) => (
-                    <option key={level.key} value={level.key}>{level.label}</option>
-                  ))}
-                </select>
-              </div>
-            ))}
-          </div>
-
-          <p className="admin-muted">In short: {summaryLines.join('. ')}</p>
+          {chosenSet ? (
+            <p className="admin-muted">
+              {chosenSet.description ? chosenSet.description + ' ' : ''}In short: {summarisePermissions(chosenSet.permissions, sections).join('. ')}. Change the set itself under Operator permissions.
+            </p>
+          ) : (
+            <>
+              <PermissionGrid sections={sections} permissions={permissions} onChange={setPermissions} disabled={busy} />
+              <p className="admin-muted">In short: {summarisePermissions(permissions, sections).join('. ')}</p>
+            </>
+          )}
         </>
       )}
 
