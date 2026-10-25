@@ -5,7 +5,7 @@ import { unitPriceCents } from '@/lib/catalogueMerge';
 import { createZohoContact, createZohoInvoice, findZohoContactByEmail } from '@/lib/zoho';
 import { linkLicenceBillingReference } from '@/lib/api/commerceLicensing';
 import { recordCouponRedemption } from '@/lib/api/coupons';
-import { forwardCheckoutSession } from '@/lib/api/orderFlow';
+import { forwardCheckoutSession, forwardCheckoutEvent } from '@/lib/api/orderFlow';
 import { SESSION_EXPANSIONS, shouldForward, describeForwardResult } from '@/lib/orderFlowForward';
 
 export const runtime = 'nodejs';
@@ -137,6 +137,21 @@ async function recordCouponUse(session) {
     });
   } catch (error) {
     console.error('Could not record the coupon redemption for session', session.id, error);
+  }
+}
+
+// Sales > Carts: a paid checkout marks the customer's saved cart as converted; an expired or failed one is
+// recorded with what was in it (the backend does nothing while those are switched off). Never throws, so
+// Stripe is not made to retry the whole event.
+async function recordCheckoutEvent(kind, event) {
+  try {
+    let session = event.data.object;
+    if (kind !== 'completed') {
+      session = await stripe.checkout.sessions.retrieve(session.id, { expand: ['line_items.data.price.product'] });
+    }
+    await forwardCheckoutEvent(kind, session, event.id);
+  } catch (error) {
+    console.error('Could not record the checkout for Sales > Carts', event.id, error?.message || error);
   }
 }
 
@@ -295,6 +310,13 @@ export async function POST(req) {
     case 'checkout.session.completed':
       await handleCheckoutSessionCompleted(event.data.object);
       await forwardToOrderFlow(event);
+      await recordCheckoutEvent('completed', event);
+      break;
+    case 'checkout.session.expired':
+      await recordCheckoutEvent('expired', event);
+      break;
+    case 'checkout.session.async_payment_failed':
+      await recordCheckoutEvent('failed', event);
       break;
     case 'invoice.paid':
       await handleInvoicePaid(event.data.object);
