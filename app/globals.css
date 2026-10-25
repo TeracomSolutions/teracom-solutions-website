@@ -3133,3 +3133,10 @@ a.admin-status:hover { filter:brightness(1.15); }
 .permission-part { display:grid; grid-template-columns:1fr 180px; gap:10px; align-items:center; font-size:14px; }
 .permission-set-form { margin:12px 0 20px; }
 @media (max-width: 700px) { .permission-row, .permission-part { grid-template-columns:1fr; } }
+
+/* Permission tick boxes sit beside their names, and the set form uses the full width. */
+.admin-form.permission-set-form, .admin-form:has(.permission-grid) { max-width:none; }
+.admin-form .permission-tick, .permission-tick { display:flex; flex-direction:row; align-items:flex-start; gap:10px; }
+.admin-form .permission-tick input[type="checkbox"], .permission-tick input[type="checkbox"] { width:18px; height:18px; flex:none; margin:3px 0 0; }
+.admin-form .permission-part, .permission-part { display:grid; grid-template-columns:1fr 180px; }
+@media (max-width: 700px) { .admin-form .permission-part, .permission-part { grid-template-columns:1fr; } }
