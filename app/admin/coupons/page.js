@@ -8,8 +8,7 @@ import { staffSessionIsValid } from '@/lib/adminApi';
 import { staffMe } from '@/lib/api/adminAuth';
 import { levelAllows, sectionLevel } from '@/lib/staffAccessRules';
 import AdminCouponManager from '@/components/AdminCouponManager';
-import AdminNav from '@/components/AdminNav';
-import AdminBrand from '@/components/AdminBrand';
+import AdminShell from '@/components/AdminShell';
 
 export const metadata = {
   title: retitle('Discount Codes|Teracom Solutions', BRAND),
@@ -47,11 +46,7 @@ export default async function AdminCouponsPage() {
   }
 
   return (
-    <main id="main-content">
-      <section className="section section-spacious">
-        <div className="container">
-          <AdminBrand />
-          <AdminNav />
+    <AdminShell>
           <h1>Discount codes</h1>
           <p className="lead">
             Create a code a customer can type in the cart. The discount is worked out here, not by
@@ -59,8 +54,6 @@ export default async function AdminCouponsPage() {
           </p>
 
           {allowed ? <AdminCouponManager initialCoupons={coupons} /> : <p className="form-error" role="alert">You do not have access to Coupons. An Administrator can give it to you under Account.</p>}
-        </div>
-      </section>
-    </main>
+    </AdminShell>
   );
 }
