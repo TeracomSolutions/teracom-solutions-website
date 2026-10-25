@@ -3146,3 +3146,33 @@ a.admin-status:hover { filter:brightness(1.15); }
 .sales-carts-figures { display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:10px; margin:10px 0 6px; }
 .sales-carts-figures div { display:grid; gap:4px; padding:12px; border:1px solid var(--line); border-radius:12px; }
 .sales-carts-figures strong { font-size:20px; }
+
+/* ---- Admin sign-in: a website photo beside the form (Robert, 2026-10-25) ---- */
+.admin-login { min-height:100vh; display:grid; grid-template-columns:minmax(0, 1.25fr) minmax(380px, 1fr); background:#050505; }
+.admin-login-art { position:relative; background-color:#0b0b0d; background-size:cover; background-position:center; overflow:hidden; }
+.admin-login-art-shade { position:absolute; inset:0; background:
+    linear-gradient(90deg, rgba(5,5,5,.15) 0%, rgba(5,5,5,.55) 70%, #050505 100%),
+    linear-gradient(0deg, rgba(5,5,5,.85) 0%, rgba(5,5,5,0) 55%),
+    radial-gradient(600px 400px at 20% 80%, rgba(255,23,23,.28), transparent 70%); }
+.admin-login.is-plain .admin-login-art { background:radial-gradient(700px 500px at 30% 30%, rgba(255,255,255,.08), transparent 70%), #0b0b0d; }
+.admin-login-art-text { position:absolute; left:48px; right:48px; bottom:56px; max-width:560px; }
+.admin-login-eyebrow { display:inline-block; font-size:12px; font-weight:900; letter-spacing:.16em; text-transform:uppercase; color:#ff4b4b; margin-bottom:12px; }
+.admin-login-headline { font-size:clamp(28px, 3.2vw, 44px); line-height:1.12; font-weight:800; margin:0 0 10px; text-shadow:0 4px 24px rgba(0,0,0,.6); }
+.admin-login-sub { color:rgba(255,255,255,.8); font-size:17px; margin:0; }
+.admin-login-panel { display:flex; align-items:center; justify-content:center; padding:40px 32px; background:linear-gradient(180deg, rgba(255,23,23,.06), transparent 40%), #050505; }
+.admin-login-card { width:min(420px, 100%); }
+.admin-login-card .admin-brand { border-bottom:0; margin-bottom:8px; padding-bottom:6px; }
+.admin-login-card .admin-brand-link { display:none; }
+.admin-login-card h1 { margin:18px 0 6px; font-size:30px; }
+.admin-login-form { display:grid; gap:8px; margin-top:22px; }
+.admin-login-form input { display:block; width:100%; margin-bottom:10px; }
+.admin-login-submit { width:100%; margin-top:6px; }
+.admin-login-foot { margin-top:16px; }
+.admin-login-secure { margin-top:28px; font-size:13px; color:var(--muted); }
+@media (max-width: 900px) {
+  .admin-login { grid-template-columns:1fr; grid-template-rows:220px auto; }
+  .admin-login-art-text { left:20px; right:20px; bottom:20px; }
+  .admin-login-headline { font-size:24px; }
+  .admin-login-sub { font-size:14px; }
+  .admin-login-panel { padding:28px 16px 40px; align-items:flex-start; }
+}
