@@ -3305,3 +3305,27 @@ a.admin-status:hover { filter:brightness(1.15); }
 .admin-price-check-count.is-red strong { color:#f87171; }
 .admin-price-check-count.is-amber strong { color:#fbbf24; }
 .admin-price-check-count.is-on { border-color:var(--red); background:rgba(255,23,23,.12); }
+
+/* The Assistant as one chat window, like Claude or Copilot (Robert, 2026-10-26): chats on the left inside the
+   window, the conversation in a centred column, the message box fixed at the bottom. */
+.admin-assistant-workspace { grid-template-columns:270px minmax(0, 1fr); gap:0; height:calc(100vh - 200px); min-height:560px; border:1px solid var(--line); border-radius:18px; overflow:hidden; background:#0a0a0b; align-items:stretch; }
+.admin-assistant-side { position:static; top:auto; max-height:none; height:100%; border:0; border-right:1px solid var(--line); border-radius:0; background:rgba(255,255,255,.025); padding:14px 12px; }
+.admin-assistant-main { height:100%; min-height:0; display:flex; }
+.admin-assistant-main > .admin-assistant { flex:1; height:100%; min-height:0; gap:0; padding:0 0 14px; }
+.admin-assistant-main .admin-assistant-log { padding:0 0 16px; gap:18px; }
+.admin-assistant-main .admin-assistant-head { position:sticky; top:0; z-index:2; width:100%; margin:0; padding:12px 20px; justify-content:flex-start; border-bottom:1px solid var(--line); background:#0a0a0b; }
+.admin-assistant-main .admin-assistant-msg,
+.admin-assistant-main .admin-assistant-empty,
+.admin-assistant-main .admin-assistant-form,
+.admin-assistant-main .admin-assistant-conversation,
+.admin-assistant-main > .admin-assistant > p { width:min(820px, calc(100% - 40px)); margin-left:auto; margin-right:auto; }
+.admin-assistant-main .admin-assistant-empty { margin-top:auto; margin-bottom:auto; text-align:center; }
+.admin-assistant-hello { margin:0 0 6px; font-size:30px; }
+.admin-assistant-main .admin-assistant-empty .admin-actions { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:10px; margin-top:14px; }
+.admin-assistant-main .admin-assistant-empty .btn { white-space:normal; text-align:left; justify-content:flex-start; }
+@media (max-width:900px) {
+  .admin-assistant-workspace { grid-template-columns:1fr; height:auto; }
+  .admin-assistant-side { border-right:0; border-bottom:1px solid var(--line); max-height:240px; }
+  .admin-assistant-main { height:75vh; }
+  .admin-assistant-main .admin-assistant-empty .admin-actions { grid-template-columns:1fr; }
+}

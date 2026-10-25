@@ -407,9 +407,10 @@ export default function AdminAssistantChat({ chatId = null, initialMessages = []
         </div>
         {messages.length === 0 && (
           <div className="admin-assistant-empty">
-            <p className="admin-muted">Ask anything about the console and the website, ask for changes to suppliers and price lists, the catalogue and price tiers, Scout research, watched websites and leads, or ask for a master prompt to get something coded and fixed. Try one of these, or press the microphone and just say it:</p>
+            <h2 className="admin-assistant-hello">What can I help with?</h2>
+            <p className="admin-muted">Ask about the console and the website, make a change, or get a master prompt written. Type below, or press Speak.</p>
             <div className="admin-actions">
-              {SUGGESTIONS.map((s) => (
+              {SUGGESTIONS.slice(0, 4).map((s) => (
                 <button key={s} type="button" className="btn btn-secondary btn-sm" onClick={() => send(s)} disabled={busy}>{s}</button>
               ))}
             </div>
