@@ -3140,3 +3140,9 @@ a.admin-status:hover { filter:brightness(1.15); }
 .admin-form .permission-tick input[type="checkbox"], .permission-tick input[type="checkbox"] { width:18px; height:18px; flex:none; margin:3px 0 0; }
 .admin-form .permission-part, .permission-part { display:grid; grid-template-columns:1fr 180px; }
 @media (max-width: 700px) { .admin-form .permission-part, .permission-part { grid-template-columns:1fr; } }
+
+/* ---- Sales > Carts (Robert, 2026-10-25) ---- */
+.sales-carts-switches { margin:10px 0 14px; }
+.sales-carts-figures { display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:10px; margin:10px 0 6px; }
+.sales-carts-figures div { display:grid; gap:4px; padding:12px; border:1px solid var(--line); border-radius:12px; }
+.sales-carts-figures strong { font-size:20px; }
