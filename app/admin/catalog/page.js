@@ -56,7 +56,7 @@ export default async function AdminCatalogPage() {
           <ul>
             <li><strong>Cost</strong> is what the supplier charges us, ex GST. <strong>RRP</strong> is the shelf price, inc GST; <strong>Ex GST</strong> is RRP ÷ 1.1.</li>
             <li><strong>Margin</strong> is Ex GST minus Cost, in dollars and as a percentage of Ex GST. Red is below cost, amber under 15%.</li>
-            <li><strong>Member / Silver / Gold / Platinum</strong> are what each customer tier pays: cost plus that tier&apos;s markup from the Pricing page, plus GST, never above RRP.</li>
+            <li><strong>Member / Silver / Gold / Platinum</strong> are what each customer tier pays: cost plus that tier&apos;s markup from the Pricing page, plus GST, even above the supplier&apos;s RRP.</li>
             <li><strong>Category</strong> is the store category the product is listed under. For feed products it comes from the supplier&apos;s category, mapped on the supplier&apos;s Data Feeds page.</li>
             <li><strong>Active</strong> off takes a product out of the store without losing it: the row stays so a re-import updates it rather than duplicating it, and its history survives. An inactive row shows <em>Delete permanently</em> if you really want it gone -- but if a supplier feed still lists the SKU, the next pull creates it again.</li>
           </ul>

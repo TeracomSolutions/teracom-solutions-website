@@ -120,7 +120,7 @@ export default function AdminPricingBands({ sets, suppliers, tiers, onSaved }) {
       <p className="admin-muted" style={{ marginTop: 0 }}>
         Set a different markup for each tier depending on what we pay for the product (cost ex GST). For example, items under $100 can carry a bigger markup than items over $1,000.
         Each supplier can have its own bands. The default bands cover every supplier that has none of its own for that cost and tier.
-        A blank box goes on to the default bands, then the supplier&apos;s markup below, then the tier markup above. Prices never go above RRP.
+        A blank box goes on to the default bands, then the supplier&apos;s markup below, then the tier markup above. Prices follow the markup even above the supplier&apos;s RRP.
       </p>
       <p style={{ margin: '0 0 12px' }}>
         <label>

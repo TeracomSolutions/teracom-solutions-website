@@ -10,7 +10,7 @@ import { formatDateTime } from '@/lib/adminFormat';
 // The Pricing page: tier markups, per-supplier overrides, and the whole
 // price list priced at every tier. Everything is cost-based (Robert,
 // 2026-10-03): a tier price is our cost ex GST plus that tier's markup,
-// plus GST, to the nearest 5 cents, and never more than the RRP.
+// plus GST, to the nearest 5 cents, even above the supplier's RRP (Robert, 2026-10-26).
 
 const inputStyle = { padding: '6px 8px', borderRadius: '8px', border: '1px solid var(--line)', background: '#0d0d0d', color: '#fff' };
 
@@ -71,7 +71,7 @@ function TierEditor({ tiers, onSaved }) {
     <div className="admin-card" style={{ marginBottom: '26px' }}>
       <h2 style={{ marginTop: 0 }}>Markup on cost by tier</h2>
       <p className="admin-muted" style={{ marginTop: 0 }}>
-        Price = our cost ex GST plus the markup, plus GST, to the nearest 5 cents. It never goes above RRP: where the markup would, the customer pays RRP. Products without a cost sell at RRP.
+        Price = our cost ex GST plus the markup, plus GST, to the nearest 5 cents. It can go above the supplier&apos;s RRP: a supplier&apos;s RRP can be wrong, so the markup always holds. Visitors who are not signed in see the RRP or the highest tier price, whichever is higher. Products without a cost sell at RRP.
         Member is any signed-in customer without a Silver, Gold or Platinum tier on their account. Visitors who are not signed in see RRP.
       </p>
       {error && <p className="form-error" role="alert">{error}</p>}
