@@ -3,10 +3,11 @@ import { redirect } from 'next/navigation';
 
 import AdminHelpIcon from '@/components/AdminHelpIcon';
 import AdminPricingManager from '@/components/AdminPricingManager';
+import AdminPriceCheck from '@/components/AdminPriceCheck';
 import AdminPricePublish from '@/components/AdminPricePublish';
 import AdminShell from '@/components/AdminShell';
 import AdminStoreTabs from '@/components/AdminStoreTabs';
-import { fetchBands, fetchPublishStatus, fetchSupplierPricing, fetchTiers } from '@/lib/api/adminPricing';
+import { fetchBands, fetchPriceCheck, fetchPublishStatus, fetchSupplierPricing, fetchTiers } from '@/lib/api/adminPricing';
 import { fetchFacets, fetchSheet } from '@/lib/api/adminSheet';
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
 import { DEFAULT_FILTERS, sheetParams } from '@/lib/sheetQuery';
@@ -40,6 +41,14 @@ export default async function AdminPricingPage() {
     loadError = 'Unable to load pricing from the backend.';
   }
 
+  // The latest price check, loaded on its own so the rest of the page works without it.
+  let priceCheck = null;
+  try {
+    priceCheck = await fetchPriceCheck(token);
+  } catch {
+    priceCheck = null;
+  }
+
   return (
     <AdminShell>
       <h1 className="admin-heading">
@@ -63,6 +72,7 @@ export default async function AdminPricingPage() {
       <p className="lead">What each customer tier pays on top of our cost, per-supplier markups, and the whole price list at every tier.</p>
 
       <AdminPricePublish initial={publishStatus} />
+      <AdminPriceCheck initial={priceCheck} />
 
       {loadError ? <p className="form-error" role="alert">{loadError}</p> : (
         <AdminPricingManager tiers={tiers} bandSets={bandsResult.sets} suppliers={suppliers} priceList={priceList} facets={facets} />
