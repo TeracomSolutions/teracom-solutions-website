@@ -3177,3 +3177,34 @@ a.admin-status:hover { filter:brightness(1.15); }
   .admin-login-sub { font-size:14px; }
   .admin-login-panel { padding:28px 16px 40px; align-items:flex-start; }
 }
+
+/* The console menu down the left-hand side (Robert, 2026-10-25). */
+.admin-layout { display:grid; grid-template-columns:248px minmax(0, 1fr); gap:28px; width:min(1480px, calc(100% - 32px)); margin-inline:auto; padding:22px 0 60px; }
+.admin-content { min-width:0; padding-top:0; }
+.admin-sidebar { position:sticky; top:16px; align-self:start; max-height:calc(100vh - 32px); overflow-y:auto; border:1px solid var(--line); border-radius:16px; background:rgba(255,255,255,.03); padding:12px 10px; }
+.admin-sidenav-toggle { display:none; align-items:center; gap:8px; width:100%; padding:10px 12px; border:0; border-radius:10px; background:transparent; color:#fff; font:inherit; font-size:14px; font-weight:800; cursor:pointer; }
+.admin-sidenav-group + .admin-sidenav-group { margin-top:10px; }
+.admin-sidenav-heading { display:flex; align-items:center; justify-content:space-between; width:100%; padding:6px 10px; border:0; background:transparent; color:var(--soft); font:inherit; font-size:11px; font-weight:900; letter-spacing:.14em; text-transform:uppercase; cursor:pointer; }
+.admin-sidenav-heading:hover { color:#fff; }
+.admin-sidenav-chevron { transition:transform .15s ease; }
+.admin-sidenav-chevron.closed { transform:rotate(-90deg); }
+.admin-sidenav-list, .admin-sidenav-sub { list-style:none; margin:0; padding:0; }
+.admin-sidenav-row { display:flex; align-items:center; }
+.admin-sidenav-link { flex:1; display:flex; align-items:center; gap:10px; padding:8px 10px; border-radius:10px; font-size:14px; font-weight:700; color:var(--muted); }
+.admin-sidenav-link:hover { color:#fff; background:rgba(255,255,255,.06); }
+.admin-sidenav-link.active { color:#fff; background:linear-gradient(135deg, rgba(255,23,23,.28), rgba(255,75,75,.12)); box-shadow:inset 0 0 0 1px rgba(255,75,75,.35); }
+.admin-sidenav-caret { display:inline-flex; align-items:center; justify-content:center; width:28px; height:28px; margin-left:2px; border:0; border-radius:8px; background:transparent; color:var(--muted); cursor:pointer; }
+.admin-sidenav-caret:hover { color:#fff; background:rgba(255,255,255,.06); }
+.admin-sidenav-sub { margin:2px 0 6px 21px; padding-left:12px; border-left:1px solid var(--line); }
+.admin-sidenav-sub a { display:block; padding:5px 10px; border-radius:8px; font-size:13px; font-weight:600; color:var(--muted); }
+.admin-sidenav-sub a:hover { color:#fff; background:rgba(255,255,255,.05); }
+.admin-sidenav-sub a.active { color:#fff; background:rgba(255,23,23,.16); }
+.admin-sidenav-foot { display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin-top:14px; padding:12px 6px 2px; border-top:1px solid var(--line); }
+.admin-sidenav-foot .admin-nav-signout { margin-left:0; }
+@media (max-width:900px) {
+  .admin-layout { grid-template-columns:1fr; gap:14px; width:calc(100% - 32px); }
+  .admin-sidebar { position:static; max-height:none; padding:6px; }
+  .admin-sidenav-toggle { display:flex; }
+  .admin-sidenav-body { display:none; padding-top:6px; }
+  .admin-sidenav-body.open { display:block; }
+}
