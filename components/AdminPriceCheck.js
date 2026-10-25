@@ -8,9 +8,9 @@ import { formatDateTime } from '@/lib/adminFormat';
 // again and compared with the markup table. It runs each time prices are made live, and with Check prices now.
 const KIND = {
   below_cost: { label: 'Below cost', tone: 'red', text: 'sells for less than cost plus GST' },
-  capped: { label: 'Held to RRP', tone: 'amber', text: 'the RRP is lower than cost plus the markup, so the tier pays the RRP' },
   no_markup: { label: 'No markup', tone: 'grey', text: 'nothing sets a markup for the tier, so it pays the RRP' },
   no_cost: { label: 'No cost', tone: 'grey', text: 'no cost price, so the tier prices are the RRP and cannot be checked' },
+  above_rrp: { label: 'Above RRP', tone: 'amber', text: 'cost plus the markup is above the supplier RRP; the markup price is charged (for information)' },
 };
 
 const money = (cents) => (cents == null ? '–' : `$${(cents / 100).toFixed(2)}`);
@@ -18,7 +18,7 @@ const money = (cents) => (cents == null ? '–' : `$${(cents / 100).toFixed(2)}`
 function tierText(t) {
   if (t.kind === 'no_cost') return 'All tiers pay the RRP';
   const name = t.tier ? t.tier.charAt(0).toUpperCase() + t.tier.slice(1) : '';
-  if (t.kind === 'capped') return `${name}: ${money(t.price_cents)} (markup ${t.markup}% would be ${money(t.expected_cents)}; gets ${t.achieved_markup}%)`;
+  if (t.kind === 'above_rrp') return `${name}: ${money(t.price_cents)} (markup ${t.markup}%)`;
   if (t.kind === 'below_cost') return `${name}: ${money(t.price_cents)}`;
   return `${name}: ${money(t.price_cents)} (RRP)`;
 }
@@ -123,7 +123,7 @@ export default function AdminPriceCheck({ initial }) {
               {issues.length > 300 && <p className="admin-muted">The first 300 are shown here; the CSV has them all.</p>}
             </div>
           )}
-          <p className="admin-muted">Held to RRP is not an error: the supplier&apos;s RRP is lower than cost plus your markup, so customers pay the RRP and that tier earns the smaller markup shown. Products held because their RRP is below cost never go live; they wait on Data Feeds &gt; Needs review.</p>
+          <p className="admin-muted">Above RRP is not an error: cost plus your markup is above the supplier&apos;s RRP, so customers pay the markup price and visitors see it too. Worth a look in case the supplier&apos;s RRP or cost is wrong. Products whose RRP is below cost never go live; they wait on Data Feeds &gt; Needs review.</p>
         </>
       )}
     </section>
