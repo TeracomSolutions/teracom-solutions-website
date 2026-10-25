@@ -14,6 +14,7 @@ import {
 import { TIMEOUT_MS, createRedirectCache, isConsolePath, lookup } from './lib/seoRedirects.js';
 import { CUSTOMER_ACCESS_TOKEN_COOKIE } from './lib/customerSession.js';
 import { guestPathStripped, guestRewritePath } from './lib/guestPages.js';
+import { adminOnlyAction, adminOnlyOn } from './lib/adminOnly.js';
 
 // Keeps a staff console session alive while it is being used. On any
 // console page or console API call, and on Ask Tera's calls (Tera answers
@@ -33,6 +34,7 @@ export const config = {
     '/admin/:path*',
     '/api/admin/:path*',
     '/api/tera/:path*',
+    '/api/:path*',
     '/((?!_next/|api/|assets/|store-images/|favicon.ico|robots.txt|sitemap.xml).*)',
   ],
 };
@@ -67,6 +69,16 @@ function clearCookies(response, options) {
 
 export async function middleware(req) {
   const { pathname } = req.nextUrl;
+  // An admin-only copy (Luneva's console): nothing but the console answers.
+  if (adminOnlyOn(process.env)) {
+    const action = adminOnlyAction(pathname);
+    if (action === 'console') return NextResponse.redirect(new URL('/admin', req.url), 307);
+    if (action === 'not_found') return NextResponse.json({ error: 'Not found' }, { status: 404 });
+  }
+  // Other website API calls pass straight through (they are matched only so an admin-only copy can refuse them).
+  if (pathname.startsWith('/api/') && !pathname.startsWith('/api/admin/') && !pathname.startsWith('/api/tera/')) {
+    return NextResponse.next();
+  }
   if (!isConsolePath(pathname)) {
     const target = lookup(await redirects(), pathname);
     if (target) return NextResponse.redirect(new URL(target, req.url), 308);

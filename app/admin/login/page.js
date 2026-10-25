@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 import AdminBrand from '@/components/AdminBrand';
+import { loginScene } from '@/lib/loginScene';
 
 // Staff sign-in in two steps: password, then (for an account with two-factor
 // on) the six-digit code from an authenticator app or Zoho Vault, or one
@@ -92,45 +93,49 @@ export default function AdminLoginPage() {
     setUseBackup(false);
   }
 
+  const scene = loginScene(BRAND, new Date());
+
   return (
-    <main id="main-content" className="admin-main">
-      <section className="section section-spacious admin-section">
-        <div className="container admin-container">
+    <main id="main-content" className={`admin-login${BRAND.custom ? ' is-plain' : ''}`}>
+      <section className="admin-login-art" style={scene ? { backgroundImage: `url(${scene.image})` } : undefined} aria-hidden={scene ? undefined : 'true'}>
+        <div className="admin-login-art-shade" />
+        {scene ? (
+          <div className="admin-login-art-text">
+            <span className="admin-login-eyebrow">Administration console</span>
+            <p className="admin-login-headline">{scene.headline}</p>
+            <p className="admin-login-sub">{scene.sub}</p>
+          </div>
+        ) : null}
+      </section>
+      <section className="admin-login-panel">
+        <div className="admin-login-card">
           <AdminBrand signedIn={false} />
-        </div>
-        <div className="container" style={{ maxWidth: '420px' }}>
           {!challengeToken ? (
             <>
-              <h1>Staff Login</h1>
+              <h1>Staff sign in</h1>
               <p className="lead">{BRAND.name} staff only. Sign in with your @{BRAND.staffDomain} account.</p>
               {notice && <p className="form-note-banner" role="status">{notice}</p>}
 
-              <form onSubmit={handlePassword} style={{ marginTop: '24px' }}>
-                <div style={{ marginBottom: '16px' }}>
-                  <label htmlFor="email">Email</label>
-                  <input
-                    id="email"
-                    type="email"
-                    autoComplete="username"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    style={{ display: 'block', width: '100%' }}
-                  />
-                </div>
+              <form onSubmit={handlePassword} className="admin-login-form">
+                <label htmlFor="email">Email</label>
+                <input
+                  id="email"
+                  type="email"
+                  autoComplete="username"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
 
-                <div style={{ marginBottom: '16px' }}>
-                  <label htmlFor="password">Password</label>
-                  <input
-                    id="password"
-                    type="password"
-                    autoComplete="current-password"
-                    required
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    style={{ display: 'block', width: '100%' }}
-                  />
-                </div>
+                <label htmlFor="password">Password</label>
+                <input
+                  id="password"
+                  type="password"
+                  autoComplete="current-password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
 
                 {error && (
                   <p className="form-error" role="alert">
@@ -138,11 +143,11 @@ export default function AdminLoginPage() {
                   </p>
                 )}
 
-                <button type="submit" className="btn btn-primary" disabled={submitting}>
+                <button type="submit" className="btn btn-primary admin-login-submit" disabled={submitting}>
                   {submitting ? 'Signing in…' : 'Sign in'}
                 </button>
               </form>
-              <p style={{ marginTop: '16px' }}>
+              <p className="admin-login-foot">
                 <Link href="/admin/forgot-password">Forgot your password?</Link>
               </p>
             </>
@@ -155,23 +160,21 @@ export default function AdminLoginPage() {
                   : 'The six-digit code from your authenticator app or Zoho Vault.'}
               </p>
 
-              <form onSubmit={handleCode} style={{ marginTop: '24px' }}>
-                <div style={{ marginBottom: '16px' }}>
-                  <label htmlFor="code">{useBackup ? 'Backup code (xxxxx-xxxxx)' : 'Six-digit code'}</label>
-                  <input
-                    id="code"
-                    type="text"
-                    inputMode={useBackup ? 'text' : 'numeric'}
-                    autoComplete="one-time-code"
-                    autoFocus
-                    required
-                    minLength={6}
-                    maxLength={12}
-                    value={code}
-                    onChange={(e) => setCode(e.target.value)}
-                    style={{ display: 'block', width: '100%', letterSpacing: useBackup ? 'normal' : '0.2em' }}
-                  />
-                </div>
+              <form onSubmit={handleCode} className="admin-login-form">
+                <label htmlFor="code">{useBackup ? 'Backup code (xxxxx-xxxxx)' : 'Six-digit code'}</label>
+                <input
+                  id="code"
+                  type="text"
+                  inputMode={useBackup ? 'text' : 'numeric'}
+                  autoComplete="one-time-code"
+                  autoFocus
+                  required
+                  minLength={6}
+                  maxLength={12}
+                  value={code}
+                  onChange={(e) => setCode(e.target.value)}
+                  style={{ letterSpacing: useBackup ? 'normal' : '0.2em' }}
+                />
 
                 {error && (
                   <p className="form-error" role="alert">
@@ -179,11 +182,11 @@ export default function AdminLoginPage() {
                   </p>
                 )}
 
-                <button type="submit" className="btn btn-primary" disabled={submitting || code.trim().length < 6}>
+                <button type="submit" className="btn btn-primary admin-login-submit" disabled={submitting || code.trim().length < 6}>
                   {submitting ? 'Checking…' : 'Continue'}
                 </button>
 
-                <p className="form-note" style={{ marginTop: '16px' }}>
+                <p className="form-note admin-login-foot">
                   <button type="button" className="admin-link-btn" onClick={() => { setUseBackup(!useBackup); setCode(''); setError(''); }}>
                     {useBackup ? 'Use my authenticator instead' : 'Use a backup code instead'}
                   </button>
@@ -193,6 +196,7 @@ export default function AdminLoginPage() {
               </form>
             </>
           )}
+          <p className="admin-login-secure"><span aria-hidden="true">🔒</span> Every sign-in is recorded in the Audit log.</p>
         </div>
       </section>
     </main>
