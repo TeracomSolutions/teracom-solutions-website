@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
 import { withAdminSession } from '@/lib/adminApi';
-import { updateStoreBrand } from '@/lib/api/adminBrands';
+import { deleteStoreBrand, updateStoreBrand } from '@/lib/api/adminBrands';
 
 // Edit a brand: its name, website, other spellings, page text, and whether
 // it shows with the brands Teracom works with. Each field only when sent.
@@ -23,3 +23,6 @@ export const PUT = withAdminSession(async ({ req, token, params }) => {
   }
   return NextResponse.json(await updateStoreBrand(token, params.slug, parsed.data));
 });
+
+// Delete a brand with no products in the store (the backend refuses one that still has products).
+export const DELETE = withAdminSession(async ({ token, params }) => NextResponse.json(await deleteStoreBrand(token, params.slug)));

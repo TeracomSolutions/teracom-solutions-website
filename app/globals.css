@@ -3292,3 +3292,7 @@ a.admin-status:hover { filter:brightness(1.15); }
 .admin-feedback-stats .is-good strong { color:#4ade80; }
 .admin-feedback-stats .is-okay strong { color:#fbbf24; }
 .admin-feedback-stats .is-low strong { color:#f87171; }
+
+/* Add a brand by hand (Robert, 2026-10-26). */
+.brand-admin-add { display:grid; gap:8px; margin-bottom:14px; }
+.brand-admin-add input { min-width:220px; flex:1; }

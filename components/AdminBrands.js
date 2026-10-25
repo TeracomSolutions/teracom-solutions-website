@@ -12,7 +12,7 @@ async function call(url, options) {
   return data;
 }
 
-function BrandCard({ brand, onChange }) {
+function BrandCard({ brand, onChange, onDeleted }) {
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState({
     name: brand.name,
@@ -76,6 +76,15 @@ function BrandCard({ brand, onChange }) {
     });
   }
 
+  function remove() {
+    if (brand.products > 0) {
+      setError(`${brand.name} still has ${brand.products} ${brand.products === 1 ? 'product' : 'products'} in the store, so the next import would bring it back. Untick Shown with the brands we work with to hide it instead.`);
+      return;
+    }
+    if (!window.confirm(`Delete the brand ${brand.name} and its logo?`)) return;
+    run('delete', () => call(base, { method: 'DELETE' }), () => onDeleted(brand.slug));
+  }
+
   return (
     <div className="admin-card brand-admin-card">
       <div className="brand-admin-head">
@@ -124,6 +133,9 @@ function BrandCard({ brand, onChange }) {
             </label>
           </>
         ) : null}
+        <button type="button" className="admin-link-btn" disabled={Boolean(busy)} onClick={remove}>
+          {busy === 'delete' ? 'Deleting…' : 'Delete brand'}
+        </button>
       </div>
       {message ? <p className="form-note-banner" role="status">{message}</p> : null}
       {error ? <p className="form-error" role="alert">{error}</p> : null}
@@ -171,6 +183,45 @@ export default function AdminBrands({ initial }) {
     setBrands((list) => list.map((b) => (b.slug === updated.slug ? updated : b)));
   }
 
+  function removed(slug) {
+    setBrands((list) => list.filter((b) => b.slug !== slug));
+    setMessage('Brand deleted.');
+  }
+
+  // Add a brand by hand (Robert, 2026-10-26): it shows on the website straight away and then looks for its logo.
+  const [newName, setNewName] = useState('');
+  const [newWebsite, setNewWebsite] = useState('');
+
+  async function addBrand(event) {
+    event.preventDefault();
+    if (!newName.trim()) return;
+    setBusy(true);
+    setError('');
+    setMessage('');
+    try {
+      const created = await call('/api/admin/brands', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: newName, website: newWebsite }),
+      });
+      let brand = created;
+      try {
+        const found = await call(`/api/admin/brands/${encodeURIComponent(created.slug)}/find-logo`, { method: 'POST' });
+        brand = found.brand || created;
+      } catch {
+        // No logo yet: upload one on its card.
+      }
+      setBrands((list) => [brand, ...list]);
+      setNewName('');
+      setNewWebsite('');
+      setMessage(`${brand.name} added. It is on the website now${brand.logo_url ? ', with its logo' : '; upload its logo on its card'}.`);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setBusy(false);
+    }
+  }
+
   async function findAll() {
     setBusy(true);
     setError('');
@@ -194,6 +245,15 @@ export default function AdminBrands({ initial }) {
       {message ? <p className="form-note-banner" role="status">{message}</p> : null}
       {error ? <p className="form-error" role="alert">{error}</p> : null}
 
+      <form className="admin-card admin-form brand-admin-add" onSubmit={addBrand}>
+        <strong>Add a brand</strong>
+        <div className="admin-actions">
+          <input value={newName} maxLength={200} placeholder="Brand name" aria-label="Brand name" onChange={(e) => setNewName(e.target.value)} />
+          <input value={newWebsite} maxLength={300} placeholder="Website (optional, for the logo)" aria-label="Brand website" onChange={(e) => setNewWebsite(e.target.value)} />
+          <button type="submit" className="btn btn-primary btn-sm" disabled={busy || !newName.trim()}>{busy ? 'Adding…' : 'Add brand'}</button>
+        </div>
+      </form>
+
       <div className="admin-actions support-controls">
         <input
           type="search"
@@ -213,7 +273,7 @@ export default function AdminBrands({ initial }) {
 
       {shown.length ? (
         <div className="brand-admin-list">
-          {shown.map((brand) => <BrandCard key={`${brand.slug}-${brand.logo_url || ''}`} brand={brand} onChange={replace} />)}
+          {shown.map((brand) => <BrandCard key={`${brand.slug}-${brand.logo_url || ''}`} brand={brand} onChange={replace} onDeleted={removed} />)}
         </div>
       ) : (
         <p className="admin-muted">{brands.length ? 'No brands match.' : 'No brands yet. They appear once products with a brand go live in the store.'}</p>
