@@ -1,7 +1,9 @@
 import Link from 'next/link';
 import { ArrowRight, Mail, PackageCheck, ShieldCheck, TriangleAlert, Truck } from 'lucide-react';
 
+import CheckoutFeedback from '@/components/CheckoutFeedback';
 import ClearCartOnMount from '@/components/ClearCartOnMount';
+import { fetchReviewLink } from '@/lib/api/feedback';
 import PurchaseTracked from '@/components/PurchaseTracked';
 import { stripe } from '@/lib/stripe';
 import { pageMetadata, NOINDEX } from '@/lib/seo';
@@ -74,6 +76,7 @@ export default async function CheckoutCompletePage(props) {
     quantity: line.quantity,
     price: line.amount_total != null && line.quantity ? Number((line.amount_total / line.quantity / 100).toFixed(2)) : undefined,
   }));
+  const reviewUrl = await fetchReviewLink();
 
   return (
     <main id="main-content" className="cart-page">
@@ -140,6 +143,7 @@ export default async function CheckoutCompletePage(props) {
           </div>
         </div>
       </section>
+      <CheckoutFeedback sessionId={session.id} reviewUrl={reviewUrl} />
     </main>
   );
 }
