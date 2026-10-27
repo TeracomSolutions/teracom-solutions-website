@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { aiCapabilities } from '@/lib/aiCapabilities';
 import CategoryIcon from '@/components/CategoryIcon';
 import JsonLd from '@/components/JsonLd';
+import { CustomerJourney, DepartmentModel, PacksAndExtensions } from '@/components/DepartmentModel';
 import { AiComparison, OrganisationalMemory, SecurityTrust } from '@/components/PlatformSections';
 import { pageMetadata, SITE_ORIGIN, absoluteUrl } from '@/lib/seo';
 
@@ -10,7 +11,7 @@ import { pageMetadata, SITE_ORIGIN, absoluteUrl } from '@/lib/seo';
 export const metadata = pageMetadata({
   title: 'Teracom AI | AI Platform for Security & Technical Teams',
   description:
-    'Teracom AI is an AI operating system for technicians, engineers and project teams. Product-specific support agents, scope generation, documentation and knowledge tools for platforms including Gallagher, Genetec, Milestone, Inner Range and HID.',
+    'Teracom AI: deploy a Department, or build an entire AI organisation. Seven Departments of digital workers on one organisational memory, specialised by Industry Packs, under your approval. Product support, scopes and documentation for platforms including Gallagher, Genetec, Milestone, Inner Range and HID.',
   path: '/teracom-ai',
 });
 
@@ -26,7 +27,7 @@ const AI_PLATFORM_SCHEMA = {
   operatingSystem: 'Web',
   url: absoluteUrl('/teracom-ai'),
   description:
-    'An AI operating system for modern organisations. Teracom AI helps technicians, engineers, estimators and project teams access expert knowledge, generate documentation and solve technical challenges faster.',
+    'Teracom AI is an organisational continuity platform: Departments of digital workers (Executive, Finance, Sales, Marketing, Operations, Customer, and Technology and Protection) working from one organisational memory under human approval, specialised by Industry Packs and extended by governed Extensions.',
   publisher: { '@id': `${SITE_ORIGIN}/#organisation` },
   featureList: aiCapabilities.map((capability) => capability.title),
 };
@@ -51,11 +52,11 @@ export default function TeracomAI() {
         <div className="container hero-layout">
           <div className="hero-copy">
             <span className="eyebrow">Available now</span>
-            <h1>Teracom AI: the AI operating system for modern organisations.</h1>
+            <h1>Teracom AI: deploy a Department, or build an entire AI organisation.</h1>
             <p className="lead">
-              Teracom AI captures, protects and transforms organisational knowledge into a workforce of digital
-              specialists — built from real electronic security industry expertise, designed for organisations of
-              any kind, and able to run in Australia or on your own servers.
+              Teracom AI runs an organisation the way it is already organised: in Departments. Each one brings
+              digital workers that remember everything your organisation knows, act only with your approval and
+              keep it protected, in Australia or on your own servers.
             </p>
             <div className="hero-actions">
               <Link className="btn btn-primary" href="/store">
@@ -79,13 +80,19 @@ export default function TeracomAI() {
         </div>
       </section>
 
+      <DepartmentModel alt />
+
+      <PacksAndExtensions />
+
       <OrganisationalMemory alt />
+
+      <CustomerJourney />
 
       <section className="section section-spacious">
         <div className="container">
           <div className="section-heading">
-            <span className="eyebrow">Capabilities</span>
-            <h2>Designed for the workflows technical and project teams repeat every day.</h2>
+            <span className="eyebrow">Live today</span>
+            <h2>Capabilities technical and project teams use every day.</h2>
             <p>
               Every capability below is live today, not a roadmap slide — grounded in real electronic security
               product knowledge, not generic search results.

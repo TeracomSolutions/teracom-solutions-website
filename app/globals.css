@@ -3329,3 +3329,23 @@ a.admin-status:hover { filter:brightness(1.15); }
   .admin-assistant-main { height:75vh; }
   .admin-assistant-main .admin-assistant-empty .admin-actions { grid-template-columns:1fr; }
 }
+
+/* Teracom AI Departments (Robert, 2026-10-28: the product model replaces operating systems). */
+.dept-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(250px, 1fr)); gap:16px; margin-top:28px; }
+.dept-card { padding:22px; border:1px solid var(--line); border-radius:18px; background:rgba(255,255,255,.03); }
+.dept-card h3 { margin:0 0 8px; font-size:20px; }
+.dept-card p { margin:0 0 10px; color:var(--muted); }
+.dept-card .dept-workers { margin:0; font-size:14px; }
+.dept-card .dept-workers strong { color:#fff; }
+.dept-split { display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:28px; margin-top:28px; }
+.dept-subhead { margin:0 0 6px; font-size:20px; }
+.dept-note { margin:0 0 14px; color:var(--muted); }
+.dept-list { list-style:none; margin:0; padding:0; display:grid; gap:10px; }
+.dept-list li { display:grid; gap:2px; padding:12px 14px; border:1px solid var(--line); border-radius:12px; background:rgba(255,255,255,.02); }
+.dept-list li span { color:var(--muted); font-size:14px; }
+.dept-journey { list-style:none; counter-reset:dept; margin:28px 0 0; padding:0; display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:14px; }
+.dept-journey li { counter-increment:dept; padding:18px; border:1px solid var(--line); border-radius:16px; background:rgba(255,255,255,.03); }
+.dept-journey li::before { content:counter(dept); display:inline-flex; align-items:center; justify-content:center; width:28px; height:28px; margin-bottom:8px; border-radius:50%; background:rgba(255,23,23,.18); color:#fff; font-weight:800; }
+.dept-journey h3 { margin:0 0 6px; font-size:17px; }
+.dept-journey p { margin:0; color:var(--muted); font-size:14px; }
+.dept-promises { margin-top:30px; }

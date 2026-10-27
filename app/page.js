@@ -11,7 +11,7 @@ import JsonLd from '@/components/JsonLd';
 import QueryContactForm from '@/components/QueryContactForm';
 import ProcessSteps from '@/components/ProcessSteps';
 import { AiComparison, BusinessOutcomes, OrganisationalMemory, PlatformStack, SecurityTrust } from '@/components/PlatformSections';
-import { EARLY_ACCESS_MODULES } from '@/lib/platformMessaging';
+import { EARLY_ACCESS_MODULES, PRODUCT_TAGLINE } from '@/lib/platformMessaging';
 import { ArrowUpRight, BrainCircuit, CodeXml, DraftingCompass, Layers, Workflow } from 'lucide-react';
 import { SITE_ORIGIN, absoluteUrl } from '@/lib/seo';
 import { withSeoTitle } from '@/lib/seoTitles';
@@ -165,7 +165,7 @@ export default async function Home(props) {
           <div className="showcase-copy">
             <span className="eyebrow">Available now</span>
             <h2>Teracom AI</h2>
-            <p className="large-text">The AI operating system for modern organisations.</p>
+            <p className="large-text">{PRODUCT_TAGLINE}</p>
             <p>Teracom AI helps technicians, engineers, estimators and project teams access expert knowledge, generate documentation and solve technical challenges faster.</p>
             <ul className="tick-list tick-list-links">
               {aiCapabilities.map((c) => (
@@ -175,7 +175,7 @@ export default async function Home(props) {
               ))}
             </ul>
             <Link className="btn btn-primary" href="/teracom-ai">View Teracom AI</Link>
-            <p className="form-note" style={{ marginTop: '28px' }}>Specialised modules for different parts of the business are in early access. Register your interest and we will include you in the preview.</p>
+            <p className="form-note" style={{ marginTop: '28px' }}>More Departments and Industry Packs are in early access. Register your interest and we will include you in the preview.</p>
             <div className="mini-services">
               {EARLY_ACCESS_MODULES.map((module) => (
                 <Link key={module} href={`/?interest=Early%20Access&module=${encodeURIComponent(module)}#contact`}>
