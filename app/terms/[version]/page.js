@@ -14,6 +14,7 @@ import {
   termsVersionHistory,
 } from '@/lib/termsDocument';
 import { publishedTermsVersions } from '@/lib/termsPublished';
+import * as termsV33 from '@/lib/termsDocument_v3_3';
 
 // The permanent, versioned copy an acceptance record points at.
 //
@@ -33,18 +34,21 @@ export function generateStaticParams() {
 }
 
 function documentFor(version) {
+  // Each version shows its own effective date and fingerprint, never the current ones.
+  if (version === '3.3') return { parts: termsV33.termsParts, acceptanceRecord: termsV33.termsAcceptanceRecord, history: termsV33.termsVersionHistory, effective: termsV33.TERMS_EFFECTIVE, hash: termsV33.TERMS_CONTENT_SHA256 };
   if (version !== TERMS_VERSION) return null;
-  return { parts: termsParts, acceptanceRecord: termsAcceptanceRecord, history: termsVersionHistory };
+  return { parts: termsParts, acceptanceRecord: termsAcceptanceRecord, history: termsVersionHistory, effective: TERMS_EFFECTIVE, hash: TERMS_CONTENT_SHA256 };
 }
 
 export async function generateMetadata(props) {
   const params = await props.params;
   const version = String(params.version || '').replace(/^v/, '');
-  if (!documentFor(version)) return {};
+  const document = documentFor(version);
+  if (!document) return {};
   return {
     ...pageMetadata({
       title: `Terms & Conditions v${version} | Teracom Solutions`,
-      description: `Permanent copy of the Teracom Solutions Terms and Conditions of Trade version ${version}, effective ${TERMS_EFFECTIVE}.`,
+      description: `Permanent copy of the Teracom Solutions Terms and Conditions of Trade version ${version}, effective ${document.effective}.`,
       path: `/terms/v${version}`,
     }),
     // Only one set of terms belongs in search results; this page is evidence.
@@ -66,7 +70,7 @@ export default async function TermsVersionPage(props) {
           <span className="eyebrow">Legal</span>
           <h1>Terms and Conditions of Trade</h1>
           <p className="terms-version">
-            ABN {BUSINESS.abn} &nbsp;|&nbsp; Version {version} &nbsp;|&nbsp; Effective {TERMS_EFFECTIVE}
+            ABN {BUSINESS.abn} &nbsp;|&nbsp; Version {version} &nbsp;|&nbsp; Effective {document.effective}
           </p>
 
           <p className="form-note-banner" role="note">
@@ -103,7 +107,7 @@ export default async function TermsVersionPage(props) {
             {document.history ? <p className="terms-history">{document.history}</p> : null}
 
             <p className="form-note terms-hash">
-              Document fingerprint (SHA-256): <code>{TERMS_CONTENT_SHA256}</code>
+              Document fingerprint (SHA-256): <code>{document.hash}</code>
             </p>
           </article>
         </div>
