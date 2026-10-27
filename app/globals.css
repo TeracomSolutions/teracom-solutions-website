@@ -3349,3 +3349,4 @@ a.admin-status:hover { filter:brightness(1.15); }
 .dept-journey h3 { margin:0 0 6px; font-size:17px; }
 .dept-journey p { margin:0; color:var(--muted); font-size:14px; }
 .dept-promises { margin-top:30px; }
+@media (min-width:900px) { .dept-journey { grid-template-columns:repeat(3, minmax(0, 1fr)); } }
