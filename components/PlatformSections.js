@@ -7,6 +7,7 @@ import {
   MEMORY_THEMES,
   PLATFORM_PILLARS,
   PLATFORM_SERVICES,
+  PRODUCT_TAGLINE,
   TERACOM_AI_TRAITS,
   TRUST_POINTS,
 } from '@/lib/platformMessaging';
@@ -38,7 +39,7 @@ export function PlatformStack() {
           <div className="platform-powered">
             <span className="platform-powered-label">Powered by</span>
             <h3>Teracom AI</h3>
-            <p>The AI Operating System for Modern Organisations</p>
+            <p>{PRODUCT_TAGLINE}</p>
             <ul className="platform-pillars">
               {PLATFORM_PILLARS.map((pillar) => (
                 <li key={pillar.title}>
