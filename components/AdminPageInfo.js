@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 
-import { pageFor } from '@/lib/adminPages';
+import { departmentOf, pageFor } from '@/lib/adminPages';
 
 // The About this page button on every console page: what the page is, how to get to it, what it
 // shows and where that comes from, from the console page list (lib/adminPages.js).
@@ -27,6 +27,7 @@ export default function AdminPageInfo() {
             <dt>What you see</dt><dd>{page.shows}</dd>
             <dt>Where it comes from</dt><dd>{page.source}</dd>
             <dt>Who can open it</dt><dd>{page.access}</dd>
+            {departmentOf(page) ? <><dt>Department</dt><dd>{departmentOf(page)}</dd></> : null}
           </dl>
           <p className="admin-page-info-links">
             {page.guide ? <Link href={`/admin/guide#${page.guide}`}>Read the help for this page</Link> : null}
