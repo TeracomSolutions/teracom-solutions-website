@@ -20,10 +20,10 @@ export default async function WhereToFindPage() {
   return (
     <AdminShell>
       <h1 className="admin-heading">Where to find everything</h1>
-      <p className="lead">Every page in the console: how to get to it, what it shows and where that information comes from. Click a name to open the page.</p>
+      <p className="lead">Every page in the console: how to get to it, what it shows and where that information comes from, with the Department it belongs to. Click a name to open the page.</p>
       {groups.map((group) => (
         <section key={group.top} className="admin-where-group">
-          <h2>{group.top}</h2>
+          <h2>{group.top}{group.department ? <span className="admin-muted admin-where-dept"> · {group.department}</span> : null}</h2>
           <div className="admin-table-wrap">
             <table className="admin-table admin-where-table">
               <thead>

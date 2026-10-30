@@ -38,7 +38,7 @@ function RunStatus({ run }) {
 
 export default function AdminScoutTaskManager({ section }) {
   const titlePlaceholder = section === 'operating_systems'
-    ? 'e.g. Enhance Technical Support OS'
+    ? 'e.g. Improve the Customer Department answers for Gallagher'
     : 'Task title';
   const targetPlaceholder = section === 'operating_systems'
     ? 'e.g. Gallagher Command Centre support docs, Inner Range Integriti knowledge base, common alarm/access-control troubleshooting and escalation procedures'
