@@ -1,3 +1,4 @@
+// Next 16 calls this file proxy.js (it was middleware.js until 2026-11-02).
 import { NextResponse } from 'next/server';
 
 import {
@@ -67,7 +68,7 @@ function clearCookies(response, options) {
   return response;
 }
 
-export async function middleware(req) {
+export async function proxy(req) {
   const { pathname } = req.nextUrl;
   // An admin-only copy (Luneva's console): nothing but the console answers.
   if (adminOnlyOn(process.env)) {
