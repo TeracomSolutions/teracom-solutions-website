@@ -5,7 +5,7 @@ import { CUSTOMER_ACCESS_TOKEN_COOKIE } from '@/lib/customerSession';
 
 // The brand page for signed-in customers: it reads their sign-in cookie so
 // they see their own prices, so it is built on each visit. Visitors who are
-// not signed in get the saved copy at /g/brands/... (see middleware.js).
+// not signed in get the saved copy at /g/brands/... (see proxy.js).
 export { generateMetadata, generateStaticParams } from '@/components/storePages/BrandPageView';
 export const revalidate = 3600;
 export const dynamicParams = true;
