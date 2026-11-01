@@ -13,14 +13,16 @@ const STATUS_TEXT = {
   built: 'Written; testing it',
   testing: 'Running the tests and the build',
   pr_open: 'Pull request ready to review',
+  merged: 'Merged',
+  closed: 'Closed without merging',
   failed: 'Did not work',
   cancelled: 'Cancelled',
 };
 
 function tone(status) {
-  if (status === 'pr_open') return 'is-ok';
+  if (status === 'pr_open' || status === 'merged') return 'is-ok';
   if (status === 'failed') return 'is-bad';
-  if (status === 'cancelled') return '';
+  if (status === 'cancelled' || status === 'closed') return '';
   return 'is-busy';
 }
 
