@@ -178,6 +178,7 @@ export default async function Footer() {
           <nav className="footer-legal" aria-label="Legal">
             <Link href="/privacy">Privacy Policy</Link>
             <Link href="/terms">Terms & Conditions</Link>
+            <Link href="/status">Service status</Link>
           </nav>
           <span>Website built by Teracom AI</span>
         </div>
