@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation';
 import AdminConnections from '@/components/AdminConnections';
 import AdminHelpIcon from '@/components/AdminHelpIcon';
 import AdminShell from '@/components/AdminShell';
+import AdminSoftware from '@/components/AdminSoftware';
 import AdminSocialAccounts from '@/components/AdminSocialAccounts';
 import AdminTabs from '@/components/AdminTabs';
 import AdminZohoFlow from '@/components/AdminZohoFlow';
@@ -82,6 +83,8 @@ export default async function AdminConnectionsPage({ searchParams }) {
           <p>The voice Tera and the Assistant speak with. The card shows whether visitors hear the voice built into their own browser (free, but it differs by device and can sound robotic) or a natural Australian voice from Microsoft Azure Speech. <strong>Edit</strong> sets the voice engine, the Azure key and region, which Azure voice, the speaking speed and a monthly limit on characters; after that limit, or if Azure does not answer, visitors hear their browser voice instead. <strong>Hear it</strong> speaks a sample the way visitors will hear it and says which voice answered.</p>
           <h4>Social</h4>
           <p>The <strong>Social</strong> tab holds LinkedIn, Facebook, Instagram, X and YouTube: the profile link the website footer shows and the credentials we post with. Each card has a <strong>Help</strong> button with the exact steps to get that network&apos;s credentials. Posting itself is on the Social page.</p>
+          <h4>Software</h4>
+          <p>The <strong>Software</strong> tab lists what the website and its backend run: the server (operating system, Python, PostgreSQL, Node, cloudflared) and every package, each with the version in use, the newest release and any published security advisory for that version, from the public OSV database. The backend checks itself once a day; <strong>Check now</strong> checks both straight away. Red means a security advisory, amber a newer version, green up to date.</p>
           <h4>Servers and computers</h4>
           <p>This server and its database are checked whenever the page opens. Add any other server or PC with <strong>Add a server or computer</strong>: paste the line it gives you on that machine and it checks in by itself. It turns red when it misses two check-ins.</p>
         </AdminHelpIcon>
@@ -102,6 +105,7 @@ export default async function AdminConnectionsPage({ searchParams }) {
             ),
           },
           { key: 'social', label: 'Social', content: <AdminSocialAccounts initialAccounts={socialAccounts} loadError={socialError} /> },
+          { key: 'software', label: 'Software', content: <AdminSoftware /> },
         ]}
       />
     </AdminShell>
