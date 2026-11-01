@@ -3350,3 +3350,8 @@ a.admin-status:hover { filter:brightness(1.15); }
 .dept-journey p { margin:0; color:var(--muted); font-size:14px; }
 .dept-promises { margin-top:30px; }
 @media (min-width:900px) { .dept-journey { grid-template-columns:repeat(3, minmax(0, 1fr)); } }
+
+/* Connections > Software (Robert, 2026-11-01). */
+.admin-software-section { margin-top:16px; }
+.admin-software-summary { display:flex; flex-wrap:wrap; gap:8px; margin:8px 0 14px; }
+.admin-pill-muted { background:rgba(255,255,255,.06); color:var(--muted); }
