@@ -37,7 +37,7 @@ export default async function AdminSpecialsPage() {
           <h4>Ending</h4>
           <p>With an end date the product goes back to its normal price after that day by itself. Without one it stays on special until you press the bin. Changes reach the website within five minutes. Every change is in the Audit log.</p>
           <h4>Promoting a special</h4>
-          <p><strong>Post it</strong> (on a special that is on the website) opens Social &gt; Posting with the post already written: the price, the price it was, the end date, the product link and its photo. Tick Facebook, Instagram and the rest, check each network&apos;s tab, then send or schedule it. Specials also reach Facebook and Instagram shop ads through the Meta catalogue when Meta is set up on Connections.</p>
+          <p><strong>Post it</strong> (on a special that is on the website) opens Social &gt; Posting with the post already written: the price, the price it was, the end date, the product link and its photo. Tick Facebook, Instagram and the rest, check each network&apos;s tab, then send or schedule it. <strong>Email trade customers</strong> (above the list) opens Social &gt; Posting with an email listing every special on the website, set to go to trade customers (business accounts) who agreed to hear from us; check it, then send or schedule it. Every email has an unsubscribe link. Specials also reach Facebook and Instagram shop ads through the Meta catalogue when Meta is set up on Connections.</p>
         </AdminHelpIcon>
       </h1>
       <AdminStoreTabs />
