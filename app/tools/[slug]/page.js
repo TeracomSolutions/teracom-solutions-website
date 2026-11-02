@@ -14,6 +14,7 @@ import BatteryStandbyCalculator from '@/components/tools/BatteryStandbyCalculato
 import VoltageDropCalculator from '@/components/tools/VoltageDropCalculator';
 import ToolIcon, { ToolBackdrop } from '@/components/tools/ToolIcon';
 import ToolPrintButton, { PrintDate } from '@/components/tools/ToolPrintButton';
+import ToolProjectFrame from '@/components/tools/ToolProjectFrame';
 import { findTool, toolGroups, tools } from '@/lib/tools';
 import { BUSINESS, pageMetadata } from '@/lib/seo';
 
@@ -96,7 +97,9 @@ export default async function ToolPage(props) {
 
       <div className="tool-stage">
         <ToolBackdrop slug={tool.slug} group={tool.group} />
-        <div className="tool-stage-inner">{Custom ? <Custom /> : <ConfigCalculator slug={tool.slug} />}</div>
+        <div className="tool-stage-inner">
+          <ToolProjectFrame slug={tool.slug}>{Custom ? <Custom /> : <ConfigCalculator slug={tool.slug} />}</ToolProjectFrame>
+        </div>
       </div>
 
       <section className="section section-spacious">

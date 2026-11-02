@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { CABLE_SIZES_MM2, voltageDrop } from '@/lib/calculators';
+import { useProjectState } from '@/components/tools/ToolProjectFrame';
 
 // Inputs are kept as the strings the visitor typed (so decimals like "13.8" or
 // "0.75" can be entered naturally); lib/calculators.js treats blanks as zero.
@@ -11,6 +12,15 @@ export default function VoltageDropCalculator() {
   const [lengthMetres, setLengthMetres] = useState('50');
   const [conductorMm2, setConductorMm2] = useState('0.5');
   const [maxDropPercent, setMaxDropPercent] = useState('10');
+
+  useProjectState({ supplyVolts, currentAmps, lengthMetres, conductorMm2, maxDropPercent }, (saved) => {
+    const str = (value, fallback) => (value === undefined || value === null ? fallback : String(value));
+    setSupplyVolts(str(saved.supplyVolts, supplyVolts));
+    setCurrentAmps(str(saved.currentAmps, currentAmps));
+    setLengthMetres(str(saved.lengthMetres, lengthMetres));
+    setConductorMm2(CABLE_SIZES_MM2.some((c) => String(c.mm2) === String(saved.conductorMm2)) ? String(saved.conductorMm2) : conductorMm2);
+    setMaxDropPercent(str(saved.maxDropPercent, maxDropPercent));
+  });
 
   const r = voltageDrop({ supplyVolts, currentAmps, lengthMetres, conductorMm2, maxDropPercent });
   const fmt = (n, dp = 2) => (Number.isFinite(n) ? n.toFixed(dp) : '0.00');
