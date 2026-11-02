@@ -6,6 +6,7 @@ import { articles } from '@/lib/articles';
 import { resourcesSections } from '@/lib/resourcesSections';
 import { services } from '@/lib/services';
 import { monitoringServices } from '@/lib/monitoring';
+import { MONITORING_LOGIN_PATH, monitoringLoginEnabled } from '@/lib/monitoringLogin';
 import { requestForms } from '@/lib/requestForms';
 import { tools } from '@/lib/tools';
 import { absoluteUrl } from '@/lib/seo';
@@ -113,6 +114,8 @@ export default async function sitemap() {
       changeFrequency: 'monthly',
       priority: 0.8,
     })),
+    // Pre-launch and switched off by default; listed only once it is turned on.
+    ...(monitoringLoginEnabled() ? [{ path: MONITORING_LOGIN_PATH, changeFrequency: 'monthly', priority: 0.5 }] : []),
 
     ...[...requestForms, { slug: 'account-application' }].map((form) => ({
       path: `/resources/submit-a-request/${form.slug}`,

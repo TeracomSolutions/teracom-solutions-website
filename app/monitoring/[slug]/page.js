@@ -162,7 +162,7 @@ export default async function MonitoringServicePage(props) {
               Get in touch
             </Link>
             <a className="btn btn-secondary" href={`mailto:${BUSINESS.salesEmail}`}>
-              Call {BUSINESS.telephoneDisplay}
+              Email us
             </a>
           </div>
         </div>

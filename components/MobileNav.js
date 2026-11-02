@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useSearchSubmit } from './HeaderSearch';
 import { useCart } from '@/lib/cart-context';
 import { resourcesSections } from '@/lib/resourcesSections';
+import { MONITORING_LOGIN_PATH, monitoringLoginEnabled } from '@/lib/monitoringLogin';
 
 export default function MobileNav() {
   const [open, setOpen] = useState(false);
@@ -72,7 +73,14 @@ export default function MobileNav() {
           </form>
           <ul className="mobile-nav-links">
             <li><Link href="/services" onClick={close}>What We Do</Link></li>
-            <li><Link href="/monitoring" onClick={close}>Monitoring</Link></li>
+            <li>
+              <Link href="/monitoring" onClick={close}>Monitoring</Link>
+              {monitoringLoginEnabled() ? (
+                <ul className="mobile-nav-sublinks">
+                  <li><Link href={MONITORING_LOGIN_PATH} onClick={close}>Customer login</Link></li>
+                </ul>
+              ) : null}
+            </li>
             <li><Link href="/teracom-ai" onClick={close}>Teracom AI</Link></li>
             <li><Link href="/brands" onClick={close}>Brands</Link></li>
             <li><Link href="/store" onClick={close}>Store</Link></li>
