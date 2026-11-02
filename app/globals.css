@@ -3435,3 +3435,11 @@ a.admin-status:hover { filter:brightness(1.15); }
   .tools-area-title { font-size:17px; }
   .tools-area .tools-grid { padding:6px 4px 12px; grid-template-columns:1fr; }
 }
+
+/* Area disclaimer (Alarms, fire & access): reassuring, not alarming. */
+.tools-area-note { display:flex; gap:10px; align-items:flex-start; margin:0 18px 6px; padding:12px 16px; border-radius:16px; font-size:14px; line-height:1.55; color:var(--muted);
+  background:color-mix(in srgb, var(--tool-accent, #34d399) 7%, transparent); border:1px solid color-mix(in srgb, var(--tool-accent, #34d399) 25%, transparent); }
+.tools-area-note svg { flex-shrink:0; margin-top:2px; color:var(--tool-accent, #34d399); }
+.tool-page-note { margin:18px 0; }
+.tool-page-note strong { color:#fff; }
+@media (max-width:640px) { .tools-area-note { margin:0 4px 6px; } }
