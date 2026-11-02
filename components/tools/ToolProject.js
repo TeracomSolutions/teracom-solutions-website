@@ -33,6 +33,23 @@ function download(bytes, name, type) {
   window.setTimeout(() => URL.revokeObjectURL(url), 2000);
 }
 
+// The site logo is a 1 MB picture; a 480 px copy keeps the PDF small and still sharp in print.
+async function smallLogo() {
+  try {
+    const image = new window.Image();
+    image.src = '/assets/teracom-logo.png';
+    await image.decode();
+    const canvas = document.createElement('canvas');
+    canvas.width = 480;
+    canvas.height = Math.round((480 * image.naturalHeight) / image.naturalWidth);
+    canvas.getContext('2d').drawImage(image, 0, 0, canvas.width, canvas.height);
+    const blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/png'));
+    return blob ? await blob.arrayBuffer() : null;
+  } catch {
+    return null;
+  }
+}
+
 function Lines({ lines }) {
   return (
     <dl className="tool-project-lines">
@@ -84,7 +101,7 @@ export default function ToolProject() {
     setMessage('');
     try {
       const { makeProjectPdf } = await import('@/lib/toolProjectPdf');
-      const logo = await fetch('/assets/teracom-logo.png').then((r) => (r.ok ? r.arrayBuffer() : null)).catch(() => null);
+      const logo = await smallLogo();
       const bytes = await makeProjectPdf(project, logo);
       download(bytes, fileNameFor(project, 'pdf'), 'application/pdf');
       setMessage('PDF saved. Keep it: importing it here later brings the whole project back to change.');

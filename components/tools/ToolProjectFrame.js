@@ -125,7 +125,7 @@ export default function ToolProjectFrame({ slug, children }) {
 
   return (
     <div ref={root}>
-      {children}
+      <ProjectContext.Provider value={register}>{children}</ProjectContext.Provider>
       <div className="container tool-project-bar print-hide">
         <div className="tool-project-bar-text">
           <strong>{editing ? `Editing "${editing.label || toolTitle(slug)}" in your project` : 'Building a bigger job?'}</strong>
