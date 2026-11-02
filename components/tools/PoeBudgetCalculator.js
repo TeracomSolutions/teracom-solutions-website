@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { POE_TYPES, poeBudget } from '@/lib/calculators';
+import { useProjectState } from '@/components/tools/ToolProjectFrame';
 
 export default function PoeBudgetCalculator() {
   const [devices, setDevices] = useState([
@@ -48,6 +49,21 @@ export default function PoeBudgetCalculator() {
       return device;
     }));
   };
+
+  const num = (value, fallback) => (Number.isFinite(Number(value)) && value !== '' && value !== null ? Number(value) : fallback);
+  useProjectState({ devices, switchBudgetWatts, switchPorts }, (saved) => {
+    setSwitchBudgetWatts(num(saved.switchBudgetWatts, switchBudgetWatts));
+    setSwitchPorts(num(saved.switchPorts, switchPorts));
+    if (Array.isArray(saved.devices)) {
+      setDevices(saved.devices.slice(0, 100).map((d, i) => ({
+        id: i + 1,
+        name: String(d?.name ?? ''),
+        poeType: POE_TYPES.some((t) => t.id === d?.poeType) ? d.poeType : 'af',
+        watts: num(d?.watts, 15.4),
+        quantity: num(d?.quantity, 1),
+      })));
+    }
+  });
 
   useEffect(() => {
     const budgetResult = poeBudget({

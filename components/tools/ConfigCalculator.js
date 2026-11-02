@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { toolConfigs } from '@/lib/toolConfigs';
+import { useProjectState } from '@/components/tools/ToolProjectFrame';
 
 // Renders any calculator described in lib/toolConfigs.js: plain fields, an
 // optional list of repeatable rows (devices, speakers...), and a results panel.
@@ -17,6 +18,15 @@ export default function ConfigCalculator({ slug }) {
   const addRow = () =>
     setRows((current) => [...current, { key: current.reduce((max, r) => Math.max(max, r.key), 0) + 1, ...config.rows.blank }]);
   const removeRow = (key) => setRows((current) => current.filter((r) => r.key !== key));
+
+  // Saved in a project with these inputs, and put back when the result is reopened.
+  useProjectState({ values, rows }, (saved) => {
+    const fromSaved = (source, id, fallback) => (source && source[id] !== undefined && source[id] !== null ? String(source[id]) : fallback);
+    setValues(Object.fromEntries(config.fields.map((f) => [f.id, fromSaved(saved.values, f.id, f.default)])));
+    if (config.rows && Array.isArray(saved.rows)) {
+      setRows(saved.rows.slice(0, 100).map((r, i) => ({ key: i + 1, ...Object.fromEntries(config.rows.columns.map((c) => [c.id, fromSaved(r, c.id, config.rows.blank[c.id])])) })));
+    }
+  });
 
   const result = config.compute(values, rows);
   const lines = config.results(result, values);

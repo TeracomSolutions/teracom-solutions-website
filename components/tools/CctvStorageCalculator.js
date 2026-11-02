@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { BITRATE_PRESETS, cctvStorage } from '@/lib/calculators';
+import { useProjectState } from '@/components/tools/ToolProjectFrame';
 
 export default function CctvStorageCalculator() {
   const [cameras, setCameras] = useState(8);
@@ -17,7 +18,27 @@ export default function CctvStorageCalculator() {
     totalTB: 0
   });
 
+  // A reopened project result brings its own bitrate; the preset below must not replace it.
+  const keepBitrate = useRef(false);
+  const num = (value, fallback) => (Number.isFinite(Number(value)) && value !== '' && value !== null ? Number(value) : fallback);
+  useProjectState({ cameras, resolution, codec, bitrate, hoursPerDay, activityPercent, retentionDays }, (saved) => {
+    const nextResolution = BITRATE_PRESETS.some((p) => p.id === saved.resolution) ? saved.resolution : resolution;
+    const nextCodec = saved.codec === 'h264' || saved.codec === 'h265' ? saved.codec : codec;
+    keepBitrate.current = nextResolution !== resolution || nextCodec !== codec;
+    setCameras(num(saved.cameras, cameras));
+    setResolution(nextResolution);
+    setCodec(nextCodec);
+    setBitrate(num(saved.bitrate, bitrate));
+    setHoursPerDay(num(saved.hoursPerDay, hoursPerDay));
+    setActivityPercent(num(saved.activityPercent, activityPercent));
+    setRetentionDays(num(saved.retentionDays, retentionDays));
+  });
+
   useEffect(() => {
+    if (keepBitrate.current) {
+      keepBitrate.current = false;
+      return;
+    }
     // Find the selected preset
     const preset = BITRATE_PRESETS.find(p => p.id === resolution);
     if (preset) {

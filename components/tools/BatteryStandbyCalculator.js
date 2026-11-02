@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { batteryStandby } from '@/lib/calculators';
+import { useProjectState } from '@/components/tools/ToolProjectFrame';
 
 export default function BatteryStandbyCalculator() {
   const [standbyAmps, setStandbyAmps] = useState(0.5);
@@ -13,6 +14,15 @@ export default function BatteryStandbyCalculator() {
   const [result, setResult] = useState({
     requiredAh: 0,
     recommendedAh: null
+  });
+
+  const num = (value, fallback) => (Number.isFinite(Number(value)) && value !== '' && value !== null ? Number(value) : fallback);
+  useProjectState({ standbyAmps, standbyHours, alarmAmps, alarmHours, derating }, (saved) => {
+    setStandbyAmps(num(saved.standbyAmps, standbyAmps));
+    setStandbyHours(num(saved.standbyHours, standbyHours));
+    setAlarmAmps(num(saved.alarmAmps, alarmAmps));
+    setAlarmHours(num(saved.alarmHours, alarmHours));
+    setDerating(num(saved.derating, derating));
   });
 
   useEffect(() => {

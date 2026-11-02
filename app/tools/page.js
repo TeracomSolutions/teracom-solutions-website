@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowRight, Cable, HardDrive, Zap } from 'lucide-react';
+import { ArrowRight, Cable, FileStack, HardDrive, Zap } from 'lucide-react';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import OrbitArt from '@/components/OrbitArt';
 import ToolIcon, { CalculatorIcon } from '@/components/tools/ToolIcon';
@@ -54,6 +54,22 @@ export default async function Tools({ searchParams }) {
             </Link>
           ))}
         </nav>
+      </div>
+
+      <div className="container tools-project-callout">
+        <span className="tools-project-callout-icon" aria-hidden="true">
+          <FileStack size={30} strokeWidth={1.6} />
+        </span>
+        <div>
+          <h2>One report from any of these tools</h2>
+          <p>
+            Add results from as many calculators as the job needs to one project, with the client, site and your notes, and
+            save it all as a single PDF. Import the PDF again later to change any result.
+          </p>
+        </div>
+        <Link className="btn btn-primary" href="/tools/project">
+          Open the project report <ArrowRight size={16} strokeWidth={2} aria-hidden="true" />
+        </Link>
       </div>
 
       {shown.map((group, gi) => (
