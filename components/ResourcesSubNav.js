@@ -18,6 +18,9 @@ export default function ResourcesSubNav() {
           </Link>
         );
       })}
+      <Link href="/tools" className="brand-tab resources-subnav-tools">
+        Free Tools
+      </Link>
     </div>
   );
 }

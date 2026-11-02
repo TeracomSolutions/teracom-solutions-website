@@ -1,5 +1,14 @@
 import {
   Antenna,
+  Bot,
+  Brain,
+  Coins,
+  DatabaseBackup,
+  DoorOpen,
+  KeyRound,
+  PiggyBank,
+  Siren,
+  TrendingDown,
   BatteryCharging,
   Cable,
   Calculator,
@@ -68,6 +77,14 @@ const TOOL_ICONS = {
   'cctv-recording-server-calculator': ServerCog,
   'virtual-server-calculator': Layers,
   'rack-size-heat-calculator': Server,
+  'access-control-planner': DoorOpen,
+  'false-alarm-cost-calculator': Siren,
+  'wifi-access-point-calculator': Wifi,
+  'backup-storage-calculator': DatabaseBackup,
+  'downtime-cost-calculator': TrendingDown,
+  'ai-model-picker': Brain,
+  'ai-token-cost-calculator': Coins,
+  'ai-automation-savings-calculator': PiggyBank,
 };
 
 const GROUP_ICONS = {
@@ -76,7 +93,9 @@ const GROUP_ICONS = {
   cabling: [Cable, Waypoints, Ruler, Spline, Cable, Waypoints, Ruler, Spline],
   network: [Network, Router, Wifi, RadioTower, Antenna, Timer, Network, Wifi],
   av: [Speaker, Projector, Monitor, Tv, Volume2, SunMedium, Speaker, Tv],
-  it: [Server, Cpu, HardDrive, MemoryStick, ServerCog, Layers, Server, Cpu],
+  it: [Server, Cpu, HardDrive, MemoryStick, ServerCog, Layers, DatabaseBackup, TrendingDown],
+  security: [DoorOpen, KeyRound, Siren, Cctv, DoorOpen, KeyRound, Siren, Zap],
+  ai: [Bot, Brain, Coins, PiggyBank, Bot, Brain, Cpu, Server],
 };
 
 export default function ToolIcon({ slug, size = 24, strokeWidth = 1.75 }) {
