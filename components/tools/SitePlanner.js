@@ -2,29 +2,69 @@
 
 import { useEffect, useRef, useState } from 'react';
 import {
+  Aperture,
+  AudioLines,
+  BatteryCharging,
+  BellRing,
+  Box,
+  Cable,
+  Camera,
+  Car,
   Cctv,
+  CircleAlert,
+  CircleDot,
+  CloudFog,
   Copy,
+  Cpu,
   CreditCard,
   DoorOpen,
   Download,
+  Fence,
   FileUp,
+  Fingerprint,
+  Flame,
+  GlassWater,
   Grid3x3,
+  Headset,
+  HardDrive,
   ImageUp,
   LayoutTemplate,
+  Lock,
+  LogOut,
+  Magnet,
   MapPin,
+  Megaphone,
+  Mic,
   MousePointer2,
+  MoveHorizontal,
+  Network,
+  Plug,
+  PlugZap,
   Plus,
+  Projector,
   Radar,
+  RadioTower,
+  Router,
   Ruler,
   Save,
+  ScanText,
+  Server,
+  ShieldAlert,
   Siren,
   Smartphone,
   Speaker,
+  Tablet,
+  Thermometer,
   Trash2,
+  Tv,
+  Video,
+  Volume2,
+  Waves,
   Wifi,
 } from 'lucide-react';
 import {
   BLANK_PLAN,
+  DEVICE_GROUPS,
   DEVICE_TYPES,
   DORI,
   MAX_DEVICES,
@@ -50,8 +90,17 @@ import {
 // Site plan designer (Robert, 2026-11-02): upload a floor plan (or start from the
 // sample), drop cameras, detectors, speakers, access points, doors and more on it, and
 // see what each one covers. Kept in this browser; saved as a picture or a plan file.
-const ICONS = { camera: Cctv, motion: Radar, speaker: Speaker, wifi: Wifi, door: DoorOpen, reader: CreditCard, keypad: Grid3x3, siren: Siren, intercom: Smartphone, other: MapPin };
-const LETTERS = { camera: 'C', motion: 'M', speaker: 'S', wifi: 'W', door: 'D', reader: 'R', keypad: 'K', siren: 'A', intercom: 'I', other: 'O' };
+const ICONS = {
+  camera: Cctv, dome: Camera, bullet: Video, ptz: Cctv, fisheye: Aperture, lpr: ScanText, nvr: HardDrive,
+  motion: Radar, dualtech: Radar, ceilingpir: CircleDot, beam: MoveHorizontal, glassbreak: GlassWater, contact: Magnet,
+  vibration: Waves, panic: CircleAlert, keypad: Grid3x3, alarmpanel: ShieldAlert, siren: Siren,
+  door: DoorOpen, reader: CreditCard, biometric: Fingerprint, exitbutton: LogOut, lock: Lock, controller: Cpu, gate: Car, turnstile: Fence,
+  intercom: Smartphone, monitor: Tablet, guardstation: Headset,
+  smoke: CloudFog, heat: Thermometer, callpoint: BellRing, sounder: Volume2, firepanel: Flame,
+  wifi: Wifi, rack: Server, switch: Network, router: Router, datapoint: Cable, bridge: RadioTower, poeextender: PlugZap, ups: BatteryCharging,
+  speaker: Speaker, wallspeaker: Megaphone, amplifier: AudioLines, microphone: Mic, display: Tv, projector: Projector,
+  powerpoint: Plug, junction: Box, other: MapPin,
+};
 const MAX_SIDE = 2400;
 const DORI_COLOURS = { identify: '#ef4444', recognise: '#f59e0b', observe: '#22c55e', detect: '#3b82f6' };
 
@@ -291,7 +340,7 @@ export default function SitePlanner() {
         ctx.font = `bold ${Math.round(unit * 1.4)}px sans-serif`;
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText(LETTERS[d.type] || 'O', d.x, d.y + unit * 0.05);
+        ctx.fillText(deviceType(d.type).code || 'O', d.x, d.y + unit * 0.05);
         ctx.textAlign = 'left';
         ctx.textBaseline = 'alphabetic';
         ctx.lineWidth = unit * 0.35;
@@ -362,7 +411,11 @@ export default function SitePlanner() {
         <div className="site-planner-add">
           <label htmlFor="site-add-type" className="site-planner-hidden-label">Device to add</label>
           <select id="site-add-type" value={addType} onChange={(e) => { setAddType(e.target.value); setMode('add'); setMessage(`Click the plan to add a ${deviceType(e.target.value).label.toLowerCase()}.`); }}>
-            {DEVICE_TYPES.map((t) => <option key={t.type} value={t.type}>{t.label}</option>)}
+            {DEVICE_GROUPS.map((group) => (
+              <optgroup key={group} label={group}>
+                {DEVICE_TYPES.filter((t) => t.group === group).map((t) => <option key={t.type} value={t.type}>{t.label}</option>)}
+              </optgroup>
+            ))}
           </select>
           <button type="button" className={mode === 'add' ? 'btn btn-primary' : 'btn btn-secondary'} onClick={() => { setMode(mode === 'add' ? 'select' : 'add'); setMessage(`Click the plan to add a ${deviceType(addType).label.toLowerCase()}.`); }}>
             <Plus size={18} strokeWidth={2} aria-hidden="true" /> Add
@@ -468,7 +521,7 @@ export default function SitePlanner() {
               <span style={{ background: t.colour }} aria-hidden="true" /> {t.label} ({plan.devices.filter((d) => d.type === t.type).length})
             </li>
           ))}
-          {typesUsed.some((t) => t.type === 'camera')
+          {typesUsed.some((t) => t.coverage === 'dori')
             ? [...DORI].reverse().map((level) => (
                 <li key={level.id} className="site-planner-legend-band">
                   <span style={{ background: DORI_COLOURS[level.id] }} aria-hidden="true" /> Camera: {level.label.toLowerCase()}
@@ -500,7 +553,7 @@ export default function SitePlanner() {
               <label htmlFor="dev-name">Name</label>
               <input id="dev-name" type="text" maxLength={80} value={device.name} onChange={(e) => updateDevice(device.id, { name: e.target.value })} />
             </div>
-            {device.type === 'camera' ? (
+            {kind.coverage === 'dori' ? (
               <>
                 <div className="field">
                   <label htmlFor="dev-resolution">Resolution</label>
@@ -530,20 +583,20 @@ export default function SitePlanner() {
                 )}
               </>
             ) : null}
-            {device.type === 'motion' ? (
+            {kind.coverage === 'wedge' ? (
               <>
-                {field('dev-range', 'Detection range (m)', device.range, (e) => updateDevice(device.id, { range: e.target.value }))}
-                {field('dev-angle', 'Detection angle (degrees)', device.angle, (e) => updateDevice(device.id, { angle: e.target.value }), { max: '360' })}
+                {field('dev-range', 'Range (m)', device.range, (e) => updateDevice(device.id, { range: e.target.value }))}
+                {field('dev-angle', 'Angle (degrees)', device.angle, (e) => updateDevice(device.id, { angle: e.target.value }), { max: '360' })}
               </>
             ) : null}
-            {device.type === 'speaker' ? (
+            {kind.coverage === 'speaker' ? (
               <>
                 {field('dev-ceiling', 'Ceiling height (m)', device.ceiling, (e) => updateDevice(device.id, { ceiling: e.target.value }))}
                 {field('dev-listen', 'Listening height (m)', device.listen, (e) => updateDevice(device.id, { listen: e.target.value }))}
                 {field('dev-angle', 'Coverage angle (degrees)', device.angle, (e) => updateDevice(device.id, { angle: e.target.value }))}
               </>
             ) : null}
-            {device.type === 'wifi' || device.type === 'other'
+            {kind.coverage === 'circle'
               ? field('dev-radius', device.type === 'wifi' ? 'Coverage radius (m)' : 'Coverage radius (m, 0 for none)', device.radius, (e) => updateDevice(device.id, { radius: e.target.value }))
               : null}
             {kind.turns ? (
@@ -553,16 +606,17 @@ export default function SitePlanner() {
               </div>
             ) : null}
           </div>
-          {device.type === 'camera' ? (
+          {kind.coverage === 'dori' ? (
             <p className="site-planner-summary">
               {cameraFov(device).toFixed(0)}° view ·{' '}
               {[...doriDistances(device.resolution, cameraFov(device))].reverse().map((l) => `${l.label} ${l.metres.toFixed(1)} m`).join(' · ')}
             </p>
           ) : null}
-          {device.type === 'speaker' ? (
+          {kind.coverage === 'speaker' ? (
             <p className="site-planner-summary">Covers {(speakerRadius(device.ceiling, device.listen, device.angle) * 2).toFixed(1)} m across at listening height.</p>
           ) : null}
           {device.type === 'wifi' ? <p className="site-planner-summary">Indoor range depends on walls and the access point; 10 to 15 m is a common planning figure. Check with a site survey.</p> : null}
+          {device.type === 'smoke' || device.type === 'heat' ? <p className="site-planner-summary">Enter the coverage your fire designer works to; detector spacing is set by AS 1670.1 and the building, so none is drawn until you do.</p> : null}
         </div>
       ) : (
         <p className="form-note">Click a device to change it. Drag it to move it; drag the small handle on cameras and detectors to turn them.</p>
