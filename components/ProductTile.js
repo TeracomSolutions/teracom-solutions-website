@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { hasPromo, savingPercent } from '@/lib/specials';
 
 import AddToCartButton from '@/components/AddToCartButton';
 import CheckoutButton from '@/components/CheckoutButton';
@@ -55,11 +56,20 @@ const NOTE = { color: 'var(--muted)', fontSize: '12px', fontWeight: 400 };
 const IN_STOCK = { margin: '0 0 10px', fontSize: '12px', fontWeight: 700, color: '#7ee2a8' };
 const ON_ORDER = { margin: '0 0 10px', fontSize: '12px', fontWeight: 700, color: '#ffcc66' };
 
+const PROMO_BADGE = { position: 'absolute', top: '10px', left: '10px', zIndex: 1, padding: '3px 9px', borderRadius: '999px', fontSize: '11px', fontWeight: 800, letterSpacing: '.04em', textTransform: 'uppercase', color: '#fff' };
+const PROMO_COLOURS = { special: '#ff1717', clearance: '#d97706' };
+
 export default function ProductTile({ p, isSignedIn = false, customer = null }) {
   const isSubscription = p.type === 'subscription';
+  const onSpecial = hasPromo(p);
   const memberPrice = isSignedIn && !isSubscription;
   return (
-    <article style={TILE}>
+    <article style={onSpecial ? { ...TILE, position: 'relative' } : TILE}>
+      {onSpecial ? (
+        <span style={{ ...PROMO_BADGE, background: PROMO_COLOURS[p.promo.kind] || PROMO_COLOURS.special }}>
+          {p.promo.label} · {savingPercent(p)}% off
+        </span>
+      ) : null}
       <Link href={productPath(p)} style={TILE_LINK}>
         <span style={PHOTO_FRAME}>
           {p.imageUrl ? (
@@ -86,7 +96,12 @@ export default function ProductTile({ p, isSignedIn = false, customer = null }) 
             <p style={{ ...NOTE, margin: '2px 0 10px' }}>
               {memberPrice ? (
                 <>
-                  {customer?.tier ? `${customer.tier} price` : 'Member price'} · RRP <del>{formatMoney(p.priceCents)}</del>
+                  {customer?.tier ? `${customer.tier} price` : 'Member price'} · {onSpecial ? 'Was' : 'RRP'}{' '}
+                  <del>{formatMoney(onSpecial ? p.promo.wasPriceCents : p.priceCents)}</del>
+                </>
+              ) : onSpecial ? (
+                <>
+                  Was <del>{formatMoney(p.promo.wasPriceCents)}</del>
                 </>
               ) : isSubscription ? (
                 'Subscription'
