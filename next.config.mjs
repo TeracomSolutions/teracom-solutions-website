@@ -35,6 +35,8 @@ const nextConfig = {
       { source: '/securityos-ai', destination: '/teracom-ai', permanent: true },
       { source: '/securityos-ai/:path*', destination: '/teracom-ai/:path*', permanent: true },
       { source: '/admin/seo', destination: '/admin/website-data', permanent: true },
+      // The camera-only planner grew into the site plan designer (2026-11-02).
+      { source: '/tools/camera-plan-designer', destination: '/tools/site-plan-designer', permanent: true },
       { source: '/admin/seo/:path*', destination: '/admin/website-data/:path*', permanent: true },
     ];
   },

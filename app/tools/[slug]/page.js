@@ -12,7 +12,7 @@ import CctvStorageCalculator from '@/components/tools/CctvStorageCalculator';
 import PoeBudgetCalculator from '@/components/tools/PoeBudgetCalculator';
 import BatteryStandbyCalculator from '@/components/tools/BatteryStandbyCalculator';
 import VoltageDropCalculator from '@/components/tools/VoltageDropCalculator';
-import CameraPlanner from '@/components/tools/CameraPlanner';
+import SitePlanner from '@/components/tools/SitePlanner';
 import ToolIcon, { ToolBackdrop } from '@/components/tools/ToolIcon';
 import ToolPrintButton, { PrintDate } from '@/components/tools/ToolPrintButton';
 import ToolProjectFrame from '@/components/tools/ToolProjectFrame';
@@ -30,6 +30,7 @@ const GROUP_BADGES = {
   security: [DoorOpen, KeyRound, Siren],
   ai: [Bot, Brain, Coins],
   cyber: [ShieldCheck, Lock, KeyRound],
+  plans: [Cctv, Wifi, Speaker],
 };
 
 // Every calculator page shares this layout: hero with the tool's icon emblem,
@@ -41,11 +42,11 @@ const CUSTOM_CALCULATORS = {
   'poe-power-budget-calculator': PoeBudgetCalculator,
   'battery-standby-calculator': BatteryStandbyCalculator,
   'voltage-drop-calculator': VoltageDropCalculator,
-  'camera-plan-designer': CameraPlanner,
+  'site-plan-designer': SitePlanner,
 };
 
 // Tools that keep their own saved file instead of adding results to the project report.
-const OWN_FILE_TOOLS = new Set(['camera-plan-designer']);
+const OWN_FILE_TOOLS = new Set(['site-plan-designer']);
 
 export const dynamicParams = false;
 
