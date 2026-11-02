@@ -3450,6 +3450,10 @@ a.admin-status:hover { filter:brightness(1.15); }
 .site-planner-toolbar .btn { display:inline-flex; align-items:center; gap:8px; }
 .site-planner-add { display:flex; gap:8px; align-items:center; }
 .site-planner-add select { min-height:44px; padding:0 12px; border-radius:12px; border:1px solid var(--line); background:rgba(255,255,255,.06); color:inherit; font:inherit; }
+/* The open list of a drop-down is drawn by the browser on its own background
+   (white on Windows) while the entries inherit the page's white text, so most
+   entries looked missing. Give every list its own dark background. */
+select option, select optgroup { background-color:#111; color:#fff; }
 .site-planner-hidden-label { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
 .site-planner-scale { display:flex; flex-wrap:wrap; align-items:center; gap:10px; }
 .site-planner-scale input { width:120px; }
