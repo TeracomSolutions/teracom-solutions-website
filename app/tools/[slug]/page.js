@@ -12,6 +12,7 @@ import CctvStorageCalculator from '@/components/tools/CctvStorageCalculator';
 import PoeBudgetCalculator from '@/components/tools/PoeBudgetCalculator';
 import BatteryStandbyCalculator from '@/components/tools/BatteryStandbyCalculator';
 import VoltageDropCalculator from '@/components/tools/VoltageDropCalculator';
+import CameraPlanner from '@/components/tools/CameraPlanner';
 import ToolIcon, { ToolBackdrop } from '@/components/tools/ToolIcon';
 import ToolPrintButton, { PrintDate } from '@/components/tools/ToolPrintButton';
 import ToolProjectFrame from '@/components/tools/ToolProjectFrame';
@@ -40,7 +41,11 @@ const CUSTOM_CALCULATORS = {
   'poe-power-budget-calculator': PoeBudgetCalculator,
   'battery-standby-calculator': BatteryStandbyCalculator,
   'voltage-drop-calculator': VoltageDropCalculator,
+  'camera-plan-designer': CameraPlanner,
 };
+
+// Tools that keep their own saved file instead of adding results to the project report.
+const OWN_FILE_TOOLS = new Set(['camera-plan-designer']);
 
 export const dynamicParams = false;
 
@@ -101,7 +106,11 @@ export default async function ToolPage(props) {
       <div className="tool-stage">
         <ToolBackdrop slug={tool.slug} group={tool.group} />
         <div className="tool-stage-inner">
-          <ToolProjectFrame slug={tool.slug}>{Custom ? <Custom /> : <ConfigCalculator slug={tool.slug} />}</ToolProjectFrame>
+          {OWN_FILE_TOOLS.has(tool.slug) ? (
+            <Custom />
+          ) : (
+            <ToolProjectFrame slug={tool.slug}>{Custom ? <Custom /> : <ConfigCalculator slug={tool.slug} />}</ToolProjectFrame>
+          )}
         </div>
       </div>
 

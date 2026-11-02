@@ -56,6 +56,7 @@ import {
 // Line icons (Lucide, ISC licence) for the free calculators.
 const TOOL_ICONS = {
   'cctv-storage-calculator': Database,
+  'camera-plan-designer': Camera,
   'cctv-lens-calculator': Cctv,
   'cctv-bandwidth-calculator': Gauge,
   'nvr-raid-planner': Server,

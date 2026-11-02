@@ -3443,3 +3443,31 @@ a.admin-status:hover { filter:brightness(1.15); }
 .tool-page-note { margin:18px 0; }
 .tool-page-note strong { color:#fff; }
 @media (max-width:640px) { .tools-area-note { margin:0 4px 6px; } }
+
+/* Camera plan designer (/tools/camera-plan-designer). */
+.camera-planner { display:flex; flex-direction:column; gap:16px; padding-top:28px; padding-bottom:28px; }
+.camera-planner-toolbar { display:flex; flex-wrap:wrap; gap:10px; }
+.camera-planner-toolbar .btn { display:inline-flex; align-items:center; gap:8px; }
+.camera-planner-scale { display:flex; flex-wrap:wrap; align-items:center; gap:10px; }
+.camera-planner-scale input { width:120px; }
+.camera-planner-message { margin:0; }
+.camera-planner-layout { display:grid; grid-template-columns:minmax(0,1fr) 340px; gap:20px; align-items:start; }
+.camera-planner-canvas { border:1px solid var(--line); border-radius:18px; overflow:hidden; background:#fff; }
+.camera-planner-canvas svg { display:block; width:100%; height:auto; touch-action:none; user-select:none; }
+.camera-planner-canvas.mode-add svg, .camera-planner-canvas.mode-scale svg { cursor:crosshair; }
+.camera-planner-dot { cursor:grab; }
+.camera-planner-handle { cursor:alias; }
+.camera-planner-legend { display:flex; flex-wrap:wrap; gap:14px; margin:0; padding:10px 14px; list-style:none; background:#111; font-size:13px; color:var(--muted); }
+.camera-planner-legend li { display:inline-flex; align-items:center; gap:6px; }
+.camera-planner-legend span { width:14px; height:14px; border-radius:4px; opacity:.8; }
+.camera-planner-side { margin:0; }
+.camera-planner-side h2 { margin:6px 0 0; }
+.camera-planner-side input[type=range] { width:100%; }
+.camera-planner-row { display:flex; gap:10px; flex-wrap:wrap; }
+.camera-planner-row .btn { display:inline-flex; align-items:center; gap:6px; }
+.camera-planner-table { overflow-x:auto; }
+.camera-planner-table table { width:100%; border-collapse:collapse; font-size:14px; }
+.camera-planner-table th, .camera-planner-table td { padding:8px 10px; border-bottom:1px solid var(--line); text-align:left; white-space:nowrap; }
+.camera-planner-table tr { cursor:pointer; }
+.camera-planner-table tr.active td { background:rgba(255,23,23,.1); }
+@media (max-width:980px) { .camera-planner-layout { grid-template-columns:1fr; } }
