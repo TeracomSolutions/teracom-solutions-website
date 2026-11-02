@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
-import { ArrowRight, Bot, ShieldCheck, Cable, Cctv, ChevronDown, ChevronsDownUp, ChevronsUpDown, DoorOpen, Network, Search, Server, Speaker, Zap } from 'lucide-react';
+import { ArrowRight, Bot, Info, ShieldCheck, Cable, Cctv, ChevronDown, ChevronsDownUp, ChevronsUpDown, DoorOpen, Network, Search, Server, Speaker, Zap } from 'lucide-react';
 import ToolIcon from '@/components/tools/ToolIcon';
 
 // /tools (Robert, 2026-11-02): every area is a coloured section that folds up,
@@ -86,6 +86,12 @@ export default function ToolsBrowser({ groups, tools, initialOpen }) {
                 <ChevronDown className="tools-area-chevron" size={22} strokeWidth={2} aria-hidden="true" />
               </button>
             </h2>
+            {isOpen && g.disclaimer ? (
+              <p className="tools-area-note">
+                <Info size={18} strokeWidth={2} aria-hidden="true" />
+                <span>{g.disclaimer}</span>
+              </p>
+            ) : null}
             {isOpen ? (
               <div className="tools-grid" id={`tools-${g.id}-list`}>
                 {list.map((tool) => (

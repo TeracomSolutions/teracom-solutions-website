@@ -109,6 +109,13 @@ export default async function ToolPage(props) {
         <div className="container">
           <h2>How it works</h2>
           <p>{tool.howItWorks}</p>
+          {group?.disclaimer ? (
+            <p className="tools-area-note tool-page-note">
+              <span>
+                <strong>Good to know.</strong> {group.disclaimer}
+              </span>
+            </p>
+          ) : null}
           <p>
             Need help designing a system? <Link href="/contact">Talk to our team</Link>, or{' '}
             <Link href="/tools">see all {tools.length} free calculators</Link>.
