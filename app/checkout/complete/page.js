@@ -1,12 +1,15 @@
 import Link from 'next/link';
+import { cookies, headers } from 'next/headers';
+import { after } from 'next/server';
 import { ArrowRight, Mail, PackageCheck, ShieldCheck, TriangleAlert, Truck } from 'lucide-react';
 
 import CheckoutFeedback from '@/components/CheckoutFeedback';
 import ClearCartOnMount from '@/components/ClearCartOnMount';
 import { fetchReviewLink } from '@/lib/api/feedback';
 import PurchaseTracked from '@/components/PurchaseTracked';
+import { metaVisitor, sendMetaEvent } from '@/lib/api/meta';
 import { stripe } from '@/lib/stripe';
-import { pageMetadata, NOINDEX } from '@/lib/seo';
+import { pageMetadata, NOINDEX, SITE_ORIGIN } from '@/lib/seo';
 
 export const metadata = {
   ...pageMetadata({
@@ -77,6 +80,24 @@ export default async function CheckoutCompletePage(props) {
     price: line.amount_total != null && line.quantity ? Number((line.amount_total / line.quantity / 100).toFixed(2)) : undefined,
   }));
   const reviewUrl = await fetchReviewLink();
+  const transactionId =
+    typeof session.payment_intent === 'string' ? session.payment_intent : session.payment_intent?.id || session.id;
+
+  // The same purchase from the server, so the ad still counts when a browser
+  // blocks the pixel. Meta pairs the two by the transaction id. Sent after
+  // the page has gone, so it never slows the confirmation down.
+  const visitor = metaVisitor(await headers(), await cookies());
+  after(() =>
+    sendMetaEvent({
+      event_name: 'Purchase',
+      event_id: transactionId,
+      event_source_url: `${SITE_ORIGIN}/checkout/complete`,
+      email: session.customer_details?.email || undefined,
+      phone: session.customer_details?.phone || undefined,
+      value: session.amount_total != null ? Number((session.amount_total / 100).toFixed(2)) : undefined,
+      ...visitor,
+    })
+  );
 
   return (
     <main id="main-content" className="cart-page">
@@ -84,9 +105,7 @@ export default async function CheckoutCompletePage(props) {
       {/* Keyed on the payment intent, not the session: it maps one-to-one to
           the money and to any later refund, and it survives a refresh. */}
       <PurchaseTracked
-        transactionId={
-          typeof session.payment_intent === 'string' ? session.payment_intent : session.payment_intent?.id || session.id
-        }
+        transactionId={transactionId}
         value={session.amount_total != null ? Number((session.amount_total / 100).toFixed(2)) : undefined}
         shipping={
           session.shipping_cost?.amount_total != null

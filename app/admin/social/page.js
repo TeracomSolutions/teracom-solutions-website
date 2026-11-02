@@ -10,14 +10,19 @@ import AdminTabs from '@/components/AdminTabs';
 import Link from 'next/link';
 import { listCustomers } from '@/lib/api/adminCustomers';
 import { getCadence, listSocialAccounts, listSocialUpdates } from '@/lib/api/adminSocial';
+import { listSpecials } from '@/lib/api/adminSpecials';
+import { SITE_ORIGIN } from '@/lib/seo';
+import { specialPostDraft } from '@/lib/specials';
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
 
 export const metadata = {
   title: retitle('Social|Teracom Solutions', BRAND),
 };
 
-export default async function AdminSocialPage() {
+export default async function AdminSocialPage(props) {
   const token = await requireAdminToken();
+  const searchParams = await props.searchParams;
+  const specialId = typeof searchParams?.special === 'string' ? searchParams.special : '';
 
   let accounts = [];
   let updates = [];
@@ -47,6 +52,17 @@ export default async function AdminSocialPage() {
   } catch (err) {
     if (isSessionError(err)) redirect('/admin/login');
     cadenceError = 'Unable to load the posting calendar settings.';
+  }
+
+  // Post it on Store > Specials: the post comes already written.
+  let draft = null;
+  if (specialId) {
+    try {
+      const promo = (await listSpecials(token)).find((p) => p.product_id === specialId);
+      draft = promo ? specialPostDraft(promo, SITE_ORIGIN) : null;
+    } catch (err) {
+      if (isSessionError(err)) redirect('/admin/login');
+    }
   }
 
   return (
@@ -91,7 +107,7 @@ export default async function AdminSocialPage() {
           {
             key: 'posting',
             label: 'Posting',
-            content: <AdminSocialPosting initialUpdates={updates} accounts={accounts} audienceCount={customers?.counts?.receives_updates} loadError={loadError} />,
+            content: <AdminSocialPosting initialUpdates={updates} accounts={accounts} audienceCount={customers?.counts?.receives_updates} loadError={loadError} initialDraft={draft} />,
           },
           {
             key: 'calendar',

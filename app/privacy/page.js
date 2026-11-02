@@ -32,6 +32,7 @@ const SECTIONS = [
       { label: 'Unfinished checkouts', text: 'If a checkout expires or its payment fails, we keep a record of it for up to 90 days: your email address, what was in the order and its value. We use it to follow up problems with payments and to understand why orders are not completed.' },
       { label: 'Form security', text: 'When you submit a form we use Cloudflare Turnstile to check that the submission comes from a person rather than an automated script. Cloudflare receives your IP address and some technical information about your browser for that check. It does not use it to build an advertising profile of you.' },
       { label: 'Website use', text: 'We use Google Analytics to understand how the website is used -- for example the pages visited, how long visitors stay, the type of device and browser, the website that referred them and their approximate location (city or region). This information does not identify you by name.' },
+      { label: 'Advertising', text: 'When we advertise on Facebook and Instagram we use the Meta Pixel, which tells Meta (the company behind Facebook and Instagram) the pages visited and when an enquiry or order is made, so our ads reach people likely to be interested and we can see whether they work. When you make an enquiry or an order we also send Meta a one-way scrambled (hashed) copy of your email address and phone number, so it can match the visit to a Meta account. We do not send your name, address or what you wrote to us.' },
     ],
   },
   {
@@ -48,6 +49,7 @@ const SECTIONS = [
       { label: 'Stripe', text: 'Card payments.' },
       { label: 'Zoho', text: 'Accounting and invoicing.' },
       { label: 'Google', text: 'Website analytics and embedded maps.' },
+      { label: 'Meta', text: 'Advertising on Facebook and Instagram, and measuring it.' },
       { label: 'YouTube', text: 'Embedded product videos.' },
       { label: 'Vercel', text: 'Website hosting.' },
       { label: 'Cloudflare', text: 'Checks that form submissions come from a person rather than a bot.' },
@@ -57,14 +59,14 @@ const SECTIONS = [
   {
     title: '5. Cookies and browser storage',
     body: [
-      'If you sign in, a cookie keeps you signed in. Your cart is saved in your own browser so it is still there when you come back. Google Analytics sets cookies to tell visits apart. Embedded Google Maps and YouTube videos may set their own cookies under Google\'s privacy policy.',
+      'If you sign in, a cookie keeps you signed in. Your cart is saved in your own browser so it is still there when you come back. Google Analytics sets cookies to tell visits apart, and the Meta Pixel sets cookies to recognise a browser for advertising. Embedded Google Maps and YouTube videos may set their own cookies under Google\'s privacy policy.',
       <>
         You can block or delete cookies in your browser settings, and you can opt out of Google Analytics on every
         website with{' '}
         <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener noreferrer">
           Google&apos;s opt-out browser add-on
         </a>
-        . Blocking cookies may stop sign-in or the cart from working.
+        . You can choose which ads Meta shows you in your Facebook or Instagram ad preferences. Blocking cookies may stop sign-in or the cart from working.
       </>,
     ],
   },
@@ -109,7 +111,7 @@ export default function Privacy() {
       icon={ShieldCheck}
       title="Privacy Policy"
       lead="How Teracom Solutions Pty Ltd handles personal information collected through this website."
-      updated="25 October 2026"
+      updated="3 November 2026"
       highlights={HIGHLIGHTS}
       sections={SECTIONS}
     />
