@@ -46,7 +46,7 @@ export const ADMIN_GROUPS = [
 export const ADMIN_AREAS = [
   { href: '/admin', label: 'Overview', exact: true, group: 'home' },
   { href: '/admin/sales', label: 'Sales', group: 'sell', match: ['/admin/orders'] },
-  { href: '/admin/suppliers', label: 'Store', group: 'sell', match: ['/admin/catalog', '/admin/pricing', '/admin/brands', '/admin/freight', '/admin/review', '/admin/content', '/admin/marketplace'] },
+  { href: '/admin/suppliers', label: 'Store', group: 'sell', match: ['/admin/catalog', '/admin/pricing', '/admin/brands', '/admin/freight', '/admin/review', '/admin/content', '/admin/marketplace', '/admin/specials'] },
   { href: '/admin/coupons', label: 'Coupons', group: 'sell' },
   { href: '/admin/marketing', label: 'Marketing', group: 'sell' },
   { href: '/admin/leads', label: 'Leads', group: 'customers' },
@@ -79,6 +79,7 @@ export const ADMIN_SUBMENUS = {
     { path: '/admin/review', title: 'Needs review' },
     { path: '/admin/content', title: 'Photos and text' },
     { path: '/admin/marketplace', title: 'Marketplace' },
+    { path: '/admin/specials', title: 'Specials' },
   ],
   '/admin/website-data': [
     { path: '/admin/website-data', title: 'Overview', exact: true },

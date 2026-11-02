@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation';
+import { hasPromo, promoEndsText, savingCents } from '@/lib/specials';
 import Link from 'next/link';
 import { Headset, PackageSearch, ReceiptText, ShieldCheck, Truck } from 'lucide-react';
 
@@ -192,6 +193,13 @@ export default async function ProductPageView(props, token) {
             <p className="lead" style={CLAMP}>{product.description}</p>
 
             <div className="product-buy">
+              {hasPromo(product) ? (
+                <p className={`product-promo product-promo-${product.promo.kind}`}>
+                  <strong>{product.promo.label}</strong> · was <del>{formatMoney(product.promo.wasPriceCents)}</del>, save{' '}
+                  {formatMoney(savingCents(product))}
+                  {promoEndsText(product.promo.endsAt) ? ` · ${promoEndsText(product.promo.endsAt)}` : ''}
+                </p>
+              ) : null}
               {showMemberPrice ? (
                 <p className="price-rrp-struck">
                   RRP <del>{formatMoney(product.priceCents)}</del>

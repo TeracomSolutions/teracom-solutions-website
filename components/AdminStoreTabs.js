@@ -97,6 +97,13 @@ export default function AdminStoreTabs() {
       >
         Marketplace
       </Link>
+      <Link
+        href="/admin/specials"
+        className={isAreaActive({ href: '/admin/specials' }, pathname) ? 'admin-tab active' : 'admin-tab'}
+        aria-current={isAreaActive({ href: '/admin/specials' }, pathname) ? 'page' : undefined}
+      >
+        Specials
+      </Link>
     </nav>
   );
 }

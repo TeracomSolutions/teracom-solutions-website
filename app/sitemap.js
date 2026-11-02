@@ -41,6 +41,7 @@ const staticRoutes = [
   { path: '/', changeFrequency: 'weekly', priority: 1.0 },
   { path: '/teracom-ai', changeFrequency: 'weekly', priority: 0.9 },
   { path: '/store', changeFrequency: 'weekly', priority: 0.9 },
+  { path: '/store/specials', changeFrequency: 'daily', priority: 0.8 },
   { path: '/brands', changeFrequency: 'monthly', priority: 0.8 },
   { path: '/services', changeFrequency: 'monthly', priority: 0.9 },
   { path: '/monitoring', changeFrequency: 'monthly', priority: 0.9 },
