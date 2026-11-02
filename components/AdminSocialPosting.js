@@ -49,10 +49,19 @@ function channelText(channel, form, overrides) {
   return TITLED.includes(channel) && title ? `${title}\n\n${form.body}` : form.body;
 }
 
-export default function AdminSocialPosting({ initialUpdates, accounts, audienceCount, loadError, initialDraft }) {
+export default function AdminSocialPosting({ initialUpdates, accounts, audienceCount, tradeCount, loadError, initialDraft }) {
   const [updates, setUpdates] = useState(initialUpdates || []);
   const [form, setForm] = useState(() =>
-    initialDraft ? { ...EMPTY, title: initialDraft.title, body: initialDraft.text, link_url: initialDraft.link_url } : EMPTY
+    initialDraft
+      ? {
+          ...EMPTY,
+          title: initialDraft.title,
+          body: initialDraft.text,
+          link_url: initialDraft.link_url,
+          channels: initialDraft.channels || [],
+          audienceMode: initialDraft.audienceMode || 'all',
+        }
+      : EMPTY
   );
   const [media, setMedia] = useState([]);
   const [overrides, setOverrides] = useState({});
@@ -61,7 +70,7 @@ export default function AdminSocialPosting({ initialUpdates, accounts, audienceC
   const [problems, setProblems] = useState(null);
   const [error, setError] = useState(loadError || '');
   const [notice, setNotice] = useState(
-    initialDraft ? 'The post for this special is written. Tick where it goes, check each network tab, then send or schedule it.' : ''
+    initialDraft ? initialDraft.notice || 'The post for this special is written. Tick where it goes, check each network tab, then send or schedule it.' : ''
   );
   const [busy, setBusy] = useState('');
   const [nextFree, setNextFree] = useState('');
@@ -174,7 +183,7 @@ export default function AdminSocialPosting({ initialUpdates, accounts, audienceC
       body: form.body.trim(),
       link_url: form.link_url.trim() || null,
       channels: form.channels,
-      audience: form.audienceMode === 'tiers' && tiers.length ? { tiers } : { all: true },
+      audience: form.audienceMode === 'tiers' && tiers.length ? { tiers } : form.audienceMode === 'trade' ? { trade: true } : { all: true },
       media_ids: media.map((m) => m.id),
       overrides: own,
       ...extra,
@@ -299,6 +308,10 @@ export default function AdminSocialPosting({ initialUpdates, accounts, audienceC
             <label className="admin-check">
               <input type="radio" name="audience" checked={form.audienceMode === 'all'} onChange={() => set('audienceMode', 'all')} />
               Everyone who agreed to hear from us{audienceCount != null ? ` (${audienceCount} customers)` : ''}
+            </label>
+            <label className="admin-check">
+              <input type="radio" name="audience" checked={form.audienceMode === 'trade'} onChange={() => set('audienceMode', 'trade')} />
+              Trade customers only (business accounts){tradeCount != null ? ` (${tradeCount} customers)` : ''}
             </label>
             <label className="admin-check">
               <input type="radio" name="audience" checked={form.audienceMode === 'tiers'} onChange={() => set('audienceMode', 'tiers')} />

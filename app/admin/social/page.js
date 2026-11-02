@@ -12,7 +12,7 @@ import { listCustomers } from '@/lib/api/adminCustomers';
 import { getCadence, listSocialAccounts, listSocialUpdates } from '@/lib/api/adminSocial';
 import { listSpecials } from '@/lib/api/adminSpecials';
 import { SITE_ORIGIN } from '@/lib/seo';
-import { specialPostDraft } from '@/lib/specials';
+import { specialPostDraft, specialsEmailDraft } from '@/lib/specials';
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
 
 export const metadata = {
@@ -23,6 +23,7 @@ export default async function AdminSocialPage(props) {
   const token = await requireAdminToken();
   const searchParams = await props.searchParams;
   const specialId = typeof searchParams?.special === 'string' ? searchParams.special : '';
+  const specialsEmail = searchParams?.specials === 'email';
 
   let accounts = [];
   let updates = [];
@@ -54,12 +55,17 @@ export default async function AdminSocialPage(props) {
     cadenceError = 'Unable to load the posting calendar settings.';
   }
 
-  // Post it on Store > Specials: the post comes already written.
+  // Post it and Email trade customers on Store > Specials: the post comes already written.
   let draft = null;
-  if (specialId) {
+  if (specialId || specialsEmail) {
     try {
-      const promo = (await listSpecials(token)).find((p) => p.product_id === specialId);
-      draft = promo ? specialPostDraft(promo, SITE_ORIGIN) : null;
+      const promos = await listSpecials(token);
+      if (specialsEmail) {
+        draft = specialsEmailDraft(promos, SITE_ORIGIN);
+      } else {
+        const promo = promos.find((p) => p.product_id === specialId);
+        draft = promo ? specialPostDraft(promo, SITE_ORIGIN) : null;
+      }
     } catch (err) {
       if (isSessionError(err)) redirect('/admin/login');
     }
@@ -77,7 +83,7 @@ export default async function AdminSocialPage(props) {
           <h4>Posting</h4>
           <ul>
             <li>Write the title and text once, add a link if there is one, then add <strong>pictures</strong> (JPEG, PNG or WebP, up to 8 MB each, up to 20) or <strong>one video</strong> (MP4 or MOV, up to 100 MB). Each network takes what it allows: X up to 4 pictures, Facebook and Instagram up to 10.</li>
-            <li>Tick where it goes. A network without posting credentials cannot be ticked; set it up under Connections &gt; Social first. <strong>Customer email</strong> goes to every customer who agreed to hear from us, or only to the pricing tiers you name, with an unsubscribe link in every email.</li>
+            <li>Tick where it goes. A network without posting credentials cannot be ticked; set it up under Connections &gt; Social first. <strong>Customer email</strong> goes to every customer who agreed to hear from us, to trade customers only (business accounts), or only to the pricing tiers you name, with an unsubscribe link in every email.</li>
             <li>Each ticked network has a tab with its <strong>preview</strong> and a <strong>checklist</strong> of what it will accept. Untick <em>Use the main text</em> to write different text for that network only.</li>
             <li><strong>Send now</strong> runs in the background; each network reports sent, failed or skipped within a minute. A <strong>scheduled</strong> post goes within 15 minutes of its time (Melbourne). The history links to each live post.</li>
             <li>Drafts and scheduled posts can be cancelled; sent ones stay as history.</li>
@@ -107,7 +113,7 @@ export default async function AdminSocialPage(props) {
           {
             key: 'posting',
             label: 'Posting',
-            content: <AdminSocialPosting initialUpdates={updates} accounts={accounts} audienceCount={customers?.counts?.receives_updates} loadError={loadError} initialDraft={draft} />,
+            content: <AdminSocialPosting initialUpdates={updates} accounts={accounts} audienceCount={customers?.counts?.receives_updates} tradeCount={customers?.counts?.trade_receives_updates} loadError={loadError} initialDraft={draft} />,
           },
           {
             key: 'calendar',

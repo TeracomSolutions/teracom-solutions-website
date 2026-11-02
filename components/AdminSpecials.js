@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
-import { BadgePercent, Megaphone, Search, Trash2 } from 'lucide-react';
+import { BadgePercent, Mail, Megaphone, Search, Trash2 } from 'lucide-react';
 
 // Store > Specials (Robert, 2026-11-02): put a product on hot special or clearance
 // with one price everybody pays, and optionally an end date. Clearance may go below
@@ -197,6 +197,13 @@ export default function AdminSpecials({ initial }) {
 
       <section className="admin-card">
         <h2>Specials and clearance ({promos.length})</h2>
+        {promos.some((p) => p.status === 'live') ? (
+          <p>
+            <Link className="btn btn-secondary" href="/admin/social?specials=email" title="Write an email listing every special on the website, for trade customers">
+              <Mail size={16} strokeWidth={2} aria-hidden="true" /> Email trade customers
+            </Link>
+          </p>
+        ) : null}
         {promos.length ? (
           <div className="coupon-admin-table-wrap">
             <table className="coupon-admin-table">
