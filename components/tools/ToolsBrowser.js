@@ -2,13 +2,13 @@
 
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
-import { ArrowRight, Bot, Info, ShieldCheck, Cable, Cctv, ChevronDown, ChevronsDownUp, ChevronsUpDown, DoorOpen, Network, Search, Server, Speaker, Zap } from 'lucide-react';
+import { ArrowRight, Bot, Info, LayoutTemplate, ShieldCheck, Cable, Cctv, ChevronDown, ChevronsDownUp, ChevronsUpDown, DoorOpen, Network, Search, Server, Speaker, Zap } from 'lucide-react';
 import ToolIcon from '@/components/tools/ToolIcon';
 
 // /tools (Robert, 2026-11-02): every area is a coloured section that folds up,
 // with Expand all / Collapse all and a search across every tool. Opened from a
 // calculator's breadcrumb (?category=), only that area starts open.
-const GROUP_ICONS = { cctv: Cctv, power: Zap, cabling: Cable, network: Network, av: Speaker, it: Server, security: DoorOpen, cyber: ShieldCheck, ai: Bot };
+const GROUP_ICONS = { plans: LayoutTemplate, cctv: Cctv, power: Zap, cabling: Cable, network: Network, av: Speaker, it: Server, security: DoorOpen, cyber: ShieldCheck, ai: Bot };
 
 export default function ToolsBrowser({ groups, tools, initialOpen }) {
   const [open, setOpen] = useState(() => new Set(initialOpen || groups.map((g) => g.id)));

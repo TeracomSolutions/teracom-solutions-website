@@ -11,6 +11,7 @@ import {
   ShieldCheck,
   Smartphone,
   KeyRound,
+  LayoutTemplate,
   PiggyBank,
   Siren,
   TrendingDown,
@@ -56,7 +57,7 @@ import {
 // Line icons (Lucide, ISC licence) for the free calculators.
 const TOOL_ICONS = {
   'cctv-storage-calculator': Database,
-  'camera-plan-designer': Camera,
+  'site-plan-designer': LayoutTemplate,
   'cctv-lens-calculator': Cctv,
   'cctv-bandwidth-calculator': Gauge,
   'nvr-raid-planner': Server,
@@ -106,6 +107,7 @@ const GROUP_ICONS = {
   it: [Server, Cpu, HardDrive, MemoryStick, ServerCog, Layers, DatabaseBackup, TrendingDown],
   security: [DoorOpen, KeyRound, Siren, Cctv, DoorOpen, KeyRound, Siren, Zap],
   ai: [Bot, Brain, Coins, PiggyBank, Bot, Brain, Cpu, Server],
+  plans: [LayoutTemplate, Cctv, Wifi, Speaker, DoorOpen, LayoutTemplate, Cctv, Wifi],
   cyber: [ShieldCheck, Lock, KeyRound, Server, ShieldCheck, Lock, KeyRound, Network],
 };
 
