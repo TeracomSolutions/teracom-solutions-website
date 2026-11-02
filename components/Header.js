@@ -7,6 +7,7 @@ import NavDropdownCloser from './NavDropdownCloser';
 import HeaderAccount from './HeaderAccount';
 import { resourcesSections } from '@/lib/resourcesSections';
 import { monitoringServices } from '@/lib/monitoring';
+import { MONITORING_LOGIN_PATH, monitoringLoginEnabled } from '@/lib/monitoringLogin';
 import { services, serviceGroups } from '@/lib/services';
 
 
@@ -72,6 +73,7 @@ export default function Header() {
                   {s.title}
                 </Link>
               ))}
+              {monitoringLoginEnabled() ? <Link href={MONITORING_LOGIN_PATH}>Customer login</Link> : null}
             </div>
           </div>
           <Link href="/teracom-ai">Teracom AI</Link>
