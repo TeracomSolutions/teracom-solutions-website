@@ -1,7 +1,8 @@
 'use client';
 
+import Link from 'next/link';
 import { useState } from 'react';
-import { BadgePercent, Search, Trash2 } from 'lucide-react';
+import { BadgePercent, Megaphone, Search, Trash2 } from 'lucide-react';
 
 // Store > Specials (Robert, 2026-11-02): put a product on hot special or clearance
 // with one price everybody pays, and optionally an end date. Clearance may go below
@@ -214,6 +215,11 @@ export default function AdminSpecials({ initial }) {
                     <td>{STATUS[p.status] || p.status}</td>
                     <td className="admin-specials-row-actions">
                       <button type="button" className="btn btn-secondary" onClick={() => startEdit(null, p)}>Change</button>
+                      {p.status === 'live' ? (
+                        <Link className="btn btn-secondary" href={`/admin/social?special=${encodeURIComponent(p.product_id)}`} title="Write a social post and customer email for this special">
+                          <Megaphone size={16} strokeWidth={2} aria-hidden="true" /> Post it
+                        </Link>
+                      ) : null}
                       <button type="button" className="btn btn-secondary" aria-label={`Remove the special on ${p.name}`} onClick={() => remove(p)} disabled={busy}>
                         <Trash2 size={16} strokeWidth={2} aria-hidden="true" />
                       </button>

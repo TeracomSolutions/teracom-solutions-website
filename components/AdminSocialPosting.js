@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import ChannelPanel from '@/components/posting/ChannelPanel';
 import MediaUploader from '@/components/posting/MediaUploader';
@@ -49,18 +49,32 @@ function channelText(channel, form, overrides) {
   return TITLED.includes(channel) && title ? `${title}\n\n${form.body}` : form.body;
 }
 
-export default function AdminSocialPosting({ initialUpdates, accounts, audienceCount, loadError }) {
+export default function AdminSocialPosting({ initialUpdates, accounts, audienceCount, loadError, initialDraft }) {
   const [updates, setUpdates] = useState(initialUpdates || []);
-  const [form, setForm] = useState(EMPTY);
+  const [form, setForm] = useState(() =>
+    initialDraft ? { ...EMPTY, title: initialDraft.title, body: initialDraft.text, link_url: initialDraft.link_url } : EMPTY
+  );
   const [media, setMedia] = useState([]);
   const [overrides, setOverrides] = useState({});
   const [activeChannel, setActiveChannel] = useState('');
   const [errors, setErrors] = useState([]);
   const [problems, setProblems] = useState(null);
   const [error, setError] = useState(loadError || '');
-  const [notice, setNotice] = useState('');
+  const [notice, setNotice] = useState(
+    initialDraft ? 'The post for this special is written. Tick where it goes, check each network tab, then send or schedule it.' : ''
+  );
   const [busy, setBusy] = useState('');
   const [nextFree, setNextFree] = useState('');
+
+  // A special's photo comes with its draft, fetched once.
+  const pictureFetched = useRef(false);
+  useEffect(() => {
+    if (!initialDraft?.image_url || pictureFetched.current) return;
+    pictureFetched.current = true;
+    send('/api/admin/social/media/from-url', 'POST', { url: initialDraft.image_url })
+      .then((item) => setMedia((current) => [...current, item]))
+      .catch(() => setError('The product photo could not be added; add a picture yourself.'));
+  }, [initialDraft]);
 
   const accountFor = (network) => (accounts || []).find((a) => a.network === network);
   const active = form.channels.includes(activeChannel) ? activeChannel : form.channels[0];

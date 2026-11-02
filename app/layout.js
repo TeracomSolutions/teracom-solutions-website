@@ -12,6 +12,7 @@ import StructuredData from '@/components/StructuredData';
 import GoogleAnalytics from '@/components/GoogleAnalytics';
 import AnalyticsEvents from '@/components/AnalyticsEvents';
 import VisitBeacon from '@/components/VisitBeacon';
+import MetaPixel from '@/components/MetaPixel';
 import { GOOGLE_SITE_VERIFICATION } from '@/lib/analytics';
 import { SITE_ORIGIN } from '@/lib/seo';
 
@@ -88,6 +89,7 @@ export default function MarketingRootLayout({ children }) {
         {!BRAND.custom && <StructuredData />}
         <GoogleAnalytics />
         <AnalyticsEvents />
+        <MetaPixel />
         <VisitBeacon />
         {/* Keyboard and screen-reader users otherwise have to tab through the
             entire header nav, the resources dropdown and the cart on every

@@ -36,6 +36,8 @@ export default async function AdminSpecialsPage() {
           <p>The special price includes GST and is what everyone pays: visitors, members and trade tiers, unless a customer&apos;s own price is already lower. A hot special cannot go below cost; clearance can, for old stock you want gone. The Margin column goes red when a special sells below cost.</p>
           <h4>Ending</h4>
           <p>With an end date the product goes back to its normal price after that day by itself. Without one it stays on special until you press the bin. Changes reach the website within five minutes. Every change is in the Audit log.</p>
+          <h4>Promoting a special</h4>
+          <p><strong>Post it</strong> (on a special that is on the website) opens Social &gt; Posting with the post already written: the price, the price it was, the end date, the product link and its photo. Tick Facebook, Instagram and the rest, check each network&apos;s tab, then send or schedule it. Specials also reach Facebook and Instagram shop ads through the Meta catalogue when Meta is set up on Connections.</p>
         </AdminHelpIcon>
       </h1>
       <AdminStoreTabs />

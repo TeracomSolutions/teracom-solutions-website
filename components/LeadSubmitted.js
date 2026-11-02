@@ -22,13 +22,19 @@ export default function LeadSubmitted({ source = 'contact_form' }) {
     const params = new URLSearchParams(window.location.search);
     if (params.get('lead') !== 'received') return;
 
-    track('generate_lead', {
-      currency: 'AUD',
-      lead_source: source,
-      form_location: window.location.pathname,
-    });
+    track(
+      'generate_lead',
+      {
+        currency: 'AUD',
+        lead_source: source,
+        form_location: window.location.pathname,
+      },
+      // Pairs the Meta pixel's copy with the one the server sent.
+      { lead_id: params.get('lead_id') || '' }
+    );
 
     params.delete('lead');
+    params.delete('lead_id');
     const query = params.toString();
     window.history.replaceState(
       {},

@@ -1,6 +1,8 @@
-import { NextResponse } from 'next/server';
+import { after, NextResponse } from 'next/server';
 
 import { submitLead } from '@/lib/api/leads';
+import { metaVisitor, sendMetaEvent } from '@/lib/api/meta';
+import { SITE_ORIGIN } from '@/lib/seo';
 import { ApiError } from '@/lib/api/client';
 import { checkRateLimit, clientIpFromRequest } from '@/lib/rateLimit';
 import { STARTED_FIELD, TRAP_FIELD, checkSubmission } from '@/lib/formGuard';
@@ -94,5 +96,20 @@ export async function POST(req) {
     return NextResponse.redirect(new URL(`${returnPath}?lead=error#contact`, req.url), 303);
   }
 
-  return NextResponse.redirect(new URL(`${returnPath}?lead=received#contact`, req.url), 303);
+  // The enquiry for Meta ads, from the server; the page the visitor lands on
+  // reports the same id from the browser, so Meta counts it once.
+  const leadId = crypto.randomUUID();
+  const visitor = metaVisitor(req.headers, req.cookies);
+  after(() =>
+    sendMetaEvent({
+      event_name: 'Lead',
+      event_id: leadId,
+      event_source_url: `${SITE_ORIGIN}${returnPath}`,
+      email: lead.email || undefined,
+      phone: lead.phone || undefined,
+      ...visitor,
+    })
+  );
+
+  return NextResponse.redirect(new URL(`${returnPath}?lead=received&lead_id=${leadId}#contact`, req.url), 303);
 }
