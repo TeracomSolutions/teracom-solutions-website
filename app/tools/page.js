@@ -1,24 +1,25 @@
 import Link from 'next/link';
-import { ArrowRight, Cable, FileStack, HardDrive, Zap } from 'lucide-react';
+import { ArrowRight, Bot, FileStack, HardDrive, Zap } from 'lucide-react';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import OrbitArt from '@/components/OrbitArt';
-import ToolIcon, { CalculatorIcon } from '@/components/tools/ToolIcon';
+import { CalculatorIcon } from '@/components/tools/ToolIcon';
+import ToolsBrowser from '@/components/tools/ToolsBrowser';
 import { toolGroups, tools } from '@/lib/tools';
 import { pageMetadata } from '@/lib/seo';
 
 export const metadata = pageMetadata({
-  title: 'Free Calculators & Tools for the Industry | Teracom Solutions',
+  title: 'Free Calculators & Tools for Security, IT and AI | Teracom Solutions',
   description:
-    'Free CCTV, power, cabling, network, audio and display calculators for engineers, technicians, installers, AV specialists and customers -- storage, lens, bitrate, bandwidth, RAID, PoE, solar, battery, voltage drop, fibre loss, UPS, subnet, wireless link, screen size and more.',
+    'Free CCTV, power, cabling, network, Wi-Fi, access control, AV, IT and AI tools -- storage, lens, PoE, battery, voltage drop, fibre loss, subnet, access points, backup, downtime, false alarm cost, AI model picker, AI running cost and more.',
   path: '/tools',
 });
 
-// Tabs across the top pick one group (/tools?category=cctv); All tools shows
-// every group, as before (Robert, 2026-10-04).
+// Every area folds up, with Expand all / Collapse all and a search (components/tools/ToolsBrowser.js).
+// ?category=<area> still works for the calculators' breadcrumbs: only that area starts open.
 export default async function Tools({ searchParams }) {
   const query = (await searchParams) || {};
   const active = toolGroups.find((group) => group.id === query.category) || null;
-  const shown = active ? [active] : toolGroups;
+  const list = tools.map(({ slug, group, title, description, isNew }) => ({ slug, group, title, description, isNew: Boolean(isNew) }));
 
   return (
     <main id="main-content">
@@ -29,32 +30,13 @@ export default async function Tools({ searchParams }) {
             <span className="eyebrow">Free tools</span>
             <h1>Tools for the industry.</h1>
             <p className="lead">
-              {tools.length} free calculators for engineers, technicians, installers, AV specialists and customers -- the numbers
-              you check on every job, from cameras and storage to power, cabling, networks and AV.
+              {tools.length} free tools in {toolGroups.length} areas, for engineers, technicians, installers, IT teams and
+              business owners -- from cameras, power and cabling to Wi-Fi, access control, backups and choosing the right AI.
             </p>
           </div>
-          <OrbitArt icon={CalculatorIcon} badges={[HardDrive, Zap, Cable]} />
+          <OrbitArt icon={CalculatorIcon} badges={[HardDrive, Zap, Bot]} />
         </div>
       </section>
-
-      <div className="container tools-tabs-wrap">
-        <nav className="brand-tabs tools-tabs" aria-label="Tool categories">
-          <Link href="/tools" scroll={false} className={active ? 'brand-tab' : 'brand-tab active'} aria-current={active ? undefined : 'page'}>
-            All tools <span className="brand-tab-count">{tools.length}</span>
-          </Link>
-          {toolGroups.map((group) => (
-            <Link
-              key={group.id}
-              href={`/tools?category=${group.id}`}
-              scroll={false}
-              className={active?.id === group.id ? 'brand-tab active' : 'brand-tab'}
-              aria-current={active?.id === group.id ? 'page' : undefined}
-            >
-              {group.eyebrow} <span className="brand-tab-count">{tools.filter((t) => t.group === group.id).length}</span>
-            </Link>
-          ))}
-        </nav>
-      </div>
 
       <div className="container tools-project-callout">
         <span className="tools-project-callout-icon" aria-hidden="true">
@@ -63,8 +45,8 @@ export default async function Tools({ searchParams }) {
         <div>
           <h2>One report from any of these tools</h2>
           <p>
-            Add results from as many calculators as the job needs to one project, with the client, site and your notes, and
-            save it all as a single PDF. Import the PDF again later to change any result.
+            Add results from as many tools as the job needs to one project, with the client, site and your notes, and save it
+            all as a single PDF. Import the PDF again later to change any result.
           </p>
         </div>
         <Link className="btn btn-primary" href="/tools/project">
@@ -72,35 +54,9 @@ export default async function Tools({ searchParams }) {
         </Link>
       </div>
 
-      {shown.map((group, gi) => (
-        <section className={`section section-spacious${gi % 2 === 1 ? ' alt' : ''}`} key={group.id}>
-          <div className="container">
-            <div className="section-heading left tools-group-heading">
-              <span className="eyebrow">{group.eyebrow}</span>
-              <h2>{group.title}</h2>
-            </div>
-            <div className="tools-grid">
-              {tools
-                .filter((t) => t.group === group.id)
-                .map((tool) => (
-                  <Link href={`/tools/${tool.slug}`} className="tool-card" key={tool.slug}>
-                    <span className="tool-card-icon">
-                      <ToolIcon slug={tool.slug} size={26} />
-                    </span>
-                    <h3>{tool.title}</h3>
-                    <p>{tool.description}</p>
-                    <span className="tool-card-cta">
-                      Open calculator <ArrowRight size={16} strokeWidth={2} aria-hidden="true" />
-                    </span>
-                    <span className="tool-card-watermark" aria-hidden="true">
-                      <ToolIcon slug={tool.slug} size={150} strokeWidth={1} />
-                    </span>
-                  </Link>
-                ))}
-            </div>
-          </div>
-        </section>
-      ))}
+      <section className="section">
+        <ToolsBrowser groups={toolGroups} tools={list} initialOpen={active ? [active.id] : null} />
+      </section>
     </main>
   );
 }

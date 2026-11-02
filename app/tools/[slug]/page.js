@@ -4,7 +4,7 @@ import ShopTheParts from '@/components/ShopTheParts';
 import AskTeraNudge from '@/components/AskTeraNudge';
 import CalculatorUsage from '@/components/CalculatorUsage';
 import Link from 'next/link';
-import { Battery, Cable, Cctv, Cpu, Gauge, HardDrive, MemoryStick, Monitor, Network, Projector, Router, Ruler, Server, Speaker, Video, Wifi, Zap } from 'lucide-react';
+import { Battery, Bot, Brain, Cable, Cctv, Coins, Cpu, DoorOpen, KeyRound, Siren, Gauge, HardDrive, MemoryStick, Monitor, Network, Projector, Router, Ruler, Server, Speaker, Video, Wifi, Zap } from 'lucide-react';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import OrbitArt from '@/components/OrbitArt';
 import ConfigCalculator from '@/components/tools/ConfigCalculator';
@@ -26,6 +26,8 @@ const GROUP_BADGES = {
   network: [Router, Wifi, Network],
   av: [Monitor, Speaker, Projector],
   it: [Server, Cpu, MemoryStick],
+  security: [DoorOpen, KeyRound, Siren],
+  ai: [Bot, Brain, Coins],
 };
 
 // Every calculator page shares this layout: hero with the tool's icon emblem,

@@ -78,7 +78,7 @@ export default function Resources() {
             <div>
               <span className="eyebrow">Free tools</span>
               <h2>Tools for the industry.</h2>
-              <p>{tools.length} free calculators -- cameras, storage, power, cabling, networks and AV.</p>
+              <p>{tools.length} free tools -- cameras, power, cabling, Wi-Fi, access control, backups, AI and more.</p>
             </div>
             <Link className="btn btn-primary" href="/tools">
               Open the tools <ArrowRight size={18} strokeWidth={2} aria-hidden="true" />
