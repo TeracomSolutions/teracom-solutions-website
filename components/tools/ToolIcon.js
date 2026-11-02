@@ -5,6 +5,11 @@ import {
   Coins,
   DatabaseBackup,
   DoorOpen,
+  Flame,
+  Lock,
+  Megaphone,
+  ShieldCheck,
+  Smartphone,
   KeyRound,
   PiggyBank,
   Siren,
@@ -85,6 +90,10 @@ const TOOL_ICONS = {
   'ai-model-picker': Brain,
   'ai-token-cost-calculator': Coins,
   'ai-automation-savings-calculator': PiggyBank,
+  'essential-eight-self-check': ShieldCheck,
+  'fire-alarm-battery-calculator': Flame,
+  'intercom-planner': Smartphone,
+  'pa-speaker-coverage-calculator': Megaphone,
 };
 
 const GROUP_ICONS = {
@@ -96,6 +105,7 @@ const GROUP_ICONS = {
   it: [Server, Cpu, HardDrive, MemoryStick, ServerCog, Layers, DatabaseBackup, TrendingDown],
   security: [DoorOpen, KeyRound, Siren, Cctv, DoorOpen, KeyRound, Siren, Zap],
   ai: [Bot, Brain, Coins, PiggyBank, Bot, Brain, Cpu, Server],
+  cyber: [ShieldCheck, Lock, KeyRound, Server, ShieldCheck, Lock, KeyRound, Network],
 };
 
 export default function ToolIcon({ slug, size = 24, strokeWidth = 1.75 }) {
