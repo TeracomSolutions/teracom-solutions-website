@@ -42,7 +42,7 @@ export default async function SavingsPage(props) {
             <span className="eyebrow">Teracom AI · Savings</span>
             <h1>Want to save A$250,000 a year? See what it would take.</h1>
             <p className="lead">
-              Teracom AI Departments take work off your team: the tracking, chasing, drafting and reporting that fills their week.
+              Teracom AI Departments are designed to take work off your team: the tracking, chasing, drafting and reporting that fills their week.
               Its value to you is the cost of the time your team no longer has to spend. Put in your own figures below and see the working.
             </p>
             <p className="savings-qualifier">{NOT_MEASURED}</p>
