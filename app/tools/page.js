@@ -1,3 +1,4 @@
+import ToolBrandBand from '@/components/tools/ToolBrandBand';
 import Link from 'next/link';
 import { ArrowRight, Bot, FileStack, HardDrive, Zap } from 'lucide-react';
 import Breadcrumbs from '@/components/Breadcrumbs';
@@ -57,6 +58,7 @@ export default async function Tools({ searchParams }) {
       <section className="section">
         <ToolsBrowser groups={toolGroups} tools={list} initialOpen={active ? [active.id] : null} />
       </section>
+      <ToolBrandBand showAllTools={false} />
     </main>
   );
 }

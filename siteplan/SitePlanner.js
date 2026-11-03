@@ -20,6 +20,7 @@ import {
   DoorOpen,
   Download,
   Fence,
+  FileSpreadsheet,
   FileUp,
   Fingerprint,
   Flame,
@@ -91,6 +92,8 @@ import {
   samplePlan,
   scaleFromPoints,
   speakerRadius,
+  BRAND,
+  sitePlanXlsx,
 } from './index.js';
 import CableSchedule from './CableSchedule.js';
 import './siteplan.css';
@@ -156,6 +159,41 @@ async function readPlanImage(file) {
   return { dataUrl: canvas.toDataURL('image/jpeg', 0.85), width: canvas.width, height: canvas.height };
 }
 
+const XLSX_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+
+async function loadImage(src) {
+  const image = new window.Image();
+  if (/^https?:/.test(src)) image.crossOrigin = 'anonymous';
+  image.src = src;
+  await image.decode();
+  return image;
+}
+
+// The logo is a large picture; a 480 px copy keeps the workbook small and still sharp.
+async function logoPng(src) {
+  try {
+    const image = await loadImage(src);
+    const canvas = document.createElement('canvas');
+    canvas.width = 480;
+    canvas.height = Math.round((480 * image.naturalHeight) / image.naturalWidth);
+    canvas.getContext('2d').drawImage(image, 0, 0, canvas.width, canvas.height);
+    const blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/png'));
+    return blob ? { data: new Uint8Array(await blob.arrayBuffer()), type: 'png', width: canvas.width, height: canvas.height } : null;
+  } catch {
+    return null;
+  }
+}
+
+// Text at the largest size up to `size` that fits in `width`.
+function fitText(ctx, text, size, width, weight = '') {
+  let px = size;
+  ctx.font = `${weight} ${Math.round(px)}px sans-serif`;
+  while (px > 8 && ctx.measureText(text).width > width) {
+    px -= 1;
+    ctx.font = `${weight} ${Math.round(px)}px sans-serif`;
+  }
+}
+
 const fileName = (plan, ext) => `${(plan.name || 'site-plan').replace(/[^a-z0-9-]+/gi, '-').replace(/^-+|-+$/g, '') || 'site-plan'}.${ext}`;
 
 function readStored() {
@@ -169,7 +207,7 @@ function readStored() {
   }
 }
 
-export default function SitePlanner() {
+export default function SitePlanner({ brand = BRAND }) {
   const [plan, setPlan] = useState(null);
   const [selected, setSelected] = useState(null);
   const [mode, setMode] = useState('select');
@@ -322,55 +360,103 @@ export default function SitePlanner() {
     setMessage('Scale set. The coloured areas now show real distances.');
   };
 
-  const savePicture = async () => {
-    try {
-      const canvas = document.createElement('canvas');
-      canvas.width = size.width;
-      canvas.height = size.height;
-      const ctx = canvas.getContext('2d');
-      ctx.fillStyle = '#ffffff';
-      ctx.fillRect(0, 0, size.width, size.height);
-      if (plan.image) ctx.drawImage(await planBitmap(plan.image), 0, 0, size.width, size.height);
-      for (const d of plan.devices) {
-        for (const shape of coverageShapes(d, scale)) {
-          ctx.globalAlpha = shape.opacity;
-          ctx.fillStyle = shape.colour;
-          if (shape.path) ctx.fill(new Path2D(shape.path));
-          else {
-            ctx.beginPath();
-            ctx.arc(shape.circle.cx, shape.circle.cy, shape.circle.r, 0, Math.PI * 2);
-            ctx.fill();
-          }
+  const drawPlan = async (branded) => {
+    const band = branded ? Math.round(unit * 9) : 0;
+    const canvas = document.createElement('canvas');
+    canvas.width = size.width;
+    canvas.height = size.height + band;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, size.width, size.height);
+    if (plan.image) ctx.drawImage(await planBitmap(plan.image), 0, 0, size.width, size.height);
+    for (const d of plan.devices) {
+      for (const shape of coverageShapes(d, scale)) {
+        ctx.globalAlpha = shape.opacity;
+        ctx.fillStyle = shape.colour;
+        if (shape.path) ctx.fill(new Path2D(shape.path));
+        else {
+          ctx.beginPath();
+          ctx.arc(shape.circle.cx, shape.circle.cy, shape.circle.r, 0, Math.PI * 2);
+          ctx.fill();
         }
       }
-      ctx.globalAlpha = 1;
-      for (const d of plan.devices) {
-        ctx.fillStyle = deviceType(d.type).colour;
-        ctx.beginPath();
-        ctx.arc(d.x, d.y, unit * 1.3, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.fillStyle = '#ffffff';
-        ctx.font = `bold ${Math.round(unit * 1.4)}px sans-serif`;
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(deviceType(d.type).code || 'O', d.x, d.y + unit * 0.05);
-        ctx.textAlign = 'left';
-        ctx.textBaseline = 'alphabetic';
-        ctx.lineWidth = unit * 0.35;
-        ctx.strokeStyle = '#ffffff';
-        ctx.font = `bold ${Math.round(unit * 1.2)}px sans-serif`;
-        const left = d.x > size.width * 0.8;
-        ctx.textAlign = left ? 'right' : 'left';
-        const lx = left ? d.x - unit * 1.7 : d.x + unit * 1.7;
-        ctx.strokeText(d.name, lx, d.y - unit * 1.2);
-        ctx.fillStyle = '#111827';
-        ctx.fillText(d.name, lx, d.y - unit * 1.2);
+    }
+    ctx.globalAlpha = 1;
+    for (const d of plan.devices) {
+      ctx.fillStyle = deviceType(d.type).colour;
+      ctx.beginPath();
+      ctx.arc(d.x, d.y, unit * 1.3, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#ffffff';
+      ctx.font = `bold ${Math.round(unit * 1.4)}px sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(deviceType(d.type).code || 'O', d.x, d.y + unit * 0.05);
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'alphabetic';
+      ctx.lineWidth = unit * 0.35;
+      ctx.strokeStyle = '#ffffff';
+      ctx.font = `bold ${Math.round(unit * 1.2)}px sans-serif`;
+      const left = d.x > size.width * 0.8;
+      ctx.textAlign = left ? 'right' : 'left';
+      const lx = left ? d.x - unit * 1.7 : d.x + unit * 1.7;
+      ctx.strokeText(d.name, lx, d.y - unit * 1.2);
+      ctx.fillStyle = '#111827';
+      ctx.fillText(d.name, lx, d.y - unit * 1.2);
+    }
+    if (band) {
+      const top = size.height;
+      ctx.textAlign = 'left';
+      ctx.fillStyle = '#0b0b0b';
+      ctx.fillRect(0, top, size.width, band);
+      ctx.fillStyle = '#e3161b';
+      ctx.fillRect(0, top, size.width, Math.max(2, unit * 0.3));
+      let left = unit * 2;
+      const logo = await loadImage(brand.logo).catch(() => null);
+      if (logo) {
+        const h = band * 0.66;
+        const w = (h * logo.naturalWidth) / logo.naturalHeight;
+        ctx.drawImage(logo, unit * 1.2, top + (band - h) / 2, w, h);
+        left = unit * 2.4 + w;
       }
+      const room = size.width - left - unit * 2;
+      ctx.textAlign = 'right';
+      ctx.fillStyle = '#ffffff';
+      const line1 = `Designed with the free Site Plan Designer from ${brand.name}`;
+      fitText(ctx, line1, unit * 1.7, room, 'bold');
+      ctx.fillText(line1, size.width - unit * 2, top + band * 0.45);
+      ctx.fillStyle = '#d1d5db';
+      const line2 = `${brand.websiteLabel}/tools  ·  ${brand.email}  ·  ${brand.tagline}`;
+      fitText(ctx, line2, unit * 1.3, room);
+      ctx.fillText(line2, size.width - unit * 2, top + band * 0.75);
+    }
+    return canvas;
+  };
+
+  const savePicture = async () => {
+    try {
+      const canvas = await drawPlan(true);
       const blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/png'));
       if (!blob) throw new Error('No picture');
       download(blob, fileName(plan, 'png'));
     } catch {
       setMessage('The picture could not be made. Try again, or save the plan file instead.');
+    }
+  };
+
+  // The summary, the plan, the equipment schedule and a cable schedule per system, branded.
+  const saveExcel = async () => {
+    setMessage('Making the Excel workbook...');
+    try {
+      const canvas = await drawPlan(false);
+      const jpeg = await new Promise((resolve) => canvas.toBlob(resolve, 'image/jpeg', 0.85));
+      const picture = jpeg ? { data: new Uint8Array(await jpeg.arrayBuffer()), type: 'jpeg', width: canvas.width, height: canvas.height } : null;
+      const logo = await logoPng(brand.logo);
+      const date = new Date().toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' });
+      download(new Blob([sitePlanXlsx(plan, { brand, date, logo, picture })], { type: XLSX_TYPE }), fileName(plan, 'xlsx'));
+      setMessage('Excel workbook saved: the summary and cable to order, the plan, the equipment schedule and a cable schedule for each system.');
+    } catch {
+      setMessage('The Excel workbook could not be made. Try again, or save the plan file instead.');
     }
   };
 
@@ -667,32 +753,37 @@ export default function SitePlanner() {
 
       {plan.devices.length ? (
         <div className="site-planner-schedule">
-          <h2>Equipment schedule</h2>
+          <div className="site-planner-schedule-head">
+            <h2>Equipment schedule</h2>
+            <button type="button" className="btn btn-primary" onClick={saveExcel}>
+              <FileSpreadsheet size={18} strokeWidth={2} aria-hidden="true" /> Download Excel
+            </button>
+          </div>
           <div className="site-planner-table">
             <table>
               <thead>
-                <tr><th>Device</th><th>Type</th><th>Coverage</th></tr>
+                <tr><th>Device</th><th>Type</th><th>Coverage</th><th>Cable</th><th>Runs to</th></tr>
               </thead>
               <tbody>
-                {plan.devices.map((d) => (
-                  <tr key={d.id} className={d.id === selected ? 'active' : undefined} onClick={() => setSelected(d.id)}>
-                    <td>{d.name}</td>
-                    <td>{deviceType(d.type).label}</td>
-                    <td>{coverageText(d)}</td>
-                  </tr>
-                ))}
+                {plan.devices.map((d) => {
+                  const cable = cableFor(d);
+                  const end = cable ? headEndFor(d, plan.devices) : null;
+                  return (
+                    <tr key={d.id} className={d.id === selected ? 'active' : undefined} onClick={() => setSelected(d.id)}>
+                      <td>{d.name}</td>
+                      <td>{deviceType(d.type).label}</td>
+                      <td>{coverageText(d)}</td>
+                      <td>{cable ? cableType(cable).label : ''}</td>
+                      <td>{cable ? end?.name || <span className="site-planner-missing">Not placed yet</span> : ''}</td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
+          <CableSchedule plan={plan} selected={selected} onSelect={setSelected} onExport={saveExcel} />
         </div>
       ) : null}
-
-      <CableSchedule
-        plan={plan}
-        selected={selected}
-        onSelect={setSelected}
-        onDownload={(blob, system) => download(blob, fileName(plan, `${system.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-cables.csv`))}
-      />
 
       <div className="site-planner-toolbar site-planner-save">
         <div className="field site-planner-name">
@@ -701,6 +792,9 @@ export default function SitePlanner() {
         </div>
         <button type="button" className="btn btn-primary" onClick={savePicture}>
           <Download size={18} strokeWidth={2} aria-hidden="true" /> Save as a picture
+        </button>
+        <button type="button" className="btn btn-primary" onClick={saveExcel}>
+          <FileSpreadsheet size={18} strokeWidth={2} aria-hidden="true" /> Save as Excel
         </button>
         <button type="button" className="btn btn-secondary" onClick={savePlanFile}>
           <Save size={18} strokeWidth={2} aria-hidden="true" /> Save plan file
@@ -721,7 +815,7 @@ export default function SitePlanner() {
         )}
       </div>
       <p className="form-note">
-        Your plan stays in this browser on this device; nothing is sent to Teracom. Save the plan file to keep it or move it to
+        Your plan stays in this browser on this device; nothing is sent to {brand.name}. Save the plan file to keep it or move it to
         another device, and open it here to carry on. Coverage is drawn from the figures you enter (cameras use the IEC 62676-4
         DORI pixel densities) and ignores walls, shelving and mounting details, so confirm it on site.
       </p>

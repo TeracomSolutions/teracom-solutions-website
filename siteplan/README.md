@@ -6,6 +6,8 @@ same code can go into Teracom AI. Nothing in here imports from the rest of the w
 A floor plan (an uploaded picture, the sample, or a blank grid) with over 50 kinds of equipment on it: what each
 camera, detector, speaker and access point covers, an equipment schedule, and a cable schedule for each system
 (CCTV, alarm, access control, intercom, fire, network, audio and display) with lengths and the cable to order.
+It all downloads as one branded Excel workbook, and the saved picture carries the logo too: the tools are there
+to advertise the business.
 
 ## Files
 
@@ -13,9 +15,12 @@ camera, detector, speaker and access point covers, an equipment schedule, and a 
 |---|---|
 | `model.js` | Device types and groups, coverage maths (DORI, detector wedges, speakers), the plan format, `cleanPlan` / `parsePlan`, the sample plan. Pure. |
 | `cables.js` | Cable types, which cable each device takes and where it runs to, run lengths, `cableSchedules(plan)`, `schedulesCsv`. Pure. |
-| `index.js` | Re-exports both. |
-| `SitePlanner.js` | The React screen (client component). Keeps the plan in the browser's local storage; saves a picture, a plan file and CSV schedules. |
-| `CableSchedule.js` | The cable schedule tabs, totals and CSV buttons. |
+| `brand.js` | Whose name, logo, website, quote link and shop go on everything it makes. |
+| `xlsx.js` | A small .xlsx writer (zip, styles, merged cells, links, pictures, print setup). No libraries. |
+| `workbook.js` | The workbook: Summary (with cable to order and shop links), Plan picture, Equipment, one sheet per system. |
+| `index.js` | Re-exports model, cables, brand and workbook. |
+| `SitePlanner.js` | The React screen (client component). Keeps the plan in the browser's local storage; saves a branded picture, the Excel workbook and a plan file. Takes an optional `brand` prop. |
+| `CableSchedule.js` | The cable schedule tabs and totals. |
 | `siteplan.css` | The planner's own styles. |
 | `__tests__/` | `node --test` tests for the pure files. |
 
@@ -27,7 +32,9 @@ camera, detector, speaker and access point covers, an equipment schedule, and a 
 3. `SitePlanner.js` imports `siteplan.css`. It also uses a few of the host's shared classes and colours, which the
    host app should define (or map to its own): `container`, `btn btn-primary btn-secondary`, `field`, `calculator`,
    `form-note`, `form-note-banner`, and the CSS variables `--line` and `--muted`.
-4. The sample plan picture is at `/tools/sample-floor-plan.png` (website `public/tools/`); copy it to the same
+4. The brand: pass `brand={{ ...BRAND, ... }}` to `SitePlanner`, or change `brand.js`. The logo must be on the
+   same site (or allow cross-origin use), since it is drawn onto the saved picture.
+5. The sample plan picture is at `/tools/sample-floor-plan.png` (website `public/tools/`); copy it to the same
    path, or change `SAMPLE_IMAGE` in `model.js`.
 
 Plans are saved in local storage under `teracom-site-plan-v2` and as `.teracom-plan.json` files
