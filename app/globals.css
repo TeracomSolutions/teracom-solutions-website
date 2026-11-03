@@ -3512,3 +3512,16 @@ select option, select optgroup { background-color:#111; color:#fff; }
 @keyframes learning-spin { to { transform:rotate(360deg); } }
 @keyframes learning-stripes { to { background-position:34px 0; } }
 @media (prefers-reduced-motion: reduce) { .learning-spin, .learning-bar > span.is-moving { animation:none; } }
+
+/* Free tools need a free account (components/tools/ToolSignInGate.js). */
+.tool-gate { position:relative; }
+.tool-gate-preview { filter:blur(5px) grayscale(.3); opacity:.45; pointer-events:none; user-select:none; max-height:640px; overflow:hidden; }
+.tool-gate-panel { position:absolute; inset:24px 0 auto; margin:0 auto; width:min(560px, calc(100% - 32px)); padding:28px; border:1px solid rgba(255,23,23,.5); border-radius:20px; background:rgba(8,8,8,.94); box-shadow:0 24px 60px rgba(0,0,0,.55); text-align:left; }
+.tool-gate-panel h2 { margin:10px 0 8px; font-size:clamp(22px, 3vw, 28px); }
+.tool-gate-panel ul { margin:12px 0 18px; padding:0; list-style:none; display:grid; gap:8px; color:var(--muted); }
+.tool-gate-panel li { display:flex; gap:8px; align-items:center; }
+.tool-gate-panel li svg { color:#ff1717; flex:none; }
+.tool-gate-icon { display:inline-flex; width:48px; height:48px; align-items:center; justify-content:center; border-radius:50%; background:rgba(255,23,23,.15); color:#ff1717; }
+.tool-gate-actions { display:flex; flex-wrap:wrap; gap:10px; }
+.auth-form .auth-check { display:flex; flex-direction:row; gap:10px; align-items:flex-start; margin:4px 0 18px; font-size:15px; font-weight:400; letter-spacing:normal; text-transform:none; color:inherit; cursor:pointer; }
+.auth-form .auth-check input { width:18px; height:18px; min-height:0; flex:none; margin:2px 0 0; padding:0; }

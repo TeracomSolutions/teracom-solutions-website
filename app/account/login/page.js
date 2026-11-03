@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import AuthSwitchLink from '@/components/AuthSwitchLink';
 import { safeNextPath } from '@/lib/safeNext';
 import Link from 'next/link';
 import AuthShell from '@/components/AuthShell';
@@ -45,7 +46,7 @@ export default function CustomerLoginPage() {
     <AuthShell
       eyebrow="Account"
       title="Sign in."
-      lead="Sign in for member pricing and to check out in the Teracom Store."
+      lead="Sign in for the free design tools, downloads, member pricing and checkout in the Teracom Store."
       icon={LockKeyhole}
       badges={[BadgePercent, ShoppingCart, ReceiptText]}
       benefits={[
@@ -104,7 +105,7 @@ export default function CustomerLoginPage() {
       </p>
 
       <p className="auth-aside">
-        Don&apos;t have an account? <Link href="/account/signup">Create a free account</Link>
+        Don&apos;t have an account? <AuthSwitchLink href="/account/signup">Create a free account</AuthSwitchLink>
       </p>
     </AuthShell>
   );

@@ -22,6 +22,7 @@ const SignupRequest = z.object({
   shipping_postcode: z.string().min(1),
   captcha_token: z.string().min(1),
   captcha_answer: z.string().min(1),
+  marketing_consent: z.boolean().optional(),
 });
 
 export async function POST(req) {
