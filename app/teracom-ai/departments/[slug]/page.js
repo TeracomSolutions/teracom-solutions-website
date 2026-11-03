@@ -5,15 +5,21 @@ import SavingsCalculator from '@/components/SavingsCalculator';
 import { fetchDepartmentCatalogue } from '@/lib/api/departmentCatalogue';
 import { publishedPrices } from '@/lib/departmentPrices';
 import { findPack, splitIncludes } from '@/lib/departmentCatalogue';
-import { AVAILABILITY, DISCLAIMER, DRAFT_DEPARTMENT_PAGES, GST_RATE, NOT_MEASURED, SAVINGS_PAGES_LIVE, canShowSavingsDraft, money } from '@/lib/savings';
+import { AVAILABILITY, DISCLAIMER, GST_RATE, NOT_MEASURED, NO_SAVINGS_PAGE, SAVINGS_PAGES_LIVE, money } from '@/lib/savings';
 import { pageMetadata } from '@/lib/seo';
 
 // A Department, sold on what it takes off the team (Robert, 3 November 2026;
 // WEBSITE_VALUE_AND_SAVINGS_V1.md item 3): what the customer pays for, what it does each
 // week, the work it takes off the team, the dashboards and reports, and what stays under
-// their control. Content from Global's catalogue. A DRAFT: not found without ?preview=1
-// and never indexed until SAVINGS_PAGES_LIVE is on; Finance only for now.
-export const dynamic = 'force-dynamic';
+// their control. Content from Global's catalogue. Live since Robert approved the Finance
+// draft on 3 November 2026; every business Department gets one, refreshed hourly, and a
+// Department new in the catalogue gets its page on first visit.
+export const revalidate = 3600;
+
+export async function generateStaticParams() {
+  const { entries } = await fetchDepartmentCatalogue();
+  return entries.filter((e) => e.kind === 'department' && !NO_SAVINGS_PAGE.includes(e.slug)).map((e) => ({ slug: e.slug }));
+}
 
 export async function generateMetadata(props) {
   const { slug } = await props.params;
@@ -30,8 +36,7 @@ export async function generateMetadata(props) {
 
 export default async function DepartmentPage(props) {
   const { slug } = await props.params;
-  const searchParams = (await props.searchParams) || {};
-  if (!canShowSavingsDraft(searchParams.preview) || !DRAFT_DEPARTMENT_PAGES.includes(slug)) notFound();
+  if (NO_SAVINGS_PAGE.includes(slug)) notFound();
   const { entries } = await fetchDepartmentCatalogue();
   const pack = findPack(entries, slug);
   if (!pack || pack.kind !== 'department') notFound();
@@ -39,7 +44,7 @@ export default async function DepartmentPage(props) {
   const price = prices?.[pack.slug];
   const { widgets, dashboards, reports } = splitIncludes(pack.includes);
   const departments = entries.filter((e) => e.kind === 'department' && e.slug !== 'personal').map((d) => ({ slug: d.slug, name: d.name }));
-  const savings = `/teracom-ai/savings${SAVINGS_PAGES_LIVE ? '' : '?preview=1'}`;
+  const savings = '/teracom-ai/savings';
 
   return (
     <main id="main-content">

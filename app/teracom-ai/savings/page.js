@@ -1,16 +1,15 @@
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
 
 import SavingsCalculator from '@/components/SavingsCalculator';
 import { fetchDepartmentCatalogue } from '@/lib/api/departmentCatalogue';
 import { publishedPrices } from '@/lib/departmentPrices';
-import { AVAILABILITY, DISCLAIMER, DRAFT_DEPARTMENT_PAGES, GOALS, NOT_MEASURED, SAVINGS_PAGES_LIVE, arithmetic, canShowSavingsDraft, costAndNet, money, optionTotal } from '@/lib/savings';
+import { AVAILABILITY, DISCLAIMER, GOALS, NOT_MEASURED, SAVINGS_PAGES_LIVE, arithmetic, costAndNet, departmentPagePath, money, optionTotal } from '@/lib/savings';
 import { pageMetadata } from '@/lib/seo';
 
 // What Teracom AI could save (Robert, 3 November 2026; teracom-ai-docs
-// Workstreams/WEBSITE_VALUE_AND_SAVINGS_V1.md). A DRAFT for Robert's review: without
-// ?preview=1 it is not found, and it is never indexed, until SAVINGS_PAGES_LIVE is on.
-export const dynamic = 'force-dynamic';
+// Workstreams/WEBSITE_VALUE_AND_SAVINGS_V1.md). Live since Robert approved it on 3 November
+// 2026; one saved copy for everyone, refreshed hourly with Global's catalogue.
+export const revalidate = 3600;
 
 const metadata = pageMetadata({
   title: 'What could Teracom AI save you? | Teracom Solutions',
@@ -22,11 +21,9 @@ export async function generateMetadata() {
   return SAVINGS_PAGES_LIVE ? metadata : { ...metadata, robots: { index: false, follow: false } };
 }
 
-const departmentHref = (slug) => (DRAFT_DEPARTMENT_PAGES.includes(slug) ? `/teracom-ai/departments/${slug}${SAVINGS_PAGES_LIVE ? '' : '?preview=1'}` : `/store/teracom-ai/${slug}`);
+const departmentHref = departmentPagePath;
 
-export default async function SavingsPage(props) {
-  const searchParams = (await props.searchParams) || {};
-  if (!canShowSavingsDraft(searchParams.preview)) notFound();
+export default async function SavingsPage() {
   const { entries } = await fetchDepartmentCatalogue();
   const departments = entries.filter((e) => e.kind === 'department' && e.slug !== 'personal').map((d) => ({ slug: d.slug, name: d.name }));
   const prices = publishedPrices();
