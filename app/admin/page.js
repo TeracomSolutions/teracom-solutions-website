@@ -6,7 +6,6 @@ import {
   ChartColumn,
   Cpu,
   FileText,
-  Gauge,
   Inbox,
   Megaphone,
   Info,
@@ -138,13 +137,6 @@ const AREAS = [
     hue: '#94a3b8',
   },
   {
-    href: '/admin/build-progress',
-    title: 'Build progress',
-    text: 'Every job being built for the website, how far along it is, the time and tokens it took, and its priority.',
-    icon: Gauge,
-    hue: '#facc15',
-  },
-  {
     href: '/admin/about',
     title: 'About',
     text: 'Which versions of the console and the backend are running, and what changed in each.',
@@ -154,7 +146,7 @@ const AREAS = [
 ];
 
 // The blocks follow the menu on the left: same areas, same order (Robert, 2026-10-25).
-const VISIBLE_AREAS = AREAS.filter((area) => !(area.href === '/admin/build-progress' && process.env.NEXT_PUBLIC_BUILD_PROGRESS === 'off'));
+const VISIBLE_AREAS = AREAS;
 
 export default async function AdminHomePage() {
   await requireAdminToken();

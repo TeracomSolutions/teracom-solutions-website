@@ -10,7 +10,6 @@ import {
   ChevronDown,
   Cpu,
   FileText,
-  Gauge,
   Headset,
   Inbox,
   Info,
@@ -60,7 +59,6 @@ export const ADMIN_AREAS = [
   { href: '/admin/connections', label: 'Connections', group: 'system' },
   { href: '/admin/account', label: 'Account', group: 'system' },
   { href: '/admin/activity', label: 'Audit log', group: 'system' },
-  { href: '/admin/build-progress', label: 'Build progress', group: 'system' },
   { href: '/admin/about', label: 'About', group: 'system' },
 ];
 
@@ -111,7 +109,6 @@ const ICONS = {
   '/admin/connections': Activity,
   '/admin/account': ShieldCheck,
   '/admin/activity': ScrollText,
-  '/admin/build-progress': Gauge,
   '/admin/about': Info,
 };
 
@@ -193,7 +190,7 @@ export default function AdminNav() {
     router.refresh();
   }
 
-  const visible = ADMIN_AREAS.filter((area) => areaVisible(area.href, permissions) && !(area.href === '/admin/build-progress' && process.env.NEXT_PUBLIC_BUILD_PROGRESS === 'off'));
+  const visible = ADMIN_AREAS.filter((area) => areaVisible(area.href, permissions));
 
   return (
     <nav className="admin-sidenav" aria-label="Administration">
