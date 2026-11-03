@@ -3548,3 +3548,14 @@ select option, select optgroup { background-color:#111; color:#fff; }
 /* Sales: an order held by the card fraud check (components/AdminOrderDetail.js). */
 .order-hold { border-color:rgba(255,23,23,.6); background:rgba(255,23,23,.08); }
 .order-hold ul { margin:8px 0 12px; padding-left:20px; }
+
+/* Teracom AI packs: cards link to a page per pack (components/storePages/PackDetailView.js). */
+.dept-card .dept-more { display:inline-block; margin-top:10px; font-weight:700; }
+.dept-section { margin-top:32px; }
+.ai-pack-actions { display:flex; flex-wrap:wrap; gap:10px; align-items:center; }
+.ai-pack-card h3 a { color:inherit; }
+.pack-widgets { display:grid; grid-template-columns:repeat(auto-fill, minmax(260px, 1fr)); gap:12px; margin:12px 0 24px; }
+.pack-widgets div { padding:14px 16px; border:1px solid var(--line); border-radius:14px; background:rgba(255,255,255,.03); }
+.pack-widgets dt { font-weight:800; margin-bottom:4px; }
+.pack-widgets dd { margin:0; color:var(--muted); }
+.dept-subhead svg, .copy-block h2 svg, .dept-card h3 svg { vertical-align:-3px; margin-right:6px; color:#ff1717; }

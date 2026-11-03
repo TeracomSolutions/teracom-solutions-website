@@ -2,41 +2,43 @@ import Link from 'next/link';
 import { Bot, Puzzle } from 'lucide-react';
 
 import { fetchDepartmentCatalogue } from '@/lib/api/departmentCatalogue';
-import { groupCatalogue } from '@/lib/departmentCatalogue';
+import { KIND_LABELS, groupCatalogue } from '@/lib/departmentCatalogue';
 import { pageMetadata } from '@/lib/seo';
 
 // Store > Teracom AI (Robert, 2026-11-03): Teracom's own software in its own section
 // of the store, so it is easy to find. Every Department and extension pack comes from
-// Global's live catalogue (lib/departmentCatalogue.js). No prices are published yet,
-// so each one asks for interest instead; when Robert approves prices they go here.
+// Global's live catalogue (lib/departmentCatalogue.js); each opens its own page with
+// everything it includes. No prices are published yet, so each asks for interest.
 export const teracomAiStoreMetadata = pageMetadata({
   title: 'Teracom AI Departments and Extension Packs | Teracom Store',
-  description: 'Teracom AI software in the Teracom Store: every Department and extension pack, what each one does, its digital workers and which plans include it.',
+  description: 'Teracom AI software in the Teracom Store: every Department and extension pack, what each one does, its digital workers, dashboards and reports, and which plans include it.',
   path: '/store/teracom-ai',
 });
 
-const interest = (name) => `/?interest=${encodeURIComponent(`Teracom AI ${name}`)}#contact`;
-const workersText = (w) => (typeof w === 'number' ? (w ? `${w} digital worker${w === 1 ? '' : 's'}` : '') : w.join(', '));
+export const interestLink = (name) => `/?interest=${encodeURIComponent(`Teracom AI ${name}`)}#contact`;
+const workerCount = (pack) => (typeof pack.workers === 'number' ? pack.workers : pack.workers.length) || pack.workerDetails.length;
 
-function PackCard({ pack, kind }) {
+function PackCard({ pack, label }) {
+  const count = workerCount(pack);
   return (
     <article className="product-card ai-pack-card">
       <div>
-        <span className="badge">{kind}</span>
-        <h3>{pack.name}</h3>
+        <span className="badge">{label}</span>
+        <h3><Link href={`/store/teracom-ai/${pack.slug}`}>{pack.name}</Link></h3>
         {pack.description ? <p>{pack.description}</p> : null}
         <p className="ai-pack-meta">
-          {[workersText(pack.workers), pack.tiers.length ? `Included in ${pack.tiers.join(', ')}` : '', pack.version ? `Version ${pack.version}` : '']
+          {[count ? `${count} digital worker${count === 1 ? '' : 's'}` : '', pack.includes.length ? `${pack.includes.length} screens, dashboards and reports` : '', pack.tiers.length ? `Included in ${pack.tiers.join(', ')}` : '']
             .filter(Boolean)
             .join(' · ')}
         </p>
-        {pack.extensions?.length ? (
-          <p className="ai-pack-meta">Extension packs: {pack.extensions.map((e) => e.name).join(', ')}</p>
-        ) : null}
+        {pack.extensions?.length ? <p className="ai-pack-meta">Extension packs: {pack.extensions.map((e) => e.name).join(', ')}</p> : null}
       </div>
       <div>
         <p className="price">Pricing coming soon</p>
-        <Link className="btn btn-primary" href={interest(pack.name)}>Register interest</Link>
+        <div className="ai-pack-actions">
+          <Link className="btn btn-secondary" href={`/store/teracom-ai/${pack.slug}`}>See what&apos;s included</Link>
+          <Link className="btn btn-primary" href={interestLink(pack.name)}>Register interest</Link>
+        </div>
       </div>
     </article>
   );
@@ -44,8 +46,8 @@ function PackCard({ pack, kind }) {
 
 export default async function TeracomAiStoreView() {
   const { entries } = await fetchDepartmentCatalogue();
-  const { departments, loose } = groupCatalogue(entries);
-  const extensions = [...departments.flatMap((d) => d.extensions.map((e) => ({ ...e, home: d.name }))), ...loose];
+  const { departments, sections } = groupCatalogue(entries);
+  const extensionCount = entries.length - departments.length;
   return (
     <main id="main-content">
       <section className="hero hero-product hero-shallow store-hero">
@@ -55,11 +57,11 @@ export default async function TeracomAiStoreView() {
             <h1>Teracom AI Departments and extension packs.</h1>
             <p className="lead">
               Deploy a Department, or build an entire AI organisation. Each Department brings its own digital workers,
-              working from one organisational memory and under your approval. Extension packs add to a Department when you
-              switch them on.
+              dashboards and reports, working from one organisational memory and under your approval. Open any one to see
+              exactly what it includes, what each worker does and what always stays with a person.
             </p>
             <p className="store-gst">
-              {departments.length} Departments and {extensions.length} extension pack{extensions.length === 1 ? '' : 's'}.{' '}
+              {departments.length} Departments and {extensionCount} extension pack{extensionCount === 1 ? '' : 's'}.{' '}
               <Link href="/teracom-ai" style={{ color: 'inherit', textDecoration: 'underline' }}>How Teracom AI works</Link>
             </p>
           </div>
@@ -73,20 +75,34 @@ export default async function TeracomAiStoreView() {
             <h2>Departments</h2>
           </div>
           <div className="product-grid">
-            {departments.map((d) => <PackCard key={d.slug} pack={d} kind="Department" />)}
+            {departments.map((d) => <PackCard key={d.slug} pack={d} label="Department" />)}
           </div>
         </div>
       </section>
 
-      {extensions.length ? (
+      {sections.map((section) => (
+        <section className="section section-spacious alt" key={section.title}>
+          <div className="container">
+            <div className="section-heading left">
+              <span className="eyebrow"><Puzzle size={16} aria-hidden="true" /> {section.title}</span>
+              <h2>{section.title}</h2>
+            </div>
+            <div className="product-grid">
+              {section.packs.map((p) => <PackCard key={p.slug} pack={p} label={KIND_LABELS[p.kind] || 'Extension pack'} />)}
+            </div>
+          </div>
+        </section>
+      ))}
+
+      {departments.some((d) => d.extensions.length) ? (
         <section className="section section-spacious alt">
           <div className="container">
             <div className="section-heading left">
               <span className="eyebrow"><Puzzle size={16} aria-hidden="true" /> Extension packs</span>
-              <h2>Extension packs</h2>
+              <h2>Department extension packs</h2>
             </div>
             <div className="product-grid">
-              {extensions.map((e) => <PackCard key={e.slug} pack={e} kind={e.home ? `${e.home} extension` : 'Extension pack'} />)}
+              {departments.flatMap((d) => d.extensions.map((e) => <PackCard key={e.slug} pack={e} label={`${d.name} extension`} />))}
             </div>
           </div>
         </section>
