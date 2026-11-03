@@ -32,7 +32,6 @@ export default async function PackDetailView({ slug }) {
     .map((name) => entries.find((e) => slugOf(e.name) === slugOf(name)))
     .filter(Boolean);
   const extensions = entries.filter((e) => e.kind === 'extension' && pack.kind === 'department' && slugOf(e.group) === slugOf(pack.group || pack.name));
-  const workerTotal = (typeof pack.workers === 'number' ? pack.workers : pack.workers.length) || pack.workerDetails.length;
 
   return (
     <main id="main-content">
@@ -46,7 +45,7 @@ export default async function PackDetailView({ slug }) {
             <h1>{pack.name}</h1>
             {pack.description ? <p className="lead">{pack.description}</p> : null}
             <p className="store-gst">
-              {[workerTotal ? `${workerTotal} digital worker${workerTotal === 1 ? '' : 's'}` : '', pack.tiers.length ? `Included in ${pack.tiers.join(', ')}` : '', pack.version ? `Version ${pack.version}` : '']
+              {[pack.tiers.length ? `Included in ${pack.tiers.join(', ')}` : '', pack.version ? `Version ${pack.version}` : '']
                 .filter(Boolean)
                 .join(' · ')}
             </p>
