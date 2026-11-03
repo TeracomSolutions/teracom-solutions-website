@@ -2,5 +2,6 @@
 // schedules, the branded Excel workbook and the brand it carries.
 export * from './model.js';
 export * from './cables.js';
+export * from './itp.js';
 export * from './brand.js';
 export * from './workbook.js';

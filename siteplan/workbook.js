@@ -2,9 +2,11 @@
 // the cable to order and where to buy it, the plan picture, the equipment schedule
 // with each device's cable, and one cable schedule per system. Every sheet carries
 // the logo, the website and a quote link: the free tools are there to advertise.
+// Then an inspection and test plan per system, to sign off at handover (itp.js).
 // Pure: the pictures come in as bytes, so this runs in the browser and in tests.
 import { BRAND, tagged } from './brand.js';
 import { CABLE_TYPES, SYSTEMS, cableFor, cableSchedules, cableType, headEndFor } from './cables.js';
+import { ITP_POINTS, ITP_RESULTS, ITP_TEMPLATES, inspectionPlans } from './itp.js';
 import { coverageText, deviceType } from './model.js';
 import { buildXlsx, colName } from './xlsx.js';
 
@@ -44,14 +46,15 @@ function callToAction(sheet, columns, brand) {
   sheet.links.push({ ref: `A${r + 2}`, url: tagged(brand.storeUrl, 'excel') });
 }
 
-const newSheet = (name, cols, landscape = true) => ({ name, cols, rows: [], heights: {}, merges: [], links: [], pictures: [], landscape, freeze: 0 });
+const newSheet = (name, cols, landscape = true) => ({ name, cols, rows: [], heights: {}, merges: [], links: [], pictures: [], validations: [], breaks: [], landscape, freeze: 0 });
 const head = (labels) => labels.map((v) => ({ v, s: 'head' }));
 
 /**
  * The workbook for a plan: { title, author, company, images, sheets } for buildXlsx.
- * logo / picture: { data: Uint8Array, type, width, height } or null.
+ * logo / picture: { data: Uint8Array, type, width, height } or null. itp: the inspection and test
+ * plan checks (ITP_TEMPLATES, or a company's own in the same shape), or false for none.
  */
-export function sitePlanWorkbook(plan, { brand = BRAND, date = '', logo = null, picture = null } = {}) {
+export function sitePlanWorkbook(plan, { brand = BRAND, date = '', logo = null, picture = null, itp = ITP_TEMPLATES } = {}) {
   const devices = plan?.devices || [];
   const name = String(plan?.name || '').trim();
   const schedules = cableSchedules(plan);
@@ -69,6 +72,7 @@ export function sitePlanWorkbook(plan, { brand = BRAND, date = '', logo = null, 
   s[6] = [{ v: 'Prepared', s: 'label' }, date];
   s[7] = [{ v: 'Scale', s: 'label' }, scaled ? 'Set on the plan' : 'Not set, so cable lengths are not worked out'];
   s[8] = [{ v: 'Devices', s: 'label' }, devices.length];
+  if (itp && devices.length) s[9] = [{ v: 'Sign-off', s: 'label' }, 'An inspection and test plan (ITP) sheet for each system, to sign at handover'];
   s[10] = [{ v: 'By system', s: 'section' }];
   s[11] = head(['System', 'Devices', 'Cable runs', 'Cable (m)']);
   let row = 12;
@@ -187,6 +191,61 @@ export function sitePlanWorkbook(plan, { brand = BRAND, date = '', logo = null, 
     if (sched.note) sheet.rows[r + 1] = [{ v: sched.note, s: 'muted' }];
     callToAction(sheet, 8, brand);
     sheets.push(sheet);
+  }
+
+  // ---- One inspection and test plan per system, to sign off at handover ----
+  if (itp) {
+    for (const sys of inspectionPlans(plan, itp)) {
+      const sheet = newSheet(`ITP ${sys.label}`, [7, 30, 58, 7, 9, 10, 16, 12, 26]);
+      header(sheet, `${sys.label} inspection and test plan`, 9, brand, name, date, logo);
+      const r0 = sheet.rows;
+      r0[4] = [{ v: 'Site', s: 'label' }, { v: name, s: 'cell' }, { v: '', s: 'cell' }, { v: '', s: 'default' }, { v: 'ITP no.', s: 'label' }, { v: '', s: 'cell' }, { v: '', s: 'cell' }];
+      r0[5] = [{ v: 'Client', s: 'label' }, { v: '', s: 'cell' }, { v: '', s: 'cell' }, { v: '', s: 'default' }, { v: 'Revision', s: 'label' }, { v: '', s: 'cell' }, { v: '', s: 'cell' }];
+      r0[6] = [{ v: 'Installer', s: 'label' }, { v: '', s: 'cell' }, { v: '', s: 'cell' }, { v: '', s: 'default' }, { v: 'Date', s: 'label' }, { v: '', s: 'cell' }, { v: '', s: 'cell' }];
+      sheet.merges.push('B5:C5', 'B6:C6', 'B7:C7', 'F5:G5', 'F6:G6', 'F7:G7');
+      r0[7] = [{ v: `Points: ${ITP_POINTS.map((p) => `${p.id} ${p.label.toLowerCase()} (${p.text.replace(/\.$/, '').toLowerCase()})`).join(';  ')}. Result: ${ITP_RESULTS.join(', ')}.`, s: 'muted' }];
+      sheet.merges.push('A8:I8');
+      sheet.heights[8] = 30;
+      r0[8] = head(['No.', 'Check', 'Acceptance criteria', 'Point', 'Result', 'Reading', 'Checked by', 'Date', 'Comments']);
+      sheet.freeze = 9;
+      let r = 9;
+      const first = r + 1;
+      for (const section of sys.sections) {
+        r0[r] = [{ v: section.ref ? `${section.title}  ·  ${section.ref}` : section.title, s: 'total' }];
+        for (let k = 1; k < 9; k += 1) r0[r][k] = { v: '', s: 'total' };
+        sheet.merges.push(`A${r + 1}:I${r + 1}`);
+        r += 1;
+        for (const item of section.items) {
+          r0[r] = [
+            { v: item.no, s: 'cell' },
+            { v: item.check, s: 'bold' },
+            { v: item.criteria, s: 'wrap' },
+            { v: item.point, s: 'centre' },
+            { v: '', s: 'centre' },
+            { v: item.reading ? `____ ${item.reading}` : '', s: 'cell' },
+            { v: '', s: 'cell' },
+            { v: '', s: 'cell' },
+            { v: '', s: 'wrap' },
+          ];
+          r += 1;
+        }
+      }
+      sheet.validations.push({ ref: `E${first}:E${r}`, list: ITP_RESULTS });
+      r += 1;
+      sheet.breaks.push(r); // the sign-off starts a page, so it is never split
+      r0[r] = [{ v: 'Sign-off', s: 'section' }];
+      r0[r + 1] = head(['', 'Role', 'Name', '', 'Signature', '', '', 'Date', 'Company']);
+      sheet.merges.push(`C${r + 2}:D${r + 2}`, `E${r + 2}:G${r + 2}`);
+      r += 2;
+      for (const role of ['Installed by', 'Checked by (supervisor)', 'Accepted by (client)']) {
+        r0[r] = [{ v: '', s: 'default' }, { v: role, s: 'bold' }, { v: '', s: 'cell' }, { v: '', s: 'cell' }, { v: '', s: 'cell' }, { v: '', s: 'cell' }, { v: '', s: 'cell' }, { v: '', s: 'cell' }, { v: '', s: 'cell' }];
+        sheet.merges.push(`C${r + 1}:D${r + 1}`, `E${r + 1}:G${r + 1}`);
+        sheet.heights[r + 1] = 30;
+        r += 1;
+      }
+      callToAction(sheet, 9, brand);
+      sheets.push(sheet);
+    }
   }
 
   return {
