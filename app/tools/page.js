@@ -32,7 +32,7 @@ export default async function Tools({ searchParams }) {
             <h1>Tools for the industry.</h1>
             <p className="lead">
               {tools.length} free tools in {toolGroups.length} areas, for engineers, technicians, installers, IT teams and
-              business owners -- from cameras, power and cabling to Wi-Fi, access control, backups and choosing the right AI.
+              business owners -- from cameras, power and cabling to Wi-Fi, access control, backups and choosing the right AI. Free with a Teracom account.
             </p>
           </div>
           <OrbitArt icon={CalculatorIcon} badges={[HardDrive, Zap, Bot]} />

@@ -2,10 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import AuthSwitchLink from '@/components/AuthSwitchLink';
 import { safeNextPath } from '@/lib/safeNext';
 import Link from 'next/link';
 import AuthShell from '@/components/AuthShell';
-import { BadgePercent, ReceiptText, ShieldCheck, ShoppingCart, UserPlus } from 'lucide-react';
+import { BadgePercent, ReceiptText, ShieldCheck, ShoppingCart, UserPlus, Wrench } from 'lucide-react';
 
 export default function CustomerSignupPage() {
   const router = useRouter();
@@ -21,6 +22,7 @@ export default function CustomerSignupPage() {
   const [captchaQuestion, setCaptchaQuestion] = useState(null);
   const [captchaToken, setCaptchaToken] = useState('');
   const [captchaAnswer, setCaptchaAnswer] = useState('');
+  const [specials, setSpecials] = useState(false);
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
@@ -63,7 +65,8 @@ export default function CustomerSignupPage() {
           shipping_state: state,
           shipping_postcode: postcode,
           captcha_token: captchaToken,
-          captcha_answer: captchaAnswer
+          captcha_answer: captchaAnswer,
+          marketing_consent: specials
         }),
       });
       const data = await res.json();
@@ -86,10 +89,11 @@ export default function CustomerSignupPage() {
     <AuthShell
       eyebrow="Account"
       title="Create a free account."
-      lead="It takes a couple of minutes, and unlocks member pricing across the store."
+      lead="It takes a couple of minutes, and unlocks every free design tool, the downloads and member pricing across the store."
       icon={UserPlus}
       badges={[BadgePercent, ShoppingCart, ShieldCheck]}
       benefits={[
+        { icon: Wrench, text: 'Every free design tool, with PDF and Excel exports' },
         { icon: BadgePercent, text: 'Member pricing on store items' },
         { icon: ShoppingCart, text: 'Check out without re-entering your details' },
         { icon: ReceiptText, text: 'Order confirmations and invoices by email' },
@@ -215,6 +219,11 @@ export default function CustomerSignupPage() {
               />
             </div>
 
+            <label className="auth-check">
+              <input type="checkbox" checked={specials} onChange={(e) => setSpecials(e.target.checked)} />
+              <span>Send me specials, clearance and new products by email. You can unsubscribe at any time.</span>
+            </label>
+
             <div style={{ marginBottom: '16px' }}>
               <label>{captchaQuestion ? `What is ${captchaQuestion}?` : 'Loading verification question...'}</label>
               <input
@@ -238,7 +247,7 @@ export default function CustomerSignupPage() {
           </form>
 
       <p className="auth-aside">
-        Already have an account? <Link href="/account/login">Sign in</Link>
+        Already have an account? <AuthSwitchLink href="/account/login">Sign in</AuthSwitchLink>
       </p>
     </AuthShell>
   );

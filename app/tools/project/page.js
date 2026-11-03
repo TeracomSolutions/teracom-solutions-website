@@ -2,6 +2,7 @@ import { FileStack, FileDown, FileUp } from 'lucide-react';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import OrbitArt from '@/components/OrbitArt';
 import ToolProject from '@/components/tools/ToolProject';
+import ToolSignInGate from '@/components/tools/ToolSignInGate';
 import { pageMetadata } from '@/lib/seo';
 
 export const metadata = pageMetadata({
@@ -31,7 +32,9 @@ export default function ToolProjectPage() {
         </div>
       </section>
       <section className="section">
-        <ToolProject />
+        <ToolSignInGate path="/tools/project" title="project report">
+          <ToolProject />
+        </ToolSignInGate>
       </section>
     </main>
   );

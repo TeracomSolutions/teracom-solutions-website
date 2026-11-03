@@ -14,6 +14,7 @@ import BatteryStandbyCalculator from '@/components/tools/BatteryStandbyCalculato
 import VoltageDropCalculator from '@/components/tools/VoltageDropCalculator';
 import SitePlanner from '@/siteplan/SitePlanner';
 import ToolBrandBand from '@/components/tools/ToolBrandBand';
+import ToolSignInGate from '@/components/tools/ToolSignInGate';
 import ToolIcon, { ToolBackdrop } from '@/components/tools/ToolIcon';
 import ToolPrintButton, { PrintDate } from '@/components/tools/ToolPrintButton';
 import ToolProjectFrame from '@/components/tools/ToolProjectFrame';
@@ -108,11 +109,13 @@ export default async function ToolPage(props) {
       <div className="tool-stage">
         <ToolBackdrop slug={tool.slug} group={tool.group} />
         <div className="tool-stage-inner">
-          {OWN_FILE_TOOLS.has(tool.slug) ? (
-            <Custom />
-          ) : (
-            <ToolProjectFrame slug={tool.slug}>{Custom ? <Custom /> : <ConfigCalculator slug={tool.slug} />}</ToolProjectFrame>
-          )}
+          <ToolSignInGate path={`/tools/${tool.slug}`} title={tool.title}>
+            {OWN_FILE_TOOLS.has(tool.slug) ? (
+              <Custom />
+            ) : (
+              <ToolProjectFrame slug={tool.slug}>{Custom ? <Custom /> : <ConfigCalculator slug={tool.slug} />}</ToolProjectFrame>
+            )}
+          </ToolSignInGate>
         </div>
       </div>
 
