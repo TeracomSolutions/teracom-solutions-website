@@ -51,7 +51,7 @@ export default async function PackDetailView({ slug }) {
             </p>
             <div className="ai-pack-actions">
               <Link className="btn btn-primary" href={interestLink(pack.name)}>Register interest</Link>
-              <span className="price">Pricing coming soon</span>
+              <span className="price">Early access · pricing coming soon</span>
             </div>
           </div>
         </div>
@@ -110,7 +110,7 @@ export default async function PackDetailView({ slug }) {
           <div className="container">
             <div className="section-heading left">
               <span className="eyebrow"><Users size={16} aria-hidden="true" /> Digital workers</span>
-              <h2>Who does the work</h2>
+              <h2>What its digital workers are designed to do</h2>
               <p>Each worker advises, tracks and drafts. Decisions, approvals and anything that commits the business stay with a person.</p>
             </div>
             <div className="dept-grid">
