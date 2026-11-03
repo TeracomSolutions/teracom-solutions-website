@@ -1,6 +1,7 @@
 import Link from 'next/link';
 
 import { groupCatalogue } from '@/lib/departmentCatalogue';
+import { departmentPagePath } from '@/lib/savings';
 
 // Every Department and extension pack in Global's catalogue (rule 7 of
 // DEPARTMENT_PACK_SYNC_AND_FRESHNESS_2026-11-03): what each does, which tiers include
@@ -39,6 +40,7 @@ export default function CatalogueDepartments({ entries, alt = false }) {
                 <p className="dept-workers"><strong>Extension packs:</strong> {dept.extensions.map((e) => e.name).join(', ')}</p>
               ) : null}
               <Meta pack={dept} />
+              <Link className="dept-more" href={departmentPagePath(dept.slug)}>What it could save you →</Link>{' '}
               <Link className="dept-more" href={`/store/teracom-ai/${dept.slug}`}>What it includes →</Link>
             </article>
           ))}

@@ -86,6 +86,19 @@ export default async function TeracomAI() {
 
       {catalogue.source === 'live' ? <CatalogueDepartments entries={catalogue.entries} alt /> : <DepartmentModel alt />}
 
+      <section className="section savings-cta">
+        <div className="container">
+          <div className="section-heading">
+            <span className="eyebrow">Savings</span>
+            <h2>Want to save A$250,000 a year? See what it would take.</h2>
+            <p>Work out what handing work to Teracom AI Departments could be worth to your business, with your own figures and the working shown.</p>
+          </div>
+          <p style={{ textAlign: 'center' }}>
+            <Link className="btn btn-primary" href="/teracom-ai/savings">Work out your savings</Link>
+          </p>
+        </div>
+      </section>
+
       <PacksAndExtensions />
 
       <OrganisationalMemory alt />

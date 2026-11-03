@@ -5,6 +5,7 @@ import { BarChart3, Bot, FileText, LayoutDashboard, ShieldCheck, Users } from 'l
 import { fetchDepartmentCatalogue } from '@/lib/api/departmentCatalogue';
 import { KIND_LABELS, findPack, slugOf, splitIncludes } from '@/lib/departmentCatalogue';
 import { pageMetadata } from '@/lib/seo';
+import { NO_SAVINGS_PAGE } from '@/lib/savings';
 import { interestLink } from '@/components/storePages/TeracomAiStoreView';
 
 // One Teracom AI pack in the store (Robert, 2026-11-03: describe in detail exactly what is
@@ -145,6 +146,7 @@ export default async function PackDetailView({ slug }) {
         <div className="container">
           <p>
             <Link href="/store/teracom-ai">← All Teracom AI Departments and packs</Link> · <Link href="/teracom-ai">How Teracom AI works</Link> ·{' '}
+            {pack.kind === 'department' && !NO_SAVINGS_PAGE.includes(pack.slug) ? <><Link href={`/teracom-ai/departments/${pack.slug}`}>What {pack.name} could save you</Link> ·{' '}</> : null}
             <Link href={interestLink(pack.name)}>Ask us about {pack.name}</Link>
           </p>
         </div>

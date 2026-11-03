@@ -3575,3 +3575,4 @@ select option, select optgroup { background-color:#111; color:#fff; }
 .savings-lines { margin:10px 0; padding-left:18px; display:grid; gap:6px; font-size:14px; }
 .savings-option-total { margin:8px 0 0; font-weight:800; color:#fff; }
 .savings-qualifier { margin:10px 0 0; padding:10px 14px; border-left:3px solid #f59e0b; background:rgba(245,158,11,.08); font-size:15px; }
+.savings-cta { border-top:1px solid rgba(255,23,23,.4); }

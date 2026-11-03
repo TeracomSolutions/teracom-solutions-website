@@ -9,6 +9,8 @@ import { monitoringServices } from '@/lib/monitoring';
 import { MONITORING_LOGIN_PATH, monitoringLoginEnabled } from '@/lib/monitoringLogin';
 import { requestForms } from '@/lib/requestForms';
 import { tools } from '@/lib/tools';
+import { fetchDepartmentCatalogue } from '@/lib/api/departmentCatalogue';
+import { NO_SAVINGS_PAGE } from '@/lib/savings';
 import { absoluteUrl } from '@/lib/seo';
 import { isAdminPath } from '@/lib/adminIndexing';
 import { isThinProduct } from '@/lib/thinProducts';
@@ -57,6 +59,13 @@ const staticRoutes = [
 ];
 
 export default async function sitemap() {
+  // Teracom AI: the savings page, the store section, and a page per pack and Department.
+  let packs = [];
+  try {
+    packs = (await fetchDepartmentCatalogue()).entries;
+  } catch {
+    packs = [];
+  }
   const products = await getAllProducts();
   const brands = await getBrands();
   const entries = [
@@ -135,6 +144,13 @@ export default async function sitemap() {
       changeFrequency: 'monthly',
       priority: 0.8,
     })),
+
+    { path: '/teracom-ai/savings', changeFrequency: 'monthly', priority: 0.8 },
+    { path: '/store/teracom-ai', changeFrequency: 'weekly', priority: 0.8 },
+    ...packs.map((p) => ({ path: `/store/teracom-ai/${p.slug}`, changeFrequency: 'weekly', priority: 0.6 })),
+    ...packs
+      .filter((p) => p.kind === 'department' && !NO_SAVINGS_PAGE.includes(p.slug))
+      .map((p) => ({ path: `/teracom-ai/departments/${p.slug}`, changeFrequency: 'weekly', priority: 0.7 })),
   ];
 
   // Filter out admin paths to prevent them from appearing in sitemap
