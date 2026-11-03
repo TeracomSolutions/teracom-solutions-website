@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Plus, Trash2 } from 'lucide-react';
 
-import { DEFAULTS, DISCLAIMER, ILLUSTRATIVE, arithmetic, costAndNet, money, rowSaving } from '@/lib/savings';
+import { DEFAULTS, DISCLAIMER, GST_RATE, ILLUSTRATIVE, arithmetic, costAndNet, money, rowSaving } from '@/lib/savings';
 
 // The savings calculator (Robert, 3 November 2026): the visitor picks Departments, enters
 // each team's size and the share of its work they expect to hand over, and the cost of one
@@ -71,13 +71,14 @@ export default function SavingsCalculator({ departments, prices = null, initial 
       </button>
 
       <div className="savings-result" aria-live="polite">
-        <p className="savings-result-label">Estimated yearly saving</p>
+        <p className="savings-result-label">Your estimate: the yearly cost of the work handed over</p>
         <p className="savings-result-value">{money(total)}</p>
-        <p className="admin-muted">The work of about {Number.isInteger(people) ? people : people.toFixed(1)} {people === 1 ? 'person' : 'people'} a year, handed to Teracom AI.</p>
+        <p className="admin-muted">On your figures: about {Number.isInteger(people) ? people : people.toFixed(1)} {people === 1 ? 'person' : 'people'}&apos;s work a year, if the Departments take on the share you entered. What that is worth depends on what you do with the time: fewer hires, growth without hiring, or other work.</p>
         {priced.yearlyCost != null ? (
           <p>
-            The Departments cost {money(priced.yearlyCost)} a year ex GST{priced.discount ? ` (${priced.discount * 100}% bundle discount)` : ''}, leaving{' '}
-            <strong>{money(priced.net)}</strong>{priced.paybackMonths != null ? `; they pay for themselves in about ${priced.paybackMonths} months` : ''}.
+            The Departments cost {money(priced.yearlyCost * (1 + GST_RATE))} a year including GST ({money(priced.yearlyCost)} ex GST
+            {priced.discount ? `, with a ${priced.discount * 100}% bundle discount` : ''}). Against your estimate that leaves{' '}
+            <strong>{money(priced.net)}</strong> before GST{priced.paybackMonths != null ? `; on your figures the cost equals about ${priced.paybackMonths} months of the estimate` : ''}.
           </p>
         ) : null}
       </div>

@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation';
 import SavingsCalculator from '@/components/SavingsCalculator';
 import { fetchDepartmentCatalogue } from '@/lib/api/departmentCatalogue';
 import { publishedPrices } from '@/lib/departmentPrices';
-import { DISCLAIMER, DRAFT_DEPARTMENT_PAGES, GOALS, SAVINGS_PAGES_LIVE, arithmetic, canShowSavingsDraft, costAndNet, money, optionTotal } from '@/lib/savings';
+import { AVAILABILITY, DISCLAIMER, DRAFT_DEPARTMENT_PAGES, GOALS, NOT_MEASURED, SAVINGS_PAGES_LIVE, arithmetic, canShowSavingsDraft, costAndNet, money, optionTotal } from '@/lib/savings';
 import { pageMetadata } from '@/lib/seo';
 
 // What Teracom AI could save (Robert, 3 November 2026; teracom-ai-docs
@@ -40,11 +40,13 @@ export default async function SavingsPage(props) {
         <div className="container">
           <div className="hero-copy">
             <span className="eyebrow">Teracom AI · Savings</span>
-            <h1>Do you want to save A$250,000 a year? Here are your options.</h1>
+            <h1>Want to save A$250,000 a year? See what it would take.</h1>
             <p className="lead">
               Teracom AI Departments take work off your team: the tracking, chasing, drafting and reporting that fills their week.
-              The value is the cost of the time you no longer need to spend. Put in your own figures below and see the working.
+              Its value to you is the cost of the time your team no longer has to spend. Put in your own figures below and see the working.
             </p>
+            <p className="savings-qualifier">{NOT_MEASURED}</p>
+            <p className="savings-qualifier">{AVAILABILITY} <Link href="/?interest=Teracom%20AI#contact">Register interest</Link></p>
           </div>
         </div>
       </section>
@@ -66,7 +68,7 @@ export default async function SavingsPage(props) {
             <div className="section-heading left">
               <span className="eyebrow">Savings goal</span>
               <h2>{goal.title}: some ways to get there</h2>
-              <p>Illustrative examples at A$100,000 a person a year. Change the figures in the calculator above to match your business.</p>
+              <p>Examples only, at A$100,000 a person a year, not results from a real business. Change the figures in the calculator above to match yours.</p>
             </div>
             <div className="savings-options">
               {goal.options.map((option) => {
@@ -84,7 +86,7 @@ export default async function SavingsPage(props) {
                       ))}
                     </ul>
                     <p className="savings-option-total">
-                      Total: {money(total.saving)} a year
+                      Example total: {money(total.saving)} a year
                       {priced.yearlyCost != null ? `, less ${money(priced.yearlyCost)} for the Departments = ${money(priced.net)}` : ''}
                     </p>
                   </article>
@@ -103,6 +105,10 @@ export default async function SavingsPage(props) {
             A saving here is the share of a team&apos;s work handed to a Department, times the people in that team, times what one
             person costs you a year. A finance team of ten that hands over half its work is five people&apos;s work: 5 x A$100,000 =
             A$500,000 a year. Whether you reduce the team, grow without hiring, or move people to other work is your decision.
+          </p>
+          <p>
+            The share of the work a Department takes on is your estimate. We have not yet measured it at customer sites; when our first
+            customers have used the Departments for a month we will publish what we measured and replace these examples with it.
           </p>
           <p>
             The Department works under your approval: it tracks, chases, drafts and reports, and decisions stay with your people. See{' '}

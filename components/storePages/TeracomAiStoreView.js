@@ -60,7 +60,8 @@ export default async function TeracomAiStoreView() {
               exactly what it includes, what each worker does and what always stays with a person.
             </p>
             <p className="store-gst">
-              {departments.length} Departments and {extensionCount} extension pack{extensionCount === 1 ? '' : 's'}.{' '}
+              Teracom AI Departments are in early access: register your interest to take part. {departments.length} Departments and{' '}
+              {extensionCount} extension pack{extensionCount === 1 ? '' : 's'}.{' '}
               <Link href="/teracom-ai" style={{ color: 'inherit', textDecoration: 'underline' }}>How Teracom AI works</Link>
             </p>
           </div>

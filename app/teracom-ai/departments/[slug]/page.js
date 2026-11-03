@@ -5,7 +5,7 @@ import SavingsCalculator from '@/components/SavingsCalculator';
 import { fetchDepartmentCatalogue } from '@/lib/api/departmentCatalogue';
 import { publishedPrices } from '@/lib/departmentPrices';
 import { findPack, splitIncludes } from '@/lib/departmentCatalogue';
-import { DISCLAIMER, DRAFT_DEPARTMENT_PAGES, SAVINGS_PAGES_LIVE, canShowSavingsDraft, money } from '@/lib/savings';
+import { AVAILABILITY, DISCLAIMER, DRAFT_DEPARTMENT_PAGES, GST_RATE, NOT_MEASURED, SAVINGS_PAGES_LIVE, canShowSavingsDraft, money } from '@/lib/savings';
 import { pageMetadata } from '@/lib/seo';
 
 // A Department, sold on what it takes off the team (Robert, 3 November 2026;
@@ -52,6 +52,7 @@ export default async function DepartmentPage(props) {
             <span className="eyebrow">Teracom AI · Department</span>
             <h1>The {pack.name} Department</h1>
             {pack.description ? <p className="lead">{pack.description}</p> : null}
+            <p className="savings-qualifier">{AVAILABILITY} <Link href={`/?interest=${encodeURIComponent(`Teracom AI ${pack.name}`)}#contact`}>Register interest</Link></p>
           </div>
         </div>
       </section>
@@ -60,13 +61,14 @@ export default async function DepartmentPage(props) {
         <div className="container copy-block">
           <h2>What you pay for</h2>
           <p>
-            One monthly subscription for the {pack.name} Department{price ? `: ${money(price)} a month ex GST` : ''}. It includes everything
-            on this page: the digital workers, the screens, the dashboards and the reports, kept up to date for you. There is no setup fee
-            and no platform fee{price ? '' : ', and pricing will be published soon'}.
+            One monthly subscription for the {pack.name} Department
+            {price ? `: ${money(price * (1 + GST_RATE))} a month including GST (${money(price)} ex GST), with no setup fee and no platform fee` : ''}. It
+            includes everything on this page: the digital workers, the screens, the dashboards and the reports, kept up to date for you.
+            {price ? '' : ' Pricing will be published soon.'}
           </p>
           <p>
-            What you get for it is time back: the {pack.name.toLowerCase()} work below is done for your team, every week, under your
-            approval.
+            What it is for is time back: the {pack.name.toLowerCase()} work below is designed to be done for your team, under your
+            approval. How much of your team&apos;s work it takes on depends on your business.
           </p>
         </div>
       </section>
@@ -75,8 +77,8 @@ export default async function DepartmentPage(props) {
         <section className="section section-spacious alt">
           <div className="container">
             <div className="section-heading left">
-              <span className="eyebrow">What it takes off your team</span>
-              <h2>The work it does each week</h2>
+              <span className="eyebrow">What it is designed to take on</span>
+              <h2>What its digital workers do</h2>
             </div>
             <div className="dept-grid">
               {pack.workerDetails.map((w) => (
@@ -139,7 +141,8 @@ export default async function DepartmentPage(props) {
           <div className="section-heading left">
             <span className="eyebrow">Your figures</span>
             <h2>What could the {pack.name} Department save you?</h2>
-            <p>For example, a {pack.name.toLowerCase()} team of ten handing over half its work is five people&apos;s work: 5 x A$100,000 = A$500,000 a year. Change the figures to match your business.</p>
+            <p>For example, if a {pack.name.toLowerCase()} team of ten handed over half its work, that is five people&apos;s work: 5 x A$100,000 = A$500,000 a year. Change the figures to match your business.</p>
+            <p className="savings-qualifier">{NOT_MEASURED}</p>
           </div>
           <SavingsCalculator departments={departments} prices={prices} initial={{ department: pack.slug, teamSize: 10, sharePercent: 50 }} />
         </div>
