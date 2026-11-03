@@ -157,8 +157,13 @@ export function sampleRack() {
 /** A rack from saved or opened data, made safe; null when it is not a rack. */
 export function cleanRack(raw) {
   if (!raw || typeof raw !== 'object' || raw.format !== RACK_FORMAT) return null;
+  return cleanRackData(raw);
+}
+
+function cleanRackData(raw) {
   const size = RACK_SIZES.includes(int(raw.size, 0)) ? int(raw.size, 0) : 24;
   const rack = { ...emptyRack(size), name: text(raw.name, 200), site: text(raw.site, 200), depth: RACK_DEPTHS.includes(int(raw.depth, 0)) ? int(raw.depth, 0) : 600 };
+  if (raw.id) rack.id = text(raw.id, 40);
   const seen = new Set();
   for (const it of Array.isArray(raw.items) ? raw.items.slice(0, MAX_ITEMS) : []) {
     if (!it || typeof it !== 'object') continue;
@@ -179,4 +184,115 @@ export function parseRack(json) {
   } catch {
     return null;
   }
+}
+
+// ---- A comms room: several racks side by side (Robert, 2026-11-03) ----
+
+export const ROOM_FORMAT = 'teracom-rack-room';
+export const ROOM_STORAGE_KEY = 'teracom-rack-room-v1';
+export const MAX_RACKS = 12;
+
+export function emptyRoom(size = 42) {
+  return { format: ROOM_FORMAT, version: 1, name: '', site: '', racks: [{ ...emptyRack(size), id: 'k1', name: 'Rack 1' }] };
+}
+
+/** A room holding one rack (an older single-rack file or the browser's old saved rack). */
+export function roomFromRack(rack) {
+  const { site = '', ...rest } = rack;
+  return { format: ROOM_FORMAT, version: 1, name: '', site, racks: [{ ...rest, id: rest.id || 'k1', name: rest.name || 'Rack 1' }] };
+}
+
+/** A comms room to start from: a 42RU network rack and a 24RU CCTV and power rack. */
+export function sampleRoom() {
+  const network = { ...sampleRack(), id: 'k1', name: 'Rack 1: network' };
+  const cctv = {
+    ...emptyRack(24),
+    id: 'k2',
+    name: 'Rack 2: CCTV and security',
+    items: [
+      ['patch24', 24, 'Patch panel D (cameras 25-48)'],
+      ['cablemgmt', 23, ''],
+      ['poeswitch', 22, 'PoE switch, cameras 25-48'],
+      ['cablemgmt', 21, ''],
+      ['nvr', 18, 'Recorder 2, 32 channel'],
+      ['shelf', 16, 'Alarm and access controllers'],
+      ['blank', 15, ''],
+      ['pdu', 3, 'Power rail'],
+      ['ups', 1, 'UPS, 1000 VA'],
+    ].map(([type, u, label], i) => {
+      const item = newItem(type, `s${i + 1}`, u);
+      return { ...item, label: label || item.label };
+    }),
+  };
+  const { site } = network;
+  delete network.site;
+  delete cctv.site;
+  return { format: ROOM_FORMAT, version: 1, name: 'Comms room', site, racks: [network, cctv] };
+}
+
+/** A room from saved or opened data (a room, or a single rack), made safe; null when it is neither. */
+export function cleanRoom(raw) {
+  if (!raw || typeof raw !== 'object') return null;
+  if (raw.format === RACK_FORMAT) {
+    const rack = cleanRack(raw);
+    return rack ? roomFromRack(rack) : null;
+  }
+  if (raw.format !== ROOM_FORMAT || !Array.isArray(raw.racks)) return null;
+  const racks = [];
+  const ids = new Set();
+  for (const r of raw.racks.slice(0, MAX_RACKS)) {
+    if (!r || typeof r !== 'object') continue;
+    const rack = cleanRackData(r);
+    delete rack.site;
+    if (!rack.id || ids.has(rack.id)) rack.id = `k${racks.length + 1}`;
+    while (ids.has(rack.id)) rack.id = `${rack.id}x`;
+    ids.add(rack.id);
+    racks.push({ ...rack, name: rack.name || `Rack ${racks.length + 1}` });
+  }
+  if (!racks.length) return null;
+  return { format: ROOM_FORMAT, version: 1, name: text(raw.name, 200), site: text(raw.site, 200), racks };
+}
+
+export function parseRoom(json) {
+  try {
+    return cleanRoom(JSON.parse(json));
+  } catch {
+    return null;
+  }
+}
+
+/** Replace one rack in the room. */
+export const withRack = (room, rack) => ({ ...room, racks: room.racks.map((r) => (r.id === rack.id ? rack : r)) });
+
+/** Add a rack after the others; null when the room is full. */
+export function addRack(room, id, size = 42) {
+  if (room.racks.length >= MAX_RACKS) return null;
+  return { ...room, racks: [...room.racks, { ...emptyRack(size), id, name: `Rack ${room.racks.length + 1}` }] };
+}
+
+/** Move an item to another rack: same position if free there, else the highest free space; null when it does not fit. */
+export function moveToRack(room, fromId, itemId, toId, newId) {
+  const from = room.racks.find((r) => r.id === fromId);
+  const to = room.racks.find((r) => r.id === toId);
+  const item = from?.items.find((it) => it.id === itemId);
+  if (!item || !to || from === to || to.items.length >= MAX_ITEMS) return null;
+  const u = fits(to, item.u, item.ru) ? item.u : firstFree(to, item.ru);
+  if (!u) return null;
+  const id = to.items.some((it) => it.id === item.id) ? newId : item.id;
+  return {
+    ...room,
+    racks: room.racks.map((r) => {
+      if (r.id === fromId) return { ...r, items: r.items.filter((it) => it.id !== itemId) };
+      if (r.id === toId) return { ...r, items: [...r.items, { ...item, id, u }] };
+      return r;
+    }),
+  };
+}
+
+/** Used and free space across the room. */
+export function roomUsage(room) {
+  return room.racks.reduce((t, r) => {
+    const u = usage(r);
+    return { racks: t.racks + 1, used: t.used + u.used, free: t.free + u.free, items: t.items + r.items.length };
+  }, { racks: 0, used: 0, free: 0, items: 0 });
 }
