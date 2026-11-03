@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
+import AdminLearningProgress from '@/components/AdminLearningProgress';
 import AdminTeachTera from '@/components/AdminTeachTera';
 import AdminTeraSettings from '@/components/AdminTeraSettings';
 import { formatDateTime } from '@/lib/adminFormat';
@@ -23,6 +24,42 @@ export default function AdminSupport({ initial }) {
   const [error, setError] = useState('');
   const [openId, setOpenId] = useState('');
   const [transcripts, setTranscripts] = useState({});
+  const [progress, setProgress] = useState(initial.summary?.progress || {});
+  const [now, setNow] = useState(() => Date.now());
+
+  const libraryRunning = summary.library?.status === 'running' || ['running', 'starting'].includes(progress.library?.status);
+  const studyRunning = summary.study?.status === 'running' || ['running', 'starting'].includes(progress.study?.status);
+
+  // While Tera is learning, ask the backend every two seconds how far it is.
+  useEffect(() => {
+    if (!libraryRunning && !studyRunning) return undefined;
+    let stopped = false;
+    // A run just started shows "Starting" until the backend writes its first step.
+    const keep = (current, latest, status) => (current?.status === 'starting' && latest?.status !== 'running' && status === 'running' ? current : latest);
+    async function poll() {
+      try {
+        const res = await fetch('/api/admin/support/progress', { cache: 'no-store' });
+        if (!res.ok || stopped) return;
+        const data = await res.json();
+        setProgress((current) => ({
+          library: keep(current.library, data.progress?.library, data.library?.status),
+          study: keep(current.study, data.progress?.study, data.study?.status),
+        }));
+        setSummary((s) => ({ ...s, library: { ...s.library, ...data.library }, study: { ...(s.study || {}), ...data.study } }));
+      } catch {
+        // The next poll tries again.
+      }
+    }
+    poll();
+    const timer = setInterval(() => {
+      setNow(Date.now());
+      poll();
+    }, 2000);
+    return () => {
+      stopped = true;
+      clearInterval(timer);
+    };
+  }, [libraryRunning, studyRunning]);
 
   async function send(url, method, body, label) {
     setBusy(label);
@@ -49,7 +86,8 @@ export default function AdminSupport({ initial }) {
     const data = await send('/api/admin/support/library', 'POST', null, 'rebuild');
     if (data) {
       setSummary((s) => ({ ...s, library: { ...s.library, status: 'running' } }));
-      setMessage('Rebuilding the library. It takes about a minute; reload the page to see the result.');
+      setProgress((p) => ({ ...p, library: { status: 'starting', percent: 0, started_at: new Date().toISOString(), updated_at: new Date().toISOString(), steps: [], log: [{ at: new Date().toISOString(), text: 'Asked the backend to start.' }] } }));
+      setMessage('Rebuilding the library. Its progress shows below as it goes.');
     }
   }
 
@@ -57,7 +95,8 @@ export default function AdminSupport({ initial }) {
     const data = await send('/api/admin/support/study', 'POST', null, 'study');
     if (data) {
       setSummary((s) => ({ ...s, study: { ...(s.study || {}), status: 'running' } }));
-      setMessage('Tera is studying the next batch of products. It takes about 15 seconds a product; reload the page later to see the result.');
+      setProgress((p) => ({ ...p, study: { status: 'starting', percent: 0, started_at: new Date().toISOString(), updated_at: new Date().toISOString(), steps: [], log: [{ at: new Date().toISOString(), text: 'Asked the backend to start.' }] } }));
+      setMessage('Tera is studying the next batch of products, about 15 seconds a product. Its progress shows below as it goes.');
     }
   }
 
@@ -153,6 +192,17 @@ export default function AdminSupport({ initial }) {
         <button type="button" className="btn btn-secondary btn-sm" disabled={Boolean(busy) || study.status === 'running'} onClick={studyNow}>
           {study.status === 'running' ? 'Studying...' : 'Study now'}
         </button>
+      </div>
+
+      <h2>What Tera is learning</h2>
+      <p className="admin-muted">
+        The library rebuild reads the whole website, the store, the price lists, the manuals and what staff taught Tera (every night, or
+        Rebuild library). The product study looks up store products on their manufacturers&apos; websites. Both update here by themselves
+        every two seconds while they run.
+      </p>
+      <div className="learning-progress-grid">
+        <AdminLearningProgress title="Library rebuild" state={progress.library} now={now} />
+        <AdminLearningProgress title="Product study" state={progress.study} now={now} />
       </div>
 
       <h2>Teach Tera</h2>
