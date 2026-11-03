@@ -3535,3 +3535,8 @@ select option, select optgroup { background-color:#111; color:#fff; }
 .account-preferences { margin-top:28px; }
 .account-preferences select { margin-bottom:16px; }
 .posting-topic { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-top:8px; }
+
+/* Departments from Global's catalogue (components/CatalogueDepartments.js). */
+.dept-extensions { margin:10px 0 0; padding:10px 0 0; list-style:none; border-top:1px solid var(--line); display:grid; gap:6px; font-size:14px; }
+.dept-extensions span { color:var(--muted); }
+.dept-card .dept-meta, .dept-extensions .dept-meta { font-size:13px; color:var(--muted); }
