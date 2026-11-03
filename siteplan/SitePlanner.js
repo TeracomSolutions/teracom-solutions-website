@@ -454,7 +454,7 @@ export default function SitePlanner({ brand = BRAND }) {
       const logo = await logoPng(brand.logo);
       const date = new Date().toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' });
       download(new Blob([sitePlanXlsx(plan, { brand, date, logo, picture })], { type: XLSX_TYPE }), fileName(plan, 'xlsx'));
-      setMessage('Excel workbook saved: the summary and cable to order, the plan, the equipment schedule and a cable schedule for each system.');
+      setMessage('Excel workbook saved: the summary and cable to order, the plan, the equipment schedule, a cable schedule for each system, and an inspection and test plan for each system to sign off at handover.');
     } catch {
       setMessage('The Excel workbook could not be made. Try again, or save the plan file instead.');
     }

@@ -17,7 +17,8 @@ to advertise the business.
 | `cables.js` | Cable types, which cable each device takes and where it runs to, run lengths, `cableSchedules(plan)`, `schedulesCsv`. Pure. |
 | `brand.js` | Whose name, logo, website, quote link and shop go on everything it makes. |
 | `xlsx.js` | A small .xlsx writer (zip, styles, merged cells, links, pictures, print setup). No libraries. |
-| `workbook.js` | The workbook: Summary (with cable to order and shop links), Plan picture, Equipment, one sheet per system. |
+| `itp.js` | Inspection and test plans: the checks for each device type, cable type and system (`ITP_TEMPLATES`), and `inspectionPlans(plan)`. Pure. |
+| `workbook.js` | The workbook: Summary (with cable to order and shop links), Plan picture, Equipment, a cable schedule and an ITP sheet per system. |
 | `index.js` | Re-exports model, cables, brand and workbook. |
 | `SitePlanner.js` | The React screen (client component). Keeps the plan in the browser's local storage; saves a branded picture, the Excel workbook and a plan file. Takes an optional `brand` prop. |
 | `CableSchedule.js` | The cable schedule tabs and totals. |
@@ -49,3 +50,24 @@ Plans are saved in local storage under `teracom-site-plan-v2` and as `.teracom-p
   per device; those are saved on the device as `cable`, `cableTo`, `cableRuns`, `cableExtra`.
 - Run length: across then along between the two points (walls and ceilings), plus `DROP_METRES` (4 m) and
   `SLACK` (10%), rounded up to the metre. Lengths need the plan's scale.
+
+## Inspection and test plans (ITP)
+
+Each system on the plan gets an ITP sheet in the workbook for signing the site off at handover: every device with
+its checks (a camera's mounting, field of view, line and level, focus, night picture and recording; a door's card,
+exit, fire release and forced/held alarms), then its cable's checks (route, separation, labels, termination, and
+the test for that cable), then the system's commissioning checks and the handover checks. Each check has
+acceptance criteria, a point (H hold, W witness, I inspect, T test), a Pass / Fail / N/A drop-down, a reading
+column with its unit, who checked it and when, and a sign-off block for installer, supervisor and client.
+
+The checks are data in `ITP_TEMPLATES` (`itp.js`):
+
+- `types[deviceType]`: the checks for that kind of device. `{coverage}` in the criteria becomes what the plan says
+  the device covers.
+- `groups[group].device`: checks for a device whose type has no entry; `groups[group].system`: the system checks.
+- `cables.default` for every run, then `cables[cableId]` for that cable type.
+- `handover`: the last section of every system.
+
+A check is `{ check, criteria, point, reading }`. To use a company's own ITP (for example a sample from AV,
+security or electrical work), pass `itp: { ...ITP_TEMPLATES, types: { ...ITP_TEMPLATES.types, camera: [...] } }`
+to `sitePlanWorkbook`, or change `ITP_TEMPLATES`. `itp: false` leaves the ITP sheets out.

@@ -88,7 +88,7 @@ export function zip(files) {
 export const COLOURS = { black: 'FF0B0B0B', red: 'FFE3161B', dark: 'FF1F2937', light: 'FFF3F4F6', muted: 'FF6B7280', link: 'FF0563C1' };
 
 // Named styles, in the order of cellXfs in styles.xml.
-export const STYLES = ['default', 'band', 'bandTitle', 'bandRight', 'strip', 'head', 'muted', 'link', 'section', 'total', 'cta', 'bold', 'wrap', 'label', 'cell'];
+export const STYLES = ['default', 'band', 'bandTitle', 'bandRight', 'strip', 'head', 'muted', 'link', 'section', 'total', 'cta', 'bold', 'wrap', 'label', 'cell', 'centre'];
 const styleIndex = (name) => Math.max(0, STYLES.indexOf(name || 'default'));
 
 const xml = (text) => String(text ?? '')
@@ -163,6 +163,7 @@ const STYLES_XML = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <xf numFmtId="0" fontId="0" fillId="0" borderId="1" xfId="0" applyBorder="1" applyAlignment="1"><alignment vertical="top" wrapText="1"/></xf>
 <xf numFmtId="0" fontId="1" fillId="0" borderId="0" xfId="0" applyFont="1"/>
 <xf numFmtId="0" fontId="0" fillId="0" borderId="1" xfId="0" applyBorder="1" applyAlignment="1"><alignment vertical="top"/></xf>
+<xf numFmtId="0" fontId="1" fillId="0" borderId="1" xfId="0" applyFont="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="top"/></xf>
 </cellXfs>
 <cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles>
 </styleSheet>`;
@@ -201,11 +202,17 @@ function sheetXml(sheet, hasDrawing, linkIds) {
   }
   out.push('</sheetData>');
   if (sheet.merges?.length) out.push(`<mergeCells count="${sheet.merges.length}">${sheet.merges.map((m) => `<mergeCell ref="${m}"/>`).join('')}</mergeCells>`);
+  if (sheet.validations?.length) {
+    const lists = sheet.validations.map((v) => `<dataValidation type="list" allowBlank="1" showErrorMessage="1" sqref="${v.ref}"><formula1>"${xml(v.list.join(','))}"</formula1></dataValidation>`);
+    out.push(`<dataValidations count="${lists.length}">${lists.join('')}</dataValidations>`);
+  }
   if (linkIds.length) out.push(`<hyperlinks>${linkIds.map(({ ref, id }) => `<hyperlink ref="${ref}" r:id="${id}"/>`).join('')}</hyperlinks>`);
   out.push('<printOptions horizontalCentered="1"/>');
   out.push('<pageMargins left="0.4" right="0.4" top="0.5" bottom="0.6" header="0.3" footer="0.3"/>');
   out.push(`<pageSetup paperSize="9" orientation="${sheet.landscape ? 'landscape' : 'portrait'}" fitToWidth="1" fitToHeight="${sheet.onePage ? 1 : 0}"/>`);
   if (sheet.footer) out.push(`<headerFooter><oddFooter>${xml(sheet.footer)}</oddFooter></headerFooter>`);
+  // Page breaks above the given 0-based rows.
+  if (sheet.breaks?.length) out.push(`<rowBreaks count="${sheet.breaks.length}" manualBreakCount="${sheet.breaks.length}">${sheet.breaks.map((r) => `<brk id="${r}" max="16383" man="1"/>`).join('')}</rowBreaks>`);
   if (hasDrawing) out.push('<drawing r:id="rIdDrawing"/>');
   out.push('</worksheet>');
   return out.join('');
@@ -223,7 +230,7 @@ const rels = (items) => `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
  * { title, author, company, images: [{ data: Uint8Array, type: 'png' | 'jpeg' }],
  *   sheets: [{ name, cols: [widths], rows: [[cell]], heights: { rowNumber: points }, merges: ['A1:F1'],
  *              links: [{ ref, url }], pictures: [{ image, col, row, dx, dy, width, height, alt }],
- *              freeze, landscape, onePage, footer }] }
+ *              validations: [{ ref: 'E10:E40', list: ['Pass', 'Fail'] }], breaks: [rows], freeze, landscape, onePage, footer }] }
  * A cell is a string, a number, or { v, s } with s one of STYLES.
  */
 export function buildXlsx(book) {
