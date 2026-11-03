@@ -69,3 +69,44 @@ test('the workbook: a branded rack schedule with every unit, and the picture', (
   }
   assert.ok(rackXlsx(rack, { date: 'today' }).length > 1000);
 });
+
+test('a comms room: several racks, moving between them, old single-rack files', async () => {
+  const { MAX_RACKS, ROOM_FORMAT, addRack, cleanRoom, emptyRoom, moveToRack, parseRoom, roomFromRack, roomUsage, sampleRoom } = await import('../model.js');
+  const { roomWorkbook } = await import('../workbook.js');
+  const room = sampleRoom();
+  assert.equal(room.racks.length, 2);
+  assert.equal(room.site, 'Sample office');
+  assert.ok(room.racks.every((r) => !('site' in r)));
+  assert.deepEqual(roomUsage(room).racks, 2);
+  // Move the core switch (U18 in rack 1) to rack 2: U18 is taken there, so it goes to the highest free space.
+  const sw = room.racks[0].items.find((it) => it.label === 'Core switch');
+  const moved = moveToRack(room, 'k1', sw.id, 'k2', 'new');
+  assert.equal(moved.racks[0].items.some((it) => it.id === sw.id), false);
+  assert.equal(moved.racks[1].items.find((it) => it.label === 'Core switch').u, 20);
+  const fw = room.racks[0].items.find((it) => it.label === 'Firewall');
+  assert.equal(moveToRack(room, 'k1', fw.id, 'k2', 'n2').racks[1].items.find((it) => it.label === 'Firewall').u, 17, 'U17 is free in rack 2, so it keeps its place');
+  // A full rack refuses it.
+  let full = emptyRoom(6);
+  full = addRack(full, 'k2', 6);
+  for (let i = 0; i < 6; i += 1) full.racks[1].items.push({ id: `b${i}`, type: 'blank', label: '', ru: 1, u: i + 1, note: '' });
+  full.racks[0].items.push({ id: 'x', type: 'ups', label: '', ru: 2, u: 1, note: '' });
+  assert.equal(moveToRack(full, 'k1', 'x', 'k2', 'y'), null);
+  // Up to MAX_RACKS racks.
+  let many = emptyRoom();
+  for (let i = 2; i <= MAX_RACKS; i += 1) many = addRack(many, `k${i}`);
+  assert.equal(addRack(many, 'over'), null);
+  // An old single-rack file opens as a room of one; duplicate rack ids are fixed.
+  const old = parseRoom(JSON.stringify(sampleRack()));
+  assert.equal(old.format, ROOM_FORMAT);
+  assert.equal(old.racks.length, 1);
+  assert.equal(old.site, 'Sample office');
+  const dup = cleanRoom({ format: ROOM_FORMAT, racks: [{ id: 'a', size: 12 }, { id: 'a', size: 24 }] });
+  assert.notEqual(dup.racks[0].id, dup.racks[1].id);
+  assert.equal(cleanRoom({ format: ROOM_FORMAT, racks: [] }), null);
+  assert.equal(roomFromRack(sampleRack()).racks[0].name, 'Comms room rack');
+  // The workbook: a summary, a schedule per rack, the room picture.
+  const book = roomWorkbook(room, { date: 'today', picture: { data: new Uint8Array([1]), type: 'png', width: 2000, height: 1600 } });
+  assert.deepEqual(book.sheets.map((s) => s.name), ['Racks', 'Rack 1: network', 'Rack 2: CCTV and security', 'Room picture']);
+  const pic = book.sheets[3].pictures.at(-1);
+  assert.ok(pic.width <= 1400 && pic.height <= 760);
+});

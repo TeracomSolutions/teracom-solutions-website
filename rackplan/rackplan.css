@@ -24,3 +24,9 @@
 .rack-planner-table tr.free td { color:var(--muted); font-style:italic; cursor:default; }
 .rack-planner-table tr.active td { background:rgba(255,23,23,.1); }
 @media (max-width: 900px) { .rack-planner-main { grid-template-columns:1fr; } }
+.rack-planner-tabs { display:flex; flex-wrap:wrap; gap:8px; }
+.rack-planner-tabs .btn { min-height:40px; padding:6px 14px; font-size:14px; display:inline-flex; align-items:center; gap:6px; }
+.rack-planner-tab-size { opacity:.7; font-weight:600; }
+.rack-planner-room { overflow-x:auto; }
+.rack-room-rack { cursor:pointer; }
+.rack-planner-export { position:absolute; left:-10000px; top:0; width:1px; height:1px; overflow:hidden; }
