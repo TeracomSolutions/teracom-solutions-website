@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { cardOptionsFor } from '@/lib/orderRisk';
 import { z } from 'zod';
 import { stripe } from '@/lib/stripe';
 import { getCatalogue } from '@/lib/catalogue';
@@ -225,6 +226,12 @@ export async function POST(req) {
       // resulting amount. The two settings are mutually exclusive in any
       // case.
       ...(stripeCouponId ? { discounts: [{ coupon: stripeCouponId }] } : {}),
+      // Card fraud (Robert, 2026-11-03): from $500 the buyer approves the payment with
+      // their own bank (3D Secure). A stolen card then fails here, and if a fraud
+      // chargeback still comes, the bank carries it rather than us.
+      ...cardOptionsFor(
+        lines.reduce((sum, { item, product }) => sum + unitPriceCents(product, customer) * item.quantity, 0) - (discount?.cents || 0)
+      ),
       // An installer needs the job reference on the invoice, and a business
       // buyer needs its ABN on it -- chasing either afterwards is the most
       // tedious part of trade bookkeeping. Optional: a consumer buying one
