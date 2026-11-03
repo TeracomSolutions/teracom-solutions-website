@@ -13,6 +13,7 @@ import PoeBudgetCalculator from '@/components/tools/PoeBudgetCalculator';
 import BatteryStandbyCalculator from '@/components/tools/BatteryStandbyCalculator';
 import VoltageDropCalculator from '@/components/tools/VoltageDropCalculator';
 import SitePlanner from '@/siteplan/SitePlanner';
+import ToolBrandBand from '@/components/tools/ToolBrandBand';
 import ToolIcon, { ToolBackdrop } from '@/components/tools/ToolIcon';
 import ToolPrintButton, { PrintDate } from '@/components/tools/ToolPrintButton';
 import ToolProjectFrame from '@/components/tools/ToolProjectFrame';
@@ -136,6 +137,8 @@ export default async function ToolPage(props) {
           </p>
         </div>
       </section>
+
+      <ToolBrandBand slug={tool.slug} toolTitle={tool.title} />
 
       <CalculatorUsage slug={tool.slug} group={tool.group} />
       <div className="print-hide">

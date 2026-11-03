@@ -39,4 +39,9 @@
 .site-planner-missing { color:var(--muted); font-style:italic; }
 .site-planner-cabling { margin-top:12px; padding-top:12px; border-top:1px solid var(--line); }
 .site-planner-cabling h3 { grid-column:1 / -1; margin:0 0 4px; font-size:15px; }
+.site-planner-schedule-head { display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:space-between; margin-bottom:8px; }
+.site-planner-schedule-head h2 { margin:0; }
+.site-planner-schedule-head .btn { display:inline-flex; align-items:center; gap:8px; }
+.site-planner-cables { margin-top:22px; }
+.site-planner-cables h3 { margin:0 0 10px; }
 @media (max-width:640px) { .container.site-planner { width:calc(100% - 16px); } }

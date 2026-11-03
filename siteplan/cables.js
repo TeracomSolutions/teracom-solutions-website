@@ -9,14 +9,14 @@
 import { DEVICE_GROUPS, deviceType } from './model.js';
 
 export const CABLE_TYPES = [
-  { id: 'cat6', label: 'Cat6 U/UTP', box: 305 },
-  { id: 'cat6ext', label: 'Cat6 outdoor (UV rated)', box: 305 },
-  { id: 'sec4', label: '4-core security cable' },
-  { id: 'sec6', label: '6-core security cable' },
-  { id: 'sec6s', label: '6-core shielded (reader) cable' },
-  { id: 'power2', label: '2-core power, 1.0 mm² (figure 8)' },
-  { id: 'fire2', label: '2-core fire-rated, 1.5 mm²' },
-  { id: 'speaker2', label: '2-core speaker cable, 1.5 mm²' },
+  { id: 'cat6', label: 'Cat6 U/UTP', box: 305, shop: 'cat6 cable' },
+  { id: 'cat6ext', label: 'Cat6 outdoor (UV rated)', box: 305, shop: 'outdoor cat6 cable' },
+  { id: 'sec4', label: '4-core security cable', shop: 'security cable' },
+  { id: 'sec6', label: '6-core security cable', shop: 'security cable' },
+  { id: 'sec6s', label: '6-core shielded (reader) cable', shop: 'shielded cable' },
+  { id: 'power2', label: '2-core power, 1.0 mm² (figure 8)', shop: 'figure 8 cable' },
+  { id: 'fire2', label: '2-core fire-rated, 1.5 mm²', shop: 'fire rated cable' },
+  { id: 'speaker2', label: '2-core speaker cable, 1.5 mm²', shop: 'speaker cable' },
 ];
 export const cableType = (id) => CABLE_TYPES.find((c) => c.id === id) || null;
 

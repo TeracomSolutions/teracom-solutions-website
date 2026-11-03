@@ -1,23 +1,22 @@
 'use client';
 
 import { useState } from 'react';
-import { Download } from 'lucide-react';
+import { FileSpreadsheet } from 'lucide-react';
 
-import { DROP_METRES, cableSchedules, schedulesCsv } from './cables.js';
+import { DROP_METRES, cableSchedules } from './cables.js';
 
 // The cable schedules under the plan (Robert, 2026-11-03): one tab per system,
-// each run with its cable and length, the totals to order, and a spreadsheet of
-// one system or all of them. Clicking a row opens that device for changes.
-export default function CableSchedule({ plan, selected, onSelect, onDownload }) {
+// each run with its cable and length and the totals to order. They go into the
+// Excel workbook with the equipment schedule. Clicking a row opens that device.
+export default function CableSchedule({ plan, selected, onSelect, onExport }) {
   const [tab, setTab] = useState('');
   const schedules = cableSchedules(plan);
   if (!schedules.length) return null;
   const current = schedules.find((s) => s.system === tab) || schedules[0];
-  const csv = (list) => new Blob([schedulesCsv(list)], { type: 'text/csv;charset=utf-8' });
 
   return (
-    <div className="site-planner-schedule site-planner-cables">
-      <h2>Cable schedules</h2>
+    <div className="site-planner-cables">
+      <h3>Cable schedules</h3>
       <div className="site-planner-tabs" role="tablist" aria-label="Cable schedule for each system">
         {schedules.map((s) => (
           <button
@@ -63,11 +62,8 @@ export default function CableSchedule({ plan, selected, onSelect, onDownload }) 
         ))}
       </ul>
       <div className="site-planner-row">
-        <button type="button" className="btn btn-secondary" onClick={() => onDownload(csv([current]), current.label)}>
-          <Download size={16} strokeWidth={2} aria-hidden="true" /> {current.label} schedule (CSV)
-        </button>
-        <button type="button" className="btn btn-secondary" onClick={() => onDownload(csv(schedules), 'all')}>
-          <Download size={16} strokeWidth={2} aria-hidden="true" /> All cable schedules (CSV)
+        <button type="button" className="btn btn-secondary" onClick={onExport}>
+          <FileSpreadsheet size={16} strokeWidth={2} aria-hidden="true" /> Excel workbook (every schedule)
         </button>
       </div>
       <p className="form-note">

@@ -3471,3 +3471,16 @@ select option, select optgroup { background-color:#111; color:#fff; }
 .admin-specials-fields { display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:4px 16px; }
 .admin-specials-actions, .admin-specials-row-actions { display:flex; gap:8px; flex-wrap:wrap; }
 .admin-specials-loss { color:#ff6b6b; font-weight:800; }
+
+/* The brand band under every free tool (components/tools/ToolBrandBand.js). */
+.tool-brand-band { padding:56px 0; background:radial-gradient(circle at 85% 20%, rgba(227,22,27,.28), transparent 45%), #070707; border-top:1px solid rgba(227,22,27,.45); border-bottom:1px solid var(--line); }
+.tool-brand-inner { display:grid; grid-template-columns:minmax(0, 1.25fr) minmax(0, 1fr); gap:36px; align-items:center; }
+.tool-brand-logo { width:220px; height:auto; margin-bottom:14px; }
+.tool-brand-copy h2 { margin:6px 0 10px; font-size:clamp(28px, 4vw, 42px); }
+.tool-brand-actions { display:flex; flex-wrap:wrap; gap:10px; margin-top:18px; }
+.tool-brand-steps { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:12px; margin:0; padding:0; list-style:none; }
+.tool-brand-steps li { display:flex; flex-direction:column; gap:6px; padding:18px; border:1px solid var(--line); border-radius:16px; background:rgba(255,255,255,.04); }
+.tool-brand-steps svg { color:#ff1717; }
+.tool-brand-steps strong { font-size:18px; }
+.tool-brand-steps span { color:var(--muted); font-size:14px; }
+@media (max-width:860px) { .tool-brand-inner { grid-template-columns:1fr; } }
