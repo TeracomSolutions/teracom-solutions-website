@@ -50,6 +50,56 @@ export default function AdminOrderDetail({ detail }) {
     }
   }
 
+  async function releaseHold() {
+    const note = window.prompt('What did you check? (for example: called the customer on the number from their website, card holder confirmed)');
+    if (note === null) return;
+    setBusy(true);
+    setMessage('');
+    setError('');
+    try {
+      const response = await fetch(`/api/admin/orders/${order.id}/release-hold`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ note }),
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error || 'The hold could not be released.');
+      setMessage('Hold released. The order steps can go ahead.');
+      router.refresh();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  function renderHold() {
+    const hold = detail.hold;
+    if (!hold) return null;
+    if (!hold.held) {
+      return (
+        <div className="admin-card">
+          <p className="admin-muted">
+            Card fraud hold released{hold.released_by ? ` by ${hold.released_by}` : ''}{hold.at ? ` on ${formatDateTime(hold.at)}` : ''}
+            {hold.note ? `: ${hold.note}` : '.'}
+          </p>
+        </div>
+      );
+    }
+    return (
+      <div className="admin-card order-hold" role="alert">
+        <h3 className="admin-heading">On hold: do not ship or order anything yet</h3>
+        <p>The card fraud check held this order{hold.at ? ` on ${formatDateTime(hold.at)}` : ''} because:</p>
+        <ul>{hold.reasons.map((r) => <li key={r}>{r}</li>)}</ul>
+        <p className="admin-muted">
+          Call the customer on a number you find yourself, not one from the order, and look at the payment in Stripe. If in doubt,
+          refund it in Stripe. Every order step stays blocked until the hold is released.
+        </p>
+        <button type="button" className="btn btn-secondary" disabled={busy} onClick={releaseHold}>I have checked it: release the hold</button>
+      </div>
+    );
+  }
+
   function renderOrderCard() {
     const { name, email, phone, job_reference, abn, shipping_address, status, mode, total_cents } = order;
 
@@ -212,6 +262,7 @@ export default function AdminOrderDetail({ detail }) {
   return (
     <>
       <OrderStageStrip orderId={order.id} stages={detail.stages} current={detail.current_stage} stuck={detail.stuck} />
+      {renderHold()}
       {renderOrderCard()}
       {renderLinesTable()}
       {renderSteps()}

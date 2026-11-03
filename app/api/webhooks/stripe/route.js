@@ -5,7 +5,8 @@ import { unitPriceCents } from '@/lib/catalogueMerge';
 import { createZohoContact, createZohoInvoice, findZohoContactByEmail } from '@/lib/zoho';
 import { linkLicenceBillingReference } from '@/lib/api/commerceLicensing';
 import { recordCouponRedemption } from '@/lib/api/coupons';
-import { forwardCheckoutSession, forwardCheckoutEvent } from '@/lib/api/orderFlow';
+import { checkOrderRisk, forwardCheckoutSession, forwardCheckoutEvent } from '@/lib/api/orderFlow';
+import { holdMetadata, riskRequest } from '@/lib/orderRisk';
 import { SESSION_EXPANSIONS, shouldForward, describeForwardResult } from '@/lib/orderFlowForward';
 
 export const runtime = 'nodejs';
@@ -155,12 +156,33 @@ async function recordCheckoutEvent(kind, event) {
   }
 }
 
+// The card fraud check on every paid store checkout (lib/orderRisk.js, backend
+// services/order_risk.py): the backend holds a risky order, emails the reasons and
+// blocks its order steps until released in Sales; the payment is marked in Stripe too.
+// Never throws: a failed check must not lose the order.
+async function checkCardRisk(session) {
+  try {
+    const intentId = typeof session.payment_intent === 'string' ? session.payment_intent : session.payment_intent?.id;
+    if (!intentId) return;
+    const intent = await stripe.paymentIntents.retrieve(intentId, { expand: ['latest_charge'] });
+    const charge = intent.latest_charge && typeof intent.latest_charge === 'object' ? intent.latest_charge : null;
+    const result = await checkOrderRisk(riskRequest(session, charge));
+    if (result?.hold) {
+      await stripe.paymentIntents.update(intentId, { metadata: holdMetadata(result.reasons) });
+      console.warn('Order held by the card fraud check', session.id, result.reasons.join(' | '));
+    }
+  } catch (error) {
+    console.error('Card fraud check failed', session?.id, error instanceof Error ? error.message : error);
+  }
+}
+
 async function handleCheckoutSessionCompleted(session) {
   const email = session.customer_details?.email;
 
   await recordCouponUse(session);
 
   if (session.metadata?.cartCheckout === 'true') {
+    await checkCardRisk(session);
     await syncCartCheckoutToZoho(session, email);
   } else {
     const product = await findProductAsync(session.metadata?.productId);
