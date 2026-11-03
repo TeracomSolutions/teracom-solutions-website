@@ -3,7 +3,9 @@ import Link from 'next/link';
 import { aiCapabilities } from '@/lib/aiCapabilities';
 import CategoryIcon from '@/components/CategoryIcon';
 import JsonLd from '@/components/JsonLd';
+import CatalogueDepartments from '@/components/CatalogueDepartments';
 import { CustomerJourney, DepartmentModel, PacksAndExtensions } from '@/components/DepartmentModel';
+import { fetchDepartmentCatalogue } from '@/lib/api/departmentCatalogue';
 import { AiComparison, OrganisationalMemory, SecurityTrust } from '@/components/PlatformSections';
 import { pageMetadata, SITE_ORIGIN, absoluteUrl } from '@/lib/seo';
 
@@ -43,7 +45,9 @@ const AI_CAPABILITIES_SCHEMA = {
   })),
 };
 
-export default function TeracomAI() {
+export default async function TeracomAI() {
+  // Global's catalogue once it is switched on; the bundled Departments until then.
+  const catalogue = await fetchDepartmentCatalogue();
   return (
     <main id="main-content">
       <JsonLd schema={AI_PLATFORM_SCHEMA} />
@@ -80,7 +84,7 @@ export default function TeracomAI() {
         </div>
       </section>
 
-      <DepartmentModel alt />
+      {catalogue.source === 'live' ? <CatalogueDepartments entries={catalogue.entries} alt /> : <DepartmentModel alt />}
 
       <PacksAndExtensions />
 
