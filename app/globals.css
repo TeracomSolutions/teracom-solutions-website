@@ -3540,3 +3540,7 @@ select option, select optgroup { background-color:#111; color:#fff; }
 .dept-extensions { margin:10px 0 0; padding:10px 0 0; list-style:none; border-top:1px solid var(--line); display:grid; gap:6px; font-size:14px; }
 .dept-extensions span { color:var(--muted); }
 .dept-card .dept-meta, .dept-extensions .dept-meta { font-size:13px; color:var(--muted); }
+
+/* Store > Teracom AI (components/storePages/TeracomAiStoreView.js). */
+.store-ai-banner { margin-top:12px; }
+.ai-pack-card .ai-pack-meta { font-size:14px; color:var(--muted); }
