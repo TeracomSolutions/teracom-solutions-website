@@ -1,0 +1,42 @@
+/* Site plan designer (siteplan/). Uses the host's --line and --muted colours. */
+.container.site-planner { width:min(1760px, calc(100% - 32px)); max-width:none; display:flex; flex-direction:column; gap:14px; padding-top:24px; padding-bottom:28px; }
+.site-planner-toolbar { display:flex; flex-wrap:wrap; gap:10px; align-items:flex-end; }
+.site-planner-toolbar .btn { display:inline-flex; align-items:center; gap:8px; }
+.site-planner-add { display:flex; gap:8px; align-items:center; }
+.site-planner-add select { min-height:44px; padding:0 12px; border-radius:12px; border:1px solid var(--line); background:rgba(255,255,255,.06); color:inherit; font:inherit; }
+.site-planner-hidden-label { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+.site-planner-scale { display:flex; flex-wrap:wrap; align-items:center; gap:10px; }
+.site-planner-scale input { width:120px; }
+.site-planner-message { margin:0; }
+.site-planner-canvas { border:1px solid var(--line); border-radius:18px; overflow:hidden; background:#fff; }
+.site-planner-canvas svg { display:block; width:100%; height:auto; touch-action:none; user-select:none; }
+.site-planner-canvas.mode-add svg, .site-planner-canvas.mode-scale svg { cursor:crosshair; }
+.site-planner-device { cursor:grab; }
+.site-planner-handle { cursor:alias; }
+.site-planner-legend { display:flex; flex-wrap:wrap; gap:8px 16px; margin:0; padding:10px 14px; list-style:none; background:#111; font-size:13px; color:var(--muted); }
+.site-planner-legend li { display:inline-flex; align-items:center; gap:6px; }
+.site-planner-legend span { width:14px; height:14px; border-radius:50%; }
+.site-planner-legend-band span { border-radius:4px; opacity:.75; }
+.site-planner-editor { margin:0; padding:18px 20px; }
+.site-planner-editor-head { display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between; margin-bottom:6px; }
+.site-planner-chip { padding:4px 12px; border-radius:999px; font-size:13px; font-weight:800; color:#0b0b0b; }
+.site-planner-fields { display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:4px 16px; }
+.site-planner-fields input[type=range] { width:100%; }
+.site-planner-summary { margin:6px 0 0; color:var(--muted); font-size:14px; }
+.site-planner-row { display:flex; gap:10px; flex-wrap:wrap; }
+.site-planner-row .btn { display:inline-flex; align-items:center; gap:6px; }
+.site-planner-table { overflow-x:auto; }
+.site-planner-table table { width:100%; border-collapse:collapse; font-size:14px; }
+.site-planner-table th, .site-planner-table td { padding:8px 10px; border-bottom:1px solid var(--line); text-align:left; }
+.site-planner-table td:last-child { white-space:normal; }
+.site-planner-table tr { cursor:pointer; }
+.site-planner-table tr.active td { background:rgba(255,23,23,.1); }
+.site-planner-name { margin:0; flex:1 1 240px; }
+.site-planner-name input { width:100%; min-height:44px; padding:0 12px; border-radius:12px; border:1px solid var(--line); background:rgba(255,255,255,.06); color:inherit; font:inherit; }
+.site-planner-tabs { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px; }
+.site-planner-tabs .btn { min-height:38px; padding:6px 14px; font-size:14px; }
+.site-planner-totals { margin:10px 0; padding-left:20px; font-size:14px; }
+.site-planner-missing { color:var(--muted); font-style:italic; }
+.site-planner-cabling { margin-top:12px; padding-top:12px; border-top:1px solid var(--line); }
+.site-planner-cabling h3 { grid-column:1 / -1; margin:0 0 4px; font-size:15px; }
+@media (max-width:640px) { .container.site-planner { width:calc(100% - 16px); } }

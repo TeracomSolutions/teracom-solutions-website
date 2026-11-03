@@ -12,7 +12,7 @@ import CctvStorageCalculator from '@/components/tools/CctvStorageCalculator';
 import PoeBudgetCalculator from '@/components/tools/PoeBudgetCalculator';
 import BatteryStandbyCalculator from '@/components/tools/BatteryStandbyCalculator';
 import VoltageDropCalculator from '@/components/tools/VoltageDropCalculator';
-import SitePlanner from '@/components/tools/SitePlanner';
+import SitePlanner from '@/siteplan/SitePlanner';
 import ToolIcon, { ToolBackdrop } from '@/components/tools/ToolIcon';
 import ToolPrintButton, { PrintDate } from '@/components/tools/ToolPrintButton';
 import ToolProjectFrame from '@/components/tools/ToolProjectFrame';

@@ -64,6 +64,8 @@ import {
 } from 'lucide-react';
 import {
   BLANK_PLAN,
+  CABLE_RULES,
+  CABLE_TYPES,
   DEVICE_GROUPS,
   DEVICE_TYPES,
   DORI,
@@ -73,6 +75,9 @@ import {
   RESOLUTIONS,
   SAMPLE_IMAGE,
   SENSORS,
+  SYSTEMS,
+  cableFor,
+  cableType,
   cameraFov,
   coverageShapes,
   coverageText,
@@ -80,16 +85,21 @@ import {
   doriDistances,
   effectiveScale,
   emptyPlan,
+  headEndFor,
   newDevice,
   parsePlan,
   samplePlan,
   scaleFromPoints,
   speakerRadius,
-} from '@/lib/sitePlan';
+} from './index.js';
+import CableSchedule from './CableSchedule.js';
+import './siteplan.css';
 
 // Site plan designer (Robert, 2026-11-02): upload a floor plan (or start from the
 // sample), drop cameras, detectors, speakers, access points, doors and more on it, and
-// see what each one covers. Kept in this browser; saved as a picture or a plan file.
+// see what each one covers, with an equipment schedule and a cable schedule per system.
+// Kept in this browser; saved as a picture, a plan file or CSV schedules. Everything it
+// needs is in this folder (see README.md), so Teracom AI can use it as is.
 const ICONS = {
   camera: Cctv, dome: Camera, bullet: Video, ptz: Cctv, fisheye: Aperture, lpr: ScanText, nvr: HardDrive,
   motion: Radar, dualtech: Radar, ceilingpir: CircleDot, beam: MoveHorizontal, glassbreak: GlassWater, contact: Magnet,
@@ -206,6 +216,9 @@ export default function SitePlanner() {
   const device = plan.devices.find((d) => d.id === selected) || null;
   const kind = device ? deviceType(device.type) : null;
   const typesUsed = DEVICE_TYPES.filter((t) => plan.devices.some((d) => d.type === t.type));
+  const cabled = device ? SYSTEMS.some((s) => s.group === kind.group) : false;
+  const route = device && cableFor(device) ? headEndFor(device, plan.devices) : null;
+  const usualEnd = device ? headEndFor({ ...device, cableTo: '' }, plan.devices) : null;
 
   const point = (event) => {
     const svg = svgRef.current;
@@ -481,6 +494,10 @@ export default function SitePlanner() {
             ),
           )}
 
+          {route ? (
+            <path d={`M ${device.x} ${device.y} H ${route.x} V ${route.y}`} fill="none" stroke="#111827" strokeOpacity={0.7} strokeWidth={unit * 0.25} strokeDasharray={`${unit * 0.8} ${unit * 0.5}`} pointerEvents="none" />
+          ) : null}
+
           {scalePoints.map((p, i) => <circle key={i} cx={p.x} cy={p.y} r={unit * 0.8} fill="#ff1717" />)}
           {scalePoints.length === 2 ? (
             <line x1={scalePoints[0].x} y1={scalePoints[0].y} x2={scalePoints[1].x} y2={scalePoints[1].y} stroke="#ff1717" strokeWidth={unit * 0.3} strokeDasharray={`${unit} ${unit * 0.6}`} />
@@ -617,6 +634,32 @@ export default function SitePlanner() {
           ) : null}
           {device.type === 'wifi' ? <p className="site-planner-summary">Indoor range depends on walls and the access point; 10 to 15 m is a common planning figure. Check with a site survey.</p> : null}
           {device.type === 'smoke' || device.type === 'heat' ? <p className="site-planner-summary">Enter the coverage your fire designer works to; detector spacing is set by AS 1670.1 and the building, so none is drawn until you do.</p> : null}
+          {cabled ? (
+            <div className="site-planner-fields site-planner-cabling">
+              <h3>Cabling</h3>
+              <div className="field">
+                <label htmlFor="dev-cable">Cable</label>
+                <select id="dev-cable" value={device.cable || ''} onChange={(e) => updateDevice(device.id, { cable: e.target.value })}>
+                  <option value="">{CABLE_RULES[device.type] ? `Usual: ${cableType(CABLE_RULES[device.type].cable).label}` : 'None usually'}</option>
+                  {CABLE_TYPES.map((c) => <option key={c.id} value={c.id}>{c.label}</option>)}
+                  <option value="none">No cable</option>
+                </select>
+              </div>
+              {cableFor(device) ? (
+                <>
+                  <div className="field">
+                    <label htmlFor="dev-cable-to">Runs to</label>
+                    <select id="dev-cable-to" value={device.cableTo || ''} onChange={(e) => updateDevice(device.id, { cableTo: e.target.value })}>
+                      <option value="">{usualEnd ? `Nearest: ${usualEnd.name}` : 'Nearest head end (none on the plan)'}</option>
+                      {plan.devices.filter((d) => d.id !== device.id).map((d) => <option key={d.id} value={d.id}>{d.name}</option>)}
+                    </select>
+                  </div>
+                  {field('dev-cable-runs', 'Number of runs', device.cableRuns ?? '1', (e) => updateDevice(device.id, { cableRuns: e.target.value }), { min: '1', max: '8', step: '1' })}
+                  {field('dev-cable-extra', 'Extra length (m)', device.cableExtra ?? '0', (e) => updateDevice(device.id, { cableExtra: e.target.value }))}
+                </>
+              ) : null}
+            </div>
+          ) : null}
         </div>
       ) : (
         <p className="form-note">Click a device to change it. Drag it to move it; drag the small handle on cameras and detectors to turn them.</p>
@@ -643,6 +686,13 @@ export default function SitePlanner() {
           </div>
         </div>
       ) : null}
+
+      <CableSchedule
+        plan={plan}
+        selected={selected}
+        onSelect={setSelected}
+        onDownload={(blob, system) => download(blob, fileName(plan, `${system.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-cables.csv`))}
+      />
 
       <div className="site-planner-toolbar site-planner-save">
         <div className="field site-planner-name">
