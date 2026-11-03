@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import AuthSwitchLink from '@/components/AuthSwitchLink';
+import { CUSTOMER_ROLES, EMAIL_TOPICS, toggleTopic } from '@/lib/customerTopics';
 import { safeNextPath } from '@/lib/safeNext';
 import Link from 'next/link';
 import AuthShell from '@/components/AuthShell';
@@ -22,7 +23,12 @@ export default function CustomerSignupPage() {
   const [captchaQuestion, setCaptchaQuestion] = useState(null);
   const [captchaToken, setCaptchaToken] = useState('');
   const [captchaAnswer, setCaptchaAnswer] = useState('');
-  const [specials, setSpecials] = useState(false);
+  const [phone, setPhone] = useState('');
+  const [accountType, setAccountType] = useState('individual');
+  const [company, setCompany] = useState('');
+  const [abn, setAbn] = useState('');
+  const [role, setRole] = useState('');
+  const [topics, setTopics] = useState([]);
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
@@ -66,7 +72,12 @@ export default function CustomerSignupPage() {
           shipping_postcode: postcode,
           captcha_token: captchaToken,
           captcha_answer: captchaAnswer,
-          marketing_consent: specials
+          phone,
+          account_type: accountType,
+          company: accountType === 'business' ? company : '',
+          abn: accountType === 'business' ? abn : '',
+          customer_role: role || null,
+          email_topics: topics
         }),
       });
       const data = await res.json();
@@ -151,6 +162,53 @@ export default function CustomerSignupPage() {
               />
             </div>
 
+            <div style={{ marginBottom: '16px' }}>
+              <label htmlFor="phone">Phone</label>
+              <input
+                id="phone"
+                type="tel"
+                required
+                autoComplete="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="0412 345 678"
+                style={{ display: 'block', width: '100%' }}
+              />
+            </div>
+
+            <fieldset className="auth-choice">
+              <legend>Buying for</legend>
+              <label className="auth-check">
+                <input type="radio" name="accountType" checked={accountType === 'business'} onChange={() => setAccountType('business')} />
+                <span>A business</span>
+              </label>
+              <label className="auth-check">
+                <input type="radio" name="accountType" checked={accountType === 'individual'} onChange={() => setAccountType('individual')} />
+                <span>Myself or my home</span>
+              </label>
+            </fieldset>
+
+            {accountType === 'business' ? (
+              <>
+                <div style={{ marginBottom: '16px' }}>
+                  <label htmlFor="company">Company name</label>
+                  <input id="company" type="text" required autoComplete="organization" value={company} onChange={(e) => setCompany(e.target.value)} style={{ display: 'block', width: '100%' }} />
+                </div>
+                <div style={{ marginBottom: '16px' }}>
+                  <label htmlFor="abn">ABN (optional)</label>
+                  <input id="abn" type="text" inputMode="numeric" value={abn} onChange={(e) => setAbn(e.target.value)} placeholder="11 digits" style={{ display: 'block', width: '100%' }} />
+                </div>
+              </>
+            ) : null}
+
+            <div style={{ marginBottom: '16px' }}>
+              <label htmlFor="role">What best describes you</label>
+              <select id="role" required value={role} onChange={(e) => setRole(e.target.value)} style={{ display: 'block', width: '100%' }}>
+                <option value="">Choose one</option>
+                {CUSTOMER_ROLES.map((r) => <option key={r.key} value={r.key}>{r.label}</option>)}
+              </select>
+            </div>
+
             <p>We ship within Australia only -- no PO Boxes, locked bags, or parcel lockers.</p>
 
             <div style={{ marginBottom: '16px' }}>
@@ -219,10 +277,16 @@ export default function CustomerSignupPage() {
               />
             </div>
 
-            <label className="auth-check">
-              <input type="checkbox" checked={specials} onChange={(e) => setSpecials(e.target.checked)} />
-              <span>Send me specials, clearance and new products by email. You can unsubscribe at any time.</span>
-            </label>
+            <fieldset className="auth-topics">
+              <legend>Email me about (optional)</legend>
+              {EMAIL_TOPICS.map((t) => (
+                <label key={t.key} className="auth-check">
+                  <input type="checkbox" checked={topics.includes(t.key)} onChange={(e) => setTopics(toggleTopic(topics, t.key, e.target.checked))} />
+                  <span>{t.label}</span>
+                </label>
+              ))}
+              <p className="auth-fine">Only what you tick, and you can change it or unsubscribe at any time from your account or any email.</p>
+            </fieldset>
 
             <div style={{ marginBottom: '16px' }}>
               <label>{captchaQuestion ? `What is ${captchaQuestion}?` : 'Loading verification question...'}</label>

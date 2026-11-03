@@ -3525,3 +3525,13 @@ select option, select optgroup { background-color:#111; color:#fff; }
 .tool-gate-actions { display:flex; flex-wrap:wrap; gap:10px; }
 .auth-form .auth-check { display:flex; flex-direction:row; gap:10px; align-items:flex-start; margin:4px 0 18px; font-size:15px; font-weight:400; letter-spacing:normal; text-transform:none; color:inherit; cursor:pointer; }
 .auth-form .auth-check input { width:18px; height:18px; min-height:0; flex:none; margin:2px 0 0; padding:0; }
+
+/* Sign-up and account: buying for, email topics (lib/customerTopics.js). */
+.auth-form fieldset.auth-topics, .auth-form fieldset.auth-choice { margin:4px 0 18px; padding:14px 16px; border:1px solid var(--line); border-radius:14px; }
+.auth-form fieldset legend { padding:0 6px; font-size:13px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
+.auth-form fieldset .auth-check { margin:6px 0; }
+.auth-form .auth-fine { margin:8px 0 0; font-size:13px; color:var(--muted); }
+.auth-two { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:0 16px; }
+.account-preferences { margin-top:28px; }
+.account-preferences select { margin-bottom:16px; }
+.posting-topic { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-top:8px; }

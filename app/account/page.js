@@ -5,6 +5,7 @@ import { CUSTOMER_ACCESS_TOKEN_COOKIE } from '@/lib/customerSession';
 import { getCurrentCustomer } from '@/lib/api/customerAuth';
 import { ApiError } from '@/lib/api/client';
 import AuthShell from '@/components/AuthShell';
+import EmailPreferences from '@/components/EmailPreferences';
 import { BadgePercent, CircleUserRound, ReceiptText, ShoppingCart } from 'lucide-react';
 
 export default async function CustomerAccountPage() {
@@ -42,6 +43,8 @@ export default async function CustomerAccountPage() {
             <>
               <p className="lead">Welcome, {customer.email}!</p>
               <p>Your account was created on {new Date(customer.created_at).toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' })}.</p>
+
+              <EmailPreferences customer={customer} />
 
               <form action="/api/customer/logout" method="POST" style={{ marginTop: '24px' }}>
                 <button type="submit" className="btn btn-secondary">
