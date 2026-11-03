@@ -250,6 +250,10 @@ export function cleanPlan(raw) {
     };
     for (const key of KEEP) if (d[key] !== undefined && key in device) device[key] = text(d[key], 12);
     if (device.fovMode !== undefined) device.fovMode = d.fovMode === 'fov' ? 'fov' : 'lens';
+    // Cabling chosen on the device (siteplan/cables.js); absent means the usual.
+    for (const [key, max] of [['cable', 20], ['cableTo', 40], ['cableRuns', 4], ['cableExtra', 8]]) {
+      if (d[key] !== undefined && d[key] !== null && d[key] !== '') device[key] = text(d[key], max);
+    }
     return device;
   });
   return { format: PLAN_FORMAT, version: 2, name: text(raw.name), image: cleanImage(raw.image), pxPerMetre: Math.max(0, num(raw.pxPerMetre)), devices };
@@ -302,6 +306,12 @@ export function samplePlan() {
       d('door', 's15', 775, 620, { name: 'Server room door' }),
       d('siren', 's16', 1530, 580, { name: 'Warehouse siren' }),
       d('intercom', 's17', 70, 130, { name: 'Front intercom' }),
+      d('rack', 's18', 775, 665, { name: 'Comms rack' }),
+      d('switch', 's19', 775, 715, { name: 'PoE switch' }),
+      d('nvr', 's20', 775, 765, { name: 'Recorder' }),
+      d('alarmpanel', 's21', 775, 815, { name: 'Alarm panel' }),
+      d('controller', 's22', 775, 865, { name: 'Door controller' }),
+      d('amplifier', 's23', 775, 915, { name: 'PA amplifier' }),
     ],
   };
 }

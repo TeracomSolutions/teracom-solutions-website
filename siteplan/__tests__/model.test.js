@@ -22,7 +22,7 @@ import {
   scaleFromPoints,
   sectorPath,
   speakerRadius,
-} from '../sitePlan.js';
+} from '../model.js';
 
 const close = (actual, expected, tolerance = 1e-6) =>
   assert.ok(Math.abs(actual - expected) < tolerance, `${actual} is not close to ${expected}`);
