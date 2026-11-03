@@ -13,6 +13,7 @@ import PoeBudgetCalculator from '@/components/tools/PoeBudgetCalculator';
 import BatteryStandbyCalculator from '@/components/tools/BatteryStandbyCalculator';
 import VoltageDropCalculator from '@/components/tools/VoltageDropCalculator';
 import SitePlanner from '@/siteplan/SitePlanner';
+import RackPlanner from '@/rackplan/RackPlanner';
 import ToolBrandBand from '@/components/tools/ToolBrandBand';
 import ToolSignInGate from '@/components/tools/ToolSignInGate';
 import ToolIcon, { ToolBackdrop } from '@/components/tools/ToolIcon';
@@ -45,10 +46,11 @@ const CUSTOM_CALCULATORS = {
   'battery-standby-calculator': BatteryStandbyCalculator,
   'voltage-drop-calculator': VoltageDropCalculator,
   'site-plan-designer': SitePlanner,
+  'data-rack-layout': RackPlanner,
 };
 
 // Tools that keep their own saved file instead of adding results to the project report.
-const OWN_FILE_TOOLS = new Set(['site-plan-designer']);
+const OWN_FILE_TOOLS = new Set(['site-plan-designer', 'data-rack-layout']);
 
 export const dynamicParams = false;
 
