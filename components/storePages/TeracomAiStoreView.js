@@ -4,6 +4,7 @@ import { Bot, Puzzle } from 'lucide-react';
 import { fetchDepartmentCatalogue } from '@/lib/api/departmentCatalogue';
 import { KIND_LABELS, groupCatalogue } from '@/lib/departmentCatalogue';
 import { pageMetadata } from '@/lib/seo';
+import { INDUSTRY_NOTE } from '@/components/CatalogueDepartments';
 
 // Store > Teracom AI (Robert, 2026-11-03): Teracom's own software in its own section
 // of the store, so it is easy to find. Every Department and extension pack comes from
@@ -16,10 +17,8 @@ export const teracomAiStoreMetadata = pageMetadata({
 });
 
 export const interestLink = (name) => `/?interest=${encodeURIComponent(`Teracom AI ${name}`)}#contact`;
-const workerCount = (pack) => (typeof pack.workers === 'number' ? pack.workers : pack.workers.length) || pack.workerDetails.length;
 
 function PackCard({ pack, label }) {
-  const count = workerCount(pack);
   return (
     <article className="product-card ai-pack-card">
       <div>
@@ -27,7 +26,7 @@ function PackCard({ pack, label }) {
         <h3><Link href={`/store/teracom-ai/${pack.slug}`}>{pack.name}</Link></h3>
         {pack.description ? <p>{pack.description}</p> : null}
         <p className="ai-pack-meta">
-          {[count ? `${count} digital worker${count === 1 ? '' : 's'}` : '', pack.includes.length ? `${pack.includes.length} screens, dashboards and reports` : '', pack.tiers.length ? `Included in ${pack.tiers.join(', ')}` : '']
+          {[pack.includes.length ? `${pack.includes.length} screens, dashboards and reports` : '', pack.tiers.length ? `Included in ${pack.tiers.join(', ')}` : '']
             .filter(Boolean)
             .join(' · ')}
         </p>
@@ -86,6 +85,7 @@ export default async function TeracomAiStoreView() {
             <div className="section-heading left">
               <span className="eyebrow"><Puzzle size={16} aria-hidden="true" /> {section.title}</span>
               <h2>{section.title}</h2>
+              {/industry/i.test(section.title) ? <p>{INDUSTRY_NOTE}</p> : null}
             </div>
             <div className="product-grid">
               {section.packs.map((p) => <PackCard key={p.slug} pack={p} label={KIND_LABELS[p.kind] || 'Extension pack'} />)}

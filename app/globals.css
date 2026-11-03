@@ -3559,3 +3559,18 @@ select option, select optgroup { background-color:#111; color:#fff; }
 .pack-widgets dt { font-weight:800; margin-bottom:4px; }
 .pack-widgets dd { margin:0; color:var(--muted); }
 .dept-subhead svg, .copy-block h2 svg, .dept-card h3 svg { vertical-align:-3px; margin-right:6px; color:#ff1717; }
+
+/* Teracom AI savings drafts (app/teracom-ai/savings, app/teracom-ai/departments/[slug]). */
+.draft-banner { margin:0; padding:10px 16px; text-align:center; background:#f59e0b; color:#111; font-weight:800; }
+.savings-calculator { max-width:920px; }
+.savings-row { margin:14px 0; padding:14px 16px; border:1px solid var(--line); border-radius:14px; }
+.savings-row legend { padding:0 6px; font-weight:800; }
+.savings-row-fields { display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:4px 16px; }
+.savings-working { margin:6px 0; color:var(--muted); font-variant-numeric:tabular-nums; }
+.savings-result { margin:20px 0 8px; padding:18px 20px; border:1px solid rgba(255,23,23,.5); border-radius:16px; background:rgba(255,23,23,.06); }
+.savings-result-label { margin:0; font-size:13px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
+.savings-result-value { margin:4px 0; font-size:clamp(34px, 6vw, 52px); font-weight:900; }
+.savings-disclaimer { margin:10px 0 0; font-size:14px; font-style:italic; color:var(--muted); }
+.savings-options { display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:16px; }
+.savings-lines { margin:10px 0; padding-left:18px; display:grid; gap:6px; font-size:14px; }
+.savings-option-total { margin:8px 0 0; font-weight:800; color:#fff; }
