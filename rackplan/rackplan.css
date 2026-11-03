@@ -1,0 +1,26 @@
+/* Data rack layout (rackplan/). Uses the host's --line and --muted colours. */
+.container.rack-planner { width:min(1400px, calc(100% - 32px)); max-width:none; display:flex; flex-direction:column; gap:14px; padding-top:24px; padding-bottom:28px; }
+.rack-planner-toolbar { display:flex; flex-wrap:wrap; gap:10px 14px; align-items:flex-end; }
+.rack-planner-toolbar .field { margin:0; }
+.rack-planner-toolbar .btn, .rack-planner-row .btn { display:inline-flex; align-items:center; gap:6px; }
+.rack-planner-add > div { display:flex; gap:8px; }
+.rack-planner-toolbar select, .rack-planner-name input { min-height:44px; padding:0 12px; border-radius:12px; border:1px solid var(--line); background:rgba(255,255,255,.06); color:inherit; font:inherit; }
+.rack-planner-name { flex:1 1 260px; }
+.rack-planner-name input { width:100%; }
+.rack-planner-message { margin:0; color:var(--muted); }
+.rack-planner-main { display:grid; grid-template-columns:minmax(0, 620px) minmax(280px, 1fr); gap:18px; align-items:start; }
+.rack-planner-canvas { border:1px solid var(--line); border-radius:18px; overflow:hidden; background:#f3f4f6; }
+.rack-planner-canvas svg { display:block; width:100%; height:auto; touch-action:none; user-select:none; }
+.rack-item { cursor:grab; }
+.rack-item:active { cursor:grabbing; }
+.rack-planner-side { display:flex; flex-direction:column; gap:14px; }
+.rack-planner-editor { margin:0; padding:16px 18px; display:flex; flex-direction:column; gap:4px; }
+.rack-planner-row { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:6px; }
+.rack-planner-row .btn { min-height:38px; padding:6px 12px; font-size:14px; }
+.rack-planner-table { overflow-x:auto; }
+.rack-planner-table table { width:100%; border-collapse:collapse; font-size:14px; }
+.rack-planner-table th, .rack-planner-table td { padding:6px 10px; border-bottom:1px solid var(--line); text-align:left; }
+.rack-planner-table tr { cursor:pointer; }
+.rack-planner-table tr.free td { color:var(--muted); font-style:italic; cursor:default; }
+.rack-planner-table tr.active td { background:rgba(255,23,23,.1); }
+@media (max-width: 900px) { .rack-planner-main { grid-template-columns:1fr; } }

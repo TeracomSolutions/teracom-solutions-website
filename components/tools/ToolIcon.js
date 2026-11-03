@@ -58,6 +58,7 @@ import {
 const TOOL_ICONS = {
   'cctv-storage-calculator': Database,
   'site-plan-designer': LayoutTemplate,
+  'data-rack-layout': Server,
   'cctv-lens-calculator': Cctv,
   'cctv-bandwidth-calculator': Gauge,
   'nvr-raid-planner': Server,
