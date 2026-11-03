@@ -113,7 +113,7 @@ export default async function AdminSocialPage(props) {
           {
             key: 'posting',
             label: 'Posting',
-            content: <AdminSocialPosting initialUpdates={updates} accounts={accounts} audienceCount={customers?.counts?.receives_updates} tradeCount={customers?.counts?.trade_receives_updates} loadError={loadError} initialDraft={draft} />,
+            content: <AdminSocialPosting initialUpdates={updates} accounts={accounts} audienceCount={customers?.counts?.receives_updates} tradeCount={customers?.counts?.trade_receives_updates} topicCounts={customers?.counts?.by_topic} loadError={loadError} initialDraft={draft} />,
           },
           {
             key: 'calendar',

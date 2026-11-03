@@ -23,6 +23,12 @@ const SignupRequest = z.object({
   captcha_token: z.string().min(1),
   captcha_answer: z.string().min(1),
   marketing_consent: z.boolean().optional(),
+  phone: z.string().min(8).max(40),
+  account_type: z.enum(['business', 'individual']).optional(),
+  company: z.string().max(255).optional(),
+  abn: z.string().max(20).optional(),
+  customer_role: z.string().max(40).nullable().optional(),
+  email_topics: z.array(z.string().max(40)).max(10).optional(),
 });
 
 export async function POST(req) {

@@ -18,12 +18,13 @@ import {
 } from '@/lib/socialFormat';
 import { checkPost } from '@/lib/socialRules';
 import { composeText } from '@/lib/postPreview';
+import { EMAIL_TOPICS } from '@/lib/customerTopics';
 
 // Posting: write once, add pictures or a video, tick where it goes, adjust
 // the text per network with a preview and checklist, then save, schedule or
 // send. The history below shows each network's result and a link to the post.
 const TITLED = ['linkedin', 'facebook', 'instagram'];
-const EMPTY = { title: '', body: '', link_url: '', channels: [], audienceMode: 'all', tiers: '', scheduled_at: '' };
+const EMPTY = { title: '', body: '', link_url: '', channels: [], audienceMode: 'all', tiers: '', topic: '', scheduled_at: '' };
 
 async function send(url, method, body) {
   const response = await fetch(url, {
@@ -49,7 +50,7 @@ function channelText(channel, form, overrides) {
   return TITLED.includes(channel) && title ? `${title}\n\n${form.body}` : form.body;
 }
 
-export default function AdminSocialPosting({ initialUpdates, accounts, audienceCount, tradeCount, loadError, initialDraft }) {
+export default function AdminSocialPosting({ initialUpdates, accounts, audienceCount, tradeCount, topicCounts, loadError, initialDraft }) {
   const [updates, setUpdates] = useState(initialUpdates || []);
   const [form, setForm] = useState(() =>
     initialDraft
@@ -60,6 +61,7 @@ export default function AdminSocialPosting({ initialUpdates, accounts, audienceC
           link_url: initialDraft.link_url,
           channels: initialDraft.channels || [],
           audienceMode: initialDraft.audienceMode || 'all',
+          topic: initialDraft.topic || '',
         }
       : EMPTY
   );
@@ -183,7 +185,10 @@ export default function AdminSocialPosting({ initialUpdates, accounts, audienceC
       body: form.body.trim(),
       link_url: form.link_url.trim() || null,
       channels: form.channels,
-      audience: form.audienceMode === 'tiers' && tiers.length ? { tiers } : form.audienceMode === 'trade' ? { trade: true } : { all: true },
+      audience: {
+        ...(form.audienceMode === 'tiers' && tiers.length ? { tiers } : form.audienceMode === 'trade' ? { trade: true } : { all: true }),
+        ...(form.topic ? { topic: form.topic } : {}),
+      },
       media_ids: media.map((m) => m.id),
       overrides: own,
       ...extra,
@@ -320,6 +325,17 @@ export default function AdminSocialPosting({ initialUpdates, accounts, audienceC
             {form.audienceMode === 'tiers' && (
               <input value={form.tiers} onChange={(e) => set('tiers', e.target.value)} placeholder="Gold, Silver" aria-label="Pricing tiers, comma separated" />
             )}
+            <label className="posting-topic">
+              Only those who asked for
+              <select value={form.topic} onChange={(e) => set('topic', e.target.value)}>
+                <option value="">Any marketing email</option>
+                {EMAIL_TOPICS.map((t) => (
+                  <option key={t.key} value={t.key}>
+                    {t.label}{topicCounts?.[t.key] != null ? ` (${topicCounts[t.key]})` : ''}
+                  </option>
+                ))}
+              </select>
+            </label>
           </fieldset>
         )}
 
