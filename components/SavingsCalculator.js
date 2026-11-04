@@ -76,8 +76,8 @@ export default function SavingsCalculator({ departments, prices = null, initial 
         <p className="admin-muted">On your figures: about {Number.isInteger(people) ? people : people.toFixed(1)} {people === 1 ? 'person' : 'people'}&apos;s work a year, if the Departments take on the share you entered. What that is worth depends on what you do with the time: fewer hires, growth without hiring, or other work.</p>
         {priced.yearlyCost != null ? (
           <p>
-            The Departments cost {money(priced.yearlyCost * (1 + GST_RATE))} a year including GST ({money(priced.yearlyCost)} ex GST
-            {priced.discount ? `, with a ${priced.discount * 100}% bundle discount` : ''}). Against your estimate that leaves{' '}
+            The Departments and the base platform cost {money(priced.yearlyCost * (1 + GST_RATE))} a year including GST ({money(priced.yearlyCost)} ex GST
+            {priced.discount ? `, with a ${priced.discount * 100}% bundle discount on the Departments` : ''}). Against your estimate that leaves{' '}
             <strong>{money(priced.net)}</strong> before GST{priced.paybackMonths != null ? `; on your figures the cost equals about ${priced.paybackMonths} months of the estimate` : ''}.
           </p>
         ) : null}
