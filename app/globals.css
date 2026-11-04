@@ -3599,3 +3599,14 @@ select option, select optgroup { background-color:#111; color:#fff; }
 .form-summary h2 { margin:0 0 8px; font-size:16px; }
 .form-summary-value { white-space:pre-wrap; }
 .form-signature { display:block; max-width:320px; margin-top:10px; background:#fff; border-radius:8px; padding:6px; }
+
+/* Where forms go (components/AdminFormDelivery.js). */
+.form-route h3 { margin:18px 0 8px; font-size:15px; }
+.form-route-places { display:grid; gap:8px; }
+.form-route-place { display:flex; flex-wrap:wrap; align-items:center; gap:10px; }
+.form-route-place > strong { min-width:120px; }
+.form-route-place input { min-width:240px; flex:1 1 240px; }
+.form-route-folder { display:grid; gap:4px; flex:1 1 320px; min-width:0; }
+.form-route-folder .admin-muted { font-size:12.5px; overflow-wrap:anywhere; }
+.form-route-add { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-top:4px; }
+.form-route-form { border-top:1px solid var(--line); margin-top:16px; padding-top:4px; }

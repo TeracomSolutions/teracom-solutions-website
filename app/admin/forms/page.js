@@ -2,9 +2,10 @@ import { BRAND, retitle } from '@/lib/brand';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
+import AdminFormDelivery from '@/components/AdminFormDelivery';
 import AdminHelpIcon from '@/components/AdminHelpIcon';
 import AdminShell from '@/components/AdminShell';
-import { fetchFormSubmissions } from '@/lib/api/forms';
+import { fetchFormDelivery, fetchFormSubmissions } from '@/lib/api/forms';
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
 import { ONLINE_FORMS } from '@/lib/onlineForms';
 
@@ -34,6 +35,12 @@ export default async function AdminFormsPage({ searchParams }) {
     if (isSessionError(err)) redirect('/admin/login');
     loadError = 'Unable to load the forms from the backend.';
   }
+  let delivery = null;
+  try {
+    delivery = await fetchFormDelivery(token);
+  } catch {
+    delivery = null;
+  }
 
   return (
     <AdminShell>
@@ -44,9 +51,10 @@ export default async function AdminFormsPage({ searchParams }) {
           <p>Forms customers fill in and sign on the website, such as the monitoring commissioning form, newest first.</p>
           <ul>
             <li><strong>Reference</strong> - what the customer was given and quotes back, such as MC-7F3A2C. Click it to open the form.</li>
-            <li><strong>Signed copy</strong> - a PDF made the moment the form arrived, with the answers, the version of the terms accepted and the signature. It is emailed to the customer and to the forms alert address, and never changes.</li>
+            <li><strong>Signed copy</strong> - a PDF made the moment the form arrived, with the answers, the version of the terms accepted and the signature. It is emailed to the customer, goes to every place under Where forms go, and never changes.</li>
             <li><strong>Status</strong> - New until someone works on it; set In progress, Done or Cancelled and add notes on the form itself. Changes go in the audit log.</li>
             <li><strong>Filters</strong> - choose a form or a status, or search by reference, name, email or company.</li>
+            <li><strong>Where forms go</strong> - below the list: the email addresses, the network folder and other places Teracom&apos;s copies go, for all forms or for one form. The customer always gets their own copy.</li>
           </ul>
         </AdminHelpIcon>
       </h1>
@@ -102,6 +110,12 @@ export default async function AdminFormsPage({ searchParams }) {
           </table>
         </div>
       ) : null}
+
+      {delivery ? (
+        <AdminFormDelivery initial={delivery} forms={ONLINE_FORMS.map((f) => ({ key: f.key, title: f.title, live: f.live !== false }))} />
+      ) : (
+        <p className="admin-muted">Where forms go could not be loaded from the backend.</p>
+      )}
     </AdminShell>
   );
 }

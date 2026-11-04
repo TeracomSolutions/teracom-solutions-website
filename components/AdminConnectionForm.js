@@ -32,6 +32,12 @@ const HOW_TO = {
     'Name it Teracom console. In Scope pick the Teracom Solutions team, then the teracom-solutions-website project.',
     'Choose an expiration, select Create, and paste the token here. Vercel shows it only once.',
   ],
+  network_folder: [
+    'Use a user on the NAS or file server that may write to the folder (on a Synology: Control Panel, User & Group; give it Read/Write on the shared folder). A user just for this is best.',
+    'Server is the address you use in Windows Explorer without the slashes, for example 10.0.0.12. Shared folder is the next part, for example Robert Urpis.',
+    'Folder inside the share is optional: everything goes under it, for example Teracom Solution Pty Ltd/Forms. It is made if it is not there.',
+    'Press Save, then Test: it signs in, writes a small file and deletes it. Then choose which forms go there on the Forms page, under Where forms go.',
+  ],
   voice: [
     'In the Azure portal (portal.azure.com) choose Create a resource, search for Speech and create a Speech resource.',
     'Pick a subscription and resource group, set the region to Australia East, name it, and choose the Free F0 pricing tier if it is offered (otherwise Standard S0, which is pay as you go).',
