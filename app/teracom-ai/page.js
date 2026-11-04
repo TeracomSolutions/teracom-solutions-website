@@ -63,8 +63,8 @@ export default async function TeracomAI() {
               keep it protected, in Australia or on your own servers.
             </p>
             <div className="hero-actions">
-              <Link className="btn btn-primary" href="/store">
-                View Plans
+              <Link className="btn btn-primary" href="/store/teracom-ai">
+                View Departments
               </Link>
               <Link className="btn btn-secondary" href="/">
                 Back to Teracom
@@ -165,10 +165,10 @@ export default async function TeracomAI() {
           <div className="brand-store-cta">
             <div>
               <h3>Ready to see it running on your own work?</h3>
-              <p>View plans to get your organisation set up on Teracom AI.</p>
+              <p>See every Department, what it includes and what it costs. Each one is priced on its own.</p>
             </div>
-            <Link className="btn btn-primary" href="/store">
-              View Plans
+            <Link className="btn btn-primary" href="/store/teracom-ai">
+              View Departments
             </Link>
           </div>
         </div>

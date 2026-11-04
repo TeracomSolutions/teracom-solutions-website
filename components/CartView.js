@@ -45,7 +45,7 @@ const POPULAR = [
   { label: 'Intrusion', href: '/store/intrusion' },
   { label: 'CCTV', href: '/store/cctv' },
   { label: 'Networking', href: '/store/networking' },
-  { label: 'Teracom AI plans', href: '/store' },
+  { label: 'Teracom AI Departments', href: '/store/teracom-ai' },
 ];
 
 function CartArt() {

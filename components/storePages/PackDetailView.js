@@ -3,10 +3,10 @@ import { notFound } from 'next/navigation';
 import { BarChart3, Bot, FileText, LayoutDashboard, ShieldCheck, Users } from 'lucide-react';
 
 import { fetchDepartmentCatalogue } from '@/lib/api/departmentCatalogue';
-import { KIND_LABELS, findPack, slugOf, splitIncludes } from '@/lib/departmentCatalogue';
+import { KIND_LABELS, availableAs, findPack, slugOf, splitIncludes } from '@/lib/departmentCatalogue';
 import { pageMetadata } from '@/lib/seo';
 import { publishedPrices } from '@/lib/departmentPrices';
-import { BASE_PLATFORM_MONTHLY, GST_RATE, NO_SAVINGS_PAGE, money, monthlyMoney } from '@/lib/savings';
+import { GST_RATE, NO_SAVINGS_PAGE, basePlatform, money, monthlyMoney } from '@/lib/savings';
 import { interestLink } from '@/components/storePages/TeracomAiStoreView';
 
 // One Teracom AI pack in the store (Robert, 2026-11-03: describe in detail exactly what is
@@ -31,7 +31,9 @@ export default async function PackDetailView({ slug }) {
   const pack = findPack(entries, slug);
   if (!pack) notFound();
   const { widgets, dashboards, reports, other } = splitIncludes(pack.includes);
-  const price = publishedPrices()?.[pack.slug];
+  const prices = await publishedPrices();
+  const price = prices?.[pack.slug];
+  const base = basePlatform(prices);
   const related = pack.connectsTo
     .map((name) => entries.find((e) => slugOf(e.name) === slugOf(name)))
     .filter(Boolean);
@@ -49,13 +51,13 @@ export default async function PackDetailView({ slug }) {
             <h1>{pack.name}</h1>
             {pack.description ? <p className="lead">{pack.description}</p> : null}
             <p className="store-gst">
-              {[pack.tiers.length ? `Included in ${pack.tiers.join(', ')}` : '', pack.version ? `Version ${pack.version}` : '']
+              {[availableAs(pack), pack.version ? `Version ${pack.version}` : '']
                 .filter(Boolean)
                 .join(' · ')}
             </p>
             <div className="ai-pack-actions">
               <Link className="btn btn-primary" href={interestLink(pack.name)}>Register interest</Link>
-              <span className="price">{price ? `Coming soon · estimated ${monthlyMoney((price + BASE_PLATFORM_MONTHLY) * (1 + GST_RATE))} a month incl. GST (${money(price)} plus the ${money(BASE_PLATFORM_MONTHLY)} base platform, ex GST)` : 'Coming soon'}</span>
+              <span className="price">{price ? `Coming soon · estimated ${monthlyMoney((price + base) * (1 + GST_RATE))} a month incl. GST (${money(price)} plus the ${money(base)} base platform, ex GST)` : 'Coming soon'}</span>
             </div>
           </div>
         </div>

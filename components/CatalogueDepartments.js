@@ -1,17 +1,18 @@
 import Link from 'next/link';
 
-import { groupCatalogue } from '@/lib/departmentCatalogue';
+import { availableAs, groupCatalogue } from '@/lib/departmentCatalogue';
 import { departmentPagePath } from '@/lib/savings';
 
 // Every Department and extension pack in Global's catalogue (rule 7 of
-// DEPARTMENT_PACK_SYNC_AND_FRESHNESS_2026-11-03): what each does, which tiers include
-// it, its version and its digital workers, grouped by Global's "group". No prices.
+// DEPARTMENT_PACK_SYNC_AND_FRESHNESS_2026-11-03): what each does, how it is sold (no
+// plans any more, priced per Department), its version and its digital workers, grouped
+// by Global's "group". No prices.
 // Each card opens the pack's own page in the store with everything it includes.
 export const INDUSTRY_NOTE = 'Extensions for one industry, such as CCTV, access control and alarms, that work across several Departments.';
 
 // No worker counts (CTO, 3 November 2026): one price per Department, sold on what it does.
 function Meta({ pack }) {
-  const bits = [pack.tiers.length ? `Included in ${pack.tiers.join(', ')}` : '', pack.version ? `Version ${pack.version}` : ''];
+  const bits = [availableAs(pack), pack.version ? `Version ${pack.version}` : ''];
   return <p className="dept-meta">{bits.filter(Boolean).join(' · ')}</p>;
 }
 
