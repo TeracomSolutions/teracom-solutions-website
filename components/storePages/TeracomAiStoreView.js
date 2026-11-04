@@ -11,7 +11,8 @@ import { INDUSTRY_NOTE } from '@/components/CatalogueDepartments';
 // Store > Teracom AI (Robert, 2026-11-03): Teracom's own software in its own section
 // of the store, so it is easy to find. Every Department and extension pack comes from
 // Global's live catalogue (lib/departmentCatalogue.js); each opens its own page with
-// everything it includes, and its published price with the base platform (4 November 2026).
+// everything it includes. Coming soon, with the price shown as an estimate only (Robert,
+// 4 November 2026); nothing can be bought yet, so each asks for interest.
 export const teracomAiStoreMetadata = pageMetadata({
   title: 'Teracom AI Departments and Extension Packs | Teracom Store',
   description: 'Teracom AI software in the Teracom Store: every Department and extension pack, what each one does, its digital workers, dashboards and reports, and which plans include it.',
@@ -35,8 +36,8 @@ function PackCard({ pack, label, price }) {
         {pack.extensions?.length ? <p className="ai-pack-meta">Extension packs: {pack.extensions.map((e) => e.name).join(', ')}</p> : null}
       </div>
       <div>
-        <p className="price">{price ? `${monthlyMoney((price + BASE_PLATFORM_MONTHLY) * (1 + GST_RATE))} a month incl. GST` : 'Pricing coming soon'}</p>
-        {price ? <p className="ai-pack-meta">{money(price)} plus the {money(BASE_PLATFORM_MONTHLY)} base platform every customer has, ex GST</p> : null}
+        <p className="price">Coming soon</p>
+        {price ? <p className="ai-pack-meta">Estimated {monthlyMoney((price + BASE_PLATFORM_MONTHLY) * (1 + GST_RATE))} a month incl. GST ({money(price)} plus the {money(BASE_PLATFORM_MONTHLY)} base platform every customer has, ex GST)</p> : null}
         <div className="ai-pack-actions">
           <Link className="btn btn-secondary" href={`/store/teracom-ai/${pack.slug}`}>See what&apos;s included</Link>
           <Link className="btn btn-primary" href={interestLink(pack.name)}>Register interest</Link>
