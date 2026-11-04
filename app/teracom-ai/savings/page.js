@@ -84,7 +84,7 @@ export default async function SavingsPage() {
                     </ul>
                     <p className="savings-option-total">
                       Example total: {money(total.saving)} a year
-                      {priced.yearlyCost != null ? `, less ${money(priced.yearlyCost)} for the Departments = ${money(priced.net)}` : ''}
+                      {priced.yearlyCost != null ? `, less ${money(priced.yearlyCost)} for the Departments and the base platform = ${money(priced.net)}` : ''}
                     </p>
                   </article>
                 );
