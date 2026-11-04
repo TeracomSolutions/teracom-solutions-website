@@ -7,6 +7,7 @@ import {
   Cpu,
   FileText,
   Inbox,
+  ClipboardSignature,
   Megaphone,
   Info,
   Radar,
@@ -65,6 +66,13 @@ const AREAS = [
     text: 'Enquiries from the contact form on this website, newest first, with Mark contacted.',
     icon: Inbox,
     hue: '#60a5fa',
+  },
+  {
+    href: '/admin/forms',
+    title: 'Forms',
+    text: 'Forms customers fill in and sign on the website, such as monitoring commissioning, with the signed copy, files, status and notes.',
+    icon: ClipboardSignature,
+    hue: '#a78bfa',
   },
   {
     href: '/admin/support',

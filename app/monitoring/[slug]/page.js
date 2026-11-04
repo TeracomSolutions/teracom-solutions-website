@@ -161,7 +161,7 @@ export default async function MonitoringServicePage(props) {
             <Link className="btn btn-primary" href="/contact?interest=Monitoring">
               Get in touch
             </Link>
-            <a className="btn btn-secondary" href={COMMISSIONING_FORM_URL} target="_blank" rel="noopener">
+            <a className="btn btn-secondary" href={COMMISSIONING_FORM_URL}>
               Complete your monitoring details
             </a>
             <a className="btn btn-secondary" href={`mailto:${BUSINESS.salesEmail}`}>

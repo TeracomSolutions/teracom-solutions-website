@@ -3576,3 +3576,26 @@ select option, select optgroup { background-color:#111; color:#fff; }
 .savings-option-total { margin:8px 0 0; font-weight:800; color:#fff; }
 .savings-qualifier { margin:10px 0 0; padding:10px 14px; border-left:3px solid #f59e0b; background:rgba(245,158,11,.08); font-size:15px; }
 .savings-cta { border-top:1px solid rgba(255,23,23,.4); }
+
+/* Forms customers fill in and sign (components/OnlineForm.js) and the console's Forms page. */
+.online-form-section { display:grid; gap:20px; }
+.online-form-fieldset { border:0; padding:0; margin:0; display:grid; gap:10px; min-width:0; }
+.online-form-fieldset > legend { font-size:14px; font-weight:700; color:#fff; padding:0; margin-bottom:4px; }
+.online-form-option-note { display:block; font-size:13.5px; color:var(--muted); margin-top:2px; }
+.online-form-note { margin:0; color:var(--muted); font-size:15px; line-height:1.55; }
+.online-form-row { display:grid; gap:12px; }
+.online-form-row .field { margin:0; }
+.online-form-files { list-style:none; margin:8px 0 0; padding:0; display:grid; gap:6px; font-size:14px; }
+.online-form-files li { display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+.online-form-hours { border-collapse:collapse; font-size:14px; }
+.online-form-hours th, .online-form-hours td { padding:4px 10px 4px 0; text-align:left; font-weight:600; }
+.online-form-hours thead th { color:var(--muted); font-size:12px; text-transform:uppercase; letter-spacing:.08em; }
+.online-form-hours input { width:90px; padding:8px 10px; border-radius:10px; border:1px solid var(--line); background:#0d0d0d; color:#fff; font:inherit; }
+.online-form-grid { display:grid; gap:14px; }
+.online-form-grid .field { margin:0; }
+.online-form .request-failed ul { margin:4px 0 0; padding-left:22px; color:#d6d6d6; }
+.link-button { background:none; border:0; padding:0; color:var(--red2); font:inherit; font-size:13px; cursor:pointer; text-decoration:underline; text-underline-offset:3px; }
+.form-summary { margin:0 0 16px; }
+.form-summary h2 { margin:0 0 8px; font-size:16px; }
+.form-summary-value { white-space:pre-wrap; }
+.form-signature { display:block; max-width:320px; margin-top:10px; background:#fff; border-radius:8px; padding:6px; }

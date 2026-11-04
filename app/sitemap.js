@@ -6,6 +6,7 @@ import { articles } from '@/lib/articles';
 import { resourcesSections } from '@/lib/resourcesSections';
 import { services } from '@/lib/services';
 import { monitoringServices } from '@/lib/monitoring';
+import { ONLINE_FORMS } from '@/lib/onlineForms';
 import { MONITORING_LOGIN_PATH, monitoringLoginEnabled } from '@/lib/monitoringLogin';
 import { requestForms } from '@/lib/requestForms';
 import { tools } from '@/lib/tools';
@@ -126,6 +127,8 @@ export default async function sitemap() {
     })),
     // Pre-launch and switched off by default; listed only once it is turned on.
     ...(monitoringLoginEnabled() ? [{ path: MONITORING_LOGIN_PATH, changeFrequency: 'monthly', priority: 0.5 }] : []),
+    // Forms customers sign (lib/onlineForms), only those that are live.
+    ...ONLINE_FORMS.filter((form) => form.live).map((form) => ({ path: `/forms/${form.key}`, changeFrequency: 'monthly', priority: 0.4 })),
 
     ...[...requestForms, { slug: 'account-application' }].map((form) => ({
       path: `/resources/submit-a-request/${form.slug}`,
