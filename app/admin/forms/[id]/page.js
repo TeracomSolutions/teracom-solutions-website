@@ -2,10 +2,12 @@ import { BRAND, retitle } from '@/lib/brand';
 import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
 
+import AdminFormResend from '@/components/AdminFormResend';
 import AdminFormStatus from '@/components/AdminFormStatus';
 import AdminShell from '@/components/AdminShell';
 import { fetchFormSubmission } from '@/lib/api/forms';
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
+import { KIND_LABELS, describeDestination } from '@/lib/formRouting';
 
 export const metadata = {
   title: retitle('Form|Teracom Solutions', BRAND),
@@ -55,6 +57,36 @@ export default async function AdminFormPage({ params }) {
           </div>
 
           <AdminFormStatus id={sub.id} status={sub.status} notes={sub.staff_notes || ''} />
+
+          <section className="admin-card form-summary">
+            <h2>Where it went</h2>
+            <p className="admin-muted">
+              Goes to the customer and {(sub.destinations || []).map((d) => describeDestination(d)).join('; ') || 'nowhere else'}.{' '}
+              <Link className="admin-link" href="/admin/forms#form-route-heading">Change where forms go</Link>
+            </p>
+            {sub.deliveries?.length ? (
+              <div className="admin-table-wrap">
+                <table className="admin-table">
+                  <thead><tr><th>When</th><th>Where</th><th>Result</th></tr></thead>
+                  <tbody>
+                    {sub.deliveries.map((d) => (
+                      <tr key={d.id}>
+                        <td>{when(d.created_at)}</td>
+                        <td className="wrap">{KIND_LABELS[d.kind] || d.kind}<br /><span className="admin-muted">{d.target}</span></td>
+                        <td className="wrap">
+                          <span className={`admin-status is-${d.outcome === 'done' ? 'done' : 'cancelled'}`}>{d.outcome === 'done' ? 'Done' : 'Failed'}</span>
+                          {d.detail ? <><br /><span className="admin-muted">{d.detail}</span></> : null}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              <p className="admin-muted">Nothing recorded yet (forms received before 5 November 2026 were only emailed).</p>
+            )}
+            <AdminFormResend id={sub.id} />
+          </section>
 
           {(sub.summary || []).map((section) => (
             <section className="admin-card form-summary" key={section.title}>
