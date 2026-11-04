@@ -5,7 +5,7 @@ import SavingsCalculator from '@/components/SavingsCalculator';
 import { fetchDepartmentCatalogue } from '@/lib/api/departmentCatalogue';
 import { publishedPrices } from '@/lib/departmentPrices';
 import { findPack, splitIncludes } from '@/lib/departmentCatalogue';
-import { AVAILABILITY, BASE_PLATFORM_MONTHLY, DISCLAIMER, GST_RATE, NOT_MEASURED, NO_SAVINGS_PAGE, SAVINGS_PAGES_LIVE, money } from '@/lib/savings';
+import { AVAILABILITY, BASE_PLATFORM_MONTHLY, DISCLAIMER, GST_RATE, NOT_MEASURED, NO_SAVINGS_PAGE, SAVINGS_PAGES_LIVE, money, monthlyMoney } from '@/lib/savings';
 import { pageMetadata } from '@/lib/seo';
 
 // A Department, sold on what it takes off the team (Robert, 3 November 2026;
@@ -67,7 +67,7 @@ export default async function DepartmentPage(props) {
           <h2>What you pay for</h2>
           <p>
             One monthly subscription for the {pack.name} Department
-            {price ? `: ${money((price + BASE_PLATFORM_MONTHLY) * (1 + GST_RATE))} a month including GST, made up of ${money(price)} for the Department and ${money(BASE_PLATFORM_MONTHLY)} for the base platform every customer has (ex GST), with no setup fee` : ''}. It
+            {price ? `: ${monthlyMoney((price + BASE_PLATFORM_MONTHLY) * (1 + GST_RATE))} a month including GST, made up of ${money(price)} for the Department and ${money(BASE_PLATFORM_MONTHLY)} for the base platform every customer has (ex GST), with no setup fee` : ''}. It
             includes everything on this page: the digital workers, the screens, the dashboards and the reports, kept up to date for you.
             {price ? '' : ' Pricing will be published soon.'}
           </p>

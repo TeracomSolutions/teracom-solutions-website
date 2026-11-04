@@ -5,14 +5,15 @@ import { BarChart3, Bot, FileText, LayoutDashboard, ShieldCheck, Users } from 'l
 import { fetchDepartmentCatalogue } from '@/lib/api/departmentCatalogue';
 import { KIND_LABELS, findPack, slugOf, splitIncludes } from '@/lib/departmentCatalogue';
 import { pageMetadata } from '@/lib/seo';
-import { NO_SAVINGS_PAGE } from '@/lib/savings';
+import { publishedPrices } from '@/lib/departmentPrices';
+import { BASE_PLATFORM_MONTHLY, GST_RATE, NO_SAVINGS_PAGE, money, monthlyMoney } from '@/lib/savings';
 import { interestLink } from '@/components/storePages/TeracomAiStoreView';
 
 // One Teracom AI pack in the store (Robert, 2026-11-03: describe in detail exactly what is
 // in each Department, so customers know what they are buying and how it works): what it
 // does, every screen and the question it answers, its dashboards and reports, what each
 // digital worker does, what always stays with a person, and what it works with. All of
-// it from Global's catalogue; no prices until Robert approves them.
+// it from Global's catalogue, with its published price and the base platform.
 export async function packMetadata(slug) {
   const { entries } = await fetchDepartmentCatalogue();
   const pack = findPack(entries, slug);
@@ -29,6 +30,7 @@ export default async function PackDetailView({ slug }) {
   const pack = findPack(entries, slug);
   if (!pack) notFound();
   const { widgets, dashboards, reports, other } = splitIncludes(pack.includes);
+  const price = publishedPrices()?.[pack.slug];
   const related = pack.connectsTo
     .map((name) => entries.find((e) => slugOf(e.name) === slugOf(name)))
     .filter(Boolean);
@@ -52,7 +54,7 @@ export default async function PackDetailView({ slug }) {
             </p>
             <div className="ai-pack-actions">
               <Link className="btn btn-primary" href={interestLink(pack.name)}>Register interest</Link>
-              <span className="price">Early access · pricing coming soon</span>
+              <span className="price">{price ? `Early access · ${monthlyMoney((price + BASE_PLATFORM_MONTHLY) * (1 + GST_RATE))} a month incl. GST (${money(price)} plus the ${money(BASE_PLATFORM_MONTHLY)} base platform, ex GST)` : 'Early access · pricing coming soon'}</span>
             </div>
           </div>
         </div>
