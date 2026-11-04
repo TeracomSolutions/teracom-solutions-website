@@ -48,8 +48,8 @@ export default async function CapabilityPage(props) {
                 <li key={b}>{b}</li>
               ))}
             </ul>
-            <Link className="btn btn-primary" href="/store">
-              View Plans
+            <Link className="btn btn-primary" href="/store/teracom-ai">
+              View Departments
             </Link>
           </div>
           <div className="showcase-image capability-showcase-image">

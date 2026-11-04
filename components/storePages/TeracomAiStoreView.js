@@ -2,9 +2,9 @@ import Link from 'next/link';
 import { Bot, Puzzle } from 'lucide-react';
 
 import { fetchDepartmentCatalogue } from '@/lib/api/departmentCatalogue';
-import { KIND_LABELS, groupCatalogue } from '@/lib/departmentCatalogue';
+import { KIND_LABELS, availableAs, groupCatalogue } from '@/lib/departmentCatalogue';
 import { publishedPrices } from '@/lib/departmentPrices';
-import { BASE_PLATFORM_MONTHLY, GST_RATE, money, monthlyMoney } from '@/lib/savings';
+import { GST_RATE, basePlatform, money, monthlyMoney } from '@/lib/savings';
 import { pageMetadata } from '@/lib/seo';
 import { INDUSTRY_NOTE } from '@/components/CatalogueDepartments';
 
@@ -15,13 +15,13 @@ import { INDUSTRY_NOTE } from '@/components/CatalogueDepartments';
 // 4 November 2026); nothing can be bought yet, so each asks for interest.
 export const teracomAiStoreMetadata = pageMetadata({
   title: 'Teracom AI Departments and Extension Packs | Teracom Store',
-  description: 'Teracom AI software in the Teracom Store: every Department and extension pack, what each one does, its digital workers, dashboards and reports, and which plans include it.',
+  description: 'Teracom AI software in the Teracom Store: every Department and extension pack, what each one does, its digital workers, dashboards and reports, priced per Department.',
   path: '/store/teracom-ai',
 });
 
 export const interestLink = (name) => `/?interest=${encodeURIComponent(`Teracom AI ${name}`)}#contact`;
 
-function PackCard({ pack, label, price }) {
+function PackCard({ pack, label, price, base }) {
   return (
     <article className="product-card ai-pack-card">
       <div>
@@ -29,7 +29,7 @@ function PackCard({ pack, label, price }) {
         <h3><Link href={`/store/teracom-ai/${pack.slug}`}>{pack.name}</Link></h3>
         {pack.description ? <p>{pack.description}</p> : null}
         <p className="ai-pack-meta">
-          {[pack.includes.length ? `${pack.includes.length} screens, dashboards and reports` : '', pack.tiers.length ? `Included in ${pack.tiers.join(', ')}` : '']
+          {[pack.includes.length ? `${pack.includes.length} screens, dashboards and reports` : '', availableAs(pack)]
             .filter(Boolean)
             .join(' · ')}
         </p>
@@ -37,7 +37,7 @@ function PackCard({ pack, label, price }) {
       </div>
       <div>
         <p className="price">Coming soon</p>
-        {price ? <p className="ai-pack-meta">Estimated {monthlyMoney((price + BASE_PLATFORM_MONTHLY) * (1 + GST_RATE))} a month incl. GST ({money(price)} plus the {money(BASE_PLATFORM_MONTHLY)} base platform every customer has, ex GST)</p> : null}
+        {price ? <p className="ai-pack-meta">Estimated {monthlyMoney((price + base) * (1 + GST_RATE))} a month incl. GST ({money(price)} plus the {money(base)} base platform every customer has, ex GST)</p> : null}
         <div className="ai-pack-actions">
           <Link className="btn btn-secondary" href={`/store/teracom-ai/${pack.slug}`}>See what&apos;s included</Link>
           <Link className="btn btn-primary" href={interestLink(pack.name)}>Register interest</Link>
@@ -51,7 +51,8 @@ export default async function TeracomAiStoreView() {
   const { entries } = await fetchDepartmentCatalogue();
   const { departments, sections } = groupCatalogue(entries);
   const extensionCount = entries.length - departments.length;
-  const prices = publishedPrices();
+  const prices = await publishedPrices();
+  const base = basePlatform(prices);
   return (
     <main id="main-content">
       <section className="hero hero-product hero-shallow store-hero">
@@ -80,7 +81,7 @@ export default async function TeracomAiStoreView() {
             <h2>Departments</h2>
           </div>
           <div className="product-grid">
-            {departments.map((d) => <PackCard key={d.slug} pack={d} label="Department" price={prices?.[d.slug]} />)}
+            {departments.map((d) => <PackCard key={d.slug} pack={d} label="Department" price={prices?.[d.slug]} base={base} />)}
           </div>
         </div>
       </section>
@@ -94,7 +95,7 @@ export default async function TeracomAiStoreView() {
               {/industry/i.test(section.title) ? <p>{INDUSTRY_NOTE}</p> : null}
             </div>
             <div className="product-grid">
-              {section.packs.map((p) => <PackCard key={p.slug} pack={p} label={KIND_LABELS[p.kind] || 'Extension pack'} price={prices?.[p.slug]} />)}
+              {section.packs.map((p) => <PackCard key={p.slug} pack={p} label={KIND_LABELS[p.kind] || 'Extension pack'} price={prices?.[p.slug]} base={base} />)}
             </div>
           </div>
         </section>
@@ -108,7 +109,7 @@ export default async function TeracomAiStoreView() {
               <h2>Department extension packs</h2>
             </div>
             <div className="product-grid">
-              {departments.flatMap((d) => d.extensions.map((e) => <PackCard key={e.slug} pack={e} label={`${d.name} extension`} price={prices?.[e.slug]} />))}
+              {departments.flatMap((d) => d.extensions.map((e) => <PackCard key={e.slug} pack={e} label={`${d.name} extension`} price={prices?.[e.slug]} base={base} />))}
             </div>
           </div>
         </section>

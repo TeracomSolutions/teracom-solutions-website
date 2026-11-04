@@ -26,7 +26,7 @@ const departmentHref = departmentPagePath;
 export default async function SavingsPage() {
   const { entries } = await fetchDepartmentCatalogue();
   const departments = entries.filter((e) => e.kind === 'department' && e.slug !== 'personal').map((d) => ({ slug: d.slug, name: d.name }));
-  const prices = publishedPrices();
+  const prices = await publishedPrices();
 
   return (
     <main id="main-content">
