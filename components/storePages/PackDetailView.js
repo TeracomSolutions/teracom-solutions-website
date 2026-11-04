@@ -13,7 +13,8 @@ import { interestLink } from '@/components/storePages/TeracomAiStoreView';
 // in each Department, so customers know what they are buying and how it works): what it
 // does, every screen and the question it answers, its dashboards and reports, what each
 // digital worker does, what always stays with a person, and what it works with. All of
-// it from Global's catalogue, with its published price and the base platform.
+// it from Global's catalogue. Coming soon, with the price as an estimate only (Robert,
+// 4 November 2026).
 export async function packMetadata(slug) {
   const { entries } = await fetchDepartmentCatalogue();
   const pack = findPack(entries, slug);
@@ -54,7 +55,7 @@ export default async function PackDetailView({ slug }) {
             </p>
             <div className="ai-pack-actions">
               <Link className="btn btn-primary" href={interestLink(pack.name)}>Register interest</Link>
-              <span className="price">{price ? `Early access · ${monthlyMoney((price + BASE_PLATFORM_MONTHLY) * (1 + GST_RATE))} a month incl. GST (${money(price)} plus the ${money(BASE_PLATFORM_MONTHLY)} base platform, ex GST)` : 'Early access · pricing coming soon'}</span>
+              <span className="price">{price ? `Coming soon · estimated ${monthlyMoney((price + BASE_PLATFORM_MONTHLY) * (1 + GST_RATE))} a month incl. GST (${money(price)} plus the ${money(BASE_PLATFORM_MONTHLY)} base platform, ex GST)` : 'Coming soon'}</span>
             </div>
           </div>
         </div>
