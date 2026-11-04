@@ -107,7 +107,7 @@ export default function MonitoringPage() {
               </Link>
             </div>
             <p className="form-note">
-              Signing up with us? <a href={COMMISSIONING_FORM_URL} target="_blank" rel="noopener">Complete your monitoring details</a>.
+              Signing up with us? <a href={COMMISSIONING_FORM_URL}>Complete your monitoring details</a>.
             </p>
           </div>
           <StoreCategoryArt slug="intrusion" />
@@ -251,7 +251,7 @@ export default function MonitoringPage() {
             <Link className="btn btn-primary" href="/contact?interest=Monitoring">
               Ask about monitoring
             </Link>
-            <a className="btn btn-secondary" href={COMMISSIONING_FORM_URL} target="_blank" rel="noopener">
+            <a className="btn btn-secondary" href={COMMISSIONING_FORM_URL}>
               Complete your monitoring details
             </a>
             <a className="btn btn-secondary" href={`mailto:${BUSINESS.salesEmail}`}>
