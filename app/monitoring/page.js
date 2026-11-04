@@ -7,6 +7,7 @@ import MonitoringIcon from '@/components/MonitoringIcon';
 import ProcessSteps from '@/components/ProcessSteps';
 import StoreCategoryArt from '@/components/StoreCategoryArt';
 import {
+  COMMISSIONING_FORM_URL,
   connectionPaths,
   monitoringFaqs,
   monitoringServices,
@@ -105,6 +106,9 @@ export default function MonitoringPage() {
                 How it works
               </Link>
             </div>
+            <p className="form-note">
+              Signing up with us? <a href={COMMISSIONING_FORM_URL} target="_blank" rel="noopener">Complete your monitoring details</a>.
+            </p>
           </div>
           <StoreCategoryArt slug="intrusion" />
         </div>
@@ -235,7 +239,7 @@ export default function MonitoringPage() {
             <h2>Talk to us about monitoring your site.</h2>
             <p>
               Tell us what panel you have and how the site is used, and we will come back with a recommendation and a
-              price. Online applications are coming; for now it is a conversation.
+              price. Already signing up? Complete your monitoring details online: your site, panel, contacts and patrol instructions.
             </p>
             {/* Monitoring is a service contract, not a product. The page
                 describes the service; the agreement is what governs it. */}
@@ -247,6 +251,9 @@ export default function MonitoringPage() {
             <Link className="btn btn-primary" href="/contact?interest=Monitoring">
               Ask about monitoring
             </Link>
+            <a className="btn btn-secondary" href={COMMISSIONING_FORM_URL} target="_blank" rel="noopener">
+              Complete your monitoring details
+            </a>
             <a className="btn btn-secondary" href={`mailto:${BUSINESS.salesEmail}`}>
               Call {BUSINESS.telephoneDisplay}
             </a>

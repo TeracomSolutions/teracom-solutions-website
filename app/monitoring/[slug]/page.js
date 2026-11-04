@@ -5,7 +5,7 @@ import Breadcrumbs from '@/components/Breadcrumbs';
 import JsonLd from '@/components/JsonLd';
 import MonitoringIcon from '@/components/MonitoringIcon';
 import StoreCategoryArt from '@/components/StoreCategoryArt';
-import { findMonitoringService, monitoringServices } from '@/lib/monitoring';
+import { COMMISSIONING_FORM_URL, findMonitoringService, monitoringServices } from '@/lib/monitoring';
 import { absoluteUrl, BUSINESS, pageMetadata, SITE_NAME } from '@/lib/seo';
 import { withSeoTitle } from '@/lib/seoTitles';
 
@@ -161,6 +161,9 @@ export default async function MonitoringServicePage(props) {
             <Link className="btn btn-primary" href="/contact?interest=Monitoring">
               Get in touch
             </Link>
+            <a className="btn btn-secondary" href={COMMISSIONING_FORM_URL} target="_blank" rel="noopener">
+              Complete your monitoring details
+            </a>
             <a className="btn btn-secondary" href={`mailto:${BUSINESS.salesEmail}`}>
               Email us
             </a>
