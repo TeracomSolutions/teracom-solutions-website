@@ -7,6 +7,7 @@ import { fetchAbout } from '@/lib/api/adminAbout';
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
 import { formatBuildTime, formatReleased } from '@/lib/aboutView';
 import { CONSOLE_VERSION, CONSOLE_VERSIONS } from '@/lib/consoleVersions';
+import { WEBSITE_VERSION, WEBSITE_VERSIONS } from '@/lib/websiteVersions';
 import { fromBackend } from '@/lib/versionList';
 
 export const metadata = {
@@ -26,8 +27,8 @@ function Facts({ rows }) {
   );
 }
 
-// About page: the console (this front end) and the backend are released separately, so each has its own
-// version, commit and history of changes.
+// About page: the public website and store, the console (this front end) and the backend each have their
+// own version and history of changes. The website and console share one deployment, so one commit.
 export default async function AdminAboutPage() {
   const token = await requireAdminToken();
 
@@ -48,7 +49,19 @@ export default async function AdminAboutPage() {
   return (
     <AdminShell>
       <h1 className="admin-heading">About</h1>
-      <p className="lead">Which versions of the console and the backend are running, and what changed in each. Open About on each copy to check both are on the same versions and commits.</p>
+      <p className="lead">Which versions of the website and store, the console and the backend are running, and what changed in each. Open About on each copy to check they are on the same versions and commits.</p>
+
+      <section className="admin-card">
+        <h2>Website and store (public front end)</h2>
+        <Facts
+          rows={[
+            ['Version', WEBSITE_VERSION.version],
+            ['Released', formatReleased(WEBSITE_VERSION.date)],
+            ['Commit', consoleCommit],
+            ['Built', formatBuildTime(process.env.BUILD_TIME)],
+          ]}
+        />
+      </section>
 
       <section className="admin-card">
         <h2>Console (this front end)</h2>
@@ -83,10 +96,11 @@ export default async function AdminAboutPage() {
         </section>
       )}
 
-      <p className="admin-muted">Console and backend are listed separately because each is released on its own.</p>
+      <p className="admin-muted">Website, console and backend are listed separately because each changes on its own. The website and the console are deployed together, so they share a commit.</p>
 
       {about && <AboutVersions title="Backend versions" items={fromBackend(about.versions)} />}
       <AboutVersions title="Console versions" items={CONSOLE_VERSIONS} />
+      <AboutVersions title="Website and store versions" items={WEBSITE_VERSIONS} />
     </AdminShell>
   );
 }
