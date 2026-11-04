@@ -3,13 +3,15 @@ import { Bot, Puzzle } from 'lucide-react';
 
 import { fetchDepartmentCatalogue } from '@/lib/api/departmentCatalogue';
 import { KIND_LABELS, groupCatalogue } from '@/lib/departmentCatalogue';
+import { publishedPrices } from '@/lib/departmentPrices';
+import { BASE_PLATFORM_MONTHLY, GST_RATE, money, monthlyMoney } from '@/lib/savings';
 import { pageMetadata } from '@/lib/seo';
 import { INDUSTRY_NOTE } from '@/components/CatalogueDepartments';
 
 // Store > Teracom AI (Robert, 2026-11-03): Teracom's own software in its own section
 // of the store, so it is easy to find. Every Department and extension pack comes from
 // Global's live catalogue (lib/departmentCatalogue.js); each opens its own page with
-// everything it includes. No prices are published yet, so each asks for interest.
+// everything it includes, and its published price with the base platform (4 November 2026).
 export const teracomAiStoreMetadata = pageMetadata({
   title: 'Teracom AI Departments and Extension Packs | Teracom Store',
   description: 'Teracom AI software in the Teracom Store: every Department and extension pack, what each one does, its digital workers, dashboards and reports, and which plans include it.',
@@ -18,7 +20,7 @@ export const teracomAiStoreMetadata = pageMetadata({
 
 export const interestLink = (name) => `/?interest=${encodeURIComponent(`Teracom AI ${name}`)}#contact`;
 
-function PackCard({ pack, label }) {
+function PackCard({ pack, label, price }) {
   return (
     <article className="product-card ai-pack-card">
       <div>
@@ -33,7 +35,8 @@ function PackCard({ pack, label }) {
         {pack.extensions?.length ? <p className="ai-pack-meta">Extension packs: {pack.extensions.map((e) => e.name).join(', ')}</p> : null}
       </div>
       <div>
-        <p className="price">Pricing coming soon</p>
+        <p className="price">{price ? `${monthlyMoney((price + BASE_PLATFORM_MONTHLY) * (1 + GST_RATE))} a month incl. GST` : 'Pricing coming soon'}</p>
+        {price ? <p className="ai-pack-meta">{money(price)} plus the {money(BASE_PLATFORM_MONTHLY)} base platform every customer has, ex GST</p> : null}
         <div className="ai-pack-actions">
           <Link className="btn btn-secondary" href={`/store/teracom-ai/${pack.slug}`}>See what&apos;s included</Link>
           <Link className="btn btn-primary" href={interestLink(pack.name)}>Register interest</Link>
@@ -47,6 +50,7 @@ export default async function TeracomAiStoreView() {
   const { entries } = await fetchDepartmentCatalogue();
   const { departments, sections } = groupCatalogue(entries);
   const extensionCount = entries.length - departments.length;
+  const prices = publishedPrices();
   return (
     <main id="main-content">
       <section className="hero hero-product hero-shallow store-hero">
@@ -75,7 +79,7 @@ export default async function TeracomAiStoreView() {
             <h2>Departments</h2>
           </div>
           <div className="product-grid">
-            {departments.map((d) => <PackCard key={d.slug} pack={d} label="Department" />)}
+            {departments.map((d) => <PackCard key={d.slug} pack={d} label="Department" price={prices?.[d.slug]} />)}
           </div>
         </div>
       </section>
@@ -89,7 +93,7 @@ export default async function TeracomAiStoreView() {
               {/industry/i.test(section.title) ? <p>{INDUSTRY_NOTE}</p> : null}
             </div>
             <div className="product-grid">
-              {section.packs.map((p) => <PackCard key={p.slug} pack={p} label={KIND_LABELS[p.kind] || 'Extension pack'} />)}
+              {section.packs.map((p) => <PackCard key={p.slug} pack={p} label={KIND_LABELS[p.kind] || 'Extension pack'} price={prices?.[p.slug]} />)}
             </div>
           </div>
         </section>
@@ -103,7 +107,7 @@ export default async function TeracomAiStoreView() {
               <h2>Department extension packs</h2>
             </div>
             <div className="product-grid">
-              {departments.flatMap((d) => d.extensions.map((e) => <PackCard key={e.slug} pack={e} label={`${d.name} extension`} />))}
+              {departments.flatMap((d) => d.extensions.map((e) => <PackCard key={e.slug} pack={e} label={`${d.name} extension`} price={prices?.[e.slug]} />))}
             </div>
           </div>
         </section>
