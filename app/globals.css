@@ -2625,8 +2625,13 @@ a.admin-status:hover { filter:brightness(1.15); }
 /* Admin: Store -> Freight */
 .admin-freight-form { max-width:760px; }
 .admin-freight-group { display:grid; gap:12px; margin:0; }
-.admin-freight-group legend { padding:0 6px; font-weight:800; }
-.admin-freight-row { display:grid; gap:12px; grid-template-columns:repeat(auto-fit, minmax(120px, 1fr)); }
+.admin-freight-group legend { float:left; width:100%; padding:0; margin:0; font-size:16px; font-weight:800; color:#fff; }
+.admin-freight-group .admin-muted { margin:0; }
+.admin-freight-group label > span.admin-muted { display:block; margin-top:2px; }
+.admin-freight-row { display:grid; gap:12px; grid-template-columns:repeat(auto-fit, minmax(96px, 1fr)); align-items:end; }
+.admin-freight-row input { min-width:0; }
+.admin-freight-try h2 { margin:0; }
+.admin-freight-choices .admin-check { white-space:nowrap; }
 .admin-freight-choices { display:flex; flex-wrap:wrap; gap:8px 18px; }
 .admin-freight-messages { display:grid; gap:8px; }
 .admin-freight-messages:empty { display:none; }
@@ -3617,3 +3622,10 @@ select option, select optgroup { background-color:#111; color:#fff; }
 .admin-pager-size select { width:auto; padding:4px 8px; }
 .admin-pager-buttons { display:inline-flex; flex-wrap:wrap; gap:6px; }
 .admin-table-compact th, .admin-table-compact td { padding:6px 10px; font-size:13px; }
+
+/* Needs review: the views, a clear selection bar, and the row buttons spaced out (Robert, 2026-11-05). */
+.admin-review-views { display:flex; flex-wrap:wrap; gap:8px; margin:0 0 14px; }
+.admin-review-bar { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px 24px; margin:0 0 14px; padding:12px 14px; border:1px solid var(--line); border-radius:12px; background:rgba(255,255,255,.03); }
+.admin-review-bar-group { display:flex; flex-wrap:wrap; align-items:center; gap:10px; }
+.admin-review-count { font-size:13px; font-weight:700; color:#fff; margin-right:4px; }
+.admin-review-row-actions { display:flex; flex-direction:column; align-items:stretch; gap:8px; min-width:130px; }
