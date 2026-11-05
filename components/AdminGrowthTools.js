@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 
+import AdminBusinessProfile from '@/components/AdminBusinessProfile';
 import AdminGrowthItems from '@/components/AdminGrowthItems';
 import AdminListPager, { useListPage } from '@/components/AdminListPager';
 import { formatDateTime } from '@/lib/adminFormat';
@@ -134,7 +135,10 @@ function ToolCard({ tool, busy, onToggle, onRun, onSave }) {
             </ul>
           ) : null}
           {tool.has_items ? <AdminGrowthItems tool={tool.key} enabled={tool.enabled} /> : null}
-          {tool.report ? <Report report={tool.report} /> : tool.can_run ? <p className="admin-muted">No report yet. Switch it on and press Run now.</p> : null}
+          {tool.key === 'business_profile' ? <AdminBusinessProfile tool={tool} /> : null}
+          {tool.report ? (
+            <Report report={tool.key === 'business_profile' ? { ...tool.report, table: null } : tool.report} />
+          ) : tool.can_run ? <p className="admin-muted">No report yet. Switch it on and press Run now.</p> : null}
         </div>
       ) : null}
     </div>
@@ -157,6 +161,15 @@ export default function AdminGrowthTools() {
   }, []);
 
   useEffect(() => { load(); }, [load]);
+
+  // Back from Google (Business Profile): say how the sign-in went.
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const google = params.get('google');
+    if (!google) return;
+    if (google === 'connected') setMessage('Google is connected. Switch Google Business Profile on and press Run now to read the listing and reviews.');
+    else setError('Google was not connected' + (params.get('reason') ? ': ' + params.get('reason') : ' (' + google + ')') + '.');
+  }, []);
 
   // While a tool runs, look again every five seconds.
   const anyRunning = (tools || []).some((t) => t.running);

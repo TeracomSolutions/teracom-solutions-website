@@ -3771,3 +3771,13 @@ select option, select optgroup { background-color:#111; color:#fff; }
 .scout-popup { width:min(640px, 100%); max-height:80vh; overflow:auto; background:#141414; border:1px solid var(--line); border-radius:14px; padding:18px 20px; }
 .scout-popup h3 { margin:0 0 8px; }
 .scout-popup-target { white-space:pre-wrap; overflow-wrap:anywhere; line-height:1.55; }
+
+/* Google Business Profile card (2026-11-05). */
+.gbp { display:grid; gap:12px; }
+.gbp-post { display:grid; gap:8px; padding:12px; border:1px solid var(--line); border-radius:12px; }
+.gbp-post textarea, .gbp-post input, .gbp-reply-form textarea { padding:8px 10px; border-radius:8px; border:1px solid var(--line); background:#0d0d0d; color:#fff; font:inherit; font-size:14px; }
+.gbp-reviews { list-style:none; margin:0; padding:0; display:grid; gap:10px; }
+.gbp-review { padding:10px 12px; border:1px solid var(--line); border-radius:10px; }
+.gbp-review p { margin:0 0 6px; }
+.gbp-reply { color:#9cc8ff; }
+.gbp-reply-form { display:grid; gap:6px; }
