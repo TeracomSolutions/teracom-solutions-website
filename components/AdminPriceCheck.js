@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 
+import AdminListPager, { useListPage } from '@/components/AdminListPager';
 import { formatDateTime } from '@/lib/adminFormat';
 
 // Store > Pricing > Price check (Robert, 2026-10-26): every live product's price for every tier, worked out
@@ -73,6 +74,8 @@ export default function AdminPriceCheck({ initial }) {
 
   const issues = check ? check.issues.filter((i) => kind === 'all' || i.worst === kind) : [];
   const allGood = check && check.issues_total === 0;
+  // Paged, 20 at a time (Robert, 2026-11-05), so Markup on cost and the rest are a short scroll away.
+  const view = useListPage(issues);
 
   return (
     <section className="admin-card admin-price-check">
@@ -100,15 +103,15 @@ export default function AdminPriceCheck({ initial }) {
               </button>
             ))}
           </div>
-          {check.issues_total > check.issues.length && <p className="admin-muted">Showing the first {check.issues.length} of {check.issues_total}, worst first.</p>}
+          {check.issues_total > check.issues.length && <p className="admin-muted">The list holds the first {check.issues.length.toLocaleString('en-AU')} of {check.issues_total.toLocaleString('en-AU')}, worst first; the CSV has the same.</p>}
           {issues.length > 0 && (
             <div className="admin-table-wrap">
-              <table className="admin-table">
+              <table className="admin-table admin-table-compact">
                 <thead>
                   <tr><th>Product</th><th>Supplier</th><th>Problem</th><th>Cost ex GST</th><th>RRP</th><th>Tiers affected</th></tr>
                 </thead>
                 <tbody>
-                  {issues.slice(0, 300).map((i) => (
+                  {view.rows.map((i) => (
                     <tr key={i.sku}>
                       <td><strong>{i.sku}</strong><div className="admin-muted">{i.name}</div></td>
                       <td>{i.supplier || '–'}</td>
@@ -120,8 +123,10 @@ export default function AdminPriceCheck({ initial }) {
                   ))}
                 </tbody>
               </table>
-              {issues.length > 300 && <p className="admin-muted">The first 300 are shown here; the CSV has them all.</p>}
             </div>
+          )}
+          {issues.length > 0 && (
+            <AdminListPager view={view} label="products" />
           )}
           <p className="admin-muted">Above RRP is not an error: cost plus your markup is above the supplier&apos;s RRP, so customers pay the markup price and visitors see it too. Worth a look in case the supplier&apos;s RRP or cost is wrong. Products whose RRP is below cost never go live; they wait on Data Feeds &gt; Needs review.</p>
         </>
