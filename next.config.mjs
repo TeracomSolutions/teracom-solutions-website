@@ -40,6 +40,10 @@ const nextConfig = {
       { source: '/admin/seo/:path*', destination: '/admin/website-data/:path*', permanent: true },
     ];
   },
+  // The IndexNow key file (Scout, Growth tools): /<32 hex>.txt is answered by a route.
+  async rewrites() {
+    return [{ source: '/:key([0-9a-f]{32}).txt', destination: '/api/indexnow-key/:key' }];
+  },
   async headers() {
     return [
       {

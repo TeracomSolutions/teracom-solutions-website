@@ -3704,3 +3704,23 @@ select option, select optgroup { background-color:#111; color:#fff; }
 .mp-page-facts dd { margin:0; }
 .mp-page-links { display:flex; flex-wrap:wrap; gap:14px; margin:0; }
 .mp-page p { margin:0; }
+
+/* Scout: Growth tools (Robert, 2026-11-05). */
+.growth-group { margin:22px 0; }
+.growth-grid { display:grid; gap:12px; grid-template-columns:repeat(auto-fill, minmax(340px, 1fr)); align-items:start; }
+.growth-card { border:1px solid var(--line); border-radius:14px; padding:14px 16px; background:rgba(255,255,255,.03); display:grid; gap:8px; }
+.growth-card.is-on { border-color:rgba(123,216,143,.5); }
+.growth-card-head { display:flex; gap:12px; align-items:flex-start; }
+.growth-number { flex:0 0 auto; width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,.08); font-weight:800; font-size:13px; }
+.growth-card-title { flex:1; display:grid; gap:3px; }
+.growth-card-title .admin-muted { font-size:13px; }
+.growth-switch { display:inline-flex; align-items:center; gap:6px; font-size:13px; font-weight:700; cursor:pointer; white-space:nowrap; }
+.growth-switch input { width:18px; height:18px; }
+.growth-status, .growth-needs { margin:0; font-size:12px; }
+.growth-error { color:#ff8a8a; }
+.growth-card-body { display:grid; gap:12px; margin-top:4px; padding-top:10px; border-top:1px solid var(--line); }
+.growth-settings { display:grid; gap:10px; }
+.growth-settings label { display:grid; gap:5px; font-size:12px; font-weight:700; color:var(--muted); }
+.growth-settings input, .growth-settings textarea { padding:8px 10px; border-radius:8px; border:1px solid var(--line); background:#0d0d0d; color:#fff; font:inherit; font-size:13px; }
+.growth-headline { margin:0; font-weight:700; }
+.growth-notes { margin:6px 0 0; padding-left:18px; font-size:13px; color:var(--muted); }
