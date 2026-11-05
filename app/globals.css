@@ -3795,3 +3795,9 @@ select option, select optgroup { background-color:#111; color:#fff; }
 .growth-switch { flex:0 0 auto; margin-left:8px; }
 .growth-needs, .growth-status, .growth-links, .growth-report td { overflow-wrap:anywhere; }
 .growth-card .admin-actions { flex-wrap:wrap; }
+
+/* About: open-source software and outside services (2026-11-06). */
+.about-open-source { margin-top:24px; display:grid; gap:12px; }
+.about-licence-notes { padding:12px 14px; border:1px solid rgba(255,210,122,.45); border-radius:12px; background:rgba(255,210,122,.06); }
+.about-licence-notes ul { margin:6px 0 0; padding-left:18px; }
+.about-open-group summary { cursor:pointer; font-weight:700; margin:4px 0 8px; }
