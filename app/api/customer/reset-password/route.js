@@ -3,7 +3,7 @@ import { z } from 'zod';
 
 import { resetPassword } from '@/lib/api/customerAuth';
 import { ApiError } from '@/lib/api/client';
-import { checkRateLimit, clientIpFromRequest, rateLimitResponse } from '@/lib/rateLimit';
+import { checkSharedRateLimit, clientIpFromRequest, rateLimitResponse } from '@/lib/rateLimit';
 
 const CONFIRM_RATE_LIMIT_MAX_ATTEMPTS = Number(process.env.CUSTOMER_RESET_CONFIRM_MAX_ATTEMPTS) || 10;
 const CONFIRM_RATE_LIMIT_WINDOW_SECONDS =
@@ -18,7 +18,7 @@ export async function POST(req) {
   // Rate limited as well as token-guarded: the token is 32 random bytes so
   // guessing is not the threat, but an unbounded endpoint that does a bcrypt
   // hash on every call is its own problem.
-  const rateLimit = checkRateLimit(`customer-reset-confirm:${clientIpFromRequest(req)}`, {
+  const rateLimit = await checkSharedRateLimit(`customer-reset-confirm:${clientIpFromRequest(req)}`, {
     maxAttempts: CONFIRM_RATE_LIMIT_MAX_ATTEMPTS,
     windowMs: CONFIRM_RATE_LIMIT_WINDOW_SECONDS,
   });

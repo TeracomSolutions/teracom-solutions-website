@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { staffLogin } from '@/lib/api/adminCatalog';
 import { ApiError } from '@/lib/api/client';
 import { setAdminSessionCookies } from '@/lib/adminSession';
-import { checkRateLimit, clientIpFromRequest, rateLimitResponse } from '@/lib/rateLimit';
+import { checkSharedRateLimit, clientIpFromRequest, rateLimitResponse } from '@/lib/rateLimit';
 
 // Teracom Solutions Website Admin, Phase 1. Rate-limited at this
 // layer too, same reasoning as ADMIN_IMPORT_RATE_LIMIT_* on the
@@ -24,7 +24,7 @@ const LoginRequest = z.object({
 
 export async function POST(req) {
   const rateLimitKey = `admin-login:${clientIpFromRequest(req)}`;
-  const rateLimit = checkRateLimit(rateLimitKey, {
+  const rateLimit = await checkSharedRateLimit(rateLimitKey, {
     maxAttempts: ADMIN_LOGIN_RATE_LIMIT_MAX_ATTEMPTS,
     windowMs: ADMIN_LOGIN_RATE_LIMIT_WINDOW_MS,
   });

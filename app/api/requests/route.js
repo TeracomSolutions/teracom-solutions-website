@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 
 import { ApiError } from '@/lib/api/client';
 import { submitLead } from '@/lib/api/leads';
-import { checkRateLimit, clientIpFromRequest, rateLimitResponse } from '@/lib/rateLimit';
+import { checkSharedRateLimit, clientIpFromRequest, rateLimitResponse } from '@/lib/rateLimit';
 import { findRequestForm, formatSubmission, valueFields } from '@/lib/requestForms';
 import { STARTED_FIELD, TRAP_FIELD, checkSubmission, textValues } from '@/lib/formGuard';
 import { TURNSTILE_FAILED_MESSAGE, verifyTurnstile } from '@/lib/turnstile';
@@ -23,7 +23,7 @@ const RATE_LIMIT_MAX = Number(process.env.REQUESTS_RATE_LIMIT_MAX_ATTEMPTS) || 5
 const RATE_LIMIT_WINDOW_MS = (Number(process.env.REQUESTS_RATE_LIMIT_WINDOW_SECONDS) || 600) * 1000;
 
 export async function POST(req) {
-  const rateLimit = checkRateLimit(`requests:${clientIpFromRequest(req)}`, {
+  const rateLimit = await checkSharedRateLimit(`requests:${clientIpFromRequest(req)}`, {
     maxAttempts: RATE_LIMIT_MAX,
     windowMs: RATE_LIMIT_WINDOW_MS,
   });

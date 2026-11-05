@@ -3,7 +3,7 @@ import { z } from 'zod';
 
 import { staffMfaVerify } from '@/lib/api/adminAuth';
 import { setAdminSessionCookies } from '@/lib/adminSession';
-import { checkRateLimit, clientIpFromRequest, rateLimitResponse } from '@/lib/rateLimit';
+import { checkSharedRateLimit, clientIpFromRequest, rateLimitResponse } from '@/lib/rateLimit';
 
 // Per-IP rate limit for MFA login attempts, same as the login route
 const ADMIN_LOGIN_MFA_RATE_LIMIT_MAX_ATTEMPTS = Number(process.env.ADMIN_LOGIN_MFA_RATE_LIMIT_MAX_ATTEMPTS) || 10;
@@ -16,7 +16,7 @@ const MfaLoginRequest = z.object({
 
 export async function POST(req) {
   const rateLimitKey = `admin-login-mfa:${clientIpFromRequest(req)}`;
-  const rateLimit = checkRateLimit(rateLimitKey, {
+  const rateLimit = await checkSharedRateLimit(rateLimitKey, {
     maxAttempts: ADMIN_LOGIN_MFA_RATE_LIMIT_MAX_ATTEMPTS,
     windowMs: ADMIN_LOGIN_MFA_RATE_LIMIT_WINDOW_MS,
   });

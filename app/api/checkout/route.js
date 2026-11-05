@@ -4,7 +4,7 @@ import { stripe } from '@/lib/stripe';
 import { findProductAsync } from '@/lib/catalogue';
 import { unitPriceCents } from '@/lib/catalogueMerge';
 import { SITE_URL } from '@/lib/config';
-import { checkRateLimit, clientIpFromRequest, rateLimitResponse } from '@/lib/rateLimit';
+import { checkSharedRateLimit, clientIpFromRequest, rateLimitResponse } from '@/lib/rateLimit';
 import { cookies } from 'next/headers';
 import { CUSTOMER_ACCESS_TOKEN_COOKIE } from '@/lib/customerSession';
 import { getCurrentCustomer } from '@/lib/api/customerAuth';
@@ -20,21 +20,15 @@ const CHECKOUT_RATE_LIMIT_WINDOW_MS = (Number(process.env.CHECKOUT_RATE_LIMIT_WI
 
 const CheckoutRequest = z.object({
   productId: z.string(),
-  quantity: z.number().int().positive().default(1),
-  // Commerce-to-Licensing Lifecycle Automation, Phase 1 (Wave 2
-  // Workstream 5) — identity-linking groundwork only, not exposed in the
-  // public storefront UI yet (no real Teracom SaaS tier is wired to a
-  // real Stripe product; that pricing decision is still open). When a
-  // future caller does know which Teracom Licence a purchase is for,
-  // passing it here lets app/api/webhooks/stripe/route.js later write a
-  // real LicenceBillingReference; omitted for every ordinary storefront
-  // checkout today.
-  licenceId: z.string().optional(),
+  quantity: z.number().int().positive().max(20).default(1),
+  // No licence id from the browser (security review 2026-11-06): a customer could
+  // have tied their payment to somebody else's licence. When a licence purchase is
+  // built, the server works out which licence it is for.
 });
 
 export async function POST(req) {
   const rateLimitKey = `checkout:${clientIpFromRequest(req)}`;
-  const rateLimit = checkRateLimit(rateLimitKey, {
+  const rateLimit = await checkSharedRateLimit(rateLimitKey, {
     maxAttempts: CHECKOUT_RATE_LIMIT_MAX_ATTEMPTS,
     windowMs: CHECKOUT_RATE_LIMIT_WINDOW_MS,
   });
@@ -81,7 +75,6 @@ export async function POST(req) {
     productId: product.id,
     sku: product.sku,
     productType: product.type,
-    ...(parsed.data.licenceId ? { licenceId: parsed.data.licenceId } : {}),
   };
 
   // Stripe throwing here (bad/missing API key, network error, etc.) must
