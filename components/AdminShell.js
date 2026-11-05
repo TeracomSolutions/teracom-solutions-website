@@ -1,6 +1,7 @@
 import AdminBrand from './AdminBrand';
 import AdminNav from './AdminNav';
 import AdminPageInfo from './AdminPageInfo';
+import AdminSidebarResizer from './AdminSidebarResizer';
 
 // The frame every admin page sits in: the menu down the left-hand side (Robert, 2026-10-25,
 // like the Global platform), then the console's brand bar and the page. A server component,
@@ -13,6 +14,7 @@ export default function AdminShell({ children }) {
         <aside className="admin-sidebar">
           <AdminBrand part="logo" />
           <AdminNav />
+          <AdminSidebarResizer />
         </aside>
         <section className="admin-section admin-content">
           <AdminBrand part="bar" />
