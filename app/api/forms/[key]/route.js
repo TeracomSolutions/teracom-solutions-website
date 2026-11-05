@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 import { ApiError } from '@/lib/api/client';
 import { submitForm } from '@/lib/api/forms';
 import { FILE_RULES, checkForm, cleanValues, fileExtension, findOnlineForm, identity, summarise, termsTitle } from '@/lib/onlineForms';
-import { checkRateLimit, clientIpFromRequest, rateLimitResponse } from '@/lib/rateLimit';
+import { checkSharedRateLimit, clientIpFromRequest, rateLimitResponse } from '@/lib/rateLimit';
 import { STARTED_FIELD, TRAP_FIELD, checkSubmission } from '@/lib/formGuard';
 import { TERMS_VERSION } from '@/lib/termsDocument';
 import { TURNSTILE_FAILED_MESSAGE, verifyTurnstile } from '@/lib/turnstile';
@@ -23,7 +23,7 @@ export async function POST(req, props) {
   if (!form) return NextResponse.json({ error: 'Unknown form.' }, { status: 404 });
 
   const ip = clientIpFromRequest(req);
-  const rateLimit = checkRateLimit(`forms:${ip}`, { maxAttempts: RATE_LIMIT_MAX, windowMs: RATE_LIMIT_WINDOW_MS });
+  const rateLimit = await checkSharedRateLimit(`forms:${ip}`, { maxAttempts: RATE_LIMIT_MAX, windowMs: RATE_LIMIT_WINDOW_MS });
   if (!rateLimit.allowed) return rateLimitResponse(rateLimit.retryAfterSeconds, 'Too many attempts. Please try again shortly.');
 
   let body;

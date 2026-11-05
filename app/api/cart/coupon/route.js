@@ -7,7 +7,7 @@ import { ApiError } from '@/lib/api/client';
 import { getCatalogue, getCustomerPricing } from '@/lib/catalogue';
 import { CUSTOMER_ACCESS_TOKEN_COOKIE } from '@/lib/customerSession';
 import { resolveLines, subtotalCents } from '@/lib/cartPricing';
-import { checkRateLimit, clientIpFromRequest, rateLimitResponse } from '@/lib/rateLimit';
+import { checkSharedRateLimit, clientIpFromRequest, rateLimitResponse } from '@/lib/rateLimit';
 
 // Tells the cart what a code is worth, so the customer sees the discount
 // before committing. The checkout route asks again and recomputes from
@@ -26,7 +26,7 @@ const CouponRequest = z.object({
 
 export async function POST(req) {
   const ip = clientIpFromRequest(req);
-  const rateLimit = checkRateLimit(`coupon:${ip}`, {
+  const rateLimit = await checkSharedRateLimit(`coupon:${ip}`, {
     maxAttempts: COUPON_RATE_LIMIT_MAX_ATTEMPTS,
     windowMs: COUPON_RATE_LIMIT_WINDOW_MS,
   });

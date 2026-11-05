@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
 import { parseFeed } from '@/lib/feed-importer';
-import { checkRateLimit, clientIpFromRequest, rateLimitResponse } from '@/lib/rateLimit';
+import { checkSharedRateLimit, clientIpFromRequest, rateLimitResponse } from '@/lib/rateLimit';
 import { isValidImportToken } from '@/lib/adminAuth';
 
 // Defense-in-depth against brute-forcing ADMIN_IMPORT_TOKEN (flagged in
@@ -22,7 +22,7 @@ const ImportRequest = z.object({
 
 export async function POST(req) {
   const rateLimitKey = `admin-import:${clientIpFromRequest(req)}`;
-  const rateLimit = checkRateLimit(rateLimitKey, {
+  const rateLimit = await checkSharedRateLimit(rateLimitKey, {
     maxAttempts: ADMIN_IMPORT_RATE_LIMIT_MAX_ATTEMPTS,
     windowMs: ADMIN_IMPORT_RATE_LIMIT_WINDOW_MS,
   });

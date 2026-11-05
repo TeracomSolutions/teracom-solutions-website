@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 
 import { ApiError } from '@/lib/api/client';
 import { submitLead } from '@/lib/api/leads';
-import { checkRateLimit, clientIpFromRequest, rateLimitResponse } from '@/lib/rateLimit';
+import { checkSharedRateLimit, clientIpFromRequest, rateLimitResponse } from '@/lib/rateLimit';
 import {
   formatApplication,
   missingFrom,
@@ -28,7 +28,7 @@ const RATE_LIMIT_WINDOW_MS = (Number(process.env.REQUESTS_RATE_LIMIT_WINDOW_SECO
 const MAX_SIGNATURE_LENGTH = 250_000;
 
 export async function POST(req) {
-  const rateLimit = checkRateLimit(`account-application:${clientIpFromRequest(req)}`, {
+  const rateLimit = await checkSharedRateLimit(`account-application:${clientIpFromRequest(req)}`, {
     maxAttempts: RATE_LIMIT_MAX,
     windowMs: RATE_LIMIT_WINDOW_MS,
   });

@@ -3,7 +3,7 @@ import { z } from 'zod';
 
 import { apiErrorResponse } from '@/lib/adminApi';
 import { speakText } from '@/lib/api/voice';
-import { checkRateLimit, clientIpFromRequest, rateLimitResponse } from '@/lib/rateLimit';
+import { checkSharedRateLimit, clientIpFromRequest, rateLimitResponse } from '@/lib/rateLimit';
 import { voiceAsker } from '@/lib/teraSession';
 import { staffMe } from '@/lib/api/adminAuth';
 import { getCurrentCustomer } from '@/lib/api/customerAuth';
@@ -18,18 +18,21 @@ export async function POST(req) {
   if (!asker) {
     return NextResponse.json({ error: 'Sign in to hear Tera.' }, { status: 401 });
   }
+  let who;
   try {
-    if (asker.kind === 'customer') {
-      await getCurrentCustomer(asker.token);
-    } else {
-      await staffMe(asker.token);
-    }
+    const me = asker.kind === 'customer' ? await getCurrentCustomer(asker.token) : await staffMe(asker.token);
+    who = `${asker.kind}:${me?.id || 'unknown'}`;
   } catch {
     return NextResponse.json({ error: 'Sign in to hear Tera.' }, { status: 401 });
   }
-  const limit = checkRateLimit(`voice:${clientIpFromRequest(req)}`, { maxAttempts: 40, windowMs: 60000 });
+  const limit = await checkSharedRateLimit(`voice:${clientIpFromRequest(req)}`, { maxAttempts: 40, windowMs: 60000 });
   if (!limit.allowed) {
     return rateLimitResponse(limit.retryAfterSeconds, 'Too many replies spoken at once. Try again in a moment.');
+  }
+  // The cloud voice is charged by the character: one account gets at most 300 spoken replies a day.
+  const daily = await checkSharedRateLimit(`voice-day:${who}`, { maxAttempts: 300, windowMs: 24 * 60 * 60 * 1000 });
+  if (!daily.allowed) {
+    return rateLimitResponse(daily.retryAfterSeconds, 'Tera has read out a lot today. The replies are still shown as text.');
   }
   const parsed = SpeakRequest.safeParse(await req.json().catch(() => null));
   if (!parsed.success) {

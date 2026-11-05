@@ -5,7 +5,7 @@ import { getCatalogue } from '@/lib/catalogue';
 import { quoteFreight } from '@/lib/api/freight';
 import { ApiError } from '@/lib/api/client';
 import { freightItems, POSTCODE_PATTERN } from '@/lib/freightParcels';
-import { checkRateLimit, clientIpFromRequest, rateLimitResponse } from '@/lib/rateLimit';
+import { checkSharedRateLimit, clientIpFromRequest, rateLimitResponse } from '@/lib/rateLimit';
 
 // The cart asks here for the delivery price to a postcode. Sizes and
 // weights come from the catalogue on the server, never from the browser.
@@ -18,7 +18,7 @@ const QuoteRequest = z.object({
 });
 
 export async function POST(req) {
-  const limit = checkRateLimit(`freight-quote:${clientIpFromRequest(req)}`, { maxAttempts: 30, windowMs: 60 * 1000 });
+  const limit = await checkSharedRateLimit(`freight-quote:${clientIpFromRequest(req)}`, { maxAttempts: 30, windowMs: 60 * 1000 });
   if (!limit.allowed) {
     return rateLimitResponse(limit.retryAfterSeconds, 'Too many delivery price requests. Please try again shortly.');
   }

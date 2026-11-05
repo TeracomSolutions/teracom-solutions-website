@@ -70,6 +70,26 @@ const nextConfig = {
           // Scripts and styles are not restricted here (Turnstile, Google Maps
           // and analytics load from other origins); tighten that with nonces
           // later.
+          // Which sites may supply scripts, frames and connections, reported in the
+          // browser console but not enforced yet (security review 2026-11-06): it is
+          // switched to enforced once the live site shows no reports.
+          {
+            key: 'Content-Security-Policy-Report-Only',
+            value: [
+              "default-src 'self'",
+              "script-src 'self' 'unsafe-inline' https://js.stripe.com https://challenges.cloudflare.com https://www.googletagmanager.com https://connect.facebook.net https://maps.googleapis.com https://va.vercel-scripts.com",
+              "frame-src 'self' https://js.stripe.com https://hooks.stripe.com https://challenges.cloudflare.com https://www.google.com https://maps.google.com https://www.youtube.com https://www.youtube-nocookie.com",
+              "connect-src 'self' https://api.stripe.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com https://www.facebook.com https://challenges.cloudflare.com https://maps.googleapis.com https://vitals.vercel-insights.com",
+              "img-src 'self' data: blob: https:",
+              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+              "font-src 'self' data: https://fonts.gstatic.com",
+              "media-src 'self' blob: data:",
+              "frame-ancestors 'none'",
+              "base-uri 'self'",
+              "object-src 'none'",
+              "form-action 'self' https://checkout.stripe.com",
+            ].join('; '),
+          },
           {
             key: 'Content-Security-Policy',
             value: "frame-ancestors 'none'; base-uri 'self'; object-src 'none'",

@@ -3,7 +3,7 @@ import { z } from 'zod';
 
 import { requestPasswordReset } from '@/lib/api/customerAuth';
 import { ApiError } from '@/lib/api/client';
-import { checkRateLimit, clientIpFromRequest, rateLimitResponse } from '@/lib/rateLimit';
+import { checkSharedRateLimit, clientIpFromRequest, rateLimitResponse } from '@/lib/rateLimit';
 import { TURNSTILE_FAILED_MESSAGE, verifyTurnstile } from '@/lib/turnstile';
 
 // Customers migrated from the old store have no password until they set one
@@ -30,7 +30,7 @@ const NEUTRAL = {
 export async function POST(req) {
   const ip = clientIpFromRequest(req);
 
-  const rateLimit = checkRateLimit(`customer-reset:${ip}`, {
+  const rateLimit = await checkSharedRateLimit(`customer-reset:${ip}`, {
     maxAttempts: RESET_RATE_LIMIT_MAX_ATTEMPTS,
     windowMs: RESET_RATE_LIMIT_WINDOW_SECONDS,
   });

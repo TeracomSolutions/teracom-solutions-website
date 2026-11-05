@@ -4,7 +4,7 @@ import { submitLead } from '@/lib/api/leads';
 import { metaVisitor, sendMetaEvent } from '@/lib/api/meta';
 import { SITE_ORIGIN } from '@/lib/seo';
 import { ApiError } from '@/lib/api/client';
-import { checkRateLimit, clientIpFromRequest } from '@/lib/rateLimit';
+import { checkSharedRateLimit, clientIpFromRequest } from '@/lib/rateLimit';
 import { STARTED_FIELD, TRAP_FIELD, checkSubmission } from '@/lib/formGuard';
 import { verifyTurnstile } from '@/lib/turnstile';
 
@@ -43,7 +43,7 @@ export async function POST(req) {
   const returnPath = lead.return_to === '/contact' ? '/contact' : '/';
 
   const rateLimitKey = `leads:${clientIpFromRequest(req)}`;
-  const rateLimit = checkRateLimit(rateLimitKey, {
+  const rateLimit = await checkSharedRateLimit(rateLimitKey, {
     maxAttempts: LEADS_RATE_LIMIT_MAX_ATTEMPTS,
     windowMs: LEADS_RATE_LIMIT_WINDOW_MS,
   });

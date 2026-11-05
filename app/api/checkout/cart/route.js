@@ -5,7 +5,7 @@ import { stripe } from '@/lib/stripe';
 import { getCatalogue } from '@/lib/catalogue';
 import { unitPriceCents } from '@/lib/catalogueMerge';
 import { SITE_URL } from '@/lib/config';
-import { checkRateLimit, clientIpFromRequest, rateLimitResponse } from '@/lib/rateLimit';
+import { checkSharedRateLimit, clientIpFromRequest, rateLimitResponse } from '@/lib/rateLimit';
 import { cookies } from 'next/headers';
 import { CUSTOMER_ACCESS_TOKEN_COOKIE } from '@/lib/customerSession';
 import { getCurrentCustomer } from '@/lib/api/customerAuth';
@@ -42,7 +42,7 @@ const CartCheckoutRequest = z.object({
 
 export async function POST(req) {
   const rateLimitKey = `cart-checkout:${clientIpFromRequest(req)}`;
-  const rateLimit = checkRateLimit(rateLimitKey, {
+  const rateLimit = await checkSharedRateLimit(rateLimitKey, {
     maxAttempts: CART_CHECKOUT_RATE_LIMIT_MAX_ATTEMPTS,
     windowMs: CART_CHECKOUT_RATE_LIMIT_WINDOW_MS,
   });
