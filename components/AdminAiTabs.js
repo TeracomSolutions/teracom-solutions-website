@@ -10,8 +10,10 @@ const TABS = [
   { key: 'governance', label: 'Governance' },
 ];
 
-export default function AdminAiTabs({ connections, governance, idPrefix = '', useHash = true }) {
+export default function AdminAiTabs({ connections, governance, tera = null, idPrefix = '', useHash = true }) {
   const [active, setActive] = useState('connections');
+  // The front end has a third tab, Tera's settings (Robert, 2026-11-05).
+  const tabs = tera ? [...TABS, { key: 'tera', label: "Tera's settings" }] : TABS;
 
   useEffect(() => {
     if (useHash && typeof window !== 'undefined' && window.location.hash === '#governance') setActive('governance');
@@ -28,7 +30,7 @@ export default function AdminAiTabs({ connections, governance, idPrefix = '', us
   return (
     <div>
       <div className="admin-tabs" role="tablist" aria-label="AI Connections sections">
-        {TABS.map((tab) => (
+        {tabs.map((tab) => (
           <button
             key={tab.key}
             type="button"
@@ -49,6 +51,11 @@ export default function AdminAiTabs({ connections, governance, idPrefix = '', us
       <div role="tabpanel" id={`${idPrefix}ai-panel-governance`} aria-labelledby={`${idPrefix}ai-tab-governance`} hidden={active !== 'governance'}>
         {governance}
       </div>
+      {tera ? (
+        <div role="tabpanel" id={`${idPrefix}ai-panel-tera`} aria-labelledby={`${idPrefix}ai-tab-tera`} hidden={active !== 'tera'}>
+          {tera}
+        </div>
+      ) : null}
     </div>
   );
 }
