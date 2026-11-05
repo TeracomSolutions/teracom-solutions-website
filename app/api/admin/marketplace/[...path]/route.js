@@ -25,3 +25,14 @@ export const POST = withAdminSession(async ({ req, token, params }) => {
   try { body = await req.json(); } catch { body = undefined; }
   return NextResponse.json(await marketplaceCall(token, 'POST', path, { body }));
 });
+
+// Adds a supplier to the Marketplace tiles or takes it off (Robert, 2026-11-05).
+const PUT_PATHS = /^suppliers\/shown$/;
+
+export const PUT = withAdminSession(async ({ req, token, params }) => {
+  const path = pathOf(params);
+  if (!PUT_PATHS.test(path)) return NextResponse.json({ error: 'That page does not exist.' }, { status: 404 });
+  let body;
+  try { body = await req.json(); } catch { body = undefined; }
+  return NextResponse.json(await marketplaceCall(token, 'PUT', path, { body }));
+});

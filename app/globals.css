@@ -3681,3 +3681,26 @@ select option, select optgroup { background-color:#111; color:#fff; }
 .admin-run-why ul { margin:6px 0 0; padding-left:20px; }
 .admin-run-pages { margin:10px 0 24px; }
 .admin-run-pages summary { cursor:pointer; font-weight:700; margin-bottom:8px; }
+
+/* Marketplace suppliers: small tiles, the Add a supplier list and each supplier's set-up page (Robert, 2026-11-05). */
+.mp-tiles { display:grid; gap:10px; grid-template-columns:repeat(auto-fill, minmax(170px, 1fr)); margin:12px 0; }
+.mp-tile { display:flex; flex-direction:column; align-items:flex-start; gap:4px; padding:10px 12px; border-radius:12px; border:1px solid var(--line); background:rgba(255,255,255,.03); color:#fff; font:inherit; text-align:left; cursor:pointer; }
+.mp-tile:hover { border-color:rgba(255,255,255,.35); }
+.mp-tile.is-open { border-color:var(--red); box-shadow:0 0 0 1px var(--red) inset; }
+.mp-tile strong { font-size:14px; }
+.mp-tile-region { font-size:12px; color:var(--muted); }
+.mp-tile-using { font-size:11px; font-weight:700; color:#7bd88f; }
+.mp-add { display:grid; gap:10px; max-width:640px; margin:6px 0 14px; }
+.mp-add label { display:grid; gap:6px; font-size:13px; font-weight:700; color:var(--muted); }
+.mp-add select { padding:9px 10px; border-radius:10px; border:1px solid var(--line); background:#0d0d0d; color:#fff; font:inherit; }
+.mp-add-preview { padding:12px 14px; border:1px solid var(--line); border-radius:12px; }
+.mp-add-preview p { margin:0 0 8px; }
+.mp-page { margin-top:10px; padding:16px 18px; border:1px solid var(--red); border-radius:14px; background:rgba(255,23,23,.04); display:grid; gap:10px; }
+.mp-page-head { display:flex; flex-wrap:wrap; align-items:center; gap:10px; }
+.mp-page-head h3 { margin:0; }
+.mp-page-head .admin-link-btn { margin-left:auto; }
+.mp-page-facts { display:grid; grid-template-columns:max-content 1fr; gap:4px 14px; margin:0; font-size:13px; }
+.mp-page-facts dt { color:var(--muted); font-weight:700; }
+.mp-page-facts dd { margin:0; }
+.mp-page-links { display:flex; flex-wrap:wrap; gap:14px; margin:0; }
+.mp-page p { margin:0; }
