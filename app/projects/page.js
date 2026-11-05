@@ -5,7 +5,7 @@ import { growthOn, publishedItems } from '@/lib/api/growthPublic';
 import { pageMetadata } from '@/lib/seo';
 
 // Finished jobs as case studies (growth tool 4). Only while the tool is on and at least one is published.
-export const revalidate = 300;
+export const revalidate = 3600;
 
 export const metadata = pageMetadata({
   title: 'Projects | Teracom Solutions',

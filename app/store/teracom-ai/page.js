@@ -2,7 +2,7 @@ import TeracomAiStoreView, { teracomAiStoreMetadata } from '@/components/storePa
 
 // Store > Teracom AI: every Department and extension pack from Global's catalogue.
 export const metadata = teracomAiStoreMetadata;
-export const revalidate = 3600;
+export const revalidate = 86400;
 
 export default async function Page() {
   return TeracomAiStoreView();

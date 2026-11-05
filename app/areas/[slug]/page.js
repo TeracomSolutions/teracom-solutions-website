@@ -5,7 +5,7 @@ import { growthOn, publishedItem } from '@/lib/api/growthPublic';
 import { SITE_ORIGIN, absoluteUrl, pageMetadata } from '@/lib/seo';
 
 // One area Teracom covers (growth tool 3).
-export const revalidate = 300;
+export const revalidate = 3600;
 
 async function load(slug) {
   if (!(await growthOn('service_areas'))) return null;
