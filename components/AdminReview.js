@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 
+import AdminListPager, { useListPage } from '@/components/AdminListPager';
 import { formatDateTime } from '@/lib/adminFormat';
 import { STATUS_LABELS, dollars, holdReason } from '@/lib/holds';
 
@@ -69,10 +70,12 @@ export default function AdminReview({ initial }) {
   }
 
   const allPicked = holds.length > 0 && picked.length === holds.length;
+  // Paged, 20 at a time (Robert, 2026-11-05).
+  const page = useListPage(holds);
 
   return (
     <div>
-      <div className="admin-actions">
+      <div className="admin-review-views" role="group" aria-label="Show">
         {VIEWS.map((status) => (
           <button
             key={status}
@@ -99,10 +102,19 @@ export default function AdminReview({ initial }) {
       ) : (
         <>
           {waiting ? (
-            <div className="admin-actions">
-              <button type="button" className="btn btn-secondary btn-sm" onClick={() => setPicked(allPicked ? [] : holds.map((h) => h.id))}>
-                {allPicked ? 'Clear selection' : 'Select all'}
-              </button>
+            <div className="admin-review-bar">
+              <div className="admin-review-bar-group">
+                <span className="admin-review-count">{picked.length} of {holds.length} selected</span>
+                <button type="button" className="btn btn-secondary btn-sm" onClick={() => setPicked(allPicked ? [] : holds.map((h) => h.id))}>
+                  {allPicked ? 'Clear selection' : `Select all ${holds.length}`}
+                </button>
+                {!allPicked && page.pages > 1 ? (
+                  <button type="button" className="btn btn-secondary btn-sm" onClick={() => setPicked((current) => [...new Set([...current, ...page.rows.map((h) => h.id)])])}>
+                    Select this page
+                  </button>
+                ) : null}
+              </div>
+              <div className="admin-review-bar-group">
               <button type="button" className="btn btn-secondary btn-sm" disabled={busy || picked.length === 0} onClick={() => resolve(picked, 'leave_out')}>
                 Leave selected out
               </button>
@@ -117,6 +129,7 @@ export default function AdminReview({ initial }) {
                   Import selected anyway
                 </button>
               )}
+              </div>
             </div>
           ) : null}
 
@@ -135,7 +148,7 @@ export default function AdminReview({ initial }) {
                 </tr>
               </thead>
               <tbody>
-                {holds.map((hold) => (
+                {page.rows.map((hold) => (
                   <tr key={hold.id}>
                     {waiting ? (
                       <td>
@@ -160,7 +173,7 @@ export default function AdminReview({ initial }) {
                     </td>
                     {waiting ? (
                       <td>
-                        <div className="admin-actions">
+                        <div className="admin-review-row-actions">
                           <button type="button" className="btn btn-secondary btn-sm" disabled={busy} onClick={() => { if (window.confirm('Import this product as supplied, even though it is priced below cost?')) resolve([hold.id], 'import'); }}>Import anyway</button>
                           <button type="button" className="btn btn-secondary btn-sm" disabled={busy} onClick={() => resolve([hold.id], 'leave_out')}>Leave out</button>
                         </div>
@@ -173,6 +186,7 @@ export default function AdminReview({ initial }) {
               </tbody>
             </table>
           </div>
+          <AdminListPager view={page} label="rows" />
         </>
       )}
     </div>
