@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 
+import AdminGrowthItems from '@/components/AdminGrowthItems';
 import AdminListPager, { useListPage } from '@/components/AdminListPager';
 import { formatDateTime } from '@/lib/adminFormat';
 import { growthGroups, growthStatus } from '@/lib/growthTools';
@@ -94,7 +95,7 @@ function ToolCard({ tool, busy, onToggle, onRun, onSave }) {
   const [open, setOpen] = useState(false);
   const status = growthStatus(tool);
   return (
-    <div className={`growth-card${tool.enabled ? ' is-on' : ''}`}>
+    <div className={`growth-card${tool.enabled ? ' is-on' : ''}${open ? ' is-open' : ''}`}>
       <div className="growth-card-head">
         <span className="growth-number">{tool.number}</span>
         <div className="growth-card-title">
@@ -119,13 +120,21 @@ function ToolCard({ tool, busy, onToggle, onRun, onSave }) {
           </button>
         ) : null}
         <button type="button" className="btn btn-secondary btn-sm" onClick={() => setOpen(!open)}>
-          {open ? 'Close' : tool.fields.length ? 'Settings and report' : 'Report'}
+          {open ? 'Close' : tool.has_items ? 'Open' : tool.fields.length ? 'Settings and report' : tool.links && tool.links.length ? 'Open' : 'Report'}
         </button>
       </div>
       {open ? (
         <div className="growth-card-body">
           <Settings tool={tool} busy={busy} onSave={(values) => onSave(tool, values)} />
-          {tool.report ? <Report report={tool.report} /> : <p className="admin-muted">{tool.can_run ? 'No report yet. Switch it on and press Run now.' : 'This tool is being built next; its switch is ready.'}</p>}
+          {tool.links && tool.links.length > 0 ? (
+            <ul className="growth-links">
+              {tool.links.map((link) => (
+                <li key={link.url}>{link.label}: <a href={link.url} target="_blank" rel="noopener noreferrer" className="admin-link">{link.url}</a></li>
+              ))}
+            </ul>
+          ) : null}
+          {tool.has_items ? <AdminGrowthItems tool={tool.key} enabled={tool.enabled} /> : null}
+          {tool.report ? <Report report={tool.report} /> : tool.can_run ? <p className="admin-muted">No report yet. Switch it on and press Run now.</p> : null}
         </div>
       ) : null}
     </div>

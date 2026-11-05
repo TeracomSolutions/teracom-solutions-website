@@ -3724,3 +3724,50 @@ select option, select optgroup { background-color:#111; color:#fff; }
 .growth-settings input, .growth-settings textarea { padding:8px 10px; border-radius:8px; border:1px solid var(--line); background:#0d0d0d; color:#fff; font:inherit; font-size:13px; }
 .growth-headline { margin:0; font-weight:700; }
 .growth-notes { margin:6px 0 0; padding-left:18px; font-size:13px; color:var(--muted); }
+
+/* Growth tools, second batch: open cards take the full width, the page editor, and the public area, project and question pages (2026-11-05). */
+.growth-card.is-open { grid-column:1 / -1; }
+.growth-links { margin:0; padding-left:18px; font-size:13px; overflow-wrap:anywhere; }
+.growth-items { display:grid; gap:10px; }
+.growth-items-head { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+.growth-item-actions { display:inline-flex; gap:12px; }
+.growth-editor { display:grid; gap:10px; padding:14px; border:1px solid var(--line); border-radius:12px; background:rgba(255,255,255,.02); }
+.growth-editor label { display:grid; gap:5px; font-size:12px; font-weight:700; color:var(--muted); }
+.growth-editor input, .growth-editor textarea { padding:8px 10px; border-radius:8px; border:1px solid var(--line); background:#0d0d0d; color:#fff; font:inherit; font-size:14px; }
+.growth-draft { display:grid; gap:6px; padding:10px; border-radius:10px; background:rgba(255,255,255,.03); }
+.growth-photos { display:grid; gap:6px; }
+.growth-photo-row { display:flex; flex-wrap:wrap; gap:10px; align-items:flex-end; }
+.growth-photo-row figure { margin:0; display:grid; gap:4px; justify-items:center; }
+.growth-photo-row img { width:110px; height:80px; object-fit:cover; border-radius:8px; }
+.growth-upload { position:relative; cursor:pointer; }
+.growth-upload input { position:absolute; inset:0; opacity:0; cursor:pointer; }
+.growth-public { display:grid; gap:28px; grid-template-columns:minmax(0,2fr) minmax(0,1fr); align-items:start; }
+.growth-public-text p { margin:0 0 14px; line-height:1.65; }
+.growth-public-facts { margin:0; padding:16px 18px; border:1px solid var(--line); border-radius:14px; display:grid; gap:12px; }
+.growth-public-facts dt { font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); }
+.growth-public-facts dd { margin:2px 0 0; }
+.growth-public-photos { display:grid; gap:12px; grid-template-columns:repeat(auto-fill, minmax(240px, 1fr)); margin-top:24px; }
+.growth-public-photos img { width:100%; aspect-ratio:4/3; object-fit:cover; border-radius:12px; }
+.growth-public-cards { display:grid; gap:16px; grid-template-columns:repeat(auto-fill, minmax(260px, 1fr)); }
+.growth-public-card { display:grid; gap:8px; padding:16px; border:1px solid var(--line); border-radius:14px; color:inherit; text-decoration:none; }
+.growth-public-card:hover { border-color:var(--red); }
+.growth-public-card img { width:100%; aspect-ratio:16/10; object-fit:cover; border-radius:10px; }
+.growth-public-card span { color:var(--muted); font-size:14px; }
+.growth-public-questions { display:grid; gap:10px; max-width:860px; }
+.growth-public-questions details { border:1px solid var(--line); border-radius:12px; padding:14px 16px; }
+.growth-public-questions summary { cursor:pointer; font-weight:700; }
+.growth-public-questions p { margin:10px 0 0; line-height:1.6; }
+@media (max-width: 760px) { .growth-public { grid-template-columns:1fr; } }
+
+/* Scout tasks: one slim line per task (Robert, 2026-11-05). */
+.scout-slim th, .scout-slim td { padding:5px 10px; font-size:13px; vertical-align:middle; }
+.scout-cell { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:280px; }
+.scout-title { max-width:240px; }
+.scout-target { all:unset; display:block; max-width:300px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; cursor:pointer; color:#9cc8ff; }
+.scout-target:hover { text-decoration:underline; }
+.scout-row-actions { display:flex; gap:6px; flex-wrap:nowrap; }
+.scout-row-actions .btn { padding:3px 10px; font-size:12px; }
+.scout-popup-backdrop { position:fixed; inset:0; z-index:1000; background:rgba(0,0,0,.6); display:flex; align-items:center; justify-content:center; padding:16px; }
+.scout-popup { width:min(640px, 100%); max-height:80vh; overflow:auto; background:#141414; border:1px solid var(--line); border-radius:14px; padding:18px 20px; }
+.scout-popup h3 { margin:0 0 8px; }
+.scout-popup-target { white-space:pre-wrap; overflow-wrap:anywhere; line-height:1.55; }
