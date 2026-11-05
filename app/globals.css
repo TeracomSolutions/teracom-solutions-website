@@ -3670,3 +3670,14 @@ select option, select optgroup { background-color:#111; color:#fff; }
 .tera-learning-brands legend { padding:0 6px; font-weight:800; }
 .tera-learning-filter { max-width:320px; padding:8px 10px; border-radius:8px; border:1px solid var(--line); background:#0d0d0d; color:#fff; }
 .tera-learning-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(190px, 1fr)); gap:6px 14px; max-height:320px; overflow:auto; padding-right:6px; }
+
+/* Resources: the progress bar under Check, why a check found nothing, and what it saw (2026-11-05). */
+.check-progress { display:flex; flex-wrap:wrap; align-items:center; gap:4px 10px; margin-top:8px; max-width:320px; font-size:12px; color:var(--muted); }
+.check-progress-bar { flex:1 0 100%; height:6px; border-radius:999px; background:rgba(255,255,255,.1); overflow:hidden; }
+.check-progress-bar span { display:block; height:100%; border-radius:999px; background:var(--red); transition:width .6s ease; }
+.check-progress-label { color:#fff; font-weight:700; }
+.admin-source-why { display:block; margin-top:4px; font-size:12px; color:#ffd27a; white-space:normal; max-width:520px; }
+.admin-run-why { margin:8px 0; padding:10px 12px; border:1px solid var(--line); border-radius:10px; background:rgba(255,210,122,.06); max-width:900px; }
+.admin-run-why ul { margin:6px 0 0; padding-left:20px; }
+.admin-run-pages { margin:10px 0 24px; }
+.admin-run-pages summary { cursor:pointer; font-weight:700; margin-bottom:8px; }
