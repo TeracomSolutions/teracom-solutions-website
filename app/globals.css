@@ -3787,3 +3787,11 @@ select option, select optgroup { background-color:#111; color:#fff; }
 .gbp-review p { margin:0 0 6px; }
 .gbp-reply { color:#9cc8ff; }
 .gbp-reply-form { display:grid; gap:6px; }
+
+/* Growth tools: text stays inside its card (Robert, 2026-11-05): a long address wraps instead of widening the card past its column. */
+.growth-grid > * { min-width:0; }
+.growth-card { min-width:0; overflow:hidden; overflow-wrap:anywhere; word-break:break-word; }
+.growth-card-title { min-width:0; }
+.growth-switch { flex:0 0 auto; margin-left:8px; }
+.growth-needs, .growth-status, .growth-links, .growth-report td { overflow-wrap:anywhere; }
+.growth-card .admin-actions { flex-wrap:wrap; }
