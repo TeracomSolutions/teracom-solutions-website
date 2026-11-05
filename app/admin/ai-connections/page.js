@@ -8,6 +8,8 @@ import AdminAiGovernance from '@/components/AdminAiGovernance';
 import AdminAiTabs from '@/components/AdminAiTabs';
 import AdminHelpIcon from '@/components/AdminHelpIcon';
 import AdminShell from '@/components/AdminShell';
+import AdminTeraSettings from '@/components/AdminTeraSettings';
+import { getSupportOverview } from '@/lib/api/support';
 import { fetchAiAutoCheck, fetchAiProviders, fetchAiRouting, fetchGovernanceRules, listAiConnections } from '@/lib/api/adminAiConnections';
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
 
@@ -53,6 +55,14 @@ export default async function AdminAiConnectionsPage() {
   } catch (err) {
     if (isSessionError(err)) redirect('/admin/login');
     rulesError = 'Unable to load the governance rules from the backend.';
+  }
+
+  // Tera's settings live here with the other AI settings (Robert, 2026-11-05).
+  let teraSettings = null;
+  try {
+    teraSettings = (await getSupportOverview(token))?.summary?.settings || null;
+  } catch {
+    teraSettings = null;
   }
 
   // Governance rules apply to models, not to the Internet source.
@@ -107,6 +117,13 @@ export default async function AdminAiConnectionsPage() {
               <AdminAiConnectionsPanel initialConnections={connections} initialRouting={routing} providers={providers} loadError={loadError} side="website" />
             )}
             governance={<AdminAiGovernance initialRules={rules} providers={modelProviders} loadError={rulesError} side="website" />}
+            tera={teraSettings ? (
+              <div className="admin-card">
+                <h2 style={{ marginTop: 0 }}>Tera&apos;s settings</h2>
+                <p className="admin-muted">How Tera, the assistant on the website, answers: drafts for enquiries, its own model on this server first, the cloud cap, studying products and reading manufacturers&apos; websites. What Tera learns is on the Support page.</p>
+                <AdminTeraSettings initial={teraSettings} />
+              </div>
+            ) : <p className="form-error" role="alert">Unable to load Tera&apos;s settings from the backend.</p>}
           />
         )}
         console={(

@@ -15,6 +15,9 @@ const SettingsRequest = z.object({
   draft_replies_enabled: z.boolean().optional(),
   study_schedule: z.enum(['off', 'daily', 'weekly']).optional(),
   study_batch: z.number().int().min(10).max(500).optional(),
+  learn_store_products: z.boolean().optional(),
+  learn_price_lists: z.boolean().optional(),
+  learn_brands: z.array(z.string().trim().min(1).max(100)).max(500).optional(),
 });
 
 export const PUT = withAdminSession(async ({ req, token }) => {

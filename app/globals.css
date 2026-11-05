@@ -3662,3 +3662,11 @@ select option, select optgroup { background-color:#111; color:#fff; }
 .content-upload { position:relative; cursor:pointer; }
 .content-upload input { position:absolute; inset:0; opacity:0; cursor:pointer; width:100%; }
 .content-upload.is-busy { opacity:.5; pointer-events:none; }
+
+/* What Tera learns (Robert, 2026-11-05). */
+.tera-learning { display:grid; gap:10px; max-width:900px; }
+.tera-learning .admin-check { display:flex; align-items:center; gap:8px; font-size:14px; }
+.tera-learning-brands { border:1px solid var(--line); border-radius:12px; padding:10px 14px 14px; margin:4px 0 0; display:grid; gap:8px; }
+.tera-learning-brands legend { padding:0 6px; font-weight:800; }
+.tera-learning-filter { max-width:320px; padding:8px 10px; border-radius:8px; border:1px solid var(--line); background:#0d0d0d; color:#fff; }
+.tera-learning-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(190px, 1fr)); gap:6px 14px; max-height:320px; overflow:auto; padding-right:6px; }

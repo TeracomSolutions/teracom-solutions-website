@@ -4,8 +4,10 @@ import { useState } from 'react';
 
 import { splitSites } from '@/lib/teachTera';
 
-// Admin -> Support -> Settings: the monthly cloud cap, Tera's own model on
-// this server, and reading manufacturers' websites.
+// Tera's settings: draft replies, Tera's own model on this server, the
+// monthly cloud cap, the product study and reading manufacturers' websites.
+// On AI Connections, front end (Robert, 2026-11-05: with the other AI and
+// model settings, so they are not lost in Support).
 function formValues(settings) {
   return {
     monthly_cloud_cap: String(settings.monthly_cloud_cap ?? 0),
@@ -55,7 +57,7 @@ export default function AdminTeraSettings({ initial, onSaved }) {
       if (!res.ok) throw new Error(data.error || data.detail || 'That did not work.');
       setValues(formValues(data));
       setMessage('Settings saved.');
-      onSaved(data);
+      if (onSaved) onSaved(data);
     } catch (err) {
       setError(err.message);
     } finally {

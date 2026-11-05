@@ -4,7 +4,10 @@ import { useEffect, useState } from 'react';
 
 import AdminLearningProgress from '@/components/AdminLearningProgress';
 import AdminTeachTera from '@/components/AdminTeachTera';
-import AdminTeraSettings from '@/components/AdminTeraSettings';
+import Link from 'next/link';
+
+import AdminListPager, { useListPage } from '@/components/AdminListPager';
+import AdminTeraLearning from '@/components/AdminTeraLearning';
 import { formatDateTime } from '@/lib/adminFormat';
 
 // Admin -> Support: Ask Tera's library, this month's use, the questions it
@@ -100,10 +103,6 @@ export default function AdminSupport({ initial }) {
     }
   }
 
-  function settingsSaved(settings) {
-    setSummary((s) => ({ ...s, monthly_cloud_cap: settings.monthly_cloud_cap, settings }));
-  }
-
   // Keep this answer: the reply becomes something Tera has learned.
   async function keep(conversationId, messageId) {
     const fact = await send(`/api/admin/support/messages/${encodeURIComponent(messageId)}/keep`, 'POST', null, `keep-${messageId}`);
@@ -134,6 +133,9 @@ export default function AdminSupport({ initial }) {
   const known = summary.facts || { taught: 0, learned: 0 };
   const drafts = summary.drafts || { sent_unchanged: 0, sent_edited: 0, discarded: 0, waiting: 0 };
   const study = summary.study || { status: 'never', products: 0, studied: 0, found: 0 };
+  // Robert (2026-11-05): the first few conversations, 5 a page (5 to 50).
+  const conversations = useListPage(initial.conversations, { sizes: [5, 10, 20, 50], initialSize: 5 });
+  const unanswered = useListPage(initial.unanswered, { sizes: [10, 20, 50, 100], initialSize: 10 });
 
   return (
     <div>
@@ -205,6 +207,9 @@ export default function AdminSupport({ initial }) {
         <AdminLearningProgress title="Product study" state={progress.study} now={now} />
       </div>
 
+      <h2>What Tera learns</h2>
+      <AdminTeraLearning initial={summary.settings} />
+
       <h2>Teach Tera</h2>
       <p className="admin-muted">Questions and answers Tera searches before anything else. Write your own, or keep a good answer from a conversation below.</p>
       <AdminTeachTera facts={facts} setFacts={setFacts} draft={draft} />
@@ -217,7 +222,7 @@ export default function AdminSupport({ initial }) {
               <tr><th>Question</th><th>Asked</th><th>Actions</th></tr>
             </thead>
             <tbody>
-              {initial.unanswered.map((q) => (
+              {unanswered.rows.map((q) => (
                 <tr key={`${q.conversation_id}-${q.asked_at}`}>
                   <td className="wrap">{q.question}</td>
                   <td>{formatDateTime(q.asked_at)}</td>
@@ -230,6 +235,7 @@ export default function AdminSupport({ initial }) {
               ))}
             </tbody>
           </table>
+          <AdminListPager view={unanswered} label="questions" />
         </div>
       ) : (
         <p className="admin-muted">None yet.</p>
@@ -238,7 +244,7 @@ export default function AdminSupport({ initial }) {
       <h2>Conversations</h2>
       {initial.conversations.length ? (
         <div className="support-conversations">
-          {initial.conversations.map((c) => (
+          {conversations.rows.map((c) => (
             <div key={c.id} className="admin-card support-conversation">
               <button type="button" className="support-conversation-head" aria-expanded={openId === c.id} onClick={() => toggle(c.id)}>
                 <strong>{c.customer}</strong>
@@ -283,12 +289,16 @@ export default function AdminSupport({ initial }) {
       ) : (
         <p className="admin-muted">No conversations yet. Tera appears on every page for signed-in customers.</p>
       )}
+      <AdminListPager view={conversations} label="conversations" />
       <p className="admin-muted">
         Conversations are deleted {summary.keep_days} days after their last message. Just before that, every answer nobody rated not helpful is kept for Tera, with personal details taken out.
       </p>
 
       <h2>Settings</h2>
-      {summary.settings ? <AdminTeraSettings initial={summary.settings} onSaved={settingsSaved} /> : null}
+      <p className="admin-muted">
+        Tera&apos;s settings (draft replies, Tera&apos;s own model on this server, the cloud cap, the product study and the manufacturers&apos;
+        websites) are with the other AI settings: <Link href="/admin/ai-connections#frontend" className="admin-link">AI Connections, AI assistant for the front end, Tera&apos;s settings</Link>.
+      </p>
     </div>
   );
 }
