@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 
+import AdminGrowthTools from './AdminGrowthTools';
 import AdminHelpIcon from './AdminHelpIcon';
 import AdminScoutTaskManager from './AdminScoutTaskManager';
 import AdminReviewQueueTable from './AdminReviewQueueTable';
@@ -13,6 +14,8 @@ import AdminReviewQueueTable from './AdminReviewQueueTable';
 const TABS = [
   { key: 'website_intelligence', label: 'Website Research' },
   { key: 'review', label: 'Review Queue' },
+  // Robert, 2026-11-05: the website growth tools, each with its own switch.
+  { key: 'growth', label: 'Growth tools' },
 ];
 
 export default function AdminScoutTabs({ initialTab }) {
@@ -59,6 +62,8 @@ export default function AdminScoutTabs({ initialTab }) {
             <li><strong>Review</strong> opens the run: its report, the critic&apos;s critique (or the error if it failed), and <strong>Approve</strong> / <strong>Reject</strong>, each with optional notes. The decision and notes are saved on the run and recorded in the audit log.</li>
             <li><strong>Refresh</strong> and <strong>Auto-refresh</strong> reload the queue.</li>
           </ul>
+          <h4>Growth tools tab</h4>
+          <p>Fourteen tools that help the website get found and chosen: Google Business Profile, review requests, service area pages, the project gallery, the business listings check, instant indexing (IndexNow), the rich results check, page speed, internal links, questions people ask, the keyword rank tracker, competitor watch, more price comparison feeds and the monthly newsletter. Each is off until you switch it on. A tool that runs on a schedule (every day or week) shows its last report under <strong>Settings and report</strong>; <strong>Run now</strong> runs it straight away. Settings such as the searches to track or your competitors&apos; websites are saved on each card.</p>
           <h4>AI providers</h4>
           <p>Research runs on whichever providers are configured under <strong>AI Connections</strong>: a local Ollama host first, then Anthropic, OpenAI and Groq as fallbacks.</p>
         </AdminHelpIcon>
@@ -80,6 +85,8 @@ export default function AdminScoutTabs({ initialTab }) {
       </div>
 
       {activeTab === 'website_intelligence' && <AdminScoutTaskManager section="website_intelligence" />}
+
+      {activeTab === 'growth' && <AdminGrowthTools />}
 
       {activeTab === 'review' && (
         <>
