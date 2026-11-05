@@ -1,6 +1,7 @@
 import { BRAND, retitle } from '@/lib/brand';
 import { redirect } from 'next/navigation';
 
+import AboutOpenSource from '@/components/AboutOpenSource';
 import AboutVersions from '@/components/AboutVersions';
 import AdminShell from '@/components/AdminShell';
 import { fetchAbout } from '@/lib/api/adminAbout';
@@ -101,6 +102,7 @@ export default async function AdminAboutPage() {
       {about && <AboutVersions title="Backend versions" items={fromBackend(about.versions)} />}
       <AboutVersions title="Console versions" items={CONSOLE_VERSIONS} />
       <AboutVersions title="Website and store versions" items={WEBSITE_VERSIONS} />
+      <AboutOpenSource />
     </AdminShell>
   );
 }
