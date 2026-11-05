@@ -5,8 +5,9 @@ import { redirect } from 'next/navigation';
 import AdminHelpIcon from '@/components/AdminHelpIcon';
 import AdminResourceDocuments from '@/components/AdminResourceDocuments';
 import AdminResourceTree from '@/components/AdminResourceTree';
+import AdminRunDetails from '@/components/AdminRunDetails';
 import AdminShell from '@/components/AdminShell';
-import { fetchResourceDocuments, fetchResourceRuns, fetchResourceSources, fetchResourceTree } from '@/lib/api/adminResources';
+import { fetchResourceDocuments, fetchResourceRun, fetchResourceRuns, fetchResourceSources, fetchResourceTree } from '@/lib/api/adminResources';
 import { formatDateTime, humanise } from '@/lib/adminFormat';
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
 
@@ -32,6 +33,7 @@ export default async function AdminResourceSourcePage({ params }) {
   let documents = [];
   let runs = [];
   let tree = null;
+  let lastRun = null;
   let loadError = '';
 
   try {
@@ -45,6 +47,14 @@ export default async function AdminResourceSourcePage({ params }) {
     documents = docs;
     runs = history;
     tree = files;
+    // The newest check with its page-by-page record.
+    if (history.length > 0) {
+      try {
+        lastRun = await fetchResourceRun(token, history[0].id);
+      } catch {
+        lastRun = history[0];
+      }
+    }
   } catch (err) {
     if (isSessionError(err)) redirect('/admin/login');
     loadError = 'Unable to load this website from the backend.';
@@ -63,7 +73,7 @@ export default async function AdminResourceSourcePage({ params }) {
             <li><strong>Status</strong> - New (first seen on the last check), Changed (the file differs from the copy we held), Unchanged, or Missing (the site no longer links to it; our copy is kept).</li>
             <li><strong>On store</strong> - Publish / Hide. A published document with a SKU appears under Downloads on the product page.</li>
           </ul>
-          <p>Below the documents is the history of checks: when, what triggered it, pages scanned, and counts.</p>
+          <p><strong>What the last check saw</strong> says why a check failed or found nothing, in plain words (for example a site whose bot protection turns the checker away), and lists every page it read with the site&apos;s answer, the links and PDFs on it and a note. Below the documents is the history of checks: when, what triggered it, pages scanned, and counts.</p>
         </AdminHelpIcon>
       </h1>
       {source && (
@@ -79,6 +89,8 @@ export default async function AdminResourceSourcePage({ params }) {
 
       {source && (
         <>
+          <AdminRunDetails run={lastRun} />
+
           <h2 id="files">Files on the server</h2>
           {tree && <AdminResourceTree tree={tree} downloadBase={DOWNLOAD_BASE} />}
 
@@ -113,7 +125,7 @@ export default async function AdminResourceSourcePage({ params }) {
                     <td>{run.new}</td>
                     <td>{run.changed}</td>
                     <td>{run.missing}</td>
-                    <td className="wrap">{run.error || '—'}</td>
+                    <td className="wrap">{[run.summary, run.error].filter(Boolean).join(' ') || '—'}</td>
                   </tr>
                 ))}
               </tbody>

@@ -4,8 +4,9 @@ import { Fragment, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
-import { Folder, Pause, Pencil, Play, RefreshCw, Trash2 } from 'lucide-react';
+import { Folder, Globe, Pause, Pencil, Play, RefreshCw, Trash2 } from 'lucide-react';
 
+import AdminCheckProgress from '@/components/AdminCheckProgress';
 import { formatDateTime, humanise } from '@/lib/adminFormat';
 import { SECTION_LABELS, SITE_DOCUMENT_SECTIONS, sectionForType } from '@/lib/publishedResources';
 import { changedFields, sourceFormDefaults } from '@/lib/resourceSourceFields';
@@ -248,12 +249,44 @@ export default function AdminResourceSources({ sources, suppliers }) {
   const [busyId, setBusyId] = useState(null);
   const [editingId, setEditingId] = useState(null);
   const [error, setError] = useState('');
+  const [notice, setNotice] = useState('');
+  // The check started from this page, per website, so its progress bar shows straight away.
+  const [startedRuns, setStartedRuns] = useState({});
 
   async function checkNow(source) {
     setBusyId(source.id);
     setError('');
     try {
-      await send(`/api/admin/resources/sources/${source.id}/check`, 'POST');
+      const run = await send(`/api/admin/resources/sources/${source.id}/check`, 'POST');
+      setStartedRuns((current) => ({ ...current, [source.id]: run }));
+      router.refresh();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setBusyId(null);
+    }
+  }
+
+  function checkEnded(sourceId) {
+    setStartedRuns((current) => {
+      const next = { ...current };
+      delete next[sourceId];
+      return next;
+    });
+    router.refresh();
+  }
+
+  // Publish to website (Robert, 2026-11-05): one button instead of the Edit form.
+  async function publish(source) {
+    const count = source.publishable_count || 0;
+    const message = `Put ${count} document${count === 1 ? '' : 's'} from ${source.name} on the website? Documents found by later checks will go on automatically too.`;
+    if (!window.confirm(message)) return;
+    setBusyId(source.id);
+    setError('');
+    setNotice('');
+    try {
+      const data = await send(`/api/admin/resources/sources/${source.id}/publish`, 'POST');
+      setNotice(`${data.published} document${data.published === 1 ? '' : 's'} from ${source.name} ${data.published === 1 ? 'is' : 'are'} now on the website; new finds go on automatically.`);
       router.refresh();
     } catch (err) {
       setError(err.message);
@@ -296,6 +329,7 @@ export default function AdminResourceSources({ sources, suppliers }) {
   return (
     <div>
       {error && <p className="form-error" role="alert">{error}</p>}
+      {notice && <p className="form-note-banner" role="status">{notice}</p>}
       <div className="admin-refresh">
         <button type="button" className="btn btn-secondary btn-sm" onClick={() => router.refresh()}>Refresh</button>
         <span className="admin-muted">{sources.length} website{sources.length === 1 ? '' : 's'} watched. The scheduler checks recurring ones every 15 minutes for anything due.</span>
@@ -361,6 +395,12 @@ export default function AdminResourceSources({ sources, suppliers }) {
                       <span className="admin-source-sub">
                         {source.active ? `Next: ${formatDateTime(source.next_check_at, source.recurrence === 'manual' ? 'manual' : 'soon')}` : 'Checks paused'}
                       </span>
+                      {source.last_summary && source.last_status === 'ok' && (
+                        <span className="admin-source-why">{source.last_summary}</span>
+                      )}
+                      {(source.last_summary || source.last_error) && (
+                        <Link href={`/admin/resources/${source.id}#last-check`} className="admin-link admin-source-sub">What the check saw</Link>
+                      )}
                       {source.last_error && (
                         <details className="admin-result-details">
                           <summary>{problemsLine(source.last_error)}</summary>
@@ -385,10 +425,23 @@ export default function AdminResourceSources({ sources, suppliers }) {
                         <button type="button" className="admin-mini-btn" onClick={() => setEditingId(isEditing ? null : source.id)} disabled={busy} title="Change the address, name, schedule or publishing">
                           <Pencil size={13} strokeWidth={2} aria-hidden="true" /> {isEditing ? 'Close' : 'Edit'}
                         </button>
+                        {source.publishable_count > 0 && (
+                          <button type="button" className="admin-mini-btn" onClick={() => publish(source)} disabled={busy} title={`Put the ${source.publishable_count} collected documents that are not on the website yet onto the Resources pages, and publish new finds automatically`}>
+                            <Globe size={13} strokeWidth={2} aria-hidden="true" /> Publish {source.publishable_count}
+                          </button>
+                        )}
                         <button type="button" className="admin-mini-btn" onClick={() => remove(source)} disabled={busy} title="Remove this website and its documents" aria-label={`Remove ${source.name}`}>
                           <Trash2 size={13} strokeWidth={2} aria-hidden="true" />
                         </button>
                       </div>
+                      {(startedRuns[source.id] || source.current_run) && (
+                        <AdminCheckProgress
+                          key={(startedRuns[source.id] || source.current_run).id}
+                          runId={(startedRuns[source.id] || source.current_run).id}
+                          initialRun={source.current_run || startedRuns[source.id]}
+                          onDone={() => checkEnded(source.id)}
+                        />
+                      )}
                     </td>
                   </tr>
                   {isEditing && (

@@ -49,11 +49,13 @@ export default async function AdminResourcesPage() {
           </ul>
           <h4>The table</h4>
           <ul>
-            <li><strong>Result</strong> - the last check: how many files were found, how many were new, how many had changed since last time. A failed check shows why.</li>
+            <li><strong>Result</strong> - the last check: how many files were found, how many were new, how many had changed since last time. A check that failed or found nothing says why in plain words, and <em>What the check saw</em> opens the website&apos;s page with every page it read.</li>
             <li><strong>Documents</strong> - click the website name to see them, set the store SKU each belongs to, publish or hide them.</li>
             <li><strong>Pause</strong> keeps the documents but stops the schedule; <strong>Remove</strong> deletes the website and every file collected from it.</li>
             <li><strong>Edit</strong> changes any of these settings for a website that is already watched; the next check uses them.</li>
           </ul>
+          <h4>When a site turns the checker away</h4>
+          <p>Some manufacturers put their whole site behind bot protection (Cloudflare, Imperva). People in a browser get in; automatic tools such as the checker do not, so the check stops and says so. The address is usually right. For those makers, upload their PDFs with <strong>Upload a document</strong>, or ask them to let TeracomResourceBot in.</p>
           <h4>Getting them onto the website</h4>
           <p>The public Resources pages (User Manuals, Datasheets, Installer Manuals, Brochures, Downloads) show the documents you publish here. On a website&apos;s <strong>Edit</strong> form, set its <strong>Brand</strong>, choose where each kind of document goes, and tick <em>Publish new documents automatically</em> if every new find should go straight onto the site (with a one-off option to publish what is already collected). On the documents page, the <strong>Website</strong> column puts one document in a section, and the toolbar publishes the selected ones or everything shown. A document on the website is served from our copy, with a line saying where the manufacturer&apos;s original lives.</p>
           <h4>Getting them onto the store</h4>
