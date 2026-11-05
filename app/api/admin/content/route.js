@@ -9,6 +9,9 @@ const STATUSES = ['attention', 'waiting', 'queued', 'working', 'review', 'not_fo
 // page. ?status= is one of attention (the default), waiting, review,
 // not_found, done, left.
 export const GET = withAdminSession(async ({ req, token }) => {
-  const asked = new URL(req.url).searchParams.get('status');
-  return NextResponse.json(await listContent(token, STATUSES.includes(asked) ? asked : 'attention'));
+  const params = new URL(req.url).searchParams;
+  const asked = params.get('status');
+  return NextResponse.json(
+    await listContent(token, STATUSES.includes(asked) ? asked : 'attention', params.get('skip'), params.get('limit')),
+  );
 });

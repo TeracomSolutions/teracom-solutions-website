@@ -38,7 +38,7 @@ const PHOTO_FRAME = {
   borderRadius: '12px',
 };
 const PHOTO = { maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' };
-const NO_PHOTO = { color: '#555', fontWeight: 700, fontSize: '14px', textAlign: 'center' };
+const TERA = { maxWidth: '62%', maxHeight: '80%', objectFit: 'contain', opacity: 0.9 };
 const BRAND = { color: 'var(--muted)', fontSize: '12px', fontWeight: 700, letterSpacing: '.06em', textTransform: 'uppercase' };
 const NAME = {
   display: '-webkit-box',
@@ -76,7 +76,9 @@ export default function ProductTile({ p, isSignedIn = false, customer = null }) 
             // eslint-disable-next-line @next/next/no-img-element
             <img src={p.imageUrl} alt={p.name} loading="lazy" style={PHOTO} />
           ) : (
-            <span style={NO_PHOTO}>{p.brand || 'Teracom'}</span>
+            // No photo yet: Tera stands in (Robert, 2026-11-05), our own mascot, so no licence question.
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src="/assets/tera/tera-ready.webp" alt="" loading="lazy" style={TERA} title="Photo coming soon" />
           )}
         </span>
         {p.brand ? <span style={BRAND}>{p.brand}</span> : null}
