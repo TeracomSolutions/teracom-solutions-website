@@ -38,6 +38,13 @@ const nextConfig = {
       // The camera-only planner grew into the site plan designer (2026-11-02).
       { source: '/tools/camera-plan-designer', destination: '/tools/site-plan-designer', permanent: true },
       { source: '/admin/seo/:path*', destination: '/admin/website-data/:path*', permanent: true },
+      // The placeholder products were removed (2026-11-05); their old pages go to the store.
+      { source: '/store/product/sample-reader', destination: '/store', permanent: true },
+      { source: '/store/product/motion-detector', destination: '/store', permanent: true },
+      { source: '/store/product/door-window-sensor', destination: '/store', permanent: true },
+      { source: '/store/product/sow-template-pack', destination: '/store', permanent: true },
+      { source: '/store/product/design-review', destination: '/store', permanent: true },
+      { source: '/store/product/system-integration', destination: '/store', permanent: true },
     ];
   },
   // The IndexNow key file (Scout, Growth tools): /<32 hex>.txt is answered by a route.
