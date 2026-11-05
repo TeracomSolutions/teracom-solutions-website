@@ -15,6 +15,7 @@ import { NO_SAVINGS_PAGE } from '@/lib/savings';
 import { absoluteUrl } from '@/lib/seo';
 import { isAdminPath } from '@/lib/adminIndexing';
 import { isThinProduct } from '@/lib/thinProducts';
+import { growthOn, publishedItems } from '@/lib/api/growthPublic';
 
 // Next's native App Router sitemap convention (no next-sitemap dependency --
 // the framework covers this on its own). Served at /sitemap.xml.
@@ -68,6 +69,15 @@ export default async function sitemap() {
     packs = [];
   }
   const products = await getAllProducts();
+  // Area pages, projects and answered questions (Scout, Growth tools), while each tool is on.
+  const growthEntries = [];
+  for (const [tool, base, list] of [['service_areas', '/areas/', '/areas'], ['projects', '/projects/', '/projects'], ['questions', null, '/questions']]) {
+    if (!(await growthOn(tool))) continue;
+    const items = await publishedItems(tool);
+    if (items.length === 0) continue;
+    growthEntries.push({ path: list, changeFrequency: 'weekly', priority: 0.6 });
+    if (base) growthEntries.push(...items.map((item) => ({ path: base + item.slug, changeFrequency: 'monthly', priority: 0.6 })));
+  }
   const brands = await getBrands();
   const entries = [
     ...staticRoutes,
@@ -154,6 +164,7 @@ export default async function sitemap() {
     ...packs
       .filter((p) => p.kind === 'department' && !NO_SAVINGS_PAGE.includes(p.slug))
       .map((p) => ({ path: `/teracom-ai/departments/${p.slug}`, changeFrequency: 'weekly', priority: 0.7 })),
+    ...growthEntries,
   ];
 
   // Filter out admin paths to prevent them from appearing in sitemap

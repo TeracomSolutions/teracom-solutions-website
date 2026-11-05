@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 
 import AdminAutoRefreshControl from './AdminAutoRefreshControl';
+import AdminListPager, { useListPage } from './AdminListPager';
 import { formatDate, formatDateTime, humanise } from '@/lib/adminFormat';
 import { latestRun, lastCompleted, anyRunning } from '@/lib/scoutRunSummary';
 
@@ -11,6 +12,43 @@ import { latestRun, lastCompleted, anyRunning } from '@/lib/scoutRunSummary';
 // finished, and the live to-do list with Run research. Copied from the
 // the previous platform's app/(admin)/scout/ScoutTaskManager.js; the fetches
 // now go to this app's own /api/admin routes.
+
+// Slim one-line rows (Robert, 2026-11-05): the target is cut to one line and
+// opens in full in a pop-up when clicked; 10 rows a page, 10 to 100.
+const SCOUT_PAGE = { sizes: [10, 20, 50, 100], initialSize: 10 };
+
+function TargetCell({ task, onOpen }) {
+  if (!task.target) return <td className="scout-cell">—</td>;
+  return (
+    <td className="scout-cell">
+      <button type="button" className="scout-target" title="Show the whole target" onClick={() => onOpen(task)}>
+        {task.target}
+      </button>
+    </td>
+  );
+}
+
+function TargetPopup({ task, onClose }) {
+  useEffect(() => {
+    if (!task) return undefined;
+    const close = (event) => { if (event.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', close);
+    return () => window.removeEventListener('keydown', close);
+  }, [task, onClose]);
+  if (!task) return null;
+  return (
+    <div className="scout-popup-backdrop" onClick={onClose}>
+      <div className="scout-popup" role="dialog" aria-modal="true" aria-label={task.title} onClick={(event) => event.stopPropagation()}>
+        <h3>{task.title}</h3>
+        <p className="admin-muted">Target</p>
+        <p className="scout-popup-target">{task.target}</p>
+        <div className="admin-actions">
+          <button type="button" className="btn btn-secondary btn-sm" onClick={onClose}>Close</button>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function RunStatus({ run }) {
   if (!run) return '—';
@@ -55,6 +93,11 @@ export default function AdminScoutTaskManager({ section }) {
   const [error, setError] = useState('');
   const [busyId, setBusyId] = useState(null);
   const [notice, setNotice] = useState('');
+  const [shownTarget, setShownTarget] = useState(null);
+  const closeTarget = useCallback(() => setShownTarget(null), []);
+  const recurringPage = useListPage(recurringTasks, SCOUT_PAGE);
+  const historyPage = useListPage(historyTasks, SCOUT_PAGE);
+  const activePage = useListPage(activeTasks, SCOUT_PAGE);
 
   const loadTasks = useCallback(async () => {
     setLoading(true);
@@ -258,7 +301,7 @@ export default function AdminScoutTaskManager({ section }) {
         <p className="admin-muted">No recurring tasks.</p>
       ) : (
         <div className="admin-table-wrap">
-          <table className="admin-table">
+          <table className="admin-table scout-slim">
             <thead>
               <tr>
                 <th>Task</th>
@@ -270,10 +313,10 @@ export default function AdminScoutTaskManager({ section }) {
               </tr>
             </thead>
             <tbody>
-              {recurringTasks.map((task) => (
+              {recurringPage.rows.map((task) => (
                 <tr key={task.id}>
-                  <td>{task.title}</td>
-                  <td className="wrap">{task.target || '—'}</td>
+                  <td className="scout-cell scout-title" title={task.title}>{task.title}</td>
+                  <TargetCell task={task} onOpen={setShownTarget} />
                   <td>{humanise(task.recurrence)}</td>
                   <td>{humanise(task.status)}</td>
                   <td>{formatDate(task.last_run_at, 'Never')}</td>
@@ -282,6 +325,7 @@ export default function AdminScoutTaskManager({ section }) {
               ))}
             </tbody>
           </table>
+          <AdminListPager view={recurringPage} label="tasks" />
         </div>
       )}
 
@@ -290,7 +334,7 @@ export default function AdminScoutTaskManager({ section }) {
         <p className="admin-muted">No history.</p>
       ) : (
         <div className="admin-table-wrap">
-          <table className="admin-table">
+          <table className="admin-table scout-slim">
             <thead>
               <tr>
                 <th>Task</th>
@@ -302,10 +346,10 @@ export default function AdminScoutTaskManager({ section }) {
               </tr>
             </thead>
             <tbody>
-              {historyTasks.map((task) => (
+              {historyPage.rows.map((task) => (
                 <tr key={task.id}>
-                  <td>{task.title}</td>
-                  <td className="wrap">{task.target || '—'}</td>
+                  <td className="scout-cell scout-title" title={task.title}>{task.title}</td>
+                  <TargetCell task={task} onOpen={setShownTarget} />
                   <td>{humanise(task.recurrence)}</td>
                   <td>{humanise(task.status)}</td>
                   <td>{formatDate(task.last_run_at, 'Never')}</td>
@@ -314,6 +358,7 @@ export default function AdminScoutTaskManager({ section }) {
               ))}
             </tbody>
           </table>
+          <AdminListPager view={historyPage} label="tasks" />
         </div>
       )}
 
@@ -322,7 +367,7 @@ export default function AdminScoutTaskManager({ section }) {
         <p className="admin-muted">No active tasks.</p>
       ) : (
         <div className="admin-table-wrap">
-          <table className="admin-table">
+          <table className="admin-table scout-slim">
             <thead>
               <tr>
                 <th>Task</th>
@@ -334,15 +379,15 @@ export default function AdminScoutTaskManager({ section }) {
               </tr>
             </thead>
             <tbody>
-              {activeTasks.map((task) => (
+              {activePage.rows.map((task) => (
                 <tr key={task.id}>
-                  <td>{task.title}</td>
-                  <td className="wrap">{task.target || '—'}</td>
+                  <td className="scout-cell scout-title" title={task.title}>{task.title}</td>
+                  <TargetCell task={task} onOpen={setShownTarget} />
                   <td>{humanise(task.status)}</td>
                   <td><RunStatus run={latestRunsByTaskId[task.id]} /></td>
                   <td>{formatDate(task.created_at)}</td>
                   <td>
-                    <div className="admin-actions">
+                    <div className="scout-row-actions">
                       <button type="button" className="btn btn-secondary btn-sm" onClick={() => handleComplete(task.id)} disabled={busyId === task.id}>
                         Mark complete
                       </button>
@@ -358,8 +403,10 @@ export default function AdminScoutTaskManager({ section }) {
               ))}
             </tbody>
           </table>
+          <AdminListPager view={activePage} label="tasks" />
         </div>
       )}
+      <TargetPopup task={shownTarget} onClose={closeTarget} />
     </div>
   );
 }
