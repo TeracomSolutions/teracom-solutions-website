@@ -6,7 +6,7 @@ import { growthOn, paragraphs, publishedItems } from '@/lib/api/growthPublic';
 import { absoluteUrl, pageMetadata } from '@/lib/seo';
 
 // Questions people ask, answered (growth tool 10), with the FAQ data Google reads.
-export const revalidate = 300;
+export const revalidate = 3600;
 
 export const metadata = pageMetadata({
   title: 'Questions customers ask | Teracom Solutions',

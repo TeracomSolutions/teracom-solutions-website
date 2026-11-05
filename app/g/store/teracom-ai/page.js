@@ -2,7 +2,7 @@ import TeracomAiStoreView, { teracomAiStoreMetadata } from '@/components/storePa
 
 // The saved copy for visitors who are not signed in (proxy.js rewrites them here).
 export const metadata = teracomAiStoreMetadata;
-export const revalidate = 3600;
+export const revalidate = 86400;
 
 export default async function Page() {
   return TeracomAiStoreView();

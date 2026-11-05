@@ -3,7 +3,7 @@ import { fetchDepartmentCatalogue } from '@/lib/api/departmentCatalogue';
 
 // One Teracom AI Department or extension pack, everything it includes. New packs in
 // Global's catalogue get their page on first visit; all refresh hourly.
-export const revalidate = 3600;
+export const revalidate = 86400;
 
 export async function generateStaticParams() {
   const { entries } = await fetchDepartmentCatalogue();

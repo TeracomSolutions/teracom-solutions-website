@@ -50,7 +50,7 @@ const STORE_SCHEMA = {
 };
 
 // Rebuilt hourly so the specials banner follows the console's Specials page.
-export const revalidate = 3600;
+export const revalidate = 86400;
 
 export default async function Store() {
   const specials = countSpecials(await getAllProducts());

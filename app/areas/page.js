@@ -5,7 +5,7 @@ import { growthOn, publishedItems } from '@/lib/api/growthPublic';
 import { pageMetadata } from '@/lib/seo';
 
 // The areas Teracom covers (growth tool 3). Only while the tool is on and at least one page is published.
-export const revalidate = 300;
+export const revalidate = 3600;
 
 export const metadata = pageMetadata({
   title: 'Areas we cover | Teracom Solutions',

@@ -16,11 +16,14 @@ export const GET = withAdminSession(async ({ token }) => {
   return NextResponse.json(await fetchPublishStatus(token));
 });
 
+// Only a real staff session may clear the store pages, and only once the backend
+// has accepted the publish: each clear makes every store page rebuild on Vercel.
 export const POST = withAdminSession(async ({ token }) => {
+  const result = await publishPrices(token);
   invalidateCatalogueCache();
   revalidateTag('storefront-catalogue');
   for (const path of PRICE_PAGES) {
     revalidatePath(path, 'layout');
   }
-  return NextResponse.json(await publishPrices(token));
-});
+  return NextResponse.json(result);
+}, { verify: true });
