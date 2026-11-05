@@ -5,13 +5,13 @@ import { useEffect, useState } from 'react';
 import AdminSheetPager from '@/components/AdminSheetPager';
 import { formatDateTime } from '@/lib/adminFormat';
 import { money } from '@/lib/catalogShared';
-import { DEFAULT_FILTERS, clampPage, nextSort } from '@/lib/sheetQuery';
+import { DEFAULT_FILTERS, clampPage, nextSort, sheetSize } from '@/lib/sheetQuery';
 import useSheet from '@/lib/useSheet';
 
 // The Pricing page's price list (Robert, 2026-10-04): one slim line per
 // product, every column sortable by clicking its heading, and filters for
-// supplier, category, live on the website, and a search box. It loads 100
-// products at a time and the backend does the filtering and sorting
+// supplier, category, live on the website, and a search box. It loads 20
+// products at a time by default (10, 20, 50 or 100; Robert, 2026-11-05) and the backend does the filtering and sorting
 // (Robert, 2026-10-07). reloadKey changes when a tier or supplier markup is
 // saved, so the prices shown are worked out again.
 
@@ -120,7 +120,14 @@ export default function AdminPriceList({ initial, facets, suppliers, reloadKey }
           </tbody>
         </table>
       </div>
-      <AdminSheetPager total={data.total} page={filters.page} onPage={(page) => setFilters((f) => ({ ...f, page: clampPage(page, data.total) }))} loading={loading} />
+      <AdminSheetPager
+        total={data.total}
+        page={filters.page}
+        size={filters.size}
+        onPage={(page) => setFilters((f) => ({ ...f, page: clampPage(page, data.total, sheetSize(f.size)) }))}
+        onSize={(size) => setFilters((f) => ({ ...f, size, page: 1 }))}
+        loading={loading}
+      />
     </div>
   );
 }

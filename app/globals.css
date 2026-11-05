@@ -3610,3 +3610,10 @@ select option, select optgroup { background-color:#111; color:#fff; }
 .form-route-folder .admin-muted { font-size:12.5px; overflow-wrap:anywhere; }
 .form-route-add { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-top:4px; }
 .form-route-form { border-top:1px solid var(--line); margin-top:16px; padding-top:4px; }
+
+/* Paging under long lists (Robert, 2026-11-05: 20 rows by default, 10 to 100). */
+.admin-pager { display:flex; flex-wrap:wrap; align-items:center; gap:10px 16px; margin:12px 0; }
+.admin-pager-size { display:inline-flex; align-items:center; gap:8px; margin:0; font-size:13px; font-weight:400; color:var(--muted); }
+.admin-pager-size select { width:auto; padding:4px 8px; }
+.admin-pager-buttons { display:inline-flex; flex-wrap:wrap; gap:6px; }
+.admin-table-compact th, .admin-table-compact td { padding:6px 10px; font-size:13px; }

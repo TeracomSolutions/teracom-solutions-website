@@ -9,10 +9,10 @@ import AdminCatalogRow from '@/components/AdminCatalogRow';
 import AdminSheetPager from '@/components/AdminSheetPager';
 import { catalogCsv, inputStyle, send } from '@/lib/catalogShared';
 import { publishNotice, queueNotice } from '@/lib/content';
-import { DEFAULT_FILTERS, allTicked, clampPage, sheetQueryString, togglePage } from '@/lib/sheetQuery';
+import { DEFAULT_FILTERS, allTicked, clampPage, sheetQueryString, sheetSize, togglePage } from '@/lib/sheetQuery';
 import useSheet from '@/lib/useSheet';
 
-// The Store Catalog as a sheet, 100 products at a time (Robert, 2026-10-07:
+// The Store Catalog as a sheet, 20 products at a time by default (10 to 100) (Robert, 2026-10-07:
 // all 4,600 at once made it crawl). Searching, filtering and paging happen on
 // the backend. Ticks and unsaved edits are kept while you change page or
 // filters. Money is shown in dollars; the backend keeps cents.
@@ -41,7 +41,7 @@ export default function AdminCatalogGrid({ initial, facets: initialFacets, suppl
   }
 
   function goToPage(page) {
-    setFilters((f) => ({ ...f, page: clampPage(page, data.total) }));
+    setFilters((f) => ({ ...f, page: clampPage(page, data.total, sheetSize(f.size)) }));
   }
 
   // What the filters offer and the totals beside them, after something changes.
@@ -347,7 +347,7 @@ export default function AdminCatalogGrid({ initial, facets: initialFacets, suppl
         </table>
       </div>
 
-      <AdminSheetPager total={data.total} page={filters.page} onPage={goToPage} loading={loading} />
+      <AdminSheetPager total={data.total} page={filters.page} size={filters.size} onPage={goToPage} onSize={(size) => change({ size })} loading={loading} />
     </div>
   );
 }
