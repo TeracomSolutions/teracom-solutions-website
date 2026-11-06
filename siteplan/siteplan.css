@@ -43,5 +43,17 @@
 .site-planner-schedule-head h2 { margin:0; }
 .site-planner-schedule-head .btn { display:inline-flex; align-items:center; gap:8px; }
 .site-planner-cables { margin-top:22px; }
+.site-planner-parts { margin-top:26px; }
+.site-planner-parts-actions { display:flex; flex-wrap:wrap; gap:10px; }
+.site-planner-parts .site-planner-table tr { cursor:default; }
+.site-planner-parts select { max-width:420px; width:100%; min-height:38px; padding:0 8px; border-radius:10px; border:1px solid var(--line); background:rgba(255,255,255,.06); color:inherit; font:inherit; font-size:14px; }
+.site-planner-parts select option { color:#111; }
+.site-planner-parts-qty { width:80px; min-height:38px; padding:0 8px; border-radius:10px; border:1px solid var(--line); background:rgba(255,255,255,.06); color:inherit; font:inherit; }
+.site-planner-parts-sub { color:var(--muted); font-size:12px; }
+.site-planner-parts-link { margin-left:8px; font-size:13px; }
+.site-planner-parts tfoot td { border-bottom:0; padding-top:12px; }
+.site-planner-parts-form { display:grid; gap:12px; max-width:560px; margin-top:12px; }
+.site-planner-parts-form input, .site-planner-parts-form textarea { width:100%; min-height:44px; padding:8px 12px; border-radius:12px; border:1px solid var(--line); background:rgba(255,255,255,.06); color:inherit; font:inherit; }
+.site-planner-parts-form .btn { display:inline-flex; align-items:center; gap:8px; justify-self:start; }
 .site-planner-cables h3 { margin:0 0 10px; }
 @media (max-width:640px) { .container.site-planner { width:calc(100% - 16px); } }
