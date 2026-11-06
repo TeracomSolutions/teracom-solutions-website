@@ -54,7 +54,7 @@ export default function MobileNav() {
     <>
       <button
         className="mobile-nav-toggle"
-        aria-label="Toggle navigation menu"
+        aria-label={open ? 'Close menu' : 'Open menu'}
         aria-expanded={open}
         onClick={() => setOpen(!open)}
       >

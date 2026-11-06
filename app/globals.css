@@ -24,47 +24,22 @@ a {
   width:min(1180px,calc(100% - 44px));margin-inline:auto;
 }
 .site-header {
-  position:sticky;top:0;z-index:50;background:rgba(5,5,5,.8);backdrop-filter:blur(22px);border-bottom:1px solid var(--line);
+  position:sticky;top:0;z-index:50;background:rgba(5,5,5,.72);backdrop-filter:saturate(160%) blur(20px);-webkit-backdrop-filter:saturate(160%) blur(20px);border-bottom:1px solid var(--line);transition:background .25s ease, box-shadow .25s ease;
 }
 .nav-wrap {
-  height:74px;display:flex;align-items:center;justify-content:space-between;gap:28px;
+  height:72px;display:flex;align-items:center;gap:20px;transition:height .25s ease;
+}
+.brand {
+  flex-shrink:0;
 }
 .brand img {
-  width:245px;height:auto;
+  width:200px;height:auto;transition:width .25s ease;
 }
 .nav {
-  display:flex;gap:30px;align-items:center;color:#d7d7d7;font-size:14px;
-}
-.nav a {
-  opacity:.86;
-}
-.nav a:hover {
-  opacity:1;color:#fff;
+  flex:1;display:flex;justify-content:center;gap:2px;align-items:center;font-size:14.5px;font-weight:500;
 }
 .nav-dropdown {
   position:relative;
-}
-.nav-dropdown-panel {
-  display:none;position:absolute;top:100%;left:50%;transform:translateX(-50%);padding-top:14px;z-index:60;
-}
-.nav-dropdown:hover .nav-dropdown-panel,
-.nav-dropdown:focus-within .nav-dropdown-panel {
-  display:flex;flex-direction:column;
-}
-.nav-dropdown-panel a {
-  white-space:nowrap;background:#0d0d0d;border:1px solid var(--line);padding:12px 20px;opacity:1!important;color:#d7d7d7;
-}
-.nav-dropdown-panel a:first-child {
-  border-radius:14px 14px 0 0;
-}
-.nav-dropdown-panel a:last-child {
-  border-radius:0 0 14px 14px;
-}
-.nav-dropdown-panel a + a {
-  border-top:none;
-}
-.nav-dropdown-panel a:hover {
-  background:#171717;color:#fff;
 }
 .cart-indicator {
   position:relative;display:flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:12px;border:1px solid var(--line);color:var(--text);
@@ -1419,8 +1394,7 @@ a {
   .nav-wrap { gap:12px; }
   .brand { flex-shrink:0; }
   .brand img { width:150px; }
-  .nav-wrap > .btn-primary { display:none; }
-  .nav-signin-status { white-space:nowrap; }
+  .header-cta { display:none; }
 }
 
 /* Card grids site-wide (store categories, brands, resources, brand highlights,
@@ -1895,28 +1869,11 @@ a {
 .shop-the-parts-note { display: flex; align-items: center; gap: 8px; margin-top: 26px; }
 @media (max-width: 560px) { .category-quote-band { padding: 28px 24px; } }
 
-/* --- Header utility row -------------------------------------------------
-   Search, account and cart moved off the navigation line. The phone number
-   rides along, because for a trade buyer it is the most valuable link on the
-   site and it used to be two clicks away on every page. */
-.header-utility { border-bottom:1px solid var(--line); background:rgba(0,0,0,.35); }
-.header-utility-inner {
-  min-height:42px; display:flex; align-items:center; justify-content:space-between;
-  gap:20px; font-size:13px; color:var(--muted);
-}
-/* Only the account controls live up here now. */
-.header-utility-inner { justify-content:flex-end; }
-.header-utility-actions { display:flex; align-items:center; gap:16px; }
-/* The cart button was sized for the tall nav row. */
-.header-utility-actions .cart-indicator { width:36px; height:36px; border-radius:10px; }
-
 /* --- Grouped "What We Do" panel ---------------------------------------- */
-.nav-dropdown-panel-wide { max-width:min(940px, calc(100vw - 48px)); }
-.nav-dropdown:hover .nav-dropdown-panel-wide,
-.nav-dropdown:focus-within .nav-dropdown-panel-wide { display:block; }
+.nav-dropdown-panel-wide { width:max-content; max-width:min(940px, calc(100vw - 48px)); }
 .nav-dropdown-card {
   display:grid; grid-template-columns:repeat(4, minmax(140px, 1fr)); gap:24px 30px;
-  background:#0d0d0d; border:1px solid var(--line); border-radius:18px; padding:24px 28px;
+  background:rgba(14,14,14,.97); border:1px solid var(--line); border-radius:18px; padding:24px 28px;
   box-shadow:0 30px 70px rgba(0,0,0,.55);
 }
 .nav-dropdown-group { display:flex; flex-direction:column; gap:9px; }
@@ -1930,12 +1887,6 @@ a {
 .nav-dropdown-card a:hover { background:none; color:#fff; }
 .nav-dropdown.is-closed .nav-dropdown-panel { display:none !important; }
 
-@media (max-width:860px) {
-  /* MobileNav takes over the navigation; the utility row stays, because the
-     phone number matters most on a phone. */
-  .header-utility-inner { min-height:0; padding:8px 0; font-size:12px; }
-  .header-utility-actions { gap:12px; }
-}
 
 /* Phone and opening hours, with the address and ABN. */
 .footer-phone, .footer-hours { display:inline-flex; align-items:center; gap:8px; }
@@ -3812,3 +3763,89 @@ select option, select optgroup { background-color:#111; color:#fff; }
 .admin-card fieldset.field legend { padding: 0; margin-bottom: 0.35rem; font-weight: 600; }
 .checkbox-inline { display: flex; flex-wrap: wrap; gap: 0.4rem 1.1rem; }
 .checkbox-inline .checkbox-row { display: inline-flex; align-items: center; gap: 0.35rem; }
+
+
+/* --- Header bar (2026-11-06) ----------------------------------------------
+   One slim row in the current style: pill-shaped hover on the links, a chevron
+   on the ones with a menu, menus that fade in rather than snap, round icon
+   buttons on the right, and a bar that tightens with a faint red edge once the
+   page scrolls (NavDropdownCloser sets is-scrolled and is-active). */
+.site-header::after {
+  content:""; position:absolute; left:0; right:0; bottom:-1px; height:1px; pointer-events:none;
+  background:linear-gradient(90deg, transparent, rgba(255,23,23,.65), transparent); opacity:0; transition:opacity .25s ease;
+}
+.site-header.is-scrolled { background:rgba(5,5,5,.9); box-shadow:0 12px 32px rgba(0,0,0,.45); }
+.site-header.is-scrolled::after { opacity:1; }
+.site-header.is-scrolled .nav-wrap { height:60px; }
+.site-header.is-scrolled .brand img { width:172px; }
+
+/* The bar runs wider than the page text so the links never wrap. */
+.site-header .nav-wrap { width:min(1360px, calc(100% - 44px)); }
+.nav-link {
+  position:relative; display:inline-flex; align-items:center; gap:4px; padding:8px 14px; border-radius:999px; white-space:nowrap;
+  color:#cfcfcf; transition:color .2s ease, background .2s ease;
+}
+.nav-link:hover, .nav-dropdown:hover > .nav-link, .nav-dropdown:focus-within > .nav-link { color:#fff; background:rgba(255,255,255,.07); }
+.nav-link.is-active { color:#fff; }
+.nav-link.is-active::after {
+  content:""; position:absolute; left:50%; bottom:2px; width:18px; height:2px; border-radius:2px; background:var(--red); transform:translateX(-50%);
+}
+.nav-chevron { opacity:.55; transition:transform .2s ease, opacity .2s ease; }
+.nav-dropdown:hover .nav-chevron, .nav-dropdown:focus-within .nav-chevron { transform:rotate(180deg); opacity:1; }
+
+.nav-dropdown-panel {
+  display:block; position:absolute; top:100%; left:50%; z-index:60; padding-top:12px;
+  visibility:hidden; opacity:0; transform:translate(-50%, 8px); pointer-events:none;
+  transition:opacity .18s ease, transform .18s ease, visibility 0s linear .18s;
+}
+.nav-dropdown:hover .nav-dropdown-panel, .nav-dropdown:focus-within .nav-dropdown-panel {
+  visibility:visible; opacity:1; transform:translate(-50%, 0); pointer-events:auto; transition-delay:0s;
+}
+.nav-dropdown-list {
+  min-width:240px; display:flex; flex-direction:column; gap:2px; padding:8px;
+  background:rgba(14,14,14,.97); border:1px solid var(--line); border-radius:16px; box-shadow:0 30px 70px rgba(0,0,0,.55);
+}
+.nav-dropdown-list a { padding:10px 14px; border-radius:10px; color:#d7d7d7; font-size:14px; white-space:nowrap; transition:background .15s ease, color .15s ease; }
+.nav-dropdown-list a:hover, .nav-dropdown-list a:focus-visible { background:rgba(255,255,255,.06); color:#fff; }
+.nav-dropdown-card a { transition:color .15s ease; }
+
+.header-actions { display:flex; align-items:center; gap:4px; flex-shrink:0; margin-left:auto; }
+.header-actions .header-search-toggle, .header-actions .cart-indicator, .header-actions .mobile-nav-toggle, .nav-signin-status {
+  height:40px; border-radius:999px; border:1px solid transparent; background:transparent; color:#d7d7d7;
+  transition:background .2s ease, color .2s ease;
+}
+.header-actions .header-search-toggle, .header-actions .cart-indicator, .header-actions .mobile-nav-toggle { width:40px; }
+.header-actions .header-search-toggle:hover, .header-actions .header-search-toggle[aria-expanded="true"],
+.header-actions .cart-indicator:hover, .header-actions .mobile-nav-toggle:hover, .nav-signin-status:hover {
+  background:rgba(255,255,255,.07); border-color:transparent; color:#fff;
+}
+.header-actions .cart-count { top:-2px; right:-2px; min-width:18px; height:18px; font-size:10.5px; }
+.nav-signin-status { display:inline-flex; align-items:center; gap:8px; padding:0 12px; font-size:14px; font-weight:500; white-space:nowrap; }
+.header-cta { margin-left:8px; padding:10px 20px; font-size:14px; box-shadow:0 10px 28px rgba(255,23,23,.25); }
+.header-cta:hover { background:var(--red2); }
+.header-actions .mobile-nav-toggle { margin-left:4px; }
+.header-actions .mobile-nav-toggle .hamburger-icon { width:18px; }
+
+@media (max-width:1280px) {
+  .nav-link { padding:8px 10px; }
+  .nav-signin-label { display:none; }
+  .nav-signin-status { width:40px; padding:0; justify-content:center; }
+  .brand img { width:180px; }
+}
+/* Below this the links, icons and store button no longer fit on one line, so
+   the menu button takes over the links (the store is in that menu too). */
+@media (max-width:1100px) {
+  .nav { display:none; }
+  .header-actions .mobile-nav-toggle { display:flex; }
+}
+@media (max-width:980px) {
+  .nav-wrap { height:64px; }
+  .site-header.is-scrolled .nav-wrap { height:58px; }
+}
+@media (max-width:640px) {
+  .brand img, .site-header.is-scrolled .brand img { width:140px; }
+  .header-actions { gap:2px; }
+}
+@media (prefers-reduced-motion:reduce) {
+  .site-header, .nav-wrap, .brand img, .nav-link, .nav-chevron, .nav-dropdown-panel, .site-header::after { transition:none; }
+}

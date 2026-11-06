@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { UserRound } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { hasCustomerMarker } from '@/lib/customerMarker.js';
 
@@ -30,9 +31,23 @@ export default function HeaderAccount() {
     };
   }, []);
 
+  // An icon with its words; the words drop away on narrower screens, where the
+  // aria-label still says what the icon is.
+  const icon = <UserRound size={19} strokeWidth={1.8} aria-hidden="true" />;
   if (customer) {
-    return <Link href="/account" className="nav-signin-status">Hi, {customer.first_name || customer.email}</Link>;
+    const name = customer.first_name || customer.email;
+    return (
+      <Link href="/account" className="nav-signin-status" aria-label={`Your account (${name})`}>
+        {icon}
+        <span className="nav-signin-label">Hi, {name}</span>
+      </Link>
+    );
   }
 
-  return <Link href="/account/login" className="nav-signin-status">Sign In</Link>;
+  return (
+    <Link href="/account/login" className="nav-signin-status" aria-label="Sign in">
+      {icon}
+      <span className="nav-signin-label">Sign In</span>
+    </Link>
+  );
 }
