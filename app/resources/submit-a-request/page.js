@@ -1,15 +1,16 @@
 import Link from 'next/link';
-import { ArrowLeft, ArrowRight, ClipboardList, KeyRound, Mail, Wallet, Wrench } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ClipboardList, FileSignature, KeyRound, Mail, Wallet, Wrench } from 'lucide-react';
 
 import ResourceHero from '@/components/ResourceHero';
 import { pageMetadata, BUSINESS } from '@/lib/seo';
 import { requestForms } from '@/lib/requestForms';
 import { accountApplication } from '@/lib/accountApplication';
+import { ONLINE_FORMS } from '@/lib/onlineForms';
 
 export const metadata = pageMetadata({
   title: 'Submit a Request | Teracom Solutions',
   description:
-    'Book a service call, request a recorder password reset, or apply for a trade account with Teracom Solutions.',
+    'Book a service call, request a recorder password reset, apply for a trade account, return a product or apply to work with Teracom Solutions as a contractor.',
   path: '/resources/submit-a-request',
 });
 
@@ -19,6 +20,9 @@ const ICONS = { wrench: Wrench, key: KeyRound, account: Wallet };
 // branches on entity and account type -- but on this page it is just
 // another card.
 const CARDS = [...requestForms, accountApplication];
+
+// The forms signed online (lib/onlineForms) that are live, under their own heading.
+const SIGNED = ONLINE_FORMS.filter((form) => form.live);
 
 export default function SubmitARequestPage() {
   return (
@@ -66,6 +70,26 @@ export default function SubmitARequestPage() {
               );
             })}
 
+          </div>
+
+          <h2 className="request-subheading">Forms you sign online</h2>
+          <p className="form-note">Filled in and signed on screen. We email you a signed copy the moment you send it.</p>
+          <div className="tools-grid request-grid">
+            {SIGNED.map((form) => (
+              <Link href={`/forms/${form.key}`} className="tool-card request-card" key={form.key}>
+                <span className="tool-card-icon">
+                  <FileSignature size={26} strokeWidth={1.75} aria-hidden="true" focusable="false" />
+                </span>
+                <h3>{form.title}</h3>
+                <p>{form.lead}</p>
+                <span className="tool-card-cta">
+                  Open the form <ArrowRight size={16} strokeWidth={2} aria-hidden="true" />
+                </span>
+                <span className="tool-card-watermark" aria-hidden="true">
+                  <FileSignature size={170} strokeWidth={1} />
+                </span>
+              </Link>
+            ))}
           </div>
         </div>
       </section>
