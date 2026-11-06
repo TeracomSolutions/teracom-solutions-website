@@ -17,6 +17,8 @@ export default function AdminNewsArticles({ articles, counts, settings: initialS
   const [headlines, setHeadlines] = useState(null);
   const [loadingHeadlines, setLoadingHeadlines] = useState(false);
   const [drafting, setDrafting] = useState('');
+  const [batch, setBatch] = useState(null);
+  const [loadingBatch, setLoadingBatch] = useState(false);
   const [error, setError] = useState('');
 
   async function saveSettings(patch) {
@@ -47,6 +49,22 @@ export default function AdminNewsArticles({ articles, counts, settings: initialS
       setError(err.message);
     } finally {
       setLoadingHeadlines(false);
+    }
+  }
+
+  // What the weekly batch would draft if it ran now: the same picking the batch uses.
+  async function loadBatch() {
+    setLoadingBatch(true);
+    setError('');
+    try {
+      const res = await fetch('/api/admin/industry-news/next-batch');
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'The next batch did not load.');
+      setBatch(data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoadingBatch(false);
     }
   }
 
@@ -84,6 +102,41 @@ export default function AdminNewsArticles({ articles, counts, settings: initialS
           Drafts only: each one waits here for someone to read, edit and publish it. Each draft uses your AI connections once or twice.
           {settings.last_week ? ` Last run: ${settings.last_week}${settings.last_result ? `, ${settings.last_result}` : ''}.` : ''}
         </p>
+        <p className="admin-muted">
+          The batch runs within a few minutes of being switched on, then every Monday. It takes the newest headlines not used
+          before, in turns across the industries (security, electrical, AV, IT and smart home first), so one industry does not
+          fill the week.
+        </p>
+        <button type="button" className="btn btn-secondary btn-sm" onClick={loadBatch} disabled={loadingBatch}>
+          {loadingBatch ? 'Reading the feeds...' : 'See what the next batch would draft'}
+        </button>
+        {batch ? (
+          <>
+            <p className="admin-muted">
+              {batch.headlines.length
+                ? `If it ran now it would draft these ${batch.headlines.length}.`
+                : 'There are no new headlines to draft right now.'}
+              {batch.next_run === 'off' ? ' Weekly drafts are switched off.' : ` Next run: ${batch.next_run}.`} Headlines change as
+              the publications post, so the list on the day can differ.
+            </p>
+            {batch.headlines.length ? (
+              <div className="admin-table-wrap">
+                <table className="admin-table">
+                  <thead><tr><th>Headline</th><th>Industry</th><th>Publication</th></tr></thead>
+                  <tbody>
+                    {batch.headlines.map((h) => (
+                      <tr key={h.link}>
+                        <td className="wrap"><a className="admin-link" href={h.link} target="_blank" rel="noopener noreferrer">{h.title}</a></td>
+                        <td>{h.industry}</td>
+                        <td>{h.publication}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : null}
+          </>
+        ) : null}
         {settingsNote ? <p className="admin-muted" role="status">{settingsNote}</p> : null}
       </div>
 
