@@ -2,8 +2,11 @@
 
 import { useState } from 'react';
 
-// One article from industry news: read it, fix anything, then Publish. A published
-// article can be taken back to draft at any time.
+import { slot } from './AdminNewsArticles';
+
+// One article from industry news: read it, fix anything, then Approve and schedule (it goes
+// live at the next publishing time, shared through Post it if sharing is on) or Publish now.
+// A scheduled or published article can be taken back to draft at any time.
 export default function AdminNewsArticleEditor({ initial }) {
   const [article, setArticle] = useState(initial);
   const [form, setForm] = useState({ title: initial.title, summary: initial.summary, body: initial.body });
@@ -34,6 +37,9 @@ export default function AdminNewsArticleEditor({ initial }) {
 
   const save = () => call(`/api/admin/industry-news/articles/${article.id}`, 'PATCH', form, 'Saved.');
   const status = (s, done) => call(`/api/admin/industry-news/articles/${article.id}/status`, 'POST', { status: s }, done);
+  const saveThen = (next) => (changed ? save().then((ok) => ok && next()) : next());
+  const approve = () =>
+    saveThen(() => call(`/api/admin/industry-news/articles/${article.id}/approve`, 'POST', {}, 'Approved. It goes live at the time shown.'));
 
   return (
     <div className="admin-card admin-form">
@@ -56,9 +62,19 @@ export default function AdminNewsArticleEditor({ initial }) {
       </label>
       <div className="admin-actions">
         <button type="button" className="btn btn-secondary btn-sm" onClick={save} disabled={busy || !changed}>Save changes</button>
+        {article.status === 'draft' ? (
+          <button type="button" className="btn btn-primary btn-sm" onClick={approve} disabled={busy}>
+            Approve and schedule
+          </button>
+        ) : null}
+        {article.status === 'scheduled' ? (
+          <button type="button" className="btn btn-secondary btn-sm" onClick={() => status('draft', 'Unscheduled; it is a draft again and its share is held back.')} disabled={busy}>
+            Unschedule
+          </button>
+        ) : null}
         {article.status !== 'published' ? (
-          <button type="button" className="btn btn-primary btn-sm" onClick={() => (changed ? save().then((ok) => ok && status('published', 'Published.')) : status('published', 'Published.'))} disabled={busy}>
-            Publish on the website
+          <button type="button" className="btn btn-secondary btn-sm" onClick={() => saveThen(() => status('published', 'Published.'))} disabled={busy}>
+            Publish now
           </button>
         ) : (
           <>
@@ -73,7 +89,11 @@ export default function AdminNewsArticleEditor({ initial }) {
           <button type="button" className="btn btn-secondary btn-sm" onClick={() => status('draft', 'Back to draft.')} disabled={busy}>Back to draft</button>
         ) : null}
       </div>
-      <p className="admin-muted">Status: {article.status}{article.model ? ` · written by ${article.model}` : ''}</p>
+      <p className="admin-muted">
+        Status: {article.status}
+        {article.status === 'scheduled' ? ` · goes live ${slot(article.scheduled_for)}${article.shared ? ', shared through Post it at the same time' : ''}` : ''}
+        {article.model ? ` · written by ${article.model}` : ''}
+      </p>
       {note ? <p className="admin-muted" role="status">{note}</p> : null}
       {error ? <p className="form-error" role="alert">{error}</p> : null}
     </div>

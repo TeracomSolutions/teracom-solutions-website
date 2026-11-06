@@ -12,7 +12,7 @@ export const metadata = {
   title: retitle('Articles|Teracom Solutions', BRAND),
 };
 
-const STATUSES = ['draft', 'published', 'rejected'];
+const STATUSES = ['draft', 'scheduled', 'published', 'rejected'];
 
 export default async function AdminArticlesPage(props) {
   const token = await requireAdminToken();
@@ -37,7 +37,8 @@ export default async function AdminArticlesPage(props) {
           <ul>
             <li><strong>Draft one now</strong>: show recent headlines from the Industry news publications and press <em>Draft</em> on one. The AI connections write a draft in about a minute and it opens for you.</li>
             <li><strong>Weekly drafts</strong>: when ticked, up to the number you choose are drafted each week, taking turns across security, electrical, AV, IT and the other industries. They wait on the Draft list.</li>
-            <li><strong>Nothing is published by itself.</strong> Open a draft, check the facts against the original story and that nothing is copied from it, edit, then <em>Publish on the website</em>. <em>Unpublish</em> takes it off again.</li>
+            <li><strong>Nothing is published by itself.</strong> Open a draft, check the facts against the original story and that nothing is copied from it, edit, then <em>Approve and schedule</em>. It takes the next publishing time and waits on the Scheduled list; <em>Publish now</em> skips the wait and <em>Unpublish</em> takes it off again.</li>
+            <li><strong>When approved articles go live</strong>: the days and hour (Melbourne time) for publishing, one article per time. Tick channels under <em>Share each one</em> and approving also schedules a Post it update for the same time linking the article (the email goes to everyone on the list who has not unsubscribed).</li>
           </ul>
           <p>The writer only sees the headline and the publisher&apos;s short summary, never the full story, and a draft that repeats 12 or more of the publisher&apos;s words in a row is thrown away.</p>
         </AdminHelpIcon>

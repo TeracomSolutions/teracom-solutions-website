@@ -4,8 +4,20 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-const STATUS_LABELS = { draft: 'Draft', published: 'Published', rejected: 'Rejected' };
+const STATUS_LABELS = { draft: 'Draft', scheduled: 'Scheduled', published: 'Published', rejected: 'Rejected' };
 const when = (iso) => (iso ? new Date(iso).toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' }) : '');
+const slotFormat = new Intl.DateTimeFormat('en-AU', { weekday: 'short', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit', timeZone: 'Australia/Melbourne' });
+export const slot = (iso) => (iso ? slotFormat.format(new Date(iso)) : '');
+const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+const HOURS = Array.from({ length: 17 }, (_, i) => i + 6);
+const hourLabel = (h) => `${h % 12 || 12}${h < 12 ? 'am' : 'pm'}`;
+const CHANNELS = [
+  ['email', 'Email list'],
+  ['linkedin', 'LinkedIn'],
+  ['facebook', 'Facebook'],
+  ['instagram', 'Instagram'],
+  ['x', 'X'],
+];
 
 // Articles from industry news: the weekly batch switch, Draft one now from a recent
 // headline, and every draft and published article. Nothing reaches the website until
@@ -18,6 +30,7 @@ export default function AdminNewsArticles({ articles, counts, settings: initialS
   const [loadingHeadlines, setLoadingHeadlines] = useState(false);
   const [drafting, setDrafting] = useState('');
   const [batch, setBatch] = useState(null);
+  const [approving, setApproving] = useState('');
   const [loadingBatch, setLoadingBatch] = useState(false);
   const [error, setError] = useState('');
 
@@ -28,7 +41,13 @@ export default function AdminNewsArticles({ articles, counts, settings: initialS
     const res = await fetch('/api/admin/industry-news/articles/settings', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ weekly_enabled: next.weekly_enabled, per_week: Number(next.per_week) }),
+      body: JSON.stringify({
+        weekly_enabled: next.weekly_enabled,
+        per_week: Number(next.per_week),
+        publish_days: next.publish_days,
+        publish_hour: Number(next.publish_hour),
+        share_channels: next.share_channels,
+      }),
     });
     const data = await res.json().catch(() => ({}));
     if (res.ok) {
@@ -67,6 +86,23 @@ export default function AdminNewsArticles({ articles, counts, settings: initialS
       setLoadingBatch(false);
     }
   }
+
+  async function approve(a) {
+    setApproving(a.id);
+    setError('');
+    try {
+      const res = await fetch(`/api/admin/industry-news/articles/${a.id}/approve`, { method: 'POST' });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'It was not approved.');
+      router.refresh();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setApproving('');
+    }
+  }
+
+  const toggle = (list, value) => (list.includes(value) ? list.filter((v) => v !== value) : [...list, value]);
 
   async function draft(h) {
     setDrafting(h.link);
@@ -141,6 +177,57 @@ export default function AdminNewsArticles({ articles, counts, settings: initialS
       </div>
 
       <div className="admin-card">
+        <h2>When approved articles go live</h2>
+        <p className="admin-muted">
+          Approving a draft gives it the next free time below (one article per time, Melbourne time). The website shows it
+          from then; the Articles list there refreshes within the hour.
+        </p>
+        <fieldset className="field">
+          <legend>Days</legend>
+          <div className="checkbox-inline">
+            {DAYS.map((d, i) => (
+              <label key={d} className="checkbox-row">
+                <input
+                  type="checkbox"
+                  checked={(settings.publish_days || []).includes(i)}
+                  onChange={() => {
+                    const days = toggle(settings.publish_days || [], i).sort();
+                    if (days.length) saveSettings({ publish_days: days });
+                  }}
+                />
+                <span>{d}</span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+        <label className="field">
+          <span>Time</span>
+          <select value={settings.publish_hour ?? 9} onChange={(e) => saveSettings({ publish_hour: Number(e.target.value) })}>
+            {HOURS.map((h) => <option key={h} value={h}>{hourLabel(h)}</option>)}
+          </select>
+        </label>
+        <fieldset className="field">
+          <legend>Share each one when it goes live (Post it)</legend>
+          <div className="checkbox-inline">
+            {CHANNELS.map(([key, label]) => (
+              <label key={key} className="checkbox-row">
+                <input
+                  type="checkbox"
+                  checked={(settings.share_channels || []).includes(key)}
+                  onChange={() => saveSettings({ share_channels: toggle(settings.share_channels || [], key) })}
+                />
+                <span>{label}</span>
+              </label>
+            ))}
+          </div>
+          <span className="admin-muted">
+            Approving then also schedules a Post it update for the same time: the article&apos;s title and summary with its link.
+            Email goes to everyone on the list who has not unsubscribed. Channels need to be connected on Social. None ticked: no sharing.
+          </span>
+        </fieldset>
+      </div>
+
+      <div className="admin-card">
         <h2>Draft one now</h2>
         <p className="admin-muted">Pick a recent headline and Tera&apos;s writer drafts Teracom&apos;s own article about it (about a minute).</p>
         <button type="button" className="btn btn-secondary btn-sm" onClick={loadHeadlines} disabled={loadingHeadlines}>
@@ -173,7 +260,7 @@ export default function AdminNewsArticles({ articles, counts, settings: initialS
       </div>
 
       <nav className="admin-tabs" aria-label="Articles by status">
-        {['draft', 'published', 'rejected'].map((s) => (
+        {['draft', 'scheduled', 'published', 'rejected'].map((s) => (
           <Link key={s} href={`/admin/resources/articles?status=${s}`} className={status === s ? 'admin-tab active' : 'admin-tab'}>
             {STATUS_LABELS[s]} ({counts?.[s] ?? 0})
           </Link>
@@ -182,7 +269,7 @@ export default function AdminNewsArticles({ articles, counts, settings: initialS
       {articles.length ? (
         <div className="admin-table-wrap">
           <table className="admin-table">
-            <thead><tr><th>Article</th><th>Industry</th><th>From</th><th>Made</th><th>Status</th></tr></thead>
+            <thead><tr><th>Article</th><th>Industry</th><th>From</th><th>Made</th><th>{status === 'scheduled' ? 'Goes live' : 'Status'}</th><th /></tr></thead>
             <tbody>
               {articles.map((a) => (
                 <tr key={a.id}>
@@ -190,7 +277,16 @@ export default function AdminNewsArticles({ articles, counts, settings: initialS
                   <td>{a.industry}</td>
                   <td className="wrap"><a className="admin-link" href={a.source_url} target="_blank" rel="noopener noreferrer">{a.source_name}</a></td>
                   <td>{when(a.created_at)}{a.made_by === 'weekly' ? ' (weekly)' : ''}</td>
-                  <td>{STATUS_LABELS[a.status] || a.status}</td>
+                  <td>
+                    {a.status === 'scheduled' ? `${slot(a.scheduled_for)}${a.shared ? ' + shared' : ''}` : STATUS_LABELS[a.status] || a.status}
+                  </td>
+                  <td>
+                    {a.status === 'draft' ? (
+                      <button type="button" className="admin-mini-btn is-primary" onClick={() => approve(a)} disabled={Boolean(approving)}>
+                        {approving === a.id ? 'Approving...' : 'Approve'}
+                      </button>
+                    ) : null}
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -199,6 +295,10 @@ export default function AdminNewsArticles({ articles, counts, settings: initialS
       ) : (
         <p className="admin-muted">Nothing here yet.</p>
       )}
+      {status === 'draft' && articles.length ? (
+        <p className="admin-muted">Approve schedules a draft as it is. Open one first to read and edit it.</p>
+      ) : null}
+      {error && !headlines ? <p className="form-error" role="alert">{error}</p> : null}
     </>
   );
 }
