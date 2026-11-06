@@ -5,6 +5,7 @@ import MobileNav from './MobileNav';
 import CartIndicator from './CartIndicator';
 import HeaderSearch from './HeaderSearch';
 import NavDropdownCloser from './NavDropdownCloser';
+import SiteMotion from './SiteMotion';
 import HeaderAccount from './HeaderAccount';
 import { resourcesSections } from '@/lib/resourcesSections';
 import { COMMISSIONING_FORM_URL, monitoringServices } from '@/lib/monitoring';
@@ -29,6 +30,7 @@ export default function Header() {
   return (
     <header className="site-header">
       <NavDropdownCloser />
+      <SiteMotion />
       <div className="container nav-wrap">
         <Link className="brand" href="/" aria-label="Teracom Solutions home">
           <Image src="/assets/teracom-logo.png" alt="Teracom Solutions" width={170} height={66} priority />

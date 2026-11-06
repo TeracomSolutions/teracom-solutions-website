@@ -3849,3 +3849,90 @@ select option, select optgroup { background-color:#111; color:#fff; }
 @media (prefers-reduced-motion:reduce) {
   .site-header, .nav-wrap, .brand img, .nav-link, .nav-chevron, .nav-dropdown-panel, .site-header::after { transition:none; }
 }
+
+
+/* --- Site polish (2026-11-06) -------------------------------------------------
+   Robert: "jazz up the website ... as professional as possible". Quiet, not loud:
+   a faint dot grid and red light behind the public pages, a reading-progress
+   line under the header, an accent line on the small red labels, a soft sheen
+   on the big headings, content that rises into place (SiteMotion), and moving
+   Tera animations where something has just happened (TeraPose animate). */
+body:has(.site-header) { position:relative; isolation:isolate; }
+body:has(.site-header)::before {
+  content:""; position:fixed; inset:0; z-index:-1; pointer-events:none;
+  background:
+    radial-gradient(900px 600px at 88% -12%, rgba(255,23,23,.11), transparent 62%),
+    radial-gradient(760px 520px at -12% 46%, rgba(255,255,255,.035), transparent 62%),
+    radial-gradient(rgba(255,255,255,.055) 1px, transparent 1.4px) 0 0 / 28px 28px;
+  -webkit-mask-image:linear-gradient(180deg, #000 0%, rgba(0,0,0,.55) 55%, rgba(0,0,0,.3) 100%);
+  mask-image:linear-gradient(180deg, #000 0%, rgba(0,0,0,.55) 55%, rgba(0,0,0,.3) 100%);
+}
+
+/* How far down the page you are, as a thin red line along the bottom of the header. */
+@supports (animation-timeline: scroll()) {
+  .site-header::before {
+    content:""; position:absolute; left:0; right:0; bottom:-1px; height:2px; z-index:1; pointer-events:none;
+    transform-origin:0 50%; transform:scaleX(0);
+    background:linear-gradient(90deg, var(--red), #ff7a7a);
+    animation:site-read-progress linear both; animation-timeline:scroll(root block);
+  }
+  @keyframes site-read-progress { to { transform:scaleX(1); } }
+}
+
+.eyebrow { align-items:center; gap:10px; }
+.eyebrow::before {
+  content:""; flex:none; width:22px; height:2px; border-radius:2px;
+  background:linear-gradient(90deg, var(--red), rgba(255,23,23,.15));
+}
+
+.hero h1, .section-heading h2, .showcase-copy h2, .section-sticky h2, .about-layout h2, .contact-card h2, .intro-grid h2 {
+  background:linear-gradient(180deg, #fff 40%, #d4d4d4 100%);
+  -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:#fff;
+}
+.hero h1 *, .section-heading h2 *, .showcase-copy h2 *, .section-sticky h2 *, .about-layout h2 *, .contact-card h2 *, .intro-grid h2 * {
+  -webkit-text-fill-color:currentColor;
+}
+
+/* Section edges: a hairline of red light where a shaded section begins. */
+.section.alt { position:relative; }
+.section.alt::before {
+  content:""; position:absolute; top:0; left:50%; width:min(980px, 84%); height:1px; transform:translateX(-50%); pointer-events:none;
+  background:linear-gradient(90deg, transparent, rgba(255,23,23,.38), transparent);
+}
+
+.btn-primary:hover { box-shadow:0 18px 52px rgba(255,23,23,.4); }
+.btn { position:relative; }
+
+/* The Teracom AI picture stays in view beside its long list instead of leaving a gap. */
+@media (min-width:981px) {
+  .product-showcase .showcase-image { position:sticky; top:110px; }
+}
+.showcase-image { outline:1px solid rgba(255,255,255,.06); outline-offset:-1px; }
+.showcase-image img { transition:transform .8s cubic-bezier(.2,.7,.2,1); }
+.showcase-image:hover img { transform:scale(1.025); }
+
+/* Content rising into place (SiteMotion). */
+html.reveal-ready [data-reveal] {
+  opacity:0; transform:translateY(22px);
+  transition:opacity .7s cubic-bezier(.2,.7,.2,1) var(--reveal-delay, 0ms), transform .7s cubic-bezier(.2,.7,.2,1) var(--reveal-delay, 0ms);
+}
+html.reveal-ready [data-reveal].is-revealed { opacity:1; transform:none; }
+html.reveal-ready .section-sticky[data-reveal].is-revealed { transform:none; }
+
+/* Moving Tera. The footer Tera floats gently on every page. */
+.footer-mascot img { animation:tera-float 6s ease-in-out infinite; }
+@keyframes tera-float { 0%, 100% { transform:translateY(0); } 50% { transform:translateY(-10px); } }
+.tera-pose-animated { display:inline-block; line-height:0; }
+.tera-pose-animated img { display:block; width:100%; height:auto; }
+.tera-pose-chat.tera-pose-animated { width:72px; }
+
+@media (prefers-reduced-motion:reduce) {
+  .site-header::before { animation:none; display:none; }
+  .footer-mascot img { animation:none; }
+  .showcase-image img { transition:none; }
+  .showcase-image:hover img { transform:none; }
+}
+@media print {
+  html.reveal-ready [data-reveal] { opacity:1 !important; transform:none !important; }
+  body:has(.site-header)::before { display:none; }
+}

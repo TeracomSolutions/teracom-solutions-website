@@ -49,7 +49,7 @@ export default function NotFound() {
           </div>
           <div className="store-art cart-art" aria-hidden="true">
             <span className="store-art-ring tool-hero-ring">
-              <TeraPose pose="presenting" size={150} />
+              <TeraPose pose="presenting" size={170} animate />
             </span>
             <span className="store-art-orbit">
               {[Compass, ShoppingBag, Wrench].map((Badge, i) => (
