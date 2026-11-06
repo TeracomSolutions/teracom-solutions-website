@@ -3,6 +3,7 @@ import { categories } from '@/lib/categories';
 import { getAllProducts } from '@/lib/catalogue';
 import { aiCapabilities } from '@/lib/aiCapabilities';
 import { articles } from '@/lib/articles';
+import { fetchPublishedNewsArticles } from '@/lib/api/newsArticles';
 import { resourcesSections } from '@/lib/resourcesSections';
 import { services } from '@/lib/services';
 import { monitoringServices } from '@/lib/monitoring';
@@ -89,8 +90,9 @@ export default async function sitemap() {
       priority: 0.6,
     })),
 
-    // Articles, one page each under /resources/articles.
-    ...articles.map((article) => ({
+    // Articles, one page each under /resources/articles: our guides, then the published
+    // articles from industry news.
+    ...[...articles, ...(await fetchPublishedNewsArticles())].map((article) => ({
       path: `/resources/articles/${article.slug}`,
       changeFrequency: 'yearly',
       priority: 0.6,

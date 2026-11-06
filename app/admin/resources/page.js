@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation';
 import AdminHelpIcon from '@/components/AdminHelpIcon';
 import AdminResourceSources from '@/components/AdminResourceSources';
 import AdminResourceUpload from '@/components/AdminResourceUpload';
+import AdminResourcesTabs from '@/components/AdminResourcesTabs';
 import AdminShell from '@/components/AdminShell';
 import { fetchSupplierPricing } from '@/lib/api/adminPricing';
 import { fetchResourceSources, resourceBrands } from '@/lib/api/adminResources';
@@ -64,6 +65,7 @@ export default async function AdminResourcesPage() {
           <p>Choose a PDF (up to 50 MB), give it a title, the brand and the type, and where it shows on the website; it is kept with the other documents under &quot;Uploaded by Teracom&quot;, where the documents page changes its brand, type, SKU or section later; the same file cannot be uploaded twice.</p>
         </AdminHelpIcon>
       </h1>
+      <AdminResourcesTabs />
       <p className="lead">Supplier and manufacturer websites we watch for data sheets and manuals, checked on a schedule, published to the Resources pages and shown on the store.</p>
 
       {loadError ? <p className="form-error" role="alert">{loadError}</p> : (

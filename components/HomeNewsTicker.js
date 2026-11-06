@@ -1,6 +1,7 @@
 import Link from 'next/link';
 
-import { NEWS_SOURCES, categoriseHeadline, getAllIndustryNews } from '@/lib/industryNews';
+import { categoriseHeadline, getAllIndustryNews } from '@/lib/industryNews';
+import { getNewsSources } from '@/lib/newsSources';
 
 // The Industry News live ticker on the homepage, just under the banner
 // (Robert, 2026-10-03). Same feeds, look and hourly refresh as
@@ -16,8 +17,9 @@ function withTopic(item) {
 export default async function HomeNewsTicker() {
   let items = [];
   try {
-    const bySource = await getAllIndustryNews(6);
-    items = NEWS_SOURCES.flatMap((s) => bySource[s.id] || [])
+    const sources = await getNewsSources();
+    const bySource = await getAllIndustryNews(6, sources);
+    items = sources.flatMap((s) => bySource[s.id] || [])
       .map(withTopic)
       .sort((a, b) => (b.date || '').localeCompare(a.date || ''))
       .slice(0, 16);

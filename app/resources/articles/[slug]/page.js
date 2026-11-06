@@ -6,6 +6,7 @@ import Breadcrumbs from '@/components/Breadcrumbs';
 import JsonLd from '@/components/JsonLd';
 import OrbitArt from '@/components/OrbitArt';
 import { articles, getArticle } from '@/lib/articles';
+import { fetchPublishedNewsArticle } from '@/lib/api/newsArticles';
 import { SITE_NAME, absoluteUrl, pageMetadata } from '@/lib/seo';
 import { withSeoTitle } from '@/lib/seoTitles';
 import { fitTitle } from '@/lib/seoText';
@@ -21,9 +22,14 @@ export function generateStaticParams() {
   return articles.map((article) => ({ slug: article.slug }));
 }
 
+// Our own guides first, then a published article from industry news (backend).
+async function findArticle(slug) {
+  return getArticle(slug) || (await fetchPublishedNewsArticle(slug));
+}
+
 export async function generateMetadata(props) {
   const params = await props.params;
-  const article = getArticle(params.slug);
+  const article = await findArticle(params.slug);
   if (!article) return {};
   return withSeoTitle(
     pageMetadata({
@@ -71,7 +77,7 @@ function Block({ block }) {
 
 export default async function ArticlePage(props) {
   const params = await props.params;
-  const article = getArticle(params.slug);
+  const article = await findArticle(params.slug);
   if (!article) notFound();
 
   const path = `/resources/articles/${article.slug}`;
@@ -114,6 +120,16 @@ export default async function ArticlePage(props) {
               <Block key={index} block={block} />
             ))}
           </article>
+
+          {article.source ? (
+            <p className="form-note" style={{ marginTop: '28px' }}>
+              Prompted by{' '}
+              <a href={article.source.url} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--text)', textDecoration: 'underline' }}>
+                {article.source.title}
+              </a>
+              , reported by {article.source.name}. This article is Teracom Solutions&apos; own commentary.
+            </p>
+          ) : null}
 
           <div className="copy-block" style={{ marginTop: '36px' }}>
             <h2 style={HEADING_3}>Related</h2>
