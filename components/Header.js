@@ -6,7 +6,7 @@ import HeaderSearch from './HeaderSearch';
 import NavDropdownCloser from './NavDropdownCloser';
 import HeaderAccount from './HeaderAccount';
 import { resourcesSections } from '@/lib/resourcesSections';
-import { monitoringServices } from '@/lib/monitoring';
+import { COMMISSIONING_FORM_URL, monitoringServices } from '@/lib/monitoring';
 import { MONITORING_LOGIN_PATH, monitoringLoginEnabled } from '@/lib/monitoringLogin';
 import { services, serviceGroups } from '@/lib/services';
 
@@ -73,6 +73,7 @@ export default function Header() {
                   {s.title}
                 </Link>
               ))}
+              <Link href={COMMISSIONING_FORM_URL}>Monitoring sign-up form</Link>
               {monitoringLoginEnabled() ? <Link href={MONITORING_LOGIN_PATH}>Customer login</Link> : null}
             </div>
           </div>
