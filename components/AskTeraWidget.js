@@ -325,7 +325,7 @@ export default function AskTeraWidget() {
                     className={`tera-message ${message.type === 'user' ? 'tera-message-user' : 'tera-message-assistant'}`}
                   >
                     {message.pose ? <TeraPose pose={message.pose} size={72} className="tera-pose-chat" /> : null}
-                    {message.pending ? <TeraPose pose="laptop" size={64} className="tera-pose-chat" /> : null}
+                    {message.pending ? <TeraPose pose="laptop" size={72} className="tera-pose-chat" animate /> : null}
                     {message.text}
                     {message.sources?.length ? (
                       <ul className="tera-sources">

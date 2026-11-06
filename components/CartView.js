@@ -52,7 +52,7 @@ function CartArt() {
   return (
     <div className="store-art cart-art" aria-hidden="true">
       <span className="store-art-ring tool-hero-ring">
-        <TeraPose pose="walking" size={150} />
+        <TeraPose pose="walking" size={170} animate />
       </span>
       <span className="store-art-orbit">
         {[CreditCard, ShieldCheck, Truck].map((Badge, i) => (
