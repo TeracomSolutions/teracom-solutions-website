@@ -332,10 +332,27 @@ export default function OnlineForm({ formKey, termsVersion, preview = false }) {
 
       <section className="online-form-section" aria-labelledby="section-sign">
         <h2 className="request-form-heading" id="section-sign">Agreement and signature</h2>
-        <p className="form-note">
-          You are agreeing to {termsTitle(form, values, termsVersion)}.{' '}
-          <Link href="/terms" target="_blank">Read the terms</Link> (opens in a new tab).
-        </p>
+        {form.agreement.document ? (
+          <>
+            <p className="form-note">
+              You are agreeing to the {form.agreement.document.title} (version {form.agreement.document.version}). Please read it; your signed copy
+              includes it in full.
+            </p>
+            <div className="online-form-document" tabIndex={0} role="region" aria-label={form.agreement.document.title}>
+              {form.agreement.document.clauses.map((clause) => (
+                <div key={clause.heading}>
+                  <h3>{clause.heading}</h3>
+                  <p>{clause.text}</p>
+                </div>
+              ))}
+            </div>
+          </>
+        ) : (
+          <p className="form-note">
+            You are agreeing to {termsTitle(form, values, termsVersion)}.{' '}
+            <Link href="/terms" target="_blank">Read the terms</Link> (opens in a new tab).
+          </p>
+        )}
         <label className="request-declaration">
           <input type="checkbox" checked={Boolean(values.agree)} onChange={(event) => setValue('agree', event.target.checked)} />
           <span>{form.agreement.statement}</span>

@@ -3594,6 +3594,11 @@ select option, select optgroup { background-color:#111; color:#fff; }
 .online-form-fieldset > legend { font-size:14px; font-weight:700; color:#fff; padding:0; margin-bottom:4px; }
 .online-form-option-note { display:block; font-size:13.5px; color:var(--muted); margin-top:2px; }
 .online-form-note { margin:0; color:var(--muted); font-size:15px; line-height:1.55; }
+.online-form-document { max-height:420px; overflow-y:auto; margin:12px 0 18px; padding:16px 18px; border:1px solid var(--line); border-radius:14px; background:rgba(255,255,255,.04); font-size:14px; line-height:1.55; }
+.online-form-document h3 { margin:14px 0 4px; font-size:15px; }
+.online-form-document h3:first-child { margin-top:0; }
+.online-form-document p { margin:0; }
+.request-subheading { margin:40px 0 6px; }
 .online-form-row { display:grid; gap:12px; }
 .online-form-row .field { margin:0; }
 .online-form-files { list-style:none; margin:8px 0 0; padding:0; display:grid; gap:6px; font-size:14px; }

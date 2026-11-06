@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 
 import { ApiError } from '@/lib/api/client';
 import { submitForm } from '@/lib/api/forms';
-import { FILE_RULES, checkForm, cleanValues, fileExtension, findOnlineForm, identity, summarise, termsTitle } from '@/lib/onlineForms';
+import { FILE_RULES, agreementVersion, checkForm, cleanValues, fileExtension, findOnlineForm, identity, summarise, termsTitle } from '@/lib/onlineForms';
 import { checkSharedRateLimit, clientIpFromRequest, rateLimitResponse } from '@/lib/rateLimit';
 import { STARTED_FIELD, TRAP_FIELD, checkSubmission } from '@/lib/formGuard';
 import { TERMS_VERSION } from '@/lib/termsDocument';
@@ -90,7 +90,7 @@ export async function POST(req, props) {
         phone: who.phone || undefined,
         data,
         summary: summarise(form, data, fileInfo),
-        terms_version: TERMS_VERSION,
+        terms_version: agreementVersion(form, TERMS_VERSION),
         terms_title: termsTitle(form, values, TERMS_VERSION),
         signed_name: signedName,
         signature_png: signature,
