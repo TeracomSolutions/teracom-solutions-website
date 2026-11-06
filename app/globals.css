@@ -3806,3 +3806,9 @@ select option, select optgroup { background-color:#111; color:#fff; }
 .about-licence-notes { padding:12px 14px; border:1px solid rgba(255,210,122,.45); border-radius:12px; background:rgba(255,210,122,.06); }
 .about-licence-notes ul { margin:6px 0 0; padding-left:18px; }
 .about-open-group summary { cursor:pointer; font-weight:700; margin:4px 0 8px; }
+
+/* Articles: day and channel ticks in a row (Resources > Articles, publishing times). */
+.admin-card fieldset.field { border: 0; padding: 0; margin: 0 0 0.9rem; min-width: 0; }
+.admin-card fieldset.field legend { padding: 0; margin-bottom: 0.35rem; font-weight: 600; }
+.checkbox-inline { display: flex; flex-wrap: wrap; gap: 0.4rem 1.1rem; }
+.checkbox-inline .checkbox-row { display: inline-flex; align-items: center; gap: 0.35rem; }
