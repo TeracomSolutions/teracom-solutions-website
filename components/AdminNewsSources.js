@@ -39,7 +39,7 @@ export default function AdminNewsSources({ initial, isDefault }) {
   async function testFeed(key, feed, host, excludeTitle) {
     setTests((t) => ({ ...t, [key]: { running: true } }));
     try {
-      const res = await fetch('/api/admin/industry-news/sources/test', {
+      const res = await fetch('/api/admin/industry-news/sources/check', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ feed: feed || '', host: host || '', excludeTitle: excludeTitle || '' }),

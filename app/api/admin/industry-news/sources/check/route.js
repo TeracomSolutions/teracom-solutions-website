@@ -1,3 +1,4 @@
+// Named check, not test: node --test treats any folder called test as tests.
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
