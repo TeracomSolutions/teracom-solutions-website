@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 450" width="600" height="450" role="img" aria-label="Product (illustration)">
+  <rect width="600" height="450" fill="#f6f7f9"/>
+  <ellipse cx="300" cy="350" rx="170" ry="14" fill="#e6e8ec"/>
+  <path d="M300 90 L440 150 L300 210 L160 150 Z" fill="#ffffff" stroke="#9aa1ac" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M160 150 V286 L300 346 V210 Z" fill="#eceef2" stroke="#9aa1ac" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M440 150 V286 L300 346 V210 Z" fill="#e3e6eb" stroke="#9aa1ac" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M230 120 L370 180 V214" fill="none" stroke="#ff1717" stroke-width="6" stroke-linejoin="round"/>
+  <text x="300" y="420" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#8a909a">Illustration only · photo coming soon</text>
+</svg>

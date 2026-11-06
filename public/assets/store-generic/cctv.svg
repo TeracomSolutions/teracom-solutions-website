@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 450" width="600" height="450" role="img" aria-label="Security camera (illustration)">
+  <rect width="600" height="450" fill="#f6f7f9"/>
+  <ellipse cx="300" cy="372" rx="190" ry="14" fill="#e6e8ec"/>
+  <!-- wall plate and arm -->
+  <rect x="96" y="120" width="34" height="150" rx="8" fill="#dfe2e7" stroke="#b9bec7" stroke-width="3"/>
+  <path d="M130 196 H196 V214 H130 Z" fill="#e9ebef" stroke="#b9bec7" stroke-width="3"/>
+  <!-- bullet camera body -->
+  <g transform="translate(196 150) rotate(8)">
+    <rect x="0" y="0" width="290" height="104" rx="30" fill="#ffffff" stroke="#9aa1ac" stroke-width="4"/>
+    <path d="M18 -18 H300 a10 10 0 0 1 10 10 V20 H8 V-8 a10 10 0 0 1 10 -10 Z" fill="#eceef2" stroke="#9aa1ac" stroke-width="4"/>
+    <circle cx="262" cy="52" r="36" fill="#1d2027" stroke="#9aa1ac" stroke-width="4"/>
+    <circle cx="262" cy="52" r="20" fill="#3b4250"/>
+    <circle cx="262" cy="52" r="9" fill="#ff1717"/>
+    <circle cx="270" cy="44" r="5" fill="rgba(255,255,255,.75)"/>
+    <rect x="40" y="38" width="120" height="10" rx="5" fill="#e3e6eb"/>
+    <rect x="40" y="58" width="80" height="8" rx="4" fill="#eceef2"/>
+  </g>
+  <text x="300" y="420" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#8a909a">Illustration only · photo coming soon</text>
+</svg>

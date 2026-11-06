@@ -8,12 +8,10 @@ import JsonLd from '@/components/JsonLd';
 import AddToCartButton from '@/components/AddToCartButton';
 import CategoryProductGrid from '@/components/CategoryProductGrid';
 import CheckoutButton from '@/components/CheckoutButton';
-import StoreCategoryArt from '@/components/StoreCategoryArt';
 import ProductViewed from '@/components/ProductViewed';
 import ProductResources from '@/components/ProductResources';
 import AskTeraNudge from '@/components/AskTeraNudge';
 import {
-  artSlugForProduct,
   exGstCents,
   formatMoney,
   productPath,
@@ -38,6 +36,7 @@ import { brandForProduct } from '@/lib/storeBrandsMerge';
 import { findTool } from '@/lib/tools';
 import { productDescription, productTitle } from '@/lib/seoText';
 import { THIN_ROBOTS, isThinProduct } from '@/lib/thinProducts';
+import { genericImageFor } from '@/lib/genericProductImage';
 
 // The built-in products are prerendered; a product that only exists in the
 // admin catalogue renders on first request and is then cached. Either kind
@@ -254,7 +253,11 @@ export default async function ProductPageView(props, token) {
               <img src={product.imageUrl} alt={product.name} style={PHOTO} />
             </div>
           ) : (
-            <StoreCategoryArt slug={artSlugForProduct(product)} />
+            <div style={PHOTO_FRAME}>
+              {/* No photo yet: a generic picture of this kind of product, marked as an illustration (Robert, 2026-11-06). */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={genericImageFor(product)} alt="Illustration only, photo coming soon" style={PHOTO} />
+            </div>
           )}
         </div>
       </section>
