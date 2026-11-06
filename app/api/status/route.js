@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { BACKEND_API_URL } from '@/lib/config';
 import { GA_MEASUREMENT_ID, GOOGLE_SITE_VERIFICATION } from '@/lib/analytics';
 import { FEED_HEADERS, NEWS_SOURCES, getSourceNews } from '@/lib/industryNews';
+import { getNewsSources } from '@/lib/newsSources';
 import { BUSINESS, SITE_ORIGIN } from '@/lib/seo';
 import { services } from '@/lib/services';
 import { brands } from '@/lib/brands';
@@ -46,9 +47,10 @@ async function probeFeed(feed) {
 }
 
 async function checkFeeds() {
-  const lists = await Promise.all(NEWS_SOURCES.map((s) => getSourceNews(s, 20)));
+  const sources = await getNewsSources();
+  const lists = await Promise.all(sources.map((s) => getSourceNews(s, 20)));
   return Promise.all(
-    NEWS_SOURCES.map(async (s, i) => {
+    sources.map(async (s, i) => {
       const items = lists[i];
       const newest = items.map((it) => it.date).filter(Boolean).sort().pop() || null;
       const sourceUsed = items[0]?.source || null;

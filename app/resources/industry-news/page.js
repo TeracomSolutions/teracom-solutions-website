@@ -20,7 +20,8 @@ import {
 } from 'lucide-react';
 import ResourceHero from '@/components/ResourceHero';
 import ResourcesSubNav from '@/components/ResourcesSubNav';
-import { NEWS_PUBLISHERS, NEWS_SOURCES, categoriseHeadline, findNewsSource, getAllIndustryNews } from '@/lib/industryNews';
+import { categoriseHeadline, findNewsSource, getAllIndustryNews, publishersOf } from '@/lib/industryNews';
+import { getNewsSources } from '@/lib/newsSources';
 import { pageMetadata } from '@/lib/seo';
 
 // Feeds are re-fetched at most once an hour (see lib/industryNews.js).
@@ -181,10 +182,13 @@ function FrontPage({ items }) {
 
 export default async function IndustryNews(props) {
   const searchParams = await props.searchParams;
-  const selected = findNewsSource(typeof searchParams?.industry === 'string' ? searchParams.industry : '');
-  const bySource = await getAllIndustryNews(8);
-  const all = NEWS_SOURCES.flatMap((s) => bySource[s.id].map(withTopic));
-  const available = NEWS_SOURCES.filter((s) => bySource[s.id].length > 0);
+  // The publications staff keep on the console (Resources > Industry news).
+  const sources = await getNewsSources();
+  const publishers = publishersOf(sources);
+  const selected = findNewsSource(typeof searchParams?.industry === 'string' ? searchParams.industry : '', sources);
+  const bySource = await getAllIndustryNews(8, sources);
+  const all = sources.flatMap((s) => bySource[s.id].map(withTopic));
+  const available = sources.filter((s) => bySource[s.id].length > 0);
   const items = selected ? bySource[selected.id].map(withTopic) : all;
   const tickerItems = [...items].sort(newestFirst).slice(0, 16);
 
@@ -205,7 +209,7 @@ export default async function IndustryNews(props) {
             <Link href="/resources/industry-news" aria-current={selected ? undefined : 'page'}>All industries</Link>
             {/* Industries whose feed is currently unreachable are left out of the
                 tabs until it comes back (a direct link still explains why). */}
-            {NEWS_SOURCES.filter((s) => bySource[s.id].length > 0 || selected?.id === s.id).map((s) => (
+            {sources.filter((s) => bySource[s.id].length > 0 || selected?.id === s.id).map((s) => (
               <Link
                 key={s.id}
                 href={`/resources/industry-news?industry=${s.id}`}
@@ -258,10 +262,10 @@ export default async function IndustryNews(props) {
 
           <p className="form-note news-attribution">
             Headlines courtesy of{' '}
-            {NEWS_PUBLISHERS.map((p, i) => (
+            {publishers.map((p, i) => (
               <span key={p.source}>
                 <a href={p.site} target="_blank" rel="noopener noreferrer">{p.source}</a>
-                {i < NEWS_PUBLISHERS.length - 2 ? ', ' : i === NEWS_PUBLISHERS.length - 2 ? ' and ' : ''}
+                {i < publishers.length - 2 ? ', ' : i === publishers.length - 2 ? ' and ' : ''}
               </span>
             ))}
             , refreshed hourly. Every article opens on the publisher&apos;s own site.
