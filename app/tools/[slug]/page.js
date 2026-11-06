@@ -12,7 +12,7 @@ import CctvStorageCalculator from '@/components/tools/CctvStorageCalculator';
 import PoeBudgetCalculator from '@/components/tools/PoeBudgetCalculator';
 import BatteryStandbyCalculator from '@/components/tools/BatteryStandbyCalculator';
 import VoltageDropCalculator from '@/components/tools/VoltageDropCalculator';
-import SitePlanner from '@/siteplan/SitePlanner';
+import SitePlanDesigner from '@/components/tools/SitePlanDesigner';
 import RackPlanner from '@/rackplan/RackPlanner';
 import ToolBrandBand from '@/components/tools/ToolBrandBand';
 import ToolSignInGate from '@/components/tools/ToolSignInGate';
@@ -45,7 +45,7 @@ const CUSTOM_CALCULATORS = {
   'poe-power-budget-calculator': PoeBudgetCalculator,
   'battery-standby-calculator': BatteryStandbyCalculator,
   'voltage-drop-calculator': VoltageDropCalculator,
-  'site-plan-designer': SitePlanner,
+  'site-plan-designer': SitePlanDesigner,
   'data-rack-layout': RackPlanner,
 };
 

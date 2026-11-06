@@ -96,6 +96,7 @@ import {
   sitePlanXlsx,
 } from './index.js';
 import CableSchedule from './CableSchedule.js';
+import PartsList from './PartsList.js';
 import './siteplan.css';
 
 // Site plan designer (Robert, 2026-11-02): upload a floor plan (or start from the
@@ -207,7 +208,8 @@ function readStored() {
   }
 }
 
-export default function SitePlanner({ brand = BRAND }) {
+// `shop` (optional) plugs a store into Parts and price: see PartsList.js.
+export default function SitePlanner({ brand = BRAND, shop = null }) {
   const [plan, setPlan] = useState(null);
   const [selected, setSelected] = useState(null);
   const [mode, setMode] = useState('select');
@@ -782,6 +784,7 @@ export default function SitePlanner({ brand = BRAND }) {
             </table>
           </div>
           <CableSchedule plan={plan} selected={selected} onSelect={setSelected} onExport={saveExcel} />
+          <PartsList plan={plan} brand={brand} shop={shop} onChange={(parts) => commit({ ...plan, parts })} />
         </div>
       ) : null}
 

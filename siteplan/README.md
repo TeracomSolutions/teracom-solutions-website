@@ -22,6 +22,8 @@ to advertise the business.
 | `index.js` | Re-exports model, cables, brand and workbook. |
 | `SitePlanner.js` | The React screen (client component). Keeps the plan in the browser's local storage; saves a branded picture, the Excel workbook and a plan file. Takes an optional `brand` prop. |
 | `CableSchedule.js` | The cable schedule tabs and totals. |
+| `quote.js` | Parts and price: the plan as a parts list (`partsList`), what to search the shop for (`PART_SEARCH`), saved picks (`cleanParts`), prices and the text sent with a quote request. Pure. |
+| `PartsList.js` | The Parts and price table: a product per line, Add to cart and Ask for an installed quote. |
 | `siteplan.css` | The planner's own styles. |
 | `__tests__/` | `node --test` tests for the pure files. |
 
@@ -40,6 +42,25 @@ to advertise the business.
 
 Plans are saved in local storage under `teracom-site-plan-v2` and as `.teracom-plan.json` files
 (`format: "teracom-site-plan"`), so a plan saved on the website opens in Teracom AI and the other way round.
+
+## Parts and price
+
+Under the cable schedules, each kind of device on the plan and each cable to order is a line with a suggested product,
+its price, a quantity and a line total. The host app supplies the shop as SitePlanner's `shop` prop:
+
+```js
+{
+  findParts(keys) -> Promise<{ parts: { [key]: [{ id, sku, name, href, priceCents }] }, signedIn }>,
+  addToCart([{ id, qty }]),
+  requestQuote({ planName, deviceCount, site, phone, notes, lines: [{ key, qty, productId, metres }] }) -> Promise<{ ok, error }>,
+  cartHref, maxQty,
+}
+```
+
+Without `shop` the list shows the parts with links to search the store. The website's version is
+`components/tools/SitePlanDesigner.js` with `/api/tools/site-plan-parts` (suggestions, `lib/sitePlanParts.js`) and
+`/api/tools/site-plan-quote` (sends the list to Sales as an enquiry). The products chosen are saved on the plan as
+`parts: { [key]: { id, qty } }` (`id: ''` means none from the store).
 
 ## Changing it
 

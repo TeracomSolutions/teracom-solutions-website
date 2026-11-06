@@ -234,6 +234,31 @@ function cleanImage(image) {
 const KEEP = ['resolution', 'fovMode', 'focal', 'sensor', 'hfov', 'range', 'angle', 'ceiling', 'listen', 'radius'];
 
 /** Checks and tidies a plan read from storage or an imported file; null if it is not one. Reads the older camera-only plans too. */
+// The parts list (siteplan/quote.js) has at most this many lines.
+export const MAX_PART_LINES = 80;
+
+const whole = (value, max) => {
+  const n = Math.floor(Number(value));
+  return Number.isFinite(n) && n >= 0 ? Math.min(n, max) : null;
+};
+
+/** The parts chosen on a plan, as saved: { [key]: { id, qty } }. An id of '' means none from the shop. */
+export function cleanParts(raw) {
+  const out = {};
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return out;
+  const types = new Set(DEVICE_TYPES.map((t) => t.type));
+  for (const [key, pick] of Object.entries(raw).slice(0, MAX_PART_LINES)) {
+    // A device type, or a cable (cables.js imports this file, so its ids are not checked here).
+    if (!(types.has(key) || /^cable:[a-z0-9]{1,20}$/.test(key)) || !pick || typeof pick !== 'object') continue;
+    const entry = {};
+    if (typeof pick.id === 'string') entry.id = pick.id.slice(0, 120);
+    const qty = whole(pick.qty, 9999);
+    if (qty !== null) entry.qty = qty;
+    if (Object.keys(entry).length) out[key] = entry;
+  }
+  return out;
+}
+
 export function cleanPlan(raw) {
   if (!raw || typeof raw !== 'object' || (raw.format !== PLAN_FORMAT && raw.format !== OLD_PLAN_FORMAT)) return null;
   const list = Array.isArray(raw.devices) ? raw.devices : Array.isArray(raw.cameras) ? raw.cameras.map((c) => ({ ...c, type: 'camera' })) : [];
@@ -256,7 +281,11 @@ export function cleanPlan(raw) {
     }
     return device;
   });
-  return { format: PLAN_FORMAT, version: 2, name: text(raw.name), image: cleanImage(raw.image), pxPerMetre: Math.max(0, num(raw.pxPerMetre)), devices };
+  const plan = { format: PLAN_FORMAT, version: 2, name: text(raw.name), image: cleanImage(raw.image), pxPerMetre: Math.max(0, num(raw.pxPerMetre)), devices };
+  // The products chosen in Parts and price (siteplan/quote.js), when any were.
+  const parts = cleanParts(raw.parts);
+  if (Object.keys(parts).length) plan.parts = parts;
+  return plan;
 }
 
 export function parsePlan(json) {
