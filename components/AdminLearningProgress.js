@@ -1,6 +1,7 @@
 'use client';
 
 import { CheckCircle2, Circle, CircleDashed, LoaderCircle, XCircle } from 'lucide-react';
+import { adminZone } from '@/lib/adminFormat';
 
 // One live progress card on the Support page (Robert, 2026-11-03: "I need feedback"):
 // the overall bar, the step it is on with its own count, what it is reading right
@@ -27,7 +28,7 @@ export function duration(total) {
 
 const time = (iso) => {
   const d = new Date(iso || '');
-  return Number.isNaN(d.getTime()) ? '' : d.toLocaleTimeString('en-AU', { hour: 'numeric', minute: '2-digit', second: '2-digit', timeZone: 'Australia/Melbourne' });
+  return Number.isNaN(d.getTime()) ? '' : d.toLocaleTimeString('en-AU', { hour: 'numeric', minute: '2-digit', second: '2-digit', timeZone: adminZone(), timeZoneName: 'short' });
 };
 
 export default function AdminLearningProgress({ title, state, now }) {
