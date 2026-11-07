@@ -7,6 +7,8 @@ import AdminHelpIcon from '@/components/AdminHelpIcon';
 import AdminShell from '@/components/AdminShell';
 import { fetchFormDelivery, fetchFormSubmissions } from '@/lib/api/forms';
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
+import { adminZone, setAdminZone } from '@/lib/adminFormat';
+import { zoneFor } from '@/lib/api/adminTime';
 import { ONLINE_FORMS } from '@/lib/onlineForms';
 
 export const metadata = {
@@ -16,11 +18,12 @@ export const metadata = {
 const STATUS_LABELS = { new: 'New', in_progress: 'In progress', done: 'Done', cancelled: 'Cancelled' };
 
 const when = (value) =>
-  value ? new Date(value).toLocaleString('en-AU', { timeZone: 'Australia/Melbourne', day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit' }) : '';
+  value ? new Date(value).toLocaleString('en-AU', { timeZone: adminZone(), timeZoneName: 'short', day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit' }) : '';
 
 // Forms customers fill in and sign on the website (lib/onlineForms), newest first.
 export default async function AdminFormsPage({ searchParams }) {
   const token = await requireAdminToken();
+  setAdminZone(await zoneFor(token));
   const search = (await searchParams) || {};
   const formKey = ONLINE_FORMS.some((f) => f.key === search.form) ? search.form : '';
   const status = STATUS_LABELS[search.status] ? search.status : '';

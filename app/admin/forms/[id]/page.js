@@ -7,6 +7,8 @@ import AdminFormStatus from '@/components/AdminFormStatus';
 import AdminShell from '@/components/AdminShell';
 import { fetchFormSubmission } from '@/lib/api/forms';
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
+import { adminZone, setAdminZone } from '@/lib/adminFormat';
+import { zoneFor } from '@/lib/api/adminTime';
 import { KIND_LABELS, describeDestination } from '@/lib/formRouting';
 
 export const metadata = {
@@ -14,11 +16,12 @@ export const metadata = {
 };
 
 const when = (value) =>
-  value ? new Date(value).toLocaleString('en-AU', { timeZone: 'Australia/Melbourne', day: 'numeric', month: 'long', year: 'numeric', hour: 'numeric', minute: '2-digit' }) : '';
+  value ? new Date(value).toLocaleString('en-AU', { timeZone: adminZone(), timeZoneName: 'short', day: 'numeric', month: 'long', year: 'numeric', hour: 'numeric', minute: '2-digit' }) : '';
 
 // One form a customer filled in and signed: the answers, the agreement, the files and its status.
 export default async function AdminFormPage({ params }) {
   const token = await requireAdminToken();
+  setAdminZone(await zoneFor(token));
   const { id } = await params;
   if (!/^[0-9a-f-]{36}$/.test(id)) notFound();
 
