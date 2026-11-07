@@ -25,6 +25,7 @@ import {
   Sparkles,
   Ticket,
   X,
+  FolderOpen,
 } from 'lucide-react';
 
 import AdminSessionTimer from '@/components/AdminSessionTimer';
@@ -61,6 +62,7 @@ export const ADMIN_AREAS = [
   { href: '/admin/connections', label: 'Connections', group: 'system' },
   { href: '/admin/account', label: 'Account', group: 'system' },
   { href: '/admin/activity', label: 'Audit log', group: 'system' },
+  { href: '/admin/files', label: 'Files', group: 'system' },
   { href: '/admin/about', label: 'About', group: 'system' },
 ];
 
@@ -112,6 +114,7 @@ const ICONS = {
   '/admin/connections': Activity,
   '/admin/account': ShieldCheck,
   '/admin/activity': ScrollText,
+  '/admin/files': FolderOpen,
   '/admin/about': Info,
 };
 
