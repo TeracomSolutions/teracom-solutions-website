@@ -18,6 +18,7 @@ import {
   Sparkles,
   Headset,
   Ticket,
+  FolderOpen,
 } from 'lucide-react';
 
 import AdminShell from '@/components/AdminShell';
@@ -143,6 +144,13 @@ const AREAS = [
     text: 'Who did what and when: sign-ins, changes made in the console, jobs that ran and system events, with a CSV export.',
     icon: ScrollText,
     hue: '#94a3b8',
+  },
+  {
+    href: '/admin/files',
+    title: 'Files',
+    text: 'A read-only explorer of the live server folders, with picture and text previews and downloads.',
+    icon: FolderOpen,
+    hue: '#64748b',
   },
   {
     href: '/admin/about',
