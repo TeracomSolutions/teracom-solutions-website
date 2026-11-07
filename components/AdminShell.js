@@ -1,6 +1,7 @@
 import { cookies } from 'next/headers';
 
 import AdminBrand from './AdminBrand';
+import AdminSidebarClock from './AdminSidebarClock';
 import AdminNav from './AdminNav';
 import AdminPageInfo from './AdminPageInfo';
 import AdminSidebarKeeper from './AdminSidebarKeeper';
@@ -29,6 +30,7 @@ export default async function AdminShell({ children }) {
         <aside className="admin-sidebar">
           <AdminSidebarKeeper />
           <AdminBrand part="logo" />
+          <AdminSidebarClock zone={zone} />
           <AdminNav />
           <AdminSidebarResizer />
         </aside>
