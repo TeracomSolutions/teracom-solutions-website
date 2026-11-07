@@ -1,11 +1,41 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 
 export default function HeroBanner({ slides }) {
   const [activeIndex, setActiveIndex] = useState(0);
+  const sectionRef = useRef(null);
+
+  // The picture leans a little towards the pointer. Written straight to CSS variables, so
+  // moving the mouse never re-renders the banner. Skipped for people who ask for less motion
+  // and on touch screens.
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el || window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return undefined;
+    let frame = 0;
+    const onMove = (event) => {
+      if (event.pointerType === 'touch') return;
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        const rect = el.getBoundingClientRect();
+        el.style.setProperty('--px', (((event.clientX - rect.left) / rect.width) * 2 - 1).toFixed(3));
+        el.style.setProperty('--py', (((event.clientY - rect.top) / rect.height) * 2 - 1).toFixed(3));
+      });
+    };
+    const onLeave = () => {
+      el.style.setProperty('--px', '0');
+      el.style.setProperty('--py', '0');
+    };
+    el.addEventListener('pointermove', onMove);
+    el.addEventListener('pointerleave', onLeave);
+    return () => {
+      cancelAnimationFrame(frame);
+      el.removeEventListener('pointermove', onMove);
+      el.removeEventListener('pointerleave', onLeave);
+    };
+  }, []);
 
   useEffect(() => {
     // Honour prefers-reduced-motion: an auto-advancing carousel is exactly
@@ -41,11 +71,16 @@ export default function HeroBanner({ slides }) {
   const currentSlide = slides[activeIndex];
 
   return (
-    <section className="hero hero-home">
+    <section className="hero hero-home" ref={sectionRef}>
+      <div className="hero-aurora" aria-hidden="true" />
       <div className="container hero-layout">
-        <div className="hero-copy">
+        <div className="hero-copy" key={`copy-${activeIndex}`}>
           <div className="eyebrow">{currentSlide.eyebrow}</div>
-          <h1 className={currentSlide.isNews ? 'hero-news-headline' : undefined}>{currentSlide.headline}</h1>
+          <h1 className={currentSlide.isNews ? 'hero-news-headline' : undefined}>
+            {String(currentSlide.headline).split(' ').map((word, i) => (
+              <span className="hw" style={{ '--i': i }} key={`${word}-${i}`}>{word}{' '}</span>
+            ))}
+          </h1>
           <p className="lead">{currentSlide.body}</p>
           <div className="hero-actions">
             {/* A news slide's CTA is the publisher's own article. next/link
@@ -68,7 +103,7 @@ export default function HeroBanner({ slides }) {
             )}
           </div>
         </div>
-        <div className="hero-image hero-blend">
+        <div className="hero-image hero-blend" key={`image-${activeIndex}`}>
           {/* The hero image is the homepage's Largest Contentful Paint
               element. Without `priority` Next lazy-loads it, so the browser
               only discovers it after hydration -- a direct, measurable LCP

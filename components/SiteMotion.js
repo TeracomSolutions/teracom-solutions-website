@@ -8,6 +8,9 @@ import { usePathname } from 'next/navigation';
 // below move, each once; siblings follow one another by a beat. Nothing is
 // hidden until this has run, so without JavaScript, for search engines and for
 // people who ask for less motion, everything is simply there.
+// Cards that glow where the pointer is (the --mx / --my the CSS reads).
+const SPOT = 'main .feature-grid > *, main .tool-grid > *, main .what-list > *, main .include-grid > *, main .brand-grid > *, main .process-steps > *, main .contact-card';
+
 const TARGETS = [
   'main .section-heading',
   'main .intro-grid > div',
@@ -32,6 +35,18 @@ export default function SiteMotion() {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) return undefined;
     const root = document.documentElement;
     root.classList.add('reveal-ready');
+    let spotFrame = 0;
+    const onSpot = (event) => {
+      const card = event.target instanceof Element ? event.target.closest(SPOT) : null;
+      if (!card || event.pointerType === 'touch') return;
+      cancelAnimationFrame(spotFrame);
+      spotFrame = requestAnimationFrame(() => {
+        const rect = card.getBoundingClientRect();
+        card.style.setProperty('--mx', `${event.clientX - rect.left}px`);
+        card.style.setProperty('--my', `${event.clientY - rect.top}px`);
+      });
+    };
+    document.addEventListener('pointermove', onSpot, { passive: true });
     const seen = new WeakSet();
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
@@ -57,6 +72,8 @@ export default function SiteMotion() {
     const main = document.querySelector('main');
     if (main) mutations.observe(main, { childList: true, subtree: true });
     return () => {
+      document.removeEventListener('pointermove', onSpot);
+      cancelAnimationFrame(spotFrame);
       observer.disconnect();
       mutations.disconnect();
     };

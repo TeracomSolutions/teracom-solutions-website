@@ -3951,3 +3951,65 @@ html.reveal-ready .section-sticky[data-reveal].is-revealed { transform:none; }
 .files-pdf { width:100%; height:560px; border:0; border-radius:10px; }
 .files-text { max-height:560px; overflow:auto; margin:0; padding:12px; background:rgba(0,0,0,.35); border-radius:10px; font-size:13px; white-space:pre; }
 @media (max-width:860px) { .files-layout { grid-template-columns:1fr; } .files-roots { grid-template-columns:repeat(2,1fr); } }
+
+
+/* --- Hero and page motion (2026-11-07) -------------------------------------------------------
+   Robert: "something a bit more animated ... draws people in and looks way more professional".
+   The home banner gets drifting red light, headline words that rise in, a picture that floats and
+   leans towards the pointer, and dots that fill over each slide's 6 seconds. Cards glow where the
+   pointer is, headings draw an underline, and the main button breathes. All of it stops for people
+   who ask their device for less motion. */
+.hero-home { isolation:isolate; }
+.hero-home .hero-layout { position:relative; z-index:1; }
+.hero-aurora { position:absolute; inset:-20% -10% -10% -10%; z-index:0; pointer-events:none; overflow:hidden; }
+.hero-aurora::before, .hero-aurora::after {
+  content:""; position:absolute; border-radius:50%; filter:blur(70px); opacity:.55;
+}
+.hero-aurora::before { width:46vw; height:46vw; right:-6vw; top:4%; background:radial-gradient(circle, rgba(255,23,23,.42), transparent 66%); }
+.hero-aurora::after { width:34vw; height:34vw; left:-8vw; bottom:-6%; background:radial-gradient(circle, rgba(255,90,60,.2), transparent 68%); }
+
+@media (prefers-reduced-motion:no-preference) {
+  .hero-aurora::before { animation:hero-drift-a 16s ease-in-out infinite alternate; }
+  .hero-aurora::after { animation:hero-drift-b 21s ease-in-out infinite alternate; }
+  @keyframes hero-drift-a { to { transform:translate(-9vw, 7vw) scale(1.18); } }
+  @keyframes hero-drift-b { to { transform:translate(10vw, -6vw) scale(1.25); } }
+
+  .hero-home .hw { display:inline-block; opacity:0; transform:translateY(28px); animation:hero-word .75s cubic-bezier(.2,.7,.2,1) forwards; animation-delay:calc(var(--i) * 70ms + 80ms); }
+  @keyframes hero-word { to { opacity:1; transform:none; } }
+  .hero-home .hero-copy .eyebrow, .hero-home .hero-copy .lead, .hero-home .hero-actions { opacity:0; animation:hero-fade .8s ease forwards; }
+  .hero-home .hero-copy .eyebrow { animation-delay:0s; }
+  .hero-home .hero-copy .lead { animation-delay:.55s; }
+  .hero-home .hero-actions { animation-delay:.75s; }
+  @keyframes hero-fade { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:none; } }
+
+  .hero-home .hero-image { animation:hero-img-in .6s cubic-bezier(.2,.7,.2,1) both, hero-float 8s ease-in-out .6s infinite; }
+  @keyframes hero-img-in { from { opacity:0; transform:scale(.94) translateY(18px); filter:blur(8px); } to { opacity:1; transform:none; filter:none; } }
+  @keyframes hero-float { 0%, 100% { transform:translateY(0); } 50% { transform:translateY(-12px); } }
+  .hero-home .hero-image img { transform:translate(calc(var(--px, 0) * 14px), calc(var(--py, 0) * 10px)) scale(1.035); transition:transform .5s cubic-bezier(.2,.7,.2,1); will-change:transform; }
+
+  .hero-dot.active { width:34px; border-radius:6px; position:relative; overflow:hidden; background:rgba(255,255,255,.2); transform:none; }
+  .hero-dot.active::after { content:""; position:absolute; inset:0; background:var(--red2); transform-origin:0 50%; animation:hero-dot-fill 6s linear forwards; }
+  @keyframes hero-dot-fill { from { transform:scaleX(0); } to { transform:scaleX(1); } }
+  .hero-dot { transition:width .3s, background .2s; }
+
+  .hero-home .hero-actions .btn-primary { animation:hero-fade .8s ease .75s forwards, cta-breathe 3.4s ease-in-out 2s infinite; }
+  @keyframes cta-breathe { 0%, 100% { box-shadow:0 14px 40px rgba(255,23,23,.28); } 50% { box-shadow:0 14px 56px rgba(255,23,23,.55); } }
+
+  /* Cards: lift and a glow that follows the pointer. */
+  .feature-grid > *, .tool-grid > *, .what-list > *, .include-grid > *, .brand-grid > *, .process-steps > * { transition:transform .35s cubic-bezier(.2,.7,.2,1), box-shadow .35s, border-color .35s; }
+  html.reveal-ready [data-reveal].is-revealed:hover, .feature-grid > *:hover, .tool-grid > *:hover, .what-list > *:hover, .include-grid > *:hover, .brand-grid > *:hover, .process-steps > *:hover {
+    transform:translateY(-5px); border-color:rgba(255,23,23,.45); box-shadow:0 18px 44px rgba(0,0,0,.45), 0 0 0 1px rgba(255,23,23,.18);
+  }
+  .feature-grid > *:hover, .tool-grid > *:hover, .what-list > *:hover, .include-grid > *:hover, .brand-grid > *:hover, .process-steps > *:hover, .contact-card:hover {
+    background-image:radial-gradient(340px circle at var(--mx, 50%) var(--my, 50%), rgba(255,23,23,.15), transparent 62%);
+  }
+
+  /* Headings draw a short red line as they scroll in. */
+  .section-heading h2::after { content:""; display:block; height:3px; width:0; margin-top:14px; border-radius:3px; background:linear-gradient(90deg, var(--red), #ff7a7a); transition:width .9s cubic-bezier(.2,.7,.2,1) .35s; }
+  .section-heading.is-revealed h2::after, .section-heading:not([data-reveal]) h2::after { width:64px; }
+  .section-heading[style*="text-align:center"] h2::after, .section-heading.centered h2::after { margin-left:auto; margin-right:auto; }
+}
+@media (prefers-reduced-motion:reduce) {
+  .hero-aurora { display:none; }
+  .section-heading h2::after { content:""; display:block; height:3px; width:64px; margin-top:14px; border-radius:3px; background:linear-gradient(90deg, var(--red), #ff7a7a); }
+}
