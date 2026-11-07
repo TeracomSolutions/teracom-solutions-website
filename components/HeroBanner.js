@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { Fragment, useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -78,7 +78,9 @@ export default function HeroBanner({ slides }) {
           <div className="eyebrow">{currentSlide.eyebrow}</div>
           <h1 className={currentSlide.isNews ? 'hero-news-headline' : undefined}>
             {String(currentSlide.headline).split(' ').map((word, i) => (
-              <span className="hw" style={{ '--i': i }} key={`${word}-${i}`}>{word}{' '}</span>
+              <Fragment key={`${word}-${i}`}>
+                <span className="hw" style={{ '--i': i }}>{word}</span>{' '}
+              </Fragment>
             ))}
           </h1>
           <p className="lead">{currentSlide.body}</p>
