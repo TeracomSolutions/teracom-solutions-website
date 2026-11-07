@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-import { CUSTOMER_ROLES, EMAIL_TOPICS, toggleTopic } from '@/lib/customerTopics';
+import { CUSTOMER_INDUSTRIES, CUSTOMER_ROLES, EMAIL_TOPICS, toggleTopic } from '@/lib/customerTopics';
 
 // The account page's email preferences (Robert, 2026-11-03): which emails the
 // customer wants, what describes them, and their phone and company. Ticking
@@ -10,6 +10,7 @@ import { CUSTOMER_ROLES, EMAIL_TOPICS, toggleTopic } from '@/lib/customerTopics'
 export default function EmailPreferences({ customer }) {
   const [topics, setTopics] = useState(Array.isArray(customer.email_topics) ? customer.email_topics : customer.marketing_consent ? EMAIL_TOPICS.map((t) => t.key) : []);
   const [role, setRole] = useState(customer.customer_role || '');
+  const [industry, setIndustry] = useState(customer.industry || '');
   const [phone, setPhone] = useState(customer.phone || '');
   const [company, setCompany] = useState(customer.company || '');
   const [message, setMessage] = useState('');
@@ -25,7 +26,7 @@ export default function EmailPreferences({ customer }) {
       const res = await fetch('/api/customer/preferences', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email_topics: topics, customer_role: role || null, phone, company }),
+        body: JSON.stringify({ email_topics: topics, customer_role: role || null, industry: industry || null, phone, company }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || 'Your preferences could not be saved.');
@@ -54,6 +55,11 @@ export default function EmailPreferences({ customer }) {
       <select id="pref-role" value={role} onChange={(e) => setRole(e.target.value)}>
         <option value="">Choose one</option>
         {CUSTOMER_ROLES.map((r) => <option key={r.key} value={r.key}>{r.label}</option>)}
+      </select>
+      <label htmlFor="pref-industry">Which industry are you in</label>
+      <select id="pref-industry" value={industry} onChange={(e) => setIndustry(e.target.value)}>
+        <option value="">Choose one</option>
+        {CUSTOMER_INDUSTRIES.map((i) => <option key={i.key} value={i.key}>{i.label}</option>)}
       </select>
       <fieldset className="auth-topics">
         <legend>Email me about</legend>

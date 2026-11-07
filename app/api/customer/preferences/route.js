@@ -10,6 +10,7 @@ import { CUSTOMER_ACCESS_TOKEN_COOKIE } from '@/lib/customerSession';
 const Preferences = z.object({
   email_topics: z.array(z.string().max(40)).max(10),
   customer_role: z.string().max(40).nullable().optional(),
+  industry: z.string().max(40).nullable().optional(),
   phone: z.string().max(40).optional(),
   company: z.string().max(255).optional(),
 });
