@@ -12,6 +12,7 @@ import {
   consentTone,
   customerName,
   customerQuery,
+  industrySummary,
   shownSentence,
   summarySentence,
   tierSummary,
@@ -76,10 +77,15 @@ export default function AdminSocialCustomers({ initial, loadError }) {
   return (
     <section className="admin-customers">
       {counts && (
-        <p className="admin-customers-summary">
-          <strong>{summarySentence(counts)}</strong>{' '}
-          <span className="admin-muted">{tierSummary(counts.by_tier)}</span>
-        </p>
+        <>
+          <p className="admin-customers-summary">
+            <strong>{summarySentence(counts)}</strong>{' '}
+            <span className="admin-muted">{tierSummary(counts.by_tier)}</span>
+          </p>
+          {industrySummary(counts.by_industry) ? (
+            <p className="admin-customers-summary admin-muted">By industry: {industrySummary(counts.by_industry)}</p>
+          ) : null}
+        </>
       )}
       {error && <p className="form-error" role="alert">{error}</p>}
 
