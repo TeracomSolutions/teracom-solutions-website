@@ -28,6 +28,7 @@ const SignupRequest = z.object({
   company: z.string().max(255).optional(),
   abn: z.string().max(20).optional(),
   customer_role: z.string().max(40).nullable().optional(),
+  industry: z.string().max(40).nullable().optional(),
   email_topics: z.array(z.string().max(40)).max(10).optional(),
 });
 
