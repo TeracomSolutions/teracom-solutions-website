@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import AuthSwitchLink from '@/components/AuthSwitchLink';
-import { CUSTOMER_ROLES, EMAIL_TOPICS, toggleTopic } from '@/lib/customerTopics';
+import { CUSTOMER_INDUSTRIES, CUSTOMER_ROLES, EMAIL_TOPICS, toggleTopic } from '@/lib/customerTopics';
 import { safeNextPath } from '@/lib/safeNext';
 import Link from 'next/link';
 import AuthShell from '@/components/AuthShell';
@@ -28,6 +28,7 @@ export default function CustomerSignupPage() {
   const [company, setCompany] = useState('');
   const [abn, setAbn] = useState('');
   const [role, setRole] = useState('');
+  const [industry, setIndustry] = useState('');
   const [topics, setTopics] = useState([]);
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -77,6 +78,7 @@ export default function CustomerSignupPage() {
           company: accountType === 'business' ? company : '',
           abn: accountType === 'business' ? abn : '',
           customer_role: role || null,
+          industry: industry || null,
           email_topics: topics
         }),
       });
@@ -206,6 +208,14 @@ export default function CustomerSignupPage() {
               <select id="role" required value={role} onChange={(e) => setRole(e.target.value)} style={{ display: 'block', width: '100%' }}>
                 <option value="">Choose one</option>
                 {CUSTOMER_ROLES.map((r) => <option key={r.key} value={r.key}>{r.label}</option>)}
+              </select>
+            </div>
+
+            <div style={{ marginBottom: '16px' }}>
+              <label htmlFor="industry">Which industry are you in</label>
+              <select id="industry" required value={industry} onChange={(e) => setIndustry(e.target.value)} style={{ display: 'block', width: '100%' }}>
+                <option value="">Choose one</option>
+                {CUSTOMER_INDUSTRIES.map((i) => <option key={i.key} value={i.key}>{i.label}</option>)}
               </select>
             </div>
 
