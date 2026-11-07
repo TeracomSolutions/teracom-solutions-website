@@ -4014,3 +4014,23 @@ html.reveal-ready .section-sticky[data-reveal].is-revealed { transform:none; }
   .section-heading h2::after { content:""; display:block; height:3px; width:64px; margin-top:14px; border-radius:3px; background:linear-gradient(90deg, var(--red), #ff7a7a); }
   .section-heading:not(.left) h2::after { margin-left:auto; margin-right:auto; }
 }
+
+
+/* --- Scroll progress, button shine, picture drift (2026-11-07) ---------------------------------
+   Robert asked for more of what the best sites do. Same rule as the rest: nothing moves for people
+   who ask their device for less motion. */
+@media (prefers-reduced-motion:no-preference) {
+  html.reveal-ready body::before {
+    content:""; position:fixed; top:0; left:0; right:0; height:3px; z-index:200; pointer-events:none;
+    background:linear-gradient(90deg, var(--red), #ff7a7a); transform-origin:0 50%;
+    transform:scaleX(var(--scroll-progress, 0)); box-shadow:0 0 12px rgba(255,23,23,.6);
+  }
+  .btn-primary { position:relative; overflow:hidden; }
+  .btn-primary::after {
+    content:""; position:absolute; top:0; bottom:0; left:-60%; width:40%; pointer-events:none;
+    background:linear-gradient(100deg, transparent, rgba(255,255,255,.35), transparent); transform:skewX(-20deg);
+  }
+  .btn-primary:hover::after { animation:btn-shine .8s ease; }
+  @keyframes btn-shine { to { left:130%; } }
+  .showcase-image img { transform:translateY(var(--drift, 0px)); will-change:transform; }
+}

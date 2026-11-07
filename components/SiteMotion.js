@@ -47,6 +47,26 @@ export default function SiteMotion() {
       });
     };
     document.addEventListener('pointermove', onSpot, { passive: true });
+
+    // A thin red bar across the top shows how far down the page you are, and the big pictures beside
+    // the copy drift a little slower than the page (the depth effect on Stripe, Linear and Vercel).
+    // Both are written straight to CSS variables, so scrolling never re-renders anything.
+    let scrollFrame = 0;
+    const onScroll = () => {
+      cancelAnimationFrame(scrollFrame);
+      scrollFrame = requestAnimationFrame(() => {
+        const max = document.documentElement.scrollHeight - window.innerHeight;
+        root.style.setProperty('--scroll-progress', max > 0 ? (window.scrollY / max).toFixed(4) : '0');
+        document.querySelectorAll('main .showcase-image').forEach((el) => {
+          const rect = el.getBoundingClientRect();
+          if (rect.bottom < 0 || rect.top > window.innerHeight) return;
+          const offset = (rect.top + rect.height / 2 - window.innerHeight / 2) / window.innerHeight;
+          el.style.setProperty('--drift', `${(offset * -24).toFixed(1)}px`);
+        });
+      });
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
     const seen = new WeakSet();
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
@@ -73,6 +93,8 @@ export default function SiteMotion() {
     if (main) mutations.observe(main, { childList: true, subtree: true });
     return () => {
       document.removeEventListener('pointermove', onSpot);
+      window.removeEventListener('scroll', onScroll);
+      cancelAnimationFrame(scrollFrame);
       cancelAnimationFrame(spotFrame);
       observer.disconnect();
       mutations.disconnect();
