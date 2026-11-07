@@ -349,8 +349,9 @@ export default function OnlineForm({ formKey, termsVersion, preview = false }) {
           </>
         ) : (
           <p className="form-note">
-            You are agreeing to {termsTitle(form, values, termsVersion)}.{' '}
-            <Link href="/terms" target="_blank">Read the terms</Link> (opens in a new tab).
+            You are agreeing to {termsTitle(form, values, termsVersion)}. These are the{' '}
+            <Link href="/terms" target="_blank">Terms &amp; Conditions</Link>{' '}
+            linked at the bottom of every page of this website (opens in a new tab).
           </p>
         )}
         <label className="request-declaration">
