@@ -3,6 +3,7 @@ import { cookies } from 'next/headers';
 import AdminBrand from './AdminBrand';
 import AdminNav from './AdminNav';
 import AdminPageInfo from './AdminPageInfo';
+import AdminSidebarKeeper from './AdminSidebarKeeper';
 import AdminSidebarResizer from './AdminSidebarResizer';
 import AdminZoneSetter from './AdminZoneSetter';
 import { ACCESS_TOKEN_COOKIE } from '@/lib/adminSession';
@@ -26,6 +27,7 @@ export default async function AdminShell({ children }) {
       <AdminZoneSetter zone={zone} />
       <div className="admin-layout">
         <aside className="admin-sidebar">
+          <AdminSidebarKeeper />
           <AdminBrand part="logo" />
           <AdminNav />
           <AdminSidebarResizer />
