@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { adminZone } from '@/lib/adminFormat';
 
 // AI Connections -> Automatic checks (Robert, 2026-10-21): the connections are
 // checked on a schedule, and a failing one is retried a few times so a dropped
@@ -31,7 +32,7 @@ function when(iso) {
   if (!iso) return 'not yet';
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return 'not yet';
-  return d.toLocaleString('en-AU', { timeZone: 'Australia/Melbourne', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', hour12: false });
+  return d.toLocaleString('en-AU', { timeZone: adminZone(), timeZoneName: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', hour12: false });
 }
 
 export default function AdminAiAutoCheck({ initial }) {

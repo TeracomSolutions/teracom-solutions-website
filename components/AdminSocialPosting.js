@@ -19,6 +19,7 @@ import {
 import { checkPost } from '@/lib/socialRules';
 import { composeText } from '@/lib/postPreview';
 import { EMAIL_TOPICS } from '@/lib/customerTopics';
+import { adminZone } from '@/lib/adminFormat';
 
 // Posting: write once, add pictures or a video, tick where it goes, adjust
 // the text per network with a preview and checklist, then save, schedule or
@@ -228,7 +229,7 @@ export default function AdminSocialPosting({ initialUpdates, accounts, audienceC
       setMedia([]);
       setOverrides({});
       if (mode === 'queue') {
-        const when = new Date(response.scheduled_at).toLocaleString('en-AU', { timeZone: 'Australia/Melbourne', weekday: 'short', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' });
+        const when = new Date(response.scheduled_at).toLocaleString('en-AU', { timeZone: adminZone(), timeZoneName: 'short', weekday: 'short', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' });
         setNotice(`Queued for ${when}.`);
       } else {
         setNotice(mode === 'now' ? 'Sending now; each network reports below within a minute.' : mode === 'schedule' ? 'Scheduled.' : 'Draft saved.');

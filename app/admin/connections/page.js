@@ -7,8 +7,10 @@ import AdminShell from '@/components/AdminShell';
 import AdminSoftware from '@/components/AdminSoftware';
 import AdminSocialAccounts from '@/components/AdminSocialAccounts';
 import AdminTabs from '@/components/AdminTabs';
+import AdminTimeZone from '@/components/AdminTimeZone';
 import AdminZohoFlow from '@/components/AdminZohoFlow';
 import { listConnections } from '@/lib/api/adminConnections';
+import { fetchTime, fetchZones } from '@/lib/api/adminTime';
 import { fetchZohoFlow } from '@/lib/api/adminZohoFlow';
 import { listSocialAccounts } from '@/lib/api/adminSocial';
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
@@ -53,6 +55,17 @@ export default async function AdminConnectionsPage({ searchParams }) {
     socialError = 'Unable to load the social accounts from the backend.';
   }
 
+  // The Time tab, loaded on its own so a failure there leaves the other tabs working.
+  let timeInfo = null;
+  let timeZones = { zones: [], common: [] };
+  let timeError = '';
+  try {
+    [timeInfo, timeZones] = await Promise.all([fetchTime(token), fetchZones(token)]);
+  } catch (err) {
+    if (isSessionError(err)) redirect('/admin/login');
+    timeError = 'Unable to load the time zone setting from the backend.';
+  }
+
   let notice = null;
   if (ZOHO_NOTICES[query.zoho]) {
     notice = {
@@ -83,6 +96,8 @@ export default async function AdminConnectionsPage({ searchParams }) {
           <p>The voice Tera and the Assistant speak with. The card shows whether visitors hear the voice built into their own browser (free, but it differs by device and can sound robotic) or a natural Australian voice from Microsoft Azure Speech. <strong>Edit</strong> sets the voice engine, the Azure key and region, which Azure voice, the speaking speed and a monthly limit on characters; after that limit, or if Azure does not answer, visitors hear their browser voice instead. <strong>Hear it</strong> speaks a sample the way visitors will hear it and says which voice answered.</p>
           <h4>Social</h4>
           <p>The <strong>Social</strong> tab holds LinkedIn, Facebook, Instagram, X and YouTube: the profile link the website footer shows and the credentials we post with. Each card has a <strong>Help</strong> button with the exact steps to get that network&apos;s credentials. Posting itself is on the Social page.</p>
+          <h4>Time</h4>
+          <p>The <strong>Time</strong> tab sets the time zone every console page and the Assistant show times in (Melbourne unless you change it), and checks the server clock against an internet time source.</p>
           <h4>Software</h4>
           <p>The <strong>Software</strong> tab lists what the website and its backend run: the server (operating system, Python, PostgreSQL, Node, cloudflared) and every package, each with the version in use, the newest release and any published security advisory for that version, from the public OSV database. The backend checks itself once a day; <strong>Check now</strong> checks both straight away. Red means a security advisory, amber a newer version, green up to date.</p>
           <h4>Servers and computers</h4>
@@ -106,6 +121,13 @@ export default async function AdminConnectionsPage({ searchParams }) {
           },
           { key: 'social', label: 'Social', content: <AdminSocialAccounts initialAccounts={socialAccounts} loadError={socialError} /> },
           { key: 'software', label: 'Software', content: <AdminSoftware /> },
+          {
+            key: 'time',
+            label: 'Time',
+            content: timeError || !timeInfo
+              ? <p className="form-error" role="alert">{timeError || 'Unable to load the time zone setting.'}</p>
+              : <AdminTimeZone initial={timeInfo} zones={timeZones.zones} common={timeZones.common} />,
+          },
         ]}
       />
     </AdminShell>
