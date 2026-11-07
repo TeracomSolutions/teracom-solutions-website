@@ -4,10 +4,11 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
+import { adminZone } from '@/lib/adminFormat';
+
 const STATUS_LABELS = { draft: 'Draft', scheduled: 'Scheduled', published: 'Published', rejected: 'Rejected' };
 const when = (iso) => (iso ? new Date(iso).toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' }) : '');
-const slotFormat = new Intl.DateTimeFormat('en-AU', { weekday: 'short', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit', timeZone: 'Australia/Melbourne' });
-export const slot = (iso) => (iso ? slotFormat.format(new Date(iso)) : '');
+export const slot = (iso) => (iso ? new Intl.DateTimeFormat('en-AU', { weekday: 'short', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit', timeZone: adminZone(), timeZoneName: 'short' }).format(new Date(iso)) : '');
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 const HOURS = Array.from({ length: 17 }, (_, i) => i + 6);
 const hourLabel = (h) => `${h % 12 || 12}${h < 12 ? 'am' : 'pm'}`;
