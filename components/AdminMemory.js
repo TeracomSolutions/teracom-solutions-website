@@ -11,14 +11,14 @@ function fmtNum(n) {
 // Helper to format bytes
 function fmtBytes(b) {
   if (b === null || b === undefined) return '—';
-  if (b < 1024) return `${b} B`;
-  const units = ['KB', 'MB', 'GB'];
+  const units = ['B', 'KB', 'MB', 'GB', 'TB'];
   let unitIndex = 0;
   let value = b;
   while (value >= 1024 && unitIndex < units.length - 1) {
     value /= 1024;
     unitIndex++;
   }
+  if (unitIndex === 0) return `${b} B`;
   const rounded = value >= 100 ? Math.round(value) : value.toFixed(1);
   return `${rounded} ${units[unitIndex]}`;
 }
