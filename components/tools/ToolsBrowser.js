@@ -11,7 +11,8 @@ import ToolIcon from '@/components/tools/ToolIcon';
 const GROUP_ICONS = { plans: LayoutTemplate, cctv: Cctv, power: Zap, cabling: Cable, network: Network, av: Speaker, it: Server, security: DoorOpen, cyber: ShieldCheck, ai: Bot };
 
 export default function ToolsBrowser({ groups, tools, initialOpen }) {
-  const [open, setOpen] = useState(() => new Set(initialOpen || groups.map((g) => g.id)));
+  // Every area starts collapsed (Robert, 2026-11-08); a ?category= link still opens its own area.
+  const [open, setOpen] = useState(() => new Set(initialOpen || []));
   const [query, setQuery] = useState('');
 
   const needle = query.trim().toLowerCase();
