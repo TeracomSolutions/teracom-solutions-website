@@ -10,25 +10,41 @@ export default function AdminAiActivity() {
   const [data, setData] = useState(null);
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
+  const [autoRefresh, setAutoRefresh] = useState(true);
+
+  const fetchData = async () => {
+    setBusy(true);
+    setError('');
+    try {
+      const response = await fetch(`/api/admin/ai-activity?days=${encodeURIComponent(days)}&area=${encodeURIComponent(area)}&provider=${encodeURIComponent(provider)}`);
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(result.error || 'Unable to load the AI activity.');
+      setData(result);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setBusy(false);
+    }
+  };
 
   useEffect(() => {
-    async function fetchData() {
-      setBusy(true);
-      setError('');
-      try {
-        const response = await fetch(`/api/admin/ai-activity?days=${encodeURIComponent(days)}&area=${encodeURIComponent(area)}&provider=${encodeURIComponent(provider)}`);
-        const result = await response.json().catch(() => ({}));
-        if (!response.ok) throw new Error(result.error || 'Unable to load the AI activity.');
-        setData(result);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setBusy(false);
-      }
-    }
-
     fetchData();
   }, [days, area, provider]);
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    let interval;
+    if (autoRefresh) {
+      interval = setInterval(() => {
+        fetchData();
+      }, 30000);
+    }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [autoRefresh, days, area, provider]);
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
 
   if (busy && !data) {
     return <p>Loading...</p>;
@@ -55,6 +71,9 @@ export default function AdminAiActivity() {
   // Helper to format milliseconds
   function formatMs(ms) {
     if (ms === null || ms === undefined) return '-';
+    if (ms >= 1000) {
+      return `${(ms / 1000).toFixed(1)}s`;
+    }
     return `${Math.round(ms)}ms`;
   }
 
@@ -66,85 +85,155 @@ export default function AdminAiActivity() {
 
     const maxCalls = Math.max(...data.timeline.map(item => item.calls), 1);
     
+    // Determine chart title based on period
+    const chartTitle = days === 1 ? 'Calls per hour, last 24 hours' : `Calls per day, last ${days} days`;
+    
     return (
-      <div style={{ display: 'flex', alignItems: 'flex-end', height: '80px', gap: '2px' }}>
-        {data.timeline.map((item, index) => {
-          const height = Math.max(2, (item.calls / maxCalls) * 80);
-          const failedHeight = (item.failed / item.calls) * height || 0;
-          const passedHeight = height - failedHeight;
-          
-          // Determine if we should label this bar
-          let showLabel = false;
-          if (data.timeline.length <= 10) {
-            showLabel = true;
-          } else if (data.timeline.length <= 24) {
-            showLabel = index % 4 === 0;  // Every 4th bar for daily
-          } else {
-            showLabel = index % 5 === 0;  // Every 5th bar for hourly
-          }
-          
-          return (
-            <div key={index} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-              <div
-                style={{
-                  width: '16px',
-                  height: `${height}px`,
-                  position: 'relative',
-                }}
-                title={`${item.label}: ${item.calls} calls, ${item.failed} failed`}
-              >
+      <div>
+        <h2>{chartTitle}</h2>
+        <div style={{ display: 'flex', alignItems: 'flex-end', height: '200px', gap: '2px' }}>
+          {data.timeline.map((item, index) => {
+            const height = Math.max(2, (item.calls / maxCalls) * 200);
+            const failedHeight = (item.failed / item.calls) * height || 0;
+            const passedHeight = height - failedHeight;
+            
+            // Determine if we should label this bar
+            let showLabel = false;
+            if (data.timeline.length <= 10) {
+              showLabel = true;
+            } else if (data.timeline.length <= 24) {
+              showLabel = index % 4 === 0;  // Every 4th bar for daily
+            } else {
+              showLabel = index % 3 === 0;  // Every 3rd bar for hourly
+            }
+            
+            return (
+              <div key={index} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <div
                   style={{
-                    width: '100%',
-                    height: `${passedHeight}px`,
-                    backgroundColor: '#3b82f6',
-                    position: 'absolute',
-                    bottom: 0,
+                    width: '16px',
+                    height: `${height}px`,
+                    position: 'relative',
                   }}
-                />
-                <div
-                  style={{
-                    width: '100%',
-                    height: `${failedHeight}px`,
-                    backgroundColor: '#dc2626',
-                    position: 'absolute',
-                    bottom: `${passedHeight}px`,
-                  }}
-                />
+                  title={`${item.label}: ${item.calls} calls, ${item.failed} failed`}
+                >
+                  <div
+                    style={{
+                      width: '100%',
+                      height: `${passedHeight}px`,
+                      backgroundColor: '#6b7280',
+                      position: 'absolute',
+                      bottom: 0,
+                    }}
+                  />
+                  <div
+                    style={{
+                      width: '100%',
+                      height: `${failedHeight}px`,
+                      backgroundColor: '#ef4444',
+                      position: 'absolute',
+                      bottom: `${passedHeight}px`,
+                    }}
+                  />
+                </div>
+                {showLabel && (
+                  <span style={{ fontSize: '0.9rem', color: '#6b7280' }}>{item.label}</span>
+                )}
               </div>
-              {showLabel && (
-                <span style={{ fontSize: '10px', color: '#6b7280' }}>{item.label}</span>
-              )}
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
+        <p style={{ marginTop: '8px', fontSize: '0.8rem', color: '#6b7280' }}>Grey: answered. Red: failed. Times are Melbourne time.</p>
       </div>
     );
   }
+
+  // Get provider with most failures
+  function getMostFailedProvider() {
+    if (!data?.providers) return null;
+    return data.providers.reduce((max, provider) => provider.failed > max.failed ? provider : max, { failed: 0 });
+  }
+
+  const mostFailedProvider = getMostFailedProvider();
+  
+  // Format summary text
+  function formatSummary() {
+    if (!data?.failures || data.failures.length === 0) return null;
+    
+    const providerName = mostFailedProvider?.name || 'Unknown';
+    const failedCount = mostFailedProvider?.failed || 0;
+    const timePeriod = days === 1 ? '24 hours' : `${days} days`;
+    
+    let summaryText = `${providerName} failed ${failedCount} times in the last ${timePeriod}: ${mostFailedProvider.last_error}`;
+    
+    // Add other failures if there are more than one
+    const otherFailures = data.failures.filter(f => f.provider !== providerName);
+    if (otherFailures.length > 0) {
+      summaryText += `; ${otherFailures.length} other failures.`;
+    }
+    
+    return summaryText;
+  }
+
+  const summaryText = formatSummary();
 
   return (
     <div>
       <div className="admin-actions">
         <button
           type="button"
-          className={`btn btn-sm ${days === 1 ? 'btn-primary' : 'btn-secondary'}`}
+          style={{
+            backgroundColor: days === 1 ? '#ef4444' : '',
+            color: days === 1 ? 'white' : '',
+            border: days === 1 ? '' : '1px solid #374151',
+          }}
+          className="btn btn-sm"
           onClick={() => setDays(1)}
         >
-          Last 24 hours
+          Today
         </button>
         <button
           type="button"
-          className={`btn btn-sm ${days === 7 ? 'btn-primary' : 'btn-secondary'}`}
+          style={{
+            backgroundColor: days === 7 ? '#ef4444' : '',
+            color: days === 7 ? 'white' : '',
+            border: days === 7 ? '' : '1px solid #374151',
+          }}
+          className="btn btn-sm"
           onClick={() => setDays(7)}
         >
-          Last 7 days
+          7 days
         </button>
         <button
           type="button"
-          className={`btn btn-sm ${days === 30 ? 'btn-primary' : 'btn-secondary'}`}
+          style={{
+            backgroundColor: days === 30 ? '#ef4444' : '',
+            color: days === 30 ? 'white' : '',
+            border: days === 30 ? '' : '1px solid #374151',
+          }}
+          className="btn btn-sm"
           onClick={() => setDays(30)}
         >
-          Last 30 days
+          30 days
+        </button>
+        
+        <label style={{ display: 'flex', alignItems: 'center', marginLeft: '1rem' }}>
+          <input
+            type="checkbox"
+            checked={autoRefresh}
+            onChange={(e) => setAutoRefresh(e.target.checked)}
+            style={{ marginRight: '0.5rem' }}
+          />
+          Refresh every 30 s
+        </label>
+        
+        <button
+          type="button"
+          className="btn btn-secondary btn-sm"
+          onClick={fetchData}
+          style={{ marginLeft: '1rem' }}
+        >
+          Refresh
         </button>
         
         <select
@@ -174,30 +263,47 @@ export default function AdminAiActivity() {
         </select>
       </div>
 
+      {summaryText && (
+        <div style={{
+          border: '1px solid #f59e0b',
+          borderRadius: '4px',
+          padding: '12px 16px',
+          marginBottom: '1rem',
+          color: '#f59e0b',
+        }}>
+          {summaryText}
+        </div>
+      )}
+
       <div className="admin-card">
         <h2>Totals</h2>
         <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-          <div className="admin-card">
-            <p>Calls</p>
-            <p><strong>{formatNumber(totals.calls)}</strong></p>
+          <div className="admin-card" style={{ textAlign: 'center' }}>
+            <p style={{ fontSize: '0.8rem', color: '#6b7280', marginBottom: '0.5rem' }}>Calls</p>
+            <p style={{ fontSize: '2rem', fontWeight: 'bold' }}><strong>{formatNumber(totals.calls)}</strong></p>
           </div>
-          <div className="admin-card">
-            <p>Worked</p>
-            <p><strong>{formatPercentage(totals.ok_rate)}</strong></p>
+          <div className="admin-card" style={{ textAlign: 'center' }}>
+            <p style={{ fontSize: '0.8rem', color: '#6b7280', marginBottom: '0.5rem' }}>Success rate</p>
+            <p style={{
+              fontSize: '2rem',
+              fontWeight: 'bold',
+              color: totals.ok_rate >= 0.95 ? '#22c55e' : totals.ok_rate >= 0.7 ? '#f59e0b' : '#ef4444'
+            }}>
+              <strong>{formatPercentage(totals.ok_rate)}</strong>
+            </p>
           </div>
-          <div className="admin-card">
-            <p>Failed</p>
-            <p><strong>{formatNumber(totals.failed)}</strong></p>
+          <div className="admin-card" style={{ textAlign: 'center' }}>
+            <p style={{ fontSize: '0.8rem', color: '#6b7280', marginBottom: '0.5rem' }}>Failed</p>
+            <p style={{ fontSize: '2rem', fontWeight: 'bold' }}><strong>{formatNumber(totals.failed)}</strong></p>
           </div>
-          <div className="admin-card">
-            <p>Average speed</p>
-            <p><strong>{formatMs(totals.avg_latency_ms)}</strong></p>
+          <div className="admin-card" style={{ textAlign: 'center' }}>
+            <p style={{ fontSize: '0.8rem', color: '#6b7280', marginBottom: '0.5rem' }}>Average wait</p>
+            <p style={{ fontSize: '2rem', fontWeight: 'bold' }}><strong>{formatMs(totals.avg_latency_ms)}</strong></p>
           </div>
         </div>
       </div>
 
       <div className="admin-card">
-        <h2>Calls over time</h2>
         {renderTimeline()}
       </div>
 
@@ -267,7 +373,7 @@ export default function AdminAiActivity() {
 
       {data?.errors && (
         <div className="admin-card">
-          <h2>Why calls failed</h2>
+          <h2>What failed</h2>
           {data.errors.length > 0 ? (
             <div className="admin-table-wrap">
               <table className="admin-table">
