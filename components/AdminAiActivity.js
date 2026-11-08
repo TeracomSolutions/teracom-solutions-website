@@ -65,7 +65,7 @@ export default function AdminAiActivity() {
   // Helper to format percentage
   function formatPercentage(num) {
     if (num === null || num === undefined) return '-';
-    return `${(num * 100).toFixed(1)}%`;
+    return `${num.toFixed(1)}%`;
   }
 
   // Helper to format milliseconds
@@ -287,7 +287,7 @@ export default function AdminAiActivity() {
             <p style={{
               fontSize: '2rem',
               fontWeight: 'bold',
-              color: totals.ok_rate >= 0.95 ? '#22c55e' : totals.ok_rate >= 0.7 ? '#f59e0b' : '#ef4444'
+              color: totals.ok_rate >= 95 ? '#22c55e' : totals.ok_rate >= 70 ? '#f59e0b' : '#ef4444'
             }}>
               <strong>{formatPercentage(totals.ok_rate)}</strong>
             </p>
