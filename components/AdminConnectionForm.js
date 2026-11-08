@@ -65,11 +65,11 @@ const HOW_TO = {
     'When you are approved, copy the App ID and App Secret into the boxes here and press Save. The Banggood connector is not built yet; the keys are kept safely until it is.',
   ],
   web_search: [
-    'DuckDuckGo needs no key but often returns nothing. For reliable results pick another engine and paste its key.',
+    'SearXNG is our own search service on the server. It needs no key and is the default; pick another engine and paste its key only if you want one.',
     'Serper (serper.dev) gives Google results: sign up, copy the API key from the dashboard (2,500 free searches, then pay as you go).',
     'Tavily (tavily.com) is built for AI: sign up and copy the API key that starts with tvly- (1,000 free searches a month).',
-    'Brave Search (api-dashboard.search.brave.com): create a subscription token (it has a free plan); Scout research falls back to DuckDuckGo with Brave, Tera and the checks use it.',
-    'Choose the engine, paste the key, Save, then press Test. If the chosen engine ever fails, DuckDuckGo is used instead.',
+    'Brave Search (api-dashboard.search.brave.com): create a subscription token (it has a free plan); Scout research uses SearXNG when Brave is chosen; Tera and the checks use Brave.',
+    'Choose the engine, paste the key, Save, then press Test. If the chosen engine ever fails, SearXNG is used instead.',
   ],
 };
 
