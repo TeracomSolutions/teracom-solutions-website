@@ -203,6 +203,14 @@ export default function AdminSalesDashboard() {
           dollars(item.revenue_inc_cents)
         ]);
         break;
+      case 'industry':
+        headers = ['Industry', 'Orders', 'Sales inc GST'];
+        rows = summary.breakdowns[breakdownKey].map(item => [
+          item.label,
+          item.orders,
+          dollars(item.revenue_inc_cents)
+        ]);
+        break;
       default:
         return '';
     }
@@ -602,6 +610,65 @@ export default function AdminSalesDashboard() {
                             <td>{item.label}</td>
                             <td>{item.orders}</td>
                             <td>{dollars(item.revenue_inc_cents)}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+
+              {/* By Industry */}
+              {summary.breakdowns.industry && summary.breakdowns.industry.length > 0 && (
+                <div className="admin-card">
+                  <h3 className="admin-heading">By Industry</h3>
+                  <button
+                    type="button"
+                    className="btn btn-secondary btn-sm"
+                    onClick={() => downloadCsv(generateBreakdownCsv('industry'), 'sales-breakdown-industry.csv')}
+                  >
+                    Download CSV
+                  </button>
+                  <div className="admin-table-wrap">
+                    <table className="admin-table">
+                      <thead>
+                        <tr>
+                          <th>Name</th>
+                          <th>Orders</th>
+                          <th>Sales inc GST</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {summary.breakdowns.industry.map((item, index) => (
+                          <tr key={index}>
+                            <td>{item.label}</td>
+                            <td>{item.orders}</td>
+                            <td>{dollars(item.revenue_inc_cents)}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+
+              {/* Leads by Industry */}
+              {summary.leads_by_industry && summary.leads_by_industry.length > 0 && (
+                <div className="admin-card">
+                  <h3 className="admin-heading">Leads by Industry</h3>
+                  <div className="admin-table-wrap">
+                    <table className="admin-table">
+                      <thead>
+                        <tr>
+                          <th>Industry</th>
+                          <th>Leads</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {summary.leads_by_industry.map((item, index) => (
+                          <tr key={index}>
+                            <td>{item.label}</td>
+                            <td>{item.leads}</td>
                           </tr>
                         ))}
                       </tbody>
