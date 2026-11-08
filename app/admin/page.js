@@ -20,6 +20,7 @@ import {
   Ticket,
   FolderOpen,
   Gauge,
+  BrainCircuit,
 } from 'lucide-react';
 
 import AdminShell from '@/components/AdminShell';
@@ -131,6 +132,13 @@ const AREAS = [
     text: 'Every AI call and web search: how many, which provider, how fast, and why any failed.',
     icon: Gauge,
     hue: '#8b5cf6',
+  },
+  {
+    href: '/admin/memory',
+    title: 'Memory',
+    text: 'What the Assistant and Ask Tera remember, how fast it grows and how quickly they answer.',
+    icon: BrainCircuit,
+    hue: '#f472b6',
   },
   {
     href: '/admin/connections',

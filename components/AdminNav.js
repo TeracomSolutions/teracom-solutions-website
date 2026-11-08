@@ -6,6 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import {
   Activity,
   Boxes,
+  BrainCircuit,
   ChartColumn,
   ChevronDown,
   ClipboardSignature,
@@ -61,6 +62,7 @@ export const ADMIN_AREAS = [
   { href: '/admin/assistant', label: 'Assistant', group: 'ai' },
   { href: '/admin/ai-connections', label: 'AI Connections', group: 'ai' },
   { href: '/admin/ai-activity', label: 'AI activity', group: 'ai' },
+  { href: '/admin/memory', label: 'Memory', group: 'ai' },
   { href: '/admin/connections', label: 'Connections', group: 'system' },
   { href: '/admin/account', label: 'Account', group: 'system' },
   { href: '/admin/activity', label: 'Audit log', group: 'system' },
@@ -114,6 +116,7 @@ const ICONS = {
   '/admin/assistant': Sparkles,
   '/admin/ai-connections': Cpu,
   '/admin/ai-activity': Gauge,
+  '/admin/memory': BrainCircuit,
   '/admin/connections': Activity,
   '/admin/account': ShieldCheck,
   '/admin/activity': ScrollText,
