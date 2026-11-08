@@ -19,6 +19,7 @@ import {
   Headset,
   Ticket,
   FolderOpen,
+  Gauge,
 } from 'lucide-react';
 
 import AdminShell from '@/components/AdminShell';
@@ -123,6 +124,13 @@ const AREAS = [
     text: 'The providers Scout and the Assistant use — a local Ollama host first, then Anthropic, OpenAI and Groq.',
     icon: Cpu,
     hue: '#2dd4bf',
+  },
+  {
+    href: '/admin/ai-activity',
+    title: 'AI activity',
+    text: 'Every AI call and web search: how many, which provider, how fast, and why any failed.',
+    icon: Gauge,
+    hue: '#8b5cf6',
   },
   {
     href: '/admin/connections',
