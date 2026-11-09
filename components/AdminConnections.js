@@ -104,8 +104,13 @@ export default function AdminConnections({ initial, notice }) {
       </div>
 
       {groupConnections(list).map(({ group, items }) => (
-        <section key={group} className="connection-group" aria-label={group}>
-          <h2>{group}</h2>
+        <details key={group} className="connection-group">
+          <summary>
+            <h2>{group}</h2>
+            {summarise(items).map((part) => (
+              <span key={part.status} className={`admin-status is-${part.status}`}>{part.count} {part.label}</span>
+            ))}
+          </summary>
           <div className="connection-grid">
             {items.map((item) => (
               <article key={item.key} className="connection-card">
@@ -149,7 +154,7 @@ export default function AdminConnections({ initial, notice }) {
             ))}
           </div>
           {group === 'Servers and computers' ? <AdminAddDevice onAdded={reload} /> : null}
-        </section>
+        </details>
       ))}
     </div>
   );
