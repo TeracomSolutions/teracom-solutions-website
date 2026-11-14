@@ -2,6 +2,7 @@ import { BRAND, retitle } from '@/lib/brand';
 import Link from 'next/link';
 import {
   Activity,
+  DatabaseBackup,
   BadgeDollarSign,
   Boxes,
   ChartColumn,
@@ -154,6 +155,13 @@ const AREAS = [
     text: 'Zoho Books, Cloudflare, Vercel, Stripe and every other outside service, plus our servers and PCs: is each one working, and its keys.',
     icon: Activity,
     hue: '#84cc16',
+  },
+  {
+    href: '/admin/backups',
+    title: 'Backups',
+    text: 'Everything in the console backed up to the Synology on a schedule, locked with your passphrase, with Back up now.',
+    icon: DatabaseBackup,
+    hue: '#0ea5e9',
   },
   {
     href: '/admin/account',
