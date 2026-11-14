@@ -291,7 +291,7 @@ export default function AdminMemory() {
   }
 
   return (
-    <div>
+    <div className="memory-page">
       <div className="admin-actions">
         <button
           type="button"
