@@ -4200,3 +4200,6 @@ html.reveal-ready .section-sticky[data-reveal].is-revealed { transform:none; }
 .backups-lines .col-size { width:90px; }
 .backups-detail td { white-space:normal; background:rgba(255,255,255,.02); }
 .backups-parts, .backups-steps { margin:6px 0; padding-left:20px; display:grid; gap:4px; font-size:13px; overflow-wrap:anywhere; }
+
+/* Memory page (components/AdminMemory.js): space between the Refresh row and each box */
+.memory-page { display:grid; gap:18px; }
