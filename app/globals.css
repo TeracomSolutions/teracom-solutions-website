@@ -4203,3 +4203,27 @@ html.reveal-ready .section-sticky[data-reveal].is-revealed { transform:none; }
 
 /* Memory page (components/AdminMemory.js): space between the Refresh row and each box */
 .memory-page { display:grid; gap:18px; }
+
+/* Dashboard (components/AdminDashboard.js) */
+.dash { display:grid; gap:18px; }
+.dash-light { display:inline-block; flex:none; width:12px; height:12px; border-radius:50%; background:#6b7280; }
+.dash-light.is-good { background:#22c55e; box-shadow:0 0 0 3px rgba(34,197,94,.18); }
+.dash-light.is-attention { background:#f59e0b; box-shadow:0 0 0 3px rgba(245,158,11,.18); }
+.dash-light.is-failing { background:#ef4444; box-shadow:0 0 0 3px rgba(239,68,68,.2); }
+.dash-overall { display:flex; flex-wrap:wrap; align-items:center; gap:12px 16px; padding:14px 18px; border:1px solid var(--line); border-radius:16px; background:rgba(255,255,255,.03); }
+.dash-overall .dash-counts { display:flex; flex-wrap:wrap; gap:6px 16px; margin-left:auto; font-size:13px; color:var(--muted); }
+.dash-overall .dash-counts > span { display:inline-flex; align-items:center; gap:7px; }
+.dash-overall .dash-counts .dash-light { width:9px; height:9px; box-shadow:none; }
+.dash-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(270px, 1fr)); gap:14px; }
+.dash-tile { display:grid; gap:10px; align-content:start; padding:16px 18px; border:1px solid var(--line); border-left-width:4px; border-radius:16px; background:rgba(255,255,255,.03); color:inherit; text-decoration:none; transition:border-color .15s, background .15s, transform .15s; }
+.dash-tile:hover, .dash-tile:focus-visible { background:rgba(255,255,255,.06); transform:translateY(-1px); }
+.dash-tile.is-good { border-left-color:#22c55e; }
+.dash-tile.is-attention { border-left-color:#f59e0b; }
+.dash-tile.is-failing { border-left-color:#ef4444; }
+.dash-tile-head { display:flex; align-items:center; gap:10px; font-size:16px; }
+.dash-tile-head svg { margin-left:auto; color:var(--muted); }
+.dash-headline { font-size:14px; line-height:1.4; }
+.dash-facts { display:grid; gap:4px; padding-top:10px; border-top:1px solid var(--line); font-size:13px; }
+.dash-facts > span { display:flex; justify-content:space-between; gap:12px; }
+.dash-facts > span > span { color:var(--muted); }
+.dash-facts b { font-weight:700; text-align:right; }

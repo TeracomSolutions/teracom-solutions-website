@@ -13,6 +13,7 @@ import {
   ClipboardSignature,
   Cpu,
   DatabaseBackup,
+  HeartPulse,
   FileText,
   Gauge,
   Headset,
@@ -50,6 +51,7 @@ export const ADMIN_GROUPS = [
 
 export const ADMIN_AREAS = [
   { href: '/admin', label: 'Overview', exact: true, group: 'home' },
+  { href: '/admin/dashboard', label: 'Dashboard', group: 'home' },
   { href: '/admin/sales', label: 'Sales', group: 'sell', match: ['/admin/orders'] },
   { href: '/admin/suppliers', label: 'Store', group: 'sell', match: ['/admin/catalog', '/admin/pricing', '/admin/brands', '/admin/freight', '/admin/review', '/admin/content', '/admin/marketplace', '/admin/specials'] },
   { href: '/admin/coupons', label: 'Coupons', group: 'sell' },
@@ -124,6 +126,7 @@ const ICONS = {
   '/admin/memory': BrainCircuit,
   '/admin/connections': Activity,
   '/admin/backups': DatabaseBackup,
+  '/admin/dashboard': HeartPulse,
   '/admin/account': ShieldCheck,
   '/admin/activity': ScrollText,
   '/admin/files': FolderOpen,
