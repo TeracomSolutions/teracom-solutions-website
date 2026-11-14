@@ -5,7 +5,9 @@ import { ArrowLeft, ClipboardSignature, FileCheck2, Mail, PenLine, ShieldCheck }
 import Breadcrumbs from '@/components/Breadcrumbs';
 import OnlineForm from '@/components/OnlineForm';
 import OrbitArt from '@/components/OrbitArt';
+import { publicFormEdits } from '@/lib/api/forms';
 import { findOnlineForm } from '@/lib/onlineForms';
+import { applyFormEdits } from '@/lib/onlineForms/edits';
 import { pageMetadata, BUSINESS } from '@/lib/seo';
 import { TERMS_VERSION } from '@/lib/termsDocument';
 
@@ -15,11 +17,12 @@ import { TERMS_VERSION } from '@/lib/termsDocument';
 async function formFor(props) {
   const params = await props.params;
   const search = (await props.searchParams) || {};
-  const form = findOnlineForm(params.key);
-  if (!form) return { form: null, preview: false };
-  const preview = !form.live && search.preview === '1';
-  if (!form.live && !preview) return { form: null, preview: false };
-  return { form, preview };
+  const base = findOnlineForm(params.key);
+  if (!base) return { form: null, preview: false, edits: null };
+  const preview = !base.live && search.preview === '1';
+  if (!base.live && !preview) return { form: null, preview: false, edits: null };
+  const edits = (await publicFormEdits())[base.key] || null;
+  return { form: applyFormEdits(base, edits), preview, edits };
 }
 
 export async function generateMetadata(props) {
@@ -30,7 +33,7 @@ export async function generateMetadata(props) {
 }
 
 export default async function OnlineFormPage(props) {
-  const { form, preview } = await formFor(props);
+  const { form, preview, edits } = await formFor(props);
   if (!form) notFound();
 
   return (
@@ -71,7 +74,7 @@ export default async function OnlineFormPage(props) {
             </p>
           </aside>
 
-          <OnlineForm formKey={form.key} termsVersion={TERMS_VERSION} preview={preview} />
+          <OnlineForm formKey={form.key} termsVersion={TERMS_VERSION} preview={preview} edits={edits} />
         </div>
       </section>
     </main>

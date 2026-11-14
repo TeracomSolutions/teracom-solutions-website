@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 
 import { ApiError } from '@/lib/api/client';
-import { submitForm } from '@/lib/api/forms';
+import { publicFormEdits, submitForm } from '@/lib/api/forms';
+import { applyFormEdits } from '@/lib/onlineForms/edits';
 import { FILE_RULES, agreementVersion, checkForm, cleanValues, fileExtension, findOnlineForm, identity, summarise, termsTitle } from '@/lib/onlineForms';
 import { checkSharedRateLimit, clientIpFromRequest, rateLimitResponse } from '@/lib/rateLimit';
 import { STARTED_FIELD, TRAP_FIELD, checkSubmission } from '@/lib/formGuard';
@@ -19,8 +20,10 @@ const BASE64 = /^[A-Za-z0-9+/]+={0,2}$/;
 
 export async function POST(req, props) {
   const params = await props.params;
-  const form = findOnlineForm(params.key);
-  if (!form) return NextResponse.json({ error: 'Unknown form.' }, { status: 404 });
+  const base = findOnlineForm(params.key);
+  if (!base) return NextResponse.json({ error: 'Unknown form.' }, { status: 404 });
+  // The staff changes the page showed (cached the same way), so the check matches the form.
+  const form = applyFormEdits(base, (await publicFormEdits())[base.key]);
 
   const ip = clientIpFromRequest(req);
   const rateLimit = await checkSharedRateLimit(`forms:${ip}`, { maxAttempts: RATE_LIMIT_MAX, windowMs: RATE_LIMIT_WINDOW_MS });

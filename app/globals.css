@@ -4078,3 +4078,30 @@ html.reveal-ready .section-sticky[data-reveal].is-revealed { transform:none; }
   .ads-form-row { grid-template-columns:1fr; }
   .ads-caps label { grid-template-columns:1fr; }
 }
+
+/* Form editor (components/AdminFormEditor.js) */
+.admin-subheading { font-size:18px; margin:22px 0 10px; }
+.admin-table-compact td, .admin-table-compact th { padding-top:6px; padding-bottom:6px; white-space:nowrap; }
+.form-editor-bar { display:flex; flex-wrap:wrap; align-items:center; gap:10px 14px; margin:0 0 14px; }
+.form-editor-actions { display:flex; flex-wrap:wrap; gap:8px; margin-left:auto; }
+.form-editor-actions .btn { display:inline-flex; align-items:center; gap:6px; }
+.form-editor-layout { display:grid; grid-template-columns:minmax(0, 1fr) minmax(0, 1fr); gap:20px; align-items:start; }
+.form-editor-panel { display:grid; gap:12px; min-width:0; }
+.form-editor-panel input, .form-editor-panel textarea, .form-editor-panel select { width:100%; }
+.form-editor-label { display:grid; gap:6px; font-size:13px; color:var(--muted); margin:10px 0; }
+.form-editor-field { display:grid; gap:6px; padding:10px 12px; margin:10px 0; border:1px solid var(--line); border-radius:10px; }
+.form-editor-field.is-hidden { opacity:.55; }
+.form-editor-field.is-added { border-style:dashed; }
+.form-editor-field-head { display:flex; flex-wrap:wrap; align-items:center; gap:6px 14px; font-size:12px; }
+.form-editor-field-head select { width:auto; }
+.form-editor-check { display:inline-flex; align-items:center; gap:6px; color:var(--muted); }
+.form-editor-check input { width:auto; }
+.form-editor-options { display:grid; gap:6px; }
+.form-editor-options > div { display:grid; gap:4px; }
+.form-editor-preview { position:sticky; top:16px; min-width:0; }
+.form-editor-preview-frame { max-height:calc(100vh - 120px); overflow:auto; padding:16px; border:1px solid var(--line); border-radius:14px; background:var(--bg, transparent); }
+@media (max-width:1100px) {
+  .form-editor-layout { grid-template-columns:1fr; }
+  .form-editor-preview { position:static; }
+  .form-editor-preview-frame { max-height:none; }
+}

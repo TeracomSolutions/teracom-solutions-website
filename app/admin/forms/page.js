@@ -5,7 +5,8 @@ import { redirect } from 'next/navigation';
 import AdminFormDelivery from '@/components/AdminFormDelivery';
 import AdminHelpIcon from '@/components/AdminHelpIcon';
 import AdminShell from '@/components/AdminShell';
-import { fetchFormDelivery, fetchFormSubmissions } from '@/lib/api/forms';
+import { fetchFormDelivery, fetchFormEdits, fetchFormSubmissions } from '@/lib/api/forms';
+import { hasEdits } from '@/lib/onlineForms/edits';
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
 import { adminZone, setAdminZone } from '@/lib/adminFormat';
 import { zoneFor } from '@/lib/api/adminTime';
@@ -38,6 +39,12 @@ export default async function AdminFormsPage({ searchParams }) {
     if (isSessionError(err)) redirect('/admin/login');
     loadError = 'Unable to load the forms from the backend.';
   }
+  let edits = null;
+  try {
+    edits = (await fetchFormEdits(token))?.forms || {};
+  } catch {
+    edits = null;
+  }
   let delivery = null;
   try {
     delivery = await fetchFormDelivery(token);
@@ -57,12 +64,46 @@ export default async function AdminFormsPage({ searchParams }) {
             <li><strong>Signed copy</strong> - a PDF made the moment the form arrived, with the answers, the version of the terms accepted and the signature. It is emailed to the customer, goes to every place under Where forms go, and never changes.</li>
             <li><strong>Status</strong> - New until someone works on it; set In progress, Done or Cancelled and add notes on the form itself. Changes go in the audit log.</li>
             <li><strong>Filters</strong> - choose a form or a status, or search by reference, name, email or company.</li>
+            <li><strong>The forms</strong> - the forms customers can fill in: View opens it on the website, Open shows it here with a preview and lets an administrator change its wording, questions and agreement.</li>
             <li><strong>Where forms go</strong> - below the list: the email addresses, the network folder and other places Teracom&apos;s copies go, for all forms or for one form. The customer always gets their own copy.</li>
           </ul>
         </AdminHelpIcon>
       </h1>
       <p className="lead">Forms customers filled in and signed on the website, with the signed copies and attached files.</p>
 
+      <details className="connection-group" open={false}>
+        <summary>
+          <h2>The forms</h2>
+          <span className="admin-muted">{ONLINE_FORMS.length} forms, {ONLINE_FORMS.filter((f) => f.live).length} live</span>
+        </summary>
+        <div className="admin-table-wrap">
+          <table className="admin-table admin-table-compact">
+            <thead>
+              <tr><th>Form</th><th>Reference</th><th>On the website</th><th>Changes</th><th></th></tr>
+            </thead>
+            <tbody>
+              {ONLINE_FORMS.map((f) => {
+                const e = edits ? edits[f.key] : null;
+                return (
+                  <tr key={f.key}>
+                    <td><Link className="admin-link" href={`/admin/forms/templates/${f.key}`}>{f.title}</Link></td>
+                    <td>{f.referencePrefix}-</td>
+                    <td><span className={`admin-status ${f.live ? 'is-done' : 'is-new'}`}>{f.live ? 'Live' : 'Preview only'}</span></td>
+                    <td className="admin-muted">{edits === null ? 'Unknown' : hasEdits(e) ? `Changed (${when(e.updated_at)})` : 'As built'}</td>
+                    <td className="admin-actions-cell">
+                      <a className="admin-link" href={f.live ? `/forms/${f.key}` : `/forms/${f.key}?preview=1`} target="_blank" rel="noopener">View</a>
+                      {' · '}
+                      <Link className="admin-link" href={`/admin/forms/templates/${f.key}`}>Open</Link>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </details>
+
+      <h2 className="admin-subheading">Signed forms</h2>
       <form className="admin-refresh" method="get">
         <label>
           Form
