@@ -53,7 +53,7 @@ function synth() {
 
 // chatId and initialMessages: the saved chat this continues (components/AdminAssistantWorkspace.js);
 // onSaved(id, title) when the backend has saved a turn; onNewChat when New chat is pressed here.
-export default function AdminAssistantChat({ chatId = null, initialMessages = [], onSaved, onNewChat }) {
+export default function AdminAssistantChat({ chatId = null, initialMessages = [], onSaved, onNewChat, compact = false }) {
   const [messages, setMessages] = useState(initialMessages);
   const chatIdRef = useRef(chatId);
   const [draft, setDraft] = useState('');
@@ -164,6 +164,7 @@ export default function AdminAssistantChat({ chatId = null, initialMessages = []
           messages: forSend(history.slice(-24)),
           voice: conversationRef.current,
           chat_id: chatIdRef.current,
+          page: typeof window === 'undefined' ? undefined : window.location.pathname.slice(0, 300),
         }),
         signal: controller.signal,
       });
@@ -173,7 +174,7 @@ export default function AdminAssistantChat({ chatId = null, initialMessages = []
         chatIdRef.current = data.chat_id;
         onSaved?.(data.chat_id, data.chat_title);
       }
-      setMessages([...history, { role: 'assistant', content: data.reply, actions: data.actions || [], artifacts: data.artifacts || [], model: data.model }]);
+      setMessages([...history, { role: 'assistant', content: data.reply, actions: data.actions || [], artifacts: data.artifacts || [], model: data.model, steps: data.steps || [] }]);
       const wantSpeech = readAloudRef.current && Boolean(data.reply);
       dispatch({ type: 'reply', speak: wantSpeech });
       if (wantSpeech) speak(data.reply);
@@ -395,7 +396,7 @@ export default function AdminAssistantChat({ chatId = null, initialMessages = []
   const stoppable = listening || busy || conversation || avatarState === 'speaking';
 
   return (
-    <div className={attach.dragging ? 'admin-assistant is-dragging' : 'admin-assistant'} {...attach.dropProps}>
+    <div className={`admin-assistant${attach.dragging ? ' is-dragging' : ''}${compact ? ' is-compact' : ''}`} {...attach.dropProps}>
       {attach.dragging && <div className="admin-assistant-drop">Drop pictures or files here to attach them</div>}
       <div className="admin-assistant-log" aria-live="polite">
         <div className="admin-assistant-head">
@@ -421,7 +422,17 @@ export default function AdminAssistantChat({ chatId = null, initialMessages = []
             {m.role === 'assistant' && <AdminAssistantAvatar state="idle" size={26} />}
             <div className="admin-assistant-bubble">
               <AttachmentChips attachments={m.attachments} />
-              {m.savedFiles && m.savedFiles.length > 0 && <p className="admin-muted admin-assistant-saved-files">Attached: {m.savedFiles.join(', ')}</p>}
+              {m.keptFiles && m.keptFiles.length > 0 ? (
+                <p className="admin-muted admin-assistant-saved-files">
+                  Attached:{' '}
+                  {m.keptFiles.map((f, j) => (
+                    <span key={f.id}>
+                      {j ? ', ' : ''}
+                      <a className="admin-link" href={`/api/admin/assistant/chats/${chatIdRef.current}/files/${f.id}`}>{f.name}</a>
+                    </span>
+                  ))}
+                </p>
+              ) : m.savedFiles && m.savedFiles.length > 0 && <p className="admin-muted admin-assistant-saved-files">Attached: {m.savedFiles.join(', ')}</p>}
               {m.role === 'assistant'
                 ? <ChatMarkdown text={m.content} />
                 : m.content.split(String.fromCharCode(10)).map((line, j) => <p key={j}>{line || ' '}</p>)}
@@ -432,6 +443,20 @@ export default function AdminAssistantChat({ chatId = null, initialMessages = []
                 <ul className="admin-assistant-actions">
                   {m.actions.map((a, j) => <li key={j}>✓ {a}</li>)}
                 </ul>
+              )}
+              {m.role === 'assistant' && m.steps && m.steps.length > 0 && (
+                <details className="admin-assistant-steps">
+                  <summary>What it did ({m.steps.length} step{m.steps.length === 1 ? '' : 's'})</summary>
+                  <ol>
+                    {m.steps.map((s, j) => (
+                      <li key={j} className={s.ok === false ? 'is-failed' : undefined}>
+                        <strong>{s.kind === 'provider_error' ? `${s.name} did not answer` : s.name}</strong>
+                        {s.input && Object.keys(s.input).length ? <code>{JSON.stringify(s.input).slice(0, 300)}</code> : null}
+                        {s.output ? <span className="admin-muted">{String(s.output).slice(0, 400)}</span> : null}
+                      </li>
+                    ))}
+                  </ol>
+                </details>
               )}
               {m.role === 'assistant' && (
                 <div className="admin-assistant-meta">
