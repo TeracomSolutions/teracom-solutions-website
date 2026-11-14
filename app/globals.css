@@ -4161,3 +4161,27 @@ html.reveal-ready .section-sticky[data-reveal].is-revealed { transform:none; }
 .admin-assistant-steps li.is-failed strong { color:#ff6b6b; }
 .admin-assistant-steps code { font-size:11px; opacity:.8; white-space:pre-wrap; }
 @media print { .assistant-float-button, .assistant-float-panel { display:none; } }
+
+/* Lead finder (components/AdminLeadFinder.js) */
+.leadfinder { display:grid; gap:12px; }
+.leadfinder-form { display:grid; gap:6px; }
+.leadfinder-h { margin:6px 0 0; font-size:14px; }
+.leadfinder-contacts { list-style:none; margin:0; padding:0; display:grid; gap:8px; }
+.leadfinder-contacts li { display:grid; gap:4px; padding:8px 10px; border:1px solid var(--line); border-radius:10px; font-size:13px; overflow-wrap:anywhere; }
+.leadfinder-contacts li .btn { justify-self:start; }
+.leadfinder-contacts .admin-status { margin-left:8px; }
+.leadfinder-lines .col-open { width:34px; }
+.leadfinder-lines .col-fit { width:56px; }
+.leadfinder-lines .col-company { width:24%; }
+.leadfinder-lines .col-kind { width:20%; }
+.leadfinder-lines .col-where { width:150px; }
+.leadfinder-lines .col-emails { width:70px; }
+.leadfinder-lines .col-status { width:170px; }
+.leadfinder-lines .col-subject { width:30%; }
+.leadfinder-lines .col-email { width:20%; }
+.leadfinder-lines .col-when { width:170px; }
+.leadfinder-fit { display:inline-block; min-width:28px; text-align:center; padding:1px 6px; border-radius:8px; font-weight:700; font-size:12px; }
+.leadfinder-fit.is-high { background:rgba(34,197,94,.18); color:#4ade80; }
+.leadfinder-fit.is-mid { background:rgba(251,191,36,.16); color:#fbbf24; }
+.leadfinder-fit.is-low { background:rgba(255,255,255,.06); color:var(--muted); }
+.admin-table tr.is-muted td { opacity:.55; }
