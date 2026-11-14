@@ -6,6 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import {
   Activity,
   Boxes,
+  BadgeDollarSign,
   BrainCircuit,
   ChartColumn,
   ChevronDown,
@@ -52,6 +53,7 @@ export const ADMIN_AREAS = [
   { href: '/admin/suppliers', label: 'Store', group: 'sell', match: ['/admin/catalog', '/admin/pricing', '/admin/brands', '/admin/freight', '/admin/review', '/admin/content', '/admin/marketplace', '/admin/specials'] },
   { href: '/admin/coupons', label: 'Coupons', group: 'sell' },
   { href: '/admin/marketing', label: 'Marketing', group: 'sell' },
+  { href: '/admin/advertising', label: 'Advertising', group: 'sell' },
   { href: '/admin/leads', label: 'Leads', group: 'customers' },
   { href: '/admin/forms', label: 'Forms', group: 'customers' },
   { href: '/admin/support', label: 'Support', group: 'customers' },
@@ -106,6 +108,7 @@ const ICONS = {
   '/admin/suppliers': Boxes,
   '/admin/coupons': Ticket,
   '/admin/marketing': Megaphone,
+  '/admin/advertising': BadgeDollarSign,
   '/admin/leads': Inbox,
   '/admin/forms': ClipboardSignature,
   '/admin/support': Headset,
