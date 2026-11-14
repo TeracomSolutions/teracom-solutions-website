@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import { CircleCheckBig, Paperclip, Plus, Trash2, TriangleAlert } from 'lucide-react';
 
@@ -19,6 +19,7 @@ import {
   termsTitle,
   visibleSections,
 } from '@/lib/onlineForms';
+import { applyFormEdits } from '@/lib/onlineForms/edits';
 
 // Draws any form in lib/onlineForms, checks it, and sends it with the signature and files.
 // The page passes only the form's key (the definition is imported here, so nothing that
@@ -241,8 +242,10 @@ function Field({ field, value, setValue, files, addFiles, removeFile }) {
   );
 }
 
-export default function OnlineForm({ formKey, termsVersion, preview = false }) {
-  const form = findOnlineForm(formKey);
+// edits: staff changes from the console (lib/onlineForms/edits.js). demo: the console's
+// preview, which checks the answers but never sends them.
+export default function OnlineForm({ formKey, termsVersion, preview = false, edits = null, demo = false }) {
+  const form = useMemo(() => applyFormEdits(findOnlineForm(formKey), edits), [formKey, edits]);
   const [values, setValues] = useState({});
   const [files, setFiles] = useState([]);
   const [problems, setProblems] = useState([]);
@@ -274,6 +277,10 @@ export default function OnlineForm({ formKey, termsVersion, preview = false }) {
       document.getElementById('online-form-problems')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
     }
+    if (demo) {
+      setStatus('demo');
+      return;
+    }
     setStatus('sending');
     setError('');
     try {
@@ -294,6 +301,19 @@ export default function OnlineForm({ formKey, termsVersion, preview = false }) {
       setStatus('failed');
       setError(e.message || 'We could not send that just now.');
     }
+  }
+
+  if (status === 'demo') {
+    return (
+      <div className="request-result" role="status">
+        <span className="request-result-icon">
+          <CircleCheckBig size={26} strokeWidth={1.8} aria-hidden="true" focusable="false" />
+        </span>
+        <h2>The form is complete.</h2>
+        <p>This is the console preview, so nothing was sent. A customer would now get their reference and signed copy.</p>
+        <button type="button" className="btn btn-secondary btn-sm" onClick={() => setStatus('idle')}>Back to the form</button>
+      </div>
+    );
   }
 
   if (status === 'sent') {
@@ -392,7 +412,7 @@ export default function OnlineForm({ formKey, termsVersion, preview = false }) {
       ) : null}
 
       {guard.fields}
-      <TurnstileWidget onToken={setTurnstileToken} />
+      {demo ? null : <TurnstileWidget onToken={setTurnstileToken} />}
 
       <button type="submit" className="btn btn-primary request-submit" disabled={status === 'sending'}>
         {status === 'sending' ? 'Sending…' : 'Sign and send'}
