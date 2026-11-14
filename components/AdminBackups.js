@@ -139,7 +139,7 @@ function Contents({ contents }) {
           </tbody>
         </table>
       </div>
-      <p className="admin-muted">Every file is locked with the backup passphrase before it leaves this server, and checked to open before it is copied. The website code is copied too (both repositories, every branch and commit); Vercel's own settings stay in Vercel. Keep the passphrase in Zoho Vault: without it no backup can be opened.</p>
+      <p className="admin-muted">Every file is locked with the backup passphrase before it leaves this server, and checked to open before it is copied. The website code is copied too (both repositories, every branch and commit); Vercel&apos;s own settings stay in Vercel. Keep the passphrase in Zoho Vault: without it no backup can be opened.</p>
     </>
   );
 }
