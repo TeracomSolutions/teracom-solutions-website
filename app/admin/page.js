@@ -3,6 +3,7 @@ import Link from 'next/link';
 import {
   Activity,
   DatabaseBackup,
+  HeartPulse,
   BadgeDollarSign,
   Boxes,
   ChartColumn,
@@ -37,6 +38,13 @@ export const metadata = {
 // Each area has its own icon and colour so the console reads at a glance,
 // on the same black the rest of the site uses.
 const AREAS = [
+  {
+    href: '/admin/dashboard',
+    title: 'Dashboard',
+    text: 'The health of every area at a glance: a green, amber or red light and a few numbers for each.',
+    icon: HeartPulse,
+    hue: '#22c55e',
+  },
   {
     href: '/admin/sales',
     title: 'Sales',
