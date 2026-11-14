@@ -17,7 +17,7 @@ export default async function AdminBackupsPage() {
       <h1 className="admin-heading">
         Backups <AdminHelpIcon>
           <h4>What this page is for</h4>
-          <p>Backing up everything in the console to the Synology NAS on the office network, on a schedule or now, so that it can all be put back after a failure: every setting and Connection, staff and permissions, the Assistant&apos;s memory, chats and skills, leads, forms, orders, customers, products, the server settings and the uploaded files.</p>
+          <p>Backing up everything in the console to the Synology NAS on the office network, on a schedule or now, so that it can all be put back after a failure: every setting and Connection, staff and permissions, the Assistant&apos;s memory, chats and skills, leads, forms, orders, customers, products, the server settings, the website code and the uploaded files.</p>
 
           <h4>Setting it up</h4>
           <ul>
@@ -34,7 +34,7 @@ export default async function AdminBackupsPage() {
           </ul>
 
           <h4>Things to know</h4>
-          <p>A failed backup shows here and on the Backup NAS card, goes on the Audit log and is emailed. The code is on GitHub and is not copied; each backup notes which version was running. How to open a backup and restore it is in the backend&apos;s docs/operations/site-backup.md.</p>
+          <p>A failed backup shows here and on the Backup NAS card, goes on the Audit log and is emailed. Each backup also holds the website&apos;s code (the website and console, and the backend, every branch and commit), so it can be rebuilt even without GitHub. Vercel&apos;s own settings stay in Vercel. How to open a backup and restore it is in the backend&apos;s docs/operations/site-backup.md.</p>
         </AdminHelpIcon>
       </h1>
 
