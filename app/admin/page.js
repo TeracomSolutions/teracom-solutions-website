@@ -2,6 +2,7 @@ import { BRAND, retitle } from '@/lib/brand';
 import Link from 'next/link';
 import {
   Activity,
+  BadgeDollarSign,
   Boxes,
   ChartColumn,
   Cpu,
@@ -62,6 +63,13 @@ const AREAS = [
     text: 'The specials and offers that are on: a banner across the website while they run, and a weekly update to customers and every social network.',
     icon: Megaphone,
     hue: '#f43f5e',
+  },
+  {
+    href: '/admin/advertising',
+    title: 'Advertising',
+    text: 'Paid ads on Google, Meta, eBay, Pinterest and more: make them from products, put them live inside monthly limits, and see what they cost and sell.',
+    icon: BadgeDollarSign,
+    hue: '#22c55e',
   },
   {
     href: '/admin/leads',
