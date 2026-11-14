@@ -5,6 +5,7 @@ import { Brain, MessageSquare, Pencil, Plus, Search, Trash2 } from 'lucide-react
 
 import AdminAssistantChat from '@/components/AdminAssistantChat';
 import { formatDateTime } from '@/lib/adminFormat';
+import { currentChatId, setCurrentChatId } from '@/lib/assistantShared';
 
 // The Assistant page laid out like the Global platform's chat (Robert, 2026-10-25): every saved chat down
 // the left, newest first and searchable, the open chat on the right, and the Assistant's memory (the notes
@@ -21,7 +22,7 @@ async function call(url, method = 'GET', body) {
   return data;
 }
 
-// A saved message, in the shape the chat shows. Files are not kept, only their names.
+// A saved message, in the shape the chat shows: with the steps behind a reply and the files kept with it.
 function fromSaved(message) {
   return {
     role: message.role,
@@ -29,7 +30,9 @@ function fromSaved(message) {
     actions: message.actions || [],
     artifacts: message.artifacts || [],
     model: message.model || undefined,
+    steps: message.steps || [],
     savedFiles: (message.attachments || []).map((a) => a.name),
+    keptFiles: (message.attachments || []).filter((a) => a.id),
   };
 }
 
@@ -126,6 +129,7 @@ export default function AdminAssistantWorkspace() {
     try {
       const data = await call(`/api/admin/assistant/chats/${chat.id}`);
       setActiveId(chat.id);
+      setCurrentChatId(chat.id);
       setOpened({ key: chat.id, messages: (data.messages || []).map(fromSaved) });
       setShowMemory(false);
     } catch (err) {
@@ -133,8 +137,17 @@ export default function AdminAssistantWorkspace() {
     }
   }
 
+  // The chat the floating Tera was in (or ?chat= from its Open the Assistant page button) carries on here.
+  useEffect(() => {
+    const asked = new URLSearchParams(window.location.search).get('chat');
+    const id = asked || currentChatId();
+    if (id) openChat({ id }).catch(() => {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   function newChat() {
     setActiveId(null);
+    setCurrentChatId(null);
     setOpened({ key: `new-${Date.now()}`, messages: [] });
     setShowMemory(false);
   }
@@ -142,6 +155,7 @@ export default function AdminAssistantWorkspace() {
   // A chat's first reply gives it an id and a title: it joins the top of the list without reloading the chat.
   function saved(id, title) {
     setActiveId(id);
+    setCurrentChatId(id);
     setChats((current) => {
       const rest = (current || []).filter((c) => c.id !== id);
       const existing = (current || []).find((c) => c.id === id);

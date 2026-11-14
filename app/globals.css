@@ -4129,3 +4129,35 @@ html.reveal-ready .section-sticky[data-reveal].is-revealed { transform:none; }
 .lead-facts dt { color:var(--muted); font-size:11px; text-transform:uppercase; letter-spacing:.08em; }
 .lead-facts dd { margin:0; }
 .lead-detail .admin-message { margin:0; white-space:pre-wrap; max-width:90ch; }
+
+/* Floating Tera and its chat (components/AdminAssistantBubble.js) */
+.assistant-float-button { position:fixed; z-index:60; padding:0; border:0; border-radius:50%; background:radial-gradient(circle at 50% 45%, rgba(255,23,23,.28), rgba(10,10,11,.92) 70%); box-shadow:0 10px 28px rgba(0,0,0,.45), 0 0 0 2px rgba(255,75,75,.55); cursor:grab; touch-action:none; display:grid; place-items:center; overflow:hidden; }
+.assistant-float-button:active { cursor:grabbing; }
+.assistant-float-button:focus-visible { outline:3px solid #ff4b4b; outline-offset:3px; }
+.assistant-float-button.is-open { box-shadow:0 10px 28px rgba(0,0,0,.45), 0 0 0 3px #ff1717; }
+.assistant-float-button img { width:100%; height:100%; object-fit:contain; pointer-events:none; user-select:none; }
+.assistant-float-panel { position:fixed; z-index:61; width:min(430px, calc(100vw - 16px)); height:min(660px, calc(100vh - 110px)); display:flex; flex-direction:column; border:1px solid var(--line); border-radius:18px; background:#0a0a0b; box-shadow:0 24px 60px rgba(0,0,0,.55); overflow:hidden; }
+.assistant-float-head { display:flex; align-items:center; gap:10px; padding:10px 12px; border-bottom:1px solid var(--line); }
+.assistant-float-head img { border-radius:50%; }
+.assistant-float-tools { margin-left:auto; display:flex; gap:4px; }
+.assistant-float-icon { display:inline-grid; place-items:center; width:30px; height:30px; border-radius:8px; border:0; background:none; color:var(--muted); cursor:pointer; }
+.assistant-float-icon:hover { background:rgba(255,255,255,.06); color:#fff; }
+.assistant-float-loading { padding:16px; }
+.assistant-float-panel > .admin-assistant { flex:1; min-height:0; display:flex; flex-direction:column; gap:8px; padding:0 10px 10px; }
+.assistant-float-panel .admin-assistant-log { flex:1; min-height:0; overflow:auto; }
+.assistant-float-panel .admin-assistant-head { display:none; }
+.assistant-float-panel .admin-assistant-form textarea { min-height:56px; }
+.assistant-float-panel .admin-assistant-form .admin-actions { gap:6px; }
+.assistant-float-panel .admin-assistant-form .btn-sm { padding:6px 9px; font-size:12px; }
+.assistant-float-panel .admin-assistant-voice { font-size:11px; }
+@media (max-width:600px) {
+  .assistant-float-panel { left:8px !important; right:8px !important; top:8px !important; bottom:8px !important; width:auto; height:auto; }
+}
+/* What it did, under a reply */
+.admin-assistant-steps { margin:8px 0 0; font-size:12px; }
+.admin-assistant-steps summary { cursor:pointer; color:var(--muted); }
+.admin-assistant-steps ol { margin:6px 0 0; padding-left:18px; display:grid; gap:6px; }
+.admin-assistant-steps li { display:grid; gap:2px; overflow-wrap:anywhere; }
+.admin-assistant-steps li.is-failed strong { color:#ff6b6b; }
+.admin-assistant-steps code { font-size:11px; opacity:.8; white-space:pre-wrap; }
+@media print { .assistant-float-button, .assistant-float-panel { display:none; } }
