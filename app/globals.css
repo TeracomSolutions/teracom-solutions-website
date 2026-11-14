@@ -4105,3 +4105,27 @@ html.reveal-ready .section-sticky[data-reveal].is-revealed { transform:none; }
   .form-editor-preview { position:static; }
   .form-editor-preview-frame { max-height:none; }
 }
+
+/* One line per row, click to open (components/AdminLeadsTable.js) */
+.admin-lines { table-layout:fixed; min-width:820px; }
+.admin-lines td, .admin-lines th { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.admin-lines .admin-line { cursor:pointer; }
+.admin-lines .admin-line:hover td { background:rgba(255,255,255,.03); }
+.admin-lines .admin-line.is-open td { background:rgba(255,23,23,.06); }
+.admin-lines .admin-line.is-unread td { font-weight:600; }
+.admin-lines .lead-reply-row td { white-space:normal; overflow:visible; }
+.admin-line-toggle { display:inline-flex; align-items:center; background:none; border:0; padding:0; color:var(--muted); cursor:pointer; }
+.leads-lines .col-open { width:34px; }
+.leads-lines .col-when { width:170px; }
+.leads-lines .col-name { width:16%; }
+.leads-lines .col-company { width:16%; }
+.leads-lines .col-email { width:22%; }
+.leads-lines .col-kind { width:150px; }
+.leads-lines .col-status { width:150px; }
+.leads-lines .admin-status + .admin-status { margin-left:6px; }
+.lead-detail { display:grid; gap:12px; padding:6px 0 10px; }
+.lead-facts { display:flex; flex-wrap:wrap; gap:8px 24px; margin:0; font-size:13px; }
+.lead-facts div { display:grid; gap:2px; }
+.lead-facts dt { color:var(--muted); font-size:11px; text-transform:uppercase; letter-spacing:.08em; }
+.lead-facts dd { margin:0; }
+.lead-detail .admin-message { margin:0; white-space:pre-wrap; max-width:90ch; }
