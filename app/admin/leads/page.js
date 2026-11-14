@@ -3,6 +3,8 @@ import { redirect } from 'next/navigation';
 
 import AdminHelpIcon from '@/components/AdminHelpIcon';
 import AdminLeadsTable from '@/components/AdminLeadsTable';
+import AdminTabs from '@/components/AdminTabs';
+import { LeadFinderBusinesses, LeadFinderEmails, LeadFinderFind, LeadFinderSettings } from '@/components/AdminLeadFinder';
 import AdminShell from '@/components/AdminShell';
 import { fetchLeads } from '@/lib/api/adminLeads';
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
@@ -41,11 +43,28 @@ export default async function AdminLeadsPage() {
             <li><strong>Mark contacted</strong> - in the opened enquiry; click it once you&apos;ve replied some other way (phone, your own email). It records who marked it and when, in the audit log as well. There is no undo.</li>
             <li><strong>Refresh</strong> - reloads the list; new enquiries arrive on their own and do not appear until you refresh or revisit the page.</li>
           </ul>
+          <h4>Finding new leads</h4>
+          <ul>
+            <li><strong>Find leads</strong> - saved searches: a kind of business (strata managers, builders, facility managers…) in the places you list. Run now, or they run on their own every so many days. Each business&apos;s own website is read; directories and social networks never are.</li>
+            <li><strong>Businesses</strong> - what was found, best fit first, one line each; click one to see what they do, why it scored as it did, the email addresses their site publishes and exactly where each was found. Mark it Good fit, Not a fit or Do not contact, add a contact, or Draft an email.</li>
+            <li><strong>Emails</strong> - the AI&apos;s drafts: read and change them, then Approve and send. Nothing goes while sending is off, and only on business days in business hours, up to the daily limit. When they reply, click They replied and it becomes an enquiry here.</li>
+            <li><strong>Lead finder settings</strong> - sending on or off, the daily limit and hours, the sender details every email must carry, what the AI may say about us, and the Never email list.</li>
+            <li><strong>The law</strong> - we email only addresses a business publishes on its own website for business enquiries (with no &quot;no unsolicited emails&quot; notice), people who asked us, or customers; every email says who we are, our ABN, where we found the address, and has a one-click unsubscribe that works at once and for good.</li>
+          </ul>
         </AdminHelpIcon>
       </h1>
-      <p className="lead">Enquiries from the website&apos;s contact form, request forms and the Ask Tera chat, newest first, each with Tera&apos;s draft reply.</p>
+      <p className="lead">Enquiries from the website&apos;s contact form, request forms and the Ask Tera chat, each with Tera&apos;s draft reply; and the lead finder, which finds businesses that could buy from us and helps you write to them.</p>
 
-      <AdminLeadsTable leads={leads} loadError={leadsError} />
+      <AdminTabs
+        ariaLabel="Leads"
+        tabs={[
+          { key: 'enquiries', label: 'Enquiries', content: <AdminLeadsTable leads={leads} loadError={leadsError} /> },
+          { key: 'find', label: 'Find leads', content: <LeadFinderFind /> },
+          { key: 'businesses', label: 'Businesses', content: <LeadFinderBusinesses /> },
+          { key: 'emails', label: 'Emails', content: <LeadFinderEmails /> },
+          { key: 'finder-settings', label: 'Lead finder settings', content: <LeadFinderSettings /> },
+        ]}
+      />
     </AdminShell>
   );
 }
