@@ -3,5 +3,6 @@
   "regions": [
     "syd1"
   ],
-  "installCommand": "npm ci --ignore-scripts"
+  "installCommand": "npm ci --ignore-scripts",
+  "ignoreCommand": "[ \"$VERCEL_ENV\" != \"production\" ]"
 }
