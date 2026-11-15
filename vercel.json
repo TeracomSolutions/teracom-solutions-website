@@ -4,5 +4,10 @@
     "syd1"
   ],
   "installCommand": "npm ci --ignore-scripts",
-  "ignoreCommand": "[ \"$VERCEL_ENV\" != \"production\" ]"
+  "git": {
+    "deploymentEnabled": {
+      "main": true,
+      "*": false
+    }
+  }
 }
