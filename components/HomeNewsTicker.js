@@ -14,7 +14,7 @@ function withTopic(item) {
   return { ...item, topic };
 }
 
-export default async function HomeNewsTicker() {
+export default async function HomeNewsTicker({ seconds = 70 }) {
   let items = [];
   try {
     const sources = await getNewsSources();
@@ -35,7 +35,7 @@ export default async function HomeNewsTicker() {
           <span className="news-live-dot" /> Live
         </Link>
         <div className="news-ticker" aria-label="Latest headlines">
-          <div className="news-ticker-track">
+          <div className="news-ticker-track" style={seconds === 70 ? undefined : { animationDuration: `${seconds}s` }}>
             {[0, 1].map((copy) =>
               items.map((item) => (
                 <a

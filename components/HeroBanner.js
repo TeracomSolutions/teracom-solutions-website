@@ -4,7 +4,7 @@ import { Fragment, useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 
-export default function HeroBanner({ slides }) {
+export default function HeroBanner({ slides, dwellMs = 6000 }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const sectionRef = useRef(null);
 
@@ -49,12 +49,12 @@ export default function HeroBanner({ slides }) {
     // interval on every single slide change.
     const interval = setInterval(() => {
       setActiveIndex((prevIndex) => (prevIndex + 1) % slides.length);
-    }, 6000);
+    }, Math.max(3000, Number(dwellMs) || 6000));
 
     return () => {
       clearInterval(interval);
     };
-  }, [slides.length]);
+  }, [slides.length, dwellMs]);
 
   const goToSlide = (index) => {
     setActiveIndex(index);

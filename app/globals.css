@@ -4227,3 +4227,19 @@ html.reveal-ready .section-sticky[data-reveal].is-revealed { transform:none; }
 .dash-facts > span { display:flex; justify-content:space-between; gap:12px; }
 .dash-facts > span > span { color:var(--muted); }
 .dash-facts b { font-weight:700; text-align:right; }
+
+/* Resources > Home banner (components/AdminHomeBanner.js) */
+.banner-page { display:grid; gap:18px; }
+.banner-set { border:1px solid var(--line); border-radius:14px; padding:14px 16px; display:grid; gap:10px; min-width:0; }
+.banner-set legend { font-size:13px; font-weight:700; color:var(--muted); padding:0 6px; }
+.banner-note { align-self:center; margin:0; }
+.banner-slides .col-on { width:60px; }
+.banner-slides .col-place { width:130px; }
+.banner-slides .col-move { width:250px; }
+.banner-slides td.banner-wrap { white-space:normal; }
+.banner-open { background:none; border:0; padding:0; color:inherit; font:inherit; text-align:left; cursor:pointer; }
+.banner-open .admin-muted { margin-right:8px; font-size:12px; text-transform:uppercase; letter-spacing:.06em; }
+.banner-actions { display:flex; flex-wrap:wrap; gap:6px; }
+.banner-editor { display:grid; gap:2px; margin-top:10px; padding-top:10px; border-top:1px solid var(--line); }
+.banner-editor input[type=text], .banner-editor input[type=url], .banner-editor textarea, .banner-editor select { width:100%; }
+.banner-industries { display:flex; flex-wrap:wrap; gap:8px 22px; }

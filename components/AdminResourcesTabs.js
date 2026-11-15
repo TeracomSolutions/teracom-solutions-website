@@ -4,16 +4,18 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 // Resources in the console: the watched document websites, the Industry news publications,
-// and the articles drafted from the news.
+// the articles drafted from the news, and the public home page's banner.
 const TABS = [
   { href: '/admin/resources', label: 'Documents' },
   { href: '/admin/resources/industry-news', label: 'Industry news' },
   { href: '/admin/resources/articles', label: 'Articles' },
+  { href: '/admin/resources/home-banner', label: 'Home banner' },
 ];
 
 function activeTab(pathname) {
   if (pathname.startsWith('/admin/resources/industry-news')) return '/admin/resources/industry-news';
   if (pathname.startsWith('/admin/resources/articles')) return '/admin/resources/articles';
+  if (pathname.startsWith('/admin/resources/home-banner')) return '/admin/resources/home-banner';
   return '/admin/resources';
 }
 
