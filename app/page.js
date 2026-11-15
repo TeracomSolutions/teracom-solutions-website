@@ -7,6 +7,7 @@ import { aiCapabilities } from '@/lib/aiCapabilities';
 import HeroBanner from '@/components/HeroBanner';
 import HomeNewsTicker from '@/components/HomeNewsTicker';
 import { getHeroSlides } from '@/lib/heroSlides';
+import { getHomeBanner } from '@/lib/homeBanner';
 import JsonLd from '@/components/JsonLd';
 import QueryContactForm from '@/components/QueryContactForm';
 import ProcessSteps from '@/components/ProcessSteps';
@@ -137,12 +138,13 @@ export async function generateMetadata() {
 }
 
 export default async function Home(props) {
+  const banner = await getHomeBanner();
   return (
     <main id="main-content">
       <LeadSubmitted source="home_contact_form" />
       <JsonLd schema={SERVICE_SCHEMA} />
-      <HeroBanner slides={await getHeroSlides()} />
-      <HomeNewsTicker />
+      <HeroBanner slides={await getHeroSlides({ banner })} dwellMs={banner.dwell_seconds * 1000} />
+      {banner.ticker_enabled ? <HomeNewsTicker seconds={banner.ticker_seconds} /> : null}
       <section className="section intro-section">
         <div className="container intro-grid">
           <div>
