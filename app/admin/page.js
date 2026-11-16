@@ -3,6 +3,7 @@ import Link from 'next/link';
 import {
   Activity,
   DatabaseBackup,
+  ListChecks,
   HeartPulse,
   BadgeDollarSign,
   Boxes,
@@ -170,6 +171,13 @@ const AREAS = [
     text: 'Everything in the console backed up to the Synology on a schedule, locked with your passphrase, with Back up now.',
     icon: DatabaseBackup,
     hue: '#0ea5e9',
+  },
+  {
+    href: '/admin/platform-rules',
+    title: 'Platform rules',
+    text: 'Every rule and setting that keeps the website safe and cheap to run: firewall blocks, Vercel set-up and caching, with why and where each is changed.',
+    icon: ListChecks,
+    hue: '#64748b',
   },
   {
     href: '/admin/account',

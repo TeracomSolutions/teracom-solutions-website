@@ -10,6 +10,8 @@ import {
   BrainCircuit,
   ChartColumn,
   ChevronDown,
+  ChevronsDownUp,
+  ChevronsUpDown,
   ClipboardSignature,
   Cpu,
   DatabaseBackup,
@@ -18,6 +20,7 @@ import {
   Gauge,
   Headset,
   Inbox,
+  ListChecks,
   Info,
   LayoutDashboard,
   Megaphone,
@@ -70,6 +73,7 @@ export const ADMIN_AREAS = [
   { href: '/admin/memory', label: 'Memory', group: 'ai' },
   { href: '/admin/connections', label: 'Connections', group: 'system' },
   { href: '/admin/backups', label: 'Backups', group: 'system' },
+  { href: '/admin/platform-rules', label: 'Platform rules', group: 'system' },
   { href: '/admin/account', label: 'Account', group: 'system' },
   { href: '/admin/activity', label: 'Audit log', group: 'system' },
   { href: '/admin/files', label: 'Files', group: 'system' },
@@ -126,6 +130,7 @@ const ICONS = {
   '/admin/memory': BrainCircuit,
   '/admin/connections': Activity,
   '/admin/backups': DatabaseBackup,
+  '/admin/platform-rules': ListChecks,
   '/admin/dashboard': HeartPulse,
   '/admin/account': ShieldCheck,
   '/admin/activity': ScrollText,
@@ -205,6 +210,15 @@ export default function AdminNav() {
     save({ closedGroups, openSubs: next });
   }
 
+  // Roll every heading up, or open them all (Robert, 17 November 2026: "wind them all up or wind them all out").
+  function setAllGroups(close) {
+    const next = close ? ADMIN_GROUPS.filter((g) => g.name).map((g) => g.key) : [];
+    const subs = close ? [] : openSubs;
+    setClosedGroups(next);
+    setOpenSubs(subs);
+    save({ closedGroups: next, openSubs: subs });
+  }
+
   async function handleSignOut() {
     await fetch('/api/admin/logout', { method: 'POST' });
     router.push('/admin/login');
@@ -220,6 +234,14 @@ export default function AdminNav() {
         Menu
       </button>
       <div className={menuOpen ? 'admin-sidenav-body open' : 'admin-sidenav-body'}>
+        <div className="admin-sidenav-all">
+          <button type="button" onClick={() => setAllGroups(true)} title="Roll up every heading">
+            <ChevronsDownUp size={14} aria-hidden="true" /> Collapse all
+          </button>
+          <button type="button" onClick={() => setAllGroups(false)} title="Open every heading">
+            <ChevronsUpDown size={14} aria-hidden="true" /> Expand all
+          </button>
+        </div>
         {ADMIN_GROUPS.map((group) => {
           const items = visible.filter((area) => area.group === group.key);
           if (!items.length) return null;
