@@ -72,10 +72,97 @@ function Live({ live }) {
   );
 }
 
+function Schedules({ groups, items }) {
+  return (
+    <>
+      <p className="admin-muted">Everything that runs by itself on a timetable: what it does, when, and where it is set. Every new scheduled job or reminder is added here in the same change that makes it.</p>
+      {groups.map((group) => {
+        const list = items.filter((item) => item.group === group);
+        if (!list.length) return null;
+        return (
+          <section key={group} className="rules-area">
+            <h3>{group}</h3>
+            <div className="rules-grid">
+              {list.map((item) => (
+                <article key={item.id} className="rules-card">
+                  <h4>{item.name}</h4>
+                  <p>{item.what}</p>
+                  <p><span className="admin-muted">When: </span>{item.when}</p>
+                  <p><span className="admin-muted">Where it is set: </span>{item.where}</p>
+                  {item.last_at ? (
+                    <p className="admin-muted">
+                      Last ran {formatDateTime(item.last_at)}
+                      {item.last_ok === false ? <span className="rules-pill is-bad">Pages failing</span> : null}
+                      {item.last_error ? ` · last error: ${item.last_error}` : ''}
+                    </p>
+                  ) : null}
+                </article>
+              ))}
+            </div>
+          </section>
+        );
+      })}
+    </>
+  );
+}
+
+function SiteCheck({ check, checking, onCheck }) {
+  const results = check.results || [];
+  const history = check.history || [];
+  return (
+    <>
+      <div className="rules-head">
+        <p className="admin-muted">Every hour, and within 15 minutes of each website release, these pages are loaded as a visitor and as a signed-in customer. A failure turns the Dashboard red and sends an email; another email follows when they load again.</p>
+        <button type="button" className="btn btn-secondary btn-sm" onClick={onCheck} disabled={checking === 'started'}>
+          <RefreshCw size={14} aria-hidden="true" /> {checking === 'started' ? 'Checking, about a minute…' : 'Check now'}
+        </button>
+      </div>
+      {checking === 'failed' ? <p className="form-error" role="alert">The check could not be started. Try again.</p> : null}
+      {!check.last_at ? <p className="form-note-banner" role="status">The check has not run yet. It runs within the next 15 minutes, or press Check now.</p> : (
+        <>
+          <p className={check.ok ? 'rules-status is-good' : 'rules-status is-bad'} role="status">
+            {check.ok ? 'Every page checked loads.' : `${(check.failed || []).length} page(s) not loading${check.failing_since ? ` since ${formatDateTime(check.failing_since)}` : ''}.`}
+            <span className="admin-muted"> Last checked {formatDateTime(check.last_at)} ({check.reason}).</span>
+          </p>
+          <div className="admin-table-wrap">
+            <table className="admin-table admin-table-compact admin-lines">
+              <thead><tr><th>Page</th><th>Address</th><th>Answer</th><th>Time</th></tr></thead>
+              <tbody>
+                {results.map((r) => (
+                  <tr key={`${r.path}-${r.signed_in}`} className={r.problem ? 'rules-row-bad' : undefined}>
+                    <td>{r.label}</td>
+                    <td><a href={r.path} target="_blank" rel="noopener noreferrer">{r.path}</a></td>
+                    <td>{r.problem ? <strong>{r.problem}</strong> : 'Loads'}</td>
+                    <td>{(r.ms / 1000).toFixed(1)} s</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          {history.length ? (
+            <p className="admin-muted">Last {history.length} checks: {history.filter((h) => h.ok).length} passed, {history.filter((h) => !h.ok).length} found problems.</p>
+          ) : null}
+        </>
+      )}
+    </>
+  );
+}
+
 export default function AdminPlatformRules() {
   const [data, setData] = useState(null);
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
+  const [tab, setTab] = useState('rules');
+  const [checking, setChecking] = useState('');
+
+  useEffect(() => {
+    const wanted = typeof window !== 'undefined' ? window.location.hash.replace('#', '') : '';
+    if (['rules', 'schedules', 'check'].includes(wanted)) {
+      const t = setTimeout(() => setTab(wanted), 0);
+      return () => clearTimeout(t);
+    }
+    return undefined;
+  }, []);
 
   const load = useCallback(async (fresh) => {
     setBusy(true);
@@ -97,11 +184,40 @@ export default function AdminPlatformRules() {
     return () => clearTimeout(first);
   }, [load]);
 
+  async function checkNow() {
+    setChecking('started');
+    try {
+      const res = await fetch('/api/admin/platform-rules/site-check', { method: 'POST' });
+      if (!res.ok) throw new Error();
+      setTimeout(() => { load(false); setChecking(''); }, 75000);
+    } catch {
+      setChecking('failed');
+    }
+  }
+
   if (error && !data) return <p className="form-error" role="alert">{error}</p>;
   if (!data) return <p className="admin-muted">Loading…</p>;
 
+  const check = data.site_check || {};
+  const failing = (check.failed || []).length;
+  const TABS = [
+    ['rules', 'Rules'],
+    ['schedules', 'Scheduled jobs'],
+    ['check', failing ? `Website check (${failing} failing)` : 'Website check'],
+  ];
+
   return (
     <div className="rules-page">
+      <div className="rules-tabs" role="tablist" aria-label="Platform rules">
+        {TABS.map(([key, label]) => (
+          <button key={key} type="button" role="tab" aria-selected={tab === key}
+            className={tab === key ? 'rules-tab active' : 'rules-tab'} onClick={() => setTab(key)}>{label}</button>
+        ))}
+      </div>
+
+      {tab === 'schedules' ? <Schedules groups={data.schedule_groups || []} items={data.schedules || []} /> : null}
+      {tab === 'check' ? <SiteCheck check={check} checking={checking} onCheck={checkNow} /> : null}
+      {tab === 'rules' ? <>
       <div className="rules-head">
         <h2>Switched on in Vercel now</h2>
         <button type="button" className="btn btn-secondary btn-sm" onClick={() => load(true)} disabled={busy}>
@@ -131,6 +247,7 @@ export default function AdminPlatformRules() {
           </section>
         );
       })}
+      </> : null}
     </div>
   );
 }

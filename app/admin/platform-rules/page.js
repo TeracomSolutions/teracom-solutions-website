@@ -21,16 +21,17 @@ export default async function AdminPlatformRulesPage() {
 
           <h4>How to read it</h4>
           <ul>
-            <li><strong>Switched on in Vercel now</strong> is read from Vercel each time you open the page, so it is what is really on, even if someone changed it in Vercel directly. Press Read again to ask Vercel straight away.</li>
-            <li><strong>Settings made on purpose</strong> lists each setting with what it does, why it was set, where it is changed and when.</li>
+            <li><strong>Rules</strong>: what is switched on in Vercel now (read live, so it is what is really on), then each setting made on purpose with what it does, why, where it is changed and when.</li>
+            <li><strong>Scheduled jobs</strong>: everything that runs by itself on a timetable, from the live website check and supplier price lists to backups and the reminders in Robert&apos;s Claude app, with when it runs and when it last ran.</li>
+            <li><strong>Website check</strong>: the latest hourly check of the website, page by page, as a visitor and as a signed-in customer. Press Check now to run it straight away.</li>
           </ul>
 
           <h4>Things to know</h4>
-          <p>Every new setting of this kind is added to this list as part of the same change. You can also ask Tera &quot;what rules are in place?&quot; or &quot;why are scrapers blocked?&quot;.</p>
+          <p>Every new setting, scheduled job or reminder is added here as part of the same change that makes it. You can also ask Tera &quot;what rules are in place?&quot; or &quot;why are scrapers blocked?&quot;.</p>
         </AdminHelpIcon>
       </h1>
 
-      <p className="lead">Every rule and setting that keeps the website safe and cheap to run, what it does and why.</p>
+      <p className="lead">Every rule, setting and scheduled job that keeps the website safe, working and cheap to run.</p>
 
       <AdminPlatformRules />
     </AdminShell>
