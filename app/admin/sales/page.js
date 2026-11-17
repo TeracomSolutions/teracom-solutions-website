@@ -25,9 +25,14 @@ export default async function AdminSalesPage() {
     <AdminShell>
       <AdminSalesTabs />
       <h1 className="admin-heading">Sales</h1>
-      <p className="lead">What was sold, to whom, and what it earned, from live orders only. Test and simulated orders are never counted.</p>
+      <p className="lead">Live orders only; test and simulated orders are never counted. Click any panel for its full figures.</p>
       <AdminSalesDashboard />
-      <AdminSalesCarts />
+      <details id="sales-carts" className="sales-detail">
+        <summary>Carts and unfinished checkouts <span className="admin-muted">saved carts, products left behind, expired and failed checkouts, recording switches</span></summary>
+        <div className="sales-detail-body">
+          <AdminSalesCarts />
+        </div>
+      </details>
     </AdminShell>
   );
 }
