@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import AdminBars from '@/components/AdminBars';
+import AdminSalesSnapshot from '@/components/AdminSalesSnapshot';
 import { PRESETS, COMPARISONS, dollars, kpiCards, seriesForBars, toCsv, summaryQuery } from '@/lib/salesView';
 import { formatDateTime } from '@/lib/adminFormat';
 
@@ -88,6 +89,14 @@ export default function AdminSalesDashboard() {
   const handlePageChange = (newPage) => {
     setPage(newPage);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // A snapshot panel was clicked: open its detail section and bring it into view.
+  const openDetail = (id) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.open = true;
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
   // Download CSV function
@@ -258,35 +267,38 @@ export default function AdminSalesDashboard() {
 
   return (
     <div>
-      {/* Filter bar */}
-      <div className="admin-card">
-        <h3 className="admin-heading">Filter</h3>
-        <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-          <select name="range" value={range} onChange={handleFilterChange} className="admin-select">
+      {/* Period, comparison and export: one bar above the snapshot */}
+      <div className="snap-bar">
+        <div className="snap-filters">
+          <select name="range" value={range} onChange={handleFilterChange} className="admin-select" aria-label="Period">
             {PRESETS.map(preset => (
               <option key={preset.key} value={preset.key}>{preset.label}</option>
             ))}
           </select>
-
           {range === 'custom' && (
             <>
-              <input type="date" name="start" value={start} onChange={handleFilterChange} />
-              <input type="date" name="end" value={end} onChange={handleFilterChange} />
+              <input type="date" name="start" value={start} onChange={handleFilterChange} aria-label="From" />
+              <input type="date" name="end" value={end} onChange={handleFilterChange} aria-label="To" />
+              <button type="button" className="btn btn-primary btn-sm" onClick={handleShowClick}>Show</button>
             </>
           )}
-
-          {range === 'custom' && (
-            <button type="button" className="btn btn-primary btn-sm" onClick={handleShowClick}>Show</button>
-          )}
-
-          <select name="compare" value={compare} onChange={handleCompareChange} className="admin-select">
+          <select name="compare" value={compare} onChange={handleCompareChange} className="admin-select" aria-label="Compare with">
             {COMPARISONS.map(comp => (
               <option key={comp.key} value={comp.key}>{comp.label}</option>
             ))}
           </select>
         </div>
+        <button type="button" className="btn btn-primary btn-sm" onClick={() => downloadCsv(generateOrdersCsv(), 'sales-orders.csv')}>
+          Export orders CSV
+        </button>
       </div>
 
+      <AdminSalesSnapshot summary={summary} orders={orders} openDetail={openDetail} />
+
+      <h2 className="sales-details-title">Details</h2>
+      <details id="sales-figures" className="sales-detail">
+        <summary>All figures and charts <span className="admin-muted">margin, discounts, freight, new and returning orders, charts as tables</span></summary>
+        <div className="sales-detail-body">
       {/* KPI Cards */}
       {kpiData.length > 0 && (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px' }}>
@@ -332,6 +344,12 @@ export default function AdminSalesDashboard() {
         </>
       )}
 
+        </div>
+      </details>
+
+      <details id="sales-breakdowns" className="sales-detail">
+        <summary>Best sellers and where sales came from <span className="admin-muted">products, brands, categories, suppliers, states, coupons, freight, customers, industries, leads</span></summary>
+        <div className="sales-detail-body sales-detail-grid">
       {/* Tables */}
       {summary.top && (
         <>
@@ -681,6 +699,12 @@ export default function AdminSalesDashboard() {
         </>
       )}
 
+        </div>
+      </details>
+
+      <details id="sales-orders" className="sales-detail">
+        <summary>All orders in the period <span className="admin-muted">search, pages and CSV</span></summary>
+        <div className="sales-detail-body">
       {/* Orders Table */}
       <div className="admin-card">
         <h3 className="admin-heading">Orders</h3>
@@ -754,6 +778,9 @@ export default function AdminSalesDashboard() {
           </div>
         </div>
       </div>
+
+        </div>
+      </details>
 
       {/* Not tracked */}
       {summary.not_tracked && summary.not_tracked.length > 0 && (
