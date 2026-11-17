@@ -90,7 +90,17 @@ const SECTIONS = [
     ],
   },
   {
-    title: '8. Contact us',
+    title: '8. Teracom AI: platform improvement information',
+    body: [
+      'This section applies to organisations that use the Teracom AI platform. It is also clause 4.13 of Schedule 4 of our Terms and Conditions of Trade.',
+      "To keep improving Teracom AI for every customer, your Teracom AI system sends Teracom performance information about its departments and digital workers. This includes counts and scores (for example how often a worker's suggested actions are approved, how much its drafts are edited, how often it hands work back to a person, errors and response times), the type of configuration changes made (for example that a knowledge source was added, but not what it contains), and the versions of the department packs installed.",
+      'It does not include your documents, records, emails, conversations, the text of your instructions, your knowledge sources or files, or the names of your people or contacts.',
+      "Teracom uses this information only to measure and improve Teracom AI's departments and digital workers, to test improvements before they are released, and to show you how your departments compare with anonymous benchmarks. Figures from different customers are only ever combined in groups of at least three organisations, and one customer's figures are never shown to another.",
+      'Sending this information is part of the Teracom AI service.',
+    ],
+  },
+  {
+    title: '9. Contact us',
     body: [
       'Teracom Solutions Pty Ltd, 1B Yazaki Way, Carrum Downs VIC 3201, Australia.',
       <>
@@ -100,7 +110,7 @@ const SECTIONS = [
     ],
   },
   {
-    title: '9. Changes to this policy',
+    title: '10. Changes to this policy',
     body: ['We may update this policy from time to time; the current version is always on this page.'],
   },
 ];
@@ -111,7 +121,7 @@ export default function Privacy() {
       icon={ShieldCheck}
       title="Privacy Policy"
       lead="How Teracom Solutions Pty Ltd handles personal information collected through this website."
-      updated="3 November 2026"
+      updated="17 November 2026"
       highlights={HIGHLIGHTS}
       sections={SECTIONS}
     />

@@ -4279,3 +4279,10 @@ html.reveal-ready .section-sticky[data-reveal].is-revealed { transform:none; }
 .rules-status.is-bad { border-color:rgba(239,68,68,.6); background:rgba(239,68,68,.08); }
 .rules-pill.is-bad { margin-left:8px; border-color:rgba(239,68,68,.6); color:#ef4444; }
 .rules-row-bad td { color:#fca5a5; }
+
+/* Printing the terms (and the PDF in public/legal, which is this page printed to A4): the document only, without
+   the breadcrumb, contents list and buttons, as the v3.3 and v3.4 PDFs were. */
+@media print {
+  .terms-page .breadcrumbs, .terms-page .terms-contents, .terms-page .terms-actions { display:none !important; }
+  .terms-page .terms-layout { display:block; margin-top:24px; }
+}
