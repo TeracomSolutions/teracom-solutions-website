@@ -122,7 +122,7 @@ export default function ComparisonTable({ comparison }) {
 
       {fits ? null : <p className="cmp-swipe print-hide">Scroll sideways for more products →</p>}
       <div ref={box} className={fits ? 'cmp-scroll fits' : 'cmp-scroll'} role="region" aria-label={`${comparison.title} table`} tabIndex={fits ? undefined : 0}>
-        <table className="cmp-table" style={{ minWidth: `${150 + columns.length * 165}px` }}>
+        <table className="cmp-table" style={{ minWidth: `${140 + columns.length * 155}px` }}>
           <thead>
             <tr>
               <th scope="col" className="cmp-rowhead"><span className="sr-only">Feature</span></th>

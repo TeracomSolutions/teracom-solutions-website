@@ -4381,7 +4381,7 @@ html.reveal-ready .section-sticky[data-reveal].is-revealed { transform:none; }
 
 /* Resources > Product comparisons (components/ComparisonTable.js) */
 .cmp-section { padding-top: 40px; }
-.cmp-container { max-width: 1440px; }
+.cmp-container { width: min(1440px, 100% - 44px); max-width: none; }
 .cmp-controls { display:grid; gap:14px; margin-bottom:18px; }
 .cmp-controls fieldset { border:1px solid rgba(255,255,255,.12); border-radius:14px; padding:12px 14px; margin:0; min-width:0; }
 .cmp-controls legend { padding:0 6px; font-weight:700; font-size:14px; }
