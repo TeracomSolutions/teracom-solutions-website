@@ -4446,3 +4446,4 @@ html.reveal-ready .section-sticky[data-reveal].is-revealed { transform:none; }
 .cmpa-fit { display:flex; flex-wrap:wrap; gap:10px 16px; align-items:center; }
 .cmpa-fit > span { min-width:160px; font-weight:600; }
 @media (max-width:900px) { .cmpa-fact { grid-template-columns:1fr; } }
+.cmp-pick-all { display:flex; gap:8px; width:100%; margin-bottom:4px; }
