@@ -25,6 +25,7 @@ import {
   FolderOpen,
   Gauge,
   BrainCircuit,
+  Building2,
 } from 'lucide-react';
 
 import AdminShell from '@/components/AdminShell';
@@ -157,6 +158,13 @@ const AREAS = [
     text: 'What the Assistant and Ask Tera remember, how fast it grows and how quickly they answer.',
     icon: BrainCircuit,
     hue: '#f472b6',
+  },
+  {
+    href: '/admin/business-profile',
+    title: 'Business profile',
+    text: 'Who this website belongs to: names, ABN, what the business does, contact and alert emails, logo, assistant name, time zone and tax. Everything else reads from it.',
+    icon: Building2,
+    hue: '#a855f7',
   },
   {
     href: '/admin/connections',

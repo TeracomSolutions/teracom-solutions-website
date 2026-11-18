@@ -63,7 +63,7 @@ export default function AdminTimeZone({ initial, zones, common }) {
       <div>
         <h2 className="admin-subheading">Time zone</h2>
         <p className="admin-muted">
-          Every time in the console and in the Assistant&apos;s answers is shown in this zone, with its name beside it. The server itself keeps all times in UTC, so changing this never moves anything already recorded or scheduled (for example, article publishing slots stay on Melbourne time).
+          Every time in the console and in the Assistant&apos;s answers is shown in this zone, with its name beside it. The backend follows it too: sales days, posting and article slots, business hours for outreach emails and the times in emails. The server keeps every moment in UTC, so changing it never moves anything already recorded.
         </p>
         <p>
           Now in <strong>{current.zone.replace(/_/g, ' ')}</strong>: {clockText(current.now, current.zone)} ({current.offset})
