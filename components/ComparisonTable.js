@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Check, ExternalLink, RotateCcw } from 'lucide-react';
 
 // Resources > Product comparisons (Robert, 19 November 2026): competing products side by side, every fact from
@@ -46,6 +46,24 @@ export default function ComparisonTable({ comparison }) {
   const best = asked && columns.length ? Math.max(...columns.map((p) => scores[p.id].score)) : 0;
   const groups = group === 'all' ? template.groups : template.groups.filter((g) => g.id === group);
   const checked = formatChecked(comparison.checked_at);
+
+  // One scroll for the whole page (Robert, 19 November 2026: not "window in window"). When every column fits, the
+  // table sits flat in the page and the product names stay under the site header as you scroll down; when it is
+  // wider than the screen it only scrolls sideways.
+  const box = useRef(null);
+  const [fits, setFits] = useState(true);
+  useEffect(() => {
+    const el = box.current;
+    if (!el || typeof ResizeObserver === 'undefined') return undefined;
+    const check = () => {
+      const table = el.querySelector('table');
+      setFits(!table || table.scrollWidth <= el.clientWidth + 1);
+    };
+    check();
+    const watch = new ResizeObserver(check);
+    watch.observe(el);
+    return () => watch.disconnect();
+  }, [shown]);
 
   function toggle(id) {
     setShown((s) => {
@@ -102,8 +120,9 @@ export default function ComparisonTable({ comparison }) {
         </label>
       </div>
 
-      <div className="cmp-scroll" role="region" aria-label={`${comparison.title} table`} tabIndex={0}>
-        <table className="cmp-table">
+      {fits ? null : <p className="cmp-swipe print-hide">Scroll sideways for more products →</p>}
+      <div ref={box} className={fits ? 'cmp-scroll fits' : 'cmp-scroll'} role="region" aria-label={`${comparison.title} table`} tabIndex={fits ? undefined : 0}>
+        <table className="cmp-table" style={{ minWidth: `${150 + columns.length * 165}px` }}>
           <thead>
             <tr>
               <th scope="col" className="cmp-rowhead"><span className="sr-only">Feature</span></th>
