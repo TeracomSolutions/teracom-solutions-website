@@ -7,6 +7,8 @@ import { Check, ExternalLink, RotateCcw } from 'lucide-react';
 // the maker's own website with a link to it. The table, rows and Help me choose questions come from the backend
 // (services/comparisons.py), which checks each product against its maker's website every week.
 
+const FIRST_SHOWN = 8;
+
 export function fitScore(product, answers, questions) {
   let score = 0;
   let of = 0;
@@ -33,7 +35,8 @@ export function formatChecked(iso) {
 export default function ComparisonTable({ comparison }) {
   const { products, template } = comparison;
   const questions = template.questions || [];
-  const [shown, setShown] = useState(() => products.map((p) => p.id));
+  // Big comparisons (20 camera brands) open with the first eight; the rest are a tick away.
+  const [shown, setShown] = useState(() => products.slice(0, FIRST_SHOWN).map((p) => p.id));
   const [answers, setAnswers] = useState({});
   const [group, setGroup] = useState('all');
 
@@ -77,6 +80,12 @@ export default function ComparisonTable({ comparison }) {
       <div className="cmp-controls print-hide">
         <fieldset className="cmp-pick">
           <legend>Compare</legend>
+          {products.length > FIRST_SHOWN ? (
+            <span className="cmp-pick-all">
+              <button type="button" className="btn btn-secondary btn-sm" onClick={() => setShown(products.map((p) => p.id))}>Show all {products.length}</button>
+              <button type="button" className="btn btn-secondary btn-sm" onClick={() => setShown(products.slice(0, FIRST_SHOWN).map((p) => p.id))}>First {FIRST_SHOWN}</button>
+            </span>
+          ) : null}
           {products.map((p) => {
             const on = shown.includes(p.id);
             return (
