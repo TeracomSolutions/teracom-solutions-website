@@ -4395,13 +4395,19 @@ html.reveal-ready .section-sticky[data-reveal].is-revealed { transform:none; }
 .cmp-questions label, .cmp-section-pick { display:grid; gap:5px; font-size:13px; font-weight:600; }
 .cmp-section-pick { max-width:320px; }
 .cmp-help .btn { justify-self:start; }
-.cmp-scroll { overflow:auto; max-height:80vh; border:1px solid rgba(255,255,255,.12); border-radius:14px; }
+.cmp-scroll { overflow-x:auto; overflow-y:hidden; scrollbar-width:thin; scrollbar-color:#ff4b4b rgba(255,255,255,.06); padding-bottom:6px; }
+.cmp-scroll::-webkit-scrollbar { height:8px; }
+.cmp-scroll::-webkit-scrollbar-track { background:rgba(255,255,255,.06); border-radius:8px; }
+.cmp-scroll::-webkit-scrollbar-thumb { background:#ff4b4b; border-radius:8px; }
+.cmp-scroll.fits { overflow:visible; padding-bottom:0; }
+.cmp-scroll.fits .cmp-table thead th { top:72px; }
+.cmp-swipe { margin:0 0 8px; font-size:13px; color:#a3a3a3; }
 .cmp-scroll:focus-visible { outline:2px solid #ff4b4b; }
-.cmp-table { border-collapse:separate; border-spacing:0; width:100%; min-width:960px; font-size:14px; line-height:1.45; }
+.cmp-table { border-collapse:separate; border-spacing:0; width:100%; font-size:14px; line-height:1.45; }
 .cmp-table th, .cmp-table td { padding:10px 12px; text-align:left; vertical-align:top; border-bottom:1px solid rgba(255,255,255,.08); }
-.cmp-table thead th { position:sticky; top:0; background:#141414; z-index:2; min-width:180px; }
-.cmp-table .cmp-rowhead { position:sticky; left:0; background:#101010; z-index:1; min-width:140px; max-width:170px; font-weight:600; color:#cfcfcf; }
-.cmp-table thead .cmp-rowhead { z-index:3; background:#141414; }
+.cmp-table thead th { position:sticky; top:0; background:#0d0d0d; z-index:2; border-bottom:2px solid rgba(255,75,75,.5); }
+.cmp-table .cmp-rowhead { position:sticky; left:0; background:#0d0d0d; z-index:1; min-width:140px; max-width:170px; font-weight:600; color:#cfcfcf; }
+.cmp-table thead .cmp-rowhead { z-index:3; background:#0d0d0d; }
 .cmp-name { display:block; font-weight:800; color:#fff; }
 .cmp-maker { display:block; font-size:12px; color:#a3a3a3; font-weight:500; }
 .cmp-fit { display:inline-block; margin-top:6px; font-size:12px; padding:2px 8px; border-radius:999px; background:rgba(255,255,255,.08); font-weight:600; }
@@ -4412,9 +4418,10 @@ html.reveal-ready .section-sticky[data-reveal].is-revealed { transform:none; }
 .cmp-source { display:inline-flex; margin-left:5px; color:#a3a3a3; vertical-align:middle; }
 .cmp-source:hover, .cmp-source:focus-visible { color:#ff4b4b; }
 .cmp-note { margin-top:12px; }
-@media (max-width:640px) { .cmp-table { font-size:13px; } .cmp-table thead th { min-width:160px; } .cmp-table .cmp-rowhead { min-width:110px; } }
+@media (max-width:640px) { .cmp-table { font-size:13px; } .cmp-table .cmp-rowhead { min-width:110px; } }
 @media print {
-  .cmp-scroll { overflow:visible; max-height:none; border:0; }
+  .cmp-scroll { overflow:visible; padding:0; }
+  .cmp-table { min-width:0 !important; }
   .cmp-table { min-width:0; font-size:8px; }
   .cmp-table thead th, .cmp-table .cmp-rowhead, .cmp-group th { position:static; background:none; color:#000; }
   .cmp-name { color:#000; }
