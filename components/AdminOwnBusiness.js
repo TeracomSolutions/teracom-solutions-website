@@ -40,10 +40,22 @@ function Field({ field, value, onChange, lists }) {
       </label>
     );
   }
+  if (field.kind === 'colour') {
+    return (
+      <label htmlFor={id}>
+        {field.label}
+        <span className="bp-colour">
+          <input type="color" aria-label={`${field.label} picker`} value={/^#[0-9a-f]{6}$/i.test(value || '') ? value : '#000000'} onChange={(e) => onChange(e.target.value)} />
+          <input id={id} type="text" value={value || ''} onChange={(e) => onChange(e.target.value)} placeholder="#ff1717" />
+        </span>
+        {help}
+      </label>
+    );
+  }
   return (
     <label htmlFor={id} className={field.name === 'description' ? 'bp-wide' : undefined}>
       {field.label}
-      <input id={id} type={field.kind === 'email' ? 'email' : 'text'} inputMode={field.kind === 'number' ? 'decimal' : undefined}
+      <input id={id} type={field.kind === 'email' ? 'email' : field.kind === 'url' ? 'url' : 'text'} inputMode={field.kind === 'number' ? 'decimal' : undefined}
         value={value ?? ''} onChange={(e) => onChange(e.target.value)} />
       {help}
     </label>
@@ -73,14 +85,15 @@ function Taxes({ value, onChange }) {
   );
 }
 
-function Logo({ src, onUpload, busy }) {
+function Picture({ field, src, onUpload, busy }) {
+  const what = field.label.toLowerCase();
   return (
     <div className="bp-wide bp-logo">
-      <span className="bp-label">Logo <span className="admin-muted">PNG, JPG or WebP, up to 2 MB.</span></span>
+      <span className="bp-label">{field.label} <span className="admin-muted">{field.help}</span></span>
       <div className="bp-logo-row">
-        {src ? <img src={src} alt="Business logo" /> : <span className="admin-muted">No logo yet.</span>}
+        {src ? <img src={src} alt={field.label} className={field.name === 'favicon_url' ? 'bp-favicon' : undefined} /> : <span className="admin-muted">No {what} yet.</span>}
         <label className="btn btn-secondary btn-sm">
-          <Upload size={14} aria-hidden="true" /> {busy ? 'Uploading…' : src ? 'Replace logo' : 'Upload logo'}
+          <Upload size={14} aria-hidden="true" /> {busy ? 'Uploading…' : src ? `Replace ${what}` : `Upload ${what}`}
           <input type="file" accept="image/png,image/jpeg,image/webp" hidden disabled={busy}
             onChange={(e) => { const f = e.target.files?.[0]; e.target.value = ''; if (f) onUpload(f); }} />
         </label>
@@ -133,18 +146,18 @@ export default function AdminOwnBusiness() {
     }
   }
 
-  async function upload(file) {
-    setBusy('logo');
+  async function upload(fieldName, file) {
+    setBusy(fieldName);
     setError('');
     try {
       const fd = new FormData();
       fd.append('file', file, file.name || 'logo');
-      const res = await fetch('/api/admin/business-profile/logo', { method: 'POST', body: fd });
+      const res = await fetch(`/api/admin/business-profile/image?field=${encodeURIComponent(fieldName)}`, { method: 'POST', body: fd });
       const body = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(body.error || 'The logo was not uploaded.');
+      if (!res.ok) throw new Error(body.error || 'The picture was not uploaded.');
       setData(body);
-      setForm((f) => ({ ...f, logo_url: body.profile.logo_url }));
-      setSaved('Logo saved.');
+      setForm((f) => ({ ...f, [fieldName]: body.profile[fieldName] }));
+      setSaved('Picture saved.');
     } catch (err) {
       setError(err.message);
     } finally {
@@ -167,7 +180,10 @@ export default function AdminOwnBusiness() {
           <h2 className="admin-subheading">{group}</h2>
           <div className="admin-form bp-grid">
             {data.fields.filter((f) => f.group === group).map((field) => {
-              if (field.kind === 'logo') return <Logo key={field.name} src={data.logo_src} onUpload={upload} busy={busy === 'logo'} />;
+              if (field.kind === 'image') {
+                return <Picture key={field.name} field={field} src={(data.image_src || {})[field.name]}
+                  onUpload={(file) => upload(field.name, file)} busy={busy === field.name} />;
+              }
               if (field.kind === 'taxes') {
                 return <Taxes key={field.name} value={form.other_taxes} onChange={(v) => setForm({ ...form, other_taxes: v })} />;
               }

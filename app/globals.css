@@ -4375,3 +4375,6 @@ html.reveal-ready .section-sticky[data-reveal].is-revealed { transform:none; }
 .bp-actions { display:flex; flex-wrap:wrap; align-items:center; gap:14px; position:sticky; bottom:0; padding:12px 0; background:var(--bg, #050505); }
 .bp-time { margin-top:26px; }
 @media (max-width:640px) { .bp-tax-row { grid-template-columns:1fr 80px; } }
+.bp-logo-row img.bp-favicon { height:48px; width:48px; padding:4px; }
+.bp-colour { display:flex; gap:8px; align-items:center; }
+.bp-colour input[type=color] { width:46px; min-width:46px; height:40px; padding:2px; }
