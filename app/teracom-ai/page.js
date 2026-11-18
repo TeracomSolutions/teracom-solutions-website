@@ -6,7 +6,7 @@ import JsonLd from '@/components/JsonLd';
 import CatalogueDepartments from '@/components/CatalogueDepartments';
 import { CustomerJourney, DepartmentModel, PacksAndExtensions } from '@/components/DepartmentModel';
 import { fetchDepartmentCatalogue } from '@/lib/api/departmentCatalogue';
-import { AiComparison, OrganisationalMemory, SecurityTrust } from '@/components/PlatformSections';
+import { AiComparison, OrganisationalMemory, ResponsibleAi, SecurityTrust } from '@/components/PlatformSections';
 import { pageMetadata, SITE_ORIGIN, absoluteUrl } from '@/lib/seo';
 
 
@@ -158,7 +158,9 @@ export default async function TeracomAI() {
 
       <AiComparison alt />
 
-      <SecurityTrust detailed />
+      <ResponsibleAi />
+
+      <SecurityTrust detailed alt />
 
       <section className="section section-spacious">
         <div className="container">

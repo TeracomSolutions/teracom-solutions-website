@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import {
-  AI_SECURITY,
+  AI_SECURITY, RESPONSIBLE_AI,
   BUSINESS_OUTCOMES,
   GENERAL_AI_TRAITS,
   MEMORY_STEPS,
@@ -146,6 +146,32 @@ export function AiComparison({ alt = false }) {
 
 // The homepage shows the short list; /teracom-ai shows each point with
 // what it means.
+// Responsible AI on /teracom-ai: the governance engine, in plain words.
+export function ResponsibleAi({ alt = false }) {
+  return (
+    <section className={`section section-spacious${alt ? ' alt' : ''}`} id="responsible-ai">
+      <div className="container">
+        <div className="section-heading">
+          <span className="eyebrow">Responsible AI</span>
+          <h2>Powerful AI, governed by your rules.</h2>
+          <p>
+            Teracom AI is built around a governance engine. Every piece of AI work passes your organisation&rsquo;s
+            rules before it happens, your data goes only where you allow, and people stay in charge of what matters.
+          </p>
+        </div>
+        <ul className="trust-grid trust-grid-detail">
+          {RESPONSIBLE_AI.map((point) => (
+            <li key={point.title}>
+              <strong>{point.title}</strong>
+              <span>{point.text}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  );
+}
+
 export function SecurityTrust({ detailed = false, alt = false }) {
   return (
     <section className={`section section-spacious${alt ? ' alt' : ''}`} id="security">
