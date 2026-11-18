@@ -1,0 +1,25 @@
+import { revalidatePath, revalidateTag } from 'next/cache';
+import { NextResponse } from 'next/server';
+
+import { withAdminSession } from '@/lib/adminApi';
+import { backendFetch } from '@/lib/api/client';
+import { COMPARISONS_TAG } from '@/lib/comparisons';
+
+// Resources > Product comparisons (backend api/comparisons.py); the public pages pick changes up straight away.
+function refresh() {
+  revalidateTag(COMPARISONS_TAG);
+  revalidatePath('/resources/comparisons', 'layout');
+}
+
+async function body(req) {
+  const data = await req.json().catch(() => null);
+  return data && typeof data === 'object' && !Array.isArray(data) ? data : {};
+}
+
+export const GET = withAdminSession(async ({ token }) => NextResponse.json(await backendFetch('/staff/comparisons', { token })));
+
+export const POST = withAdminSession(async ({ req, token }) => {
+  const saved = await backendFetch('/staff/comparisons', { method: 'POST', token, body: await body(req) });
+  refresh();
+  return NextResponse.json(saved);
+});

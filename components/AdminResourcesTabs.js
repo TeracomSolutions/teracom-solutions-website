@@ -9,6 +9,7 @@ const TABS = [
   { href: '/admin/resources', label: 'Documents' },
   { href: '/admin/resources/industry-news', label: 'Industry news' },
   { href: '/admin/resources/articles', label: 'Articles' },
+  { href: '/admin/resources/comparisons', label: 'Product comparisons' },
   { href: '/admin/resources/home-banner', label: 'Home banner' },
 ];
 
@@ -16,6 +17,7 @@ function activeTab(pathname) {
   if (pathname.startsWith('/admin/resources/industry-news')) return '/admin/resources/industry-news';
   if (pathname.startsWith('/admin/resources/articles')) return '/admin/resources/articles';
   if (pathname.startsWith('/admin/resources/home-banner')) return '/admin/resources/home-banner';
+  if (pathname.startsWith('/admin/resources/comparisons')) return '/admin/resources/comparisons';
   return '/admin/resources';
 }
 

@@ -11,6 +11,7 @@ import {
   LifeBuoy,
   Newspaper,
   PlayCircle,
+  Scale,
 } from 'lucide-react';
 import OrbitArt from '@/components/OrbitArt';
 import { resourcesSections } from '@/lib/resourcesSections';
@@ -30,6 +31,7 @@ const SECTION_ICONS = {
   'product-videos': Clapperboard,
   downloads: Download,
   'industry-news': Newspaper,
+  comparisons: Scale,
 };
 
 export default function Resources() {
