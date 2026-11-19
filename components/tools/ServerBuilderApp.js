@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useProjectState } from '@/components/tools/ToolProjectFrame';
 import {
-  baseOf, cagesFor, checks, defaults, driveFormsFor, partsCsv, partsList, partsText, powerEstimate, restore,
+  baseOf, baysFor, cagesFor, checks, defaults, driveFormsFor, partsCsv, partsList, partsText, powerEstimate, restore,
   socketsFor, storageSummary, suggestedAccessories,
 } from '@/lib/serverBuilderEngine';
 
@@ -86,7 +86,10 @@ export default function ServerBuilderApp({ models }) {
   const rows = partsList(model, state);
   const storage = storageSummary(model, state);
   const watts = powerEstimate(model, state);
-  const drives = list(model.drives).filter((d) => !forms.size || forms.has(d.form));
+  // Drives that fit the bays already there come first, so Add drives starts with one that fits.
+  const bays = baysFor(model, state);
+  const drives = list(model.drives).filter((d) => !forms.size || forms.has(d.form))
+    .sort((a, b) => (bays[a.form] ? 0 : 1) - (bays[b.form] ? 0 : 1));
   const suggested = new Set(suggestedAccessories(model, state));
   const otherKits = list(model.accessories).filter((a) => !suggested.has(a.part));
   const valid = list(model.memory_rules?.valid_counts_per_cpu);
