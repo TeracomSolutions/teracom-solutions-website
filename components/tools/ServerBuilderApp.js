@@ -193,7 +193,7 @@ export default function ServerBuilderApp({ models }) {
           hint={model.psu_rules?.notes} />
         <div className="field">
           <label htmlFor="sb-psuqty">Power supplies</label>
-          <select id="sb-psuqty" value={state.psuQty} onChange={(e) => set({ psuQty: Number(e.target.value) })}>
+          <select id="sb-psuqty" value={psuPair ? 1 : state.psuQty} onChange={(e) => set({ psuQty: Number(e.target.value) })}>
             {Array.from({ length: psuMax }, (_, i) => i + 1).map((n) => <option key={n} value={n}>{psuPair ? '1 (a redundant pair)' : `${n}${n === 2 ? ' (redundant)' : ''}`}</option>)}
           </select>
         </div>
@@ -234,8 +234,8 @@ export default function ServerBuilderApp({ models }) {
             <Link className="btn btn-secondary" href="/contact">Ask us for a quote</Link>
           </div>
           <p className="form-note">
-            Paste the parts list into your message and we&apos;ll price it. Options are from {model.maker}&apos;s {model.maker === 'Dell' ? 'Technical Guide and configurator' : 'QuickSpecs'}
-            ({model.quickspecs_version}), checked weekly. Need help with drive sizes? Try the{' '}
+            Paste the parts list into your message and we&apos;ll price it. Options are from {model.maker}&apos;s {model.maker === 'Dell' ? 'Technical Guide and configurator' : 'QuickSpecs'}{' '}
+            ({model.quickspecs_version}), {model.maker === 'Dell' ? 'checked by hand' : 'checked weekly'}. Need help with drive sizes? Try the{' '}
             <Link href="/tools/cctv-storage-calculator">CCTV storage calculator</Link>.
           </p>
         </div>
