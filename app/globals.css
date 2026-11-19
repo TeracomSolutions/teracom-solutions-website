@@ -4447,3 +4447,18 @@ html.reveal-ready .section-sticky[data-reveal].is-revealed { transform:none; }
 .cmpa-fit > span { min-width:160px; font-weight:600; }
 @media (max-width:900px) { .cmpa-fact { grid-template-columns:1fr; } }
 .cmp-pick-all { display:flex; gap:8px; width:100%; margin-bottom:4px; }
+
+/* Server builder (components/tools/ServerBuilderApp.js). */
+.sb .sb-hint { display:block; margin-top:6px; color:var(--muted); font-size:14px; line-height:1.45; }
+.sb .sb-row { grid-template-columns: minmax(0, 1fr) 120px auto; }
+.sb .sb-qty input { text-align:center; }
+.sb .sb-add { justify-self:start; }
+.sb .sb-kits, .sb .sb-rules { border:1px solid var(--line); border-radius:18px; padding:14px 18px; }
+.sb .sb-kits summary, .sb .sb-rules summary { cursor:pointer; font-weight:700; }
+.sb .sb-kit { display:flex; gap:10px; align-items:flex-start; margin:10px 0; font-size:15px; line-height:1.45; }
+.sb .sb-kit input { width:18px; height:18px; min-height:0; margin-top:3px; padding:0; flex:none; }
+.sb .sb-kit em { display:block; color:var(--muted); font-style:normal; font-size:13px; }
+.sb .sb-rules ul { margin:10px 0 0; padding-left:20px; color:var(--muted); line-height:1.5; }
+.sb .sb-part strong { font-size:1em; font-family:ui-monospace, SFMono-Regular, Menlo, monospace; }
+.sb .sb-actions { display:flex; flex-wrap:wrap; gap:10px; margin:14px 0; }
+@media (max-width: 640px) { .sb .sb-row { grid-template-columns: 1fr; } }
