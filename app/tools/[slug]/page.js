@@ -14,6 +14,7 @@ import BatteryStandbyCalculator from '@/components/tools/BatteryStandbyCalculato
 import VoltageDropCalculator from '@/components/tools/VoltageDropCalculator';
 import SitePlanDesigner from '@/components/tools/SitePlanDesigner';
 import RackPlanner from '@/rackplan/RackPlanner';
+import ServerBuilder from '@/components/tools/ServerBuilder';
 import ToolBrandBand from '@/components/tools/ToolBrandBand';
 import ToolSignInGate from '@/components/tools/ToolSignInGate';
 import ToolIcon, { ToolBackdrop } from '@/components/tools/ToolIcon';
@@ -47,6 +48,7 @@ const CUSTOM_CALCULATORS = {
   'voltage-drop-calculator': VoltageDropCalculator,
   'site-plan-designer': SitePlanDesigner,
   'data-rack-layout': RackPlanner,
+  'server-builder': ServerBuilder,
 };
 
 // Tools that keep their own saved file instead of adding results to the project report.

@@ -83,6 +83,7 @@ const TOOL_ICONS = {
   'projector-brightness-calculator': SunMedium,
   'pc-power-supply-calculator': Cpu,
   'cctv-recording-server-calculator': ServerCog,
+  'server-builder': Server,
   'virtual-server-calculator': Layers,
   'rack-size-heat-calculator': Server,
   'access-control-planner': DoorOpen,
