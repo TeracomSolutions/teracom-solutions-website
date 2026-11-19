@@ -15,7 +15,8 @@ const subscribe = () => () => {};
 const signedIn = () => hasCustomerMarker(document.cookie);
 const onServer = () => null;
 
-export default function ToolSignInGate({ path, title, children }) {
+// Product comparisons sit behind the same free account (Robert, 19 November 2026); they pass their own heading.
+export default function ToolSignInGate({ path, title, heading, children }) {
   const state = useSyncExternalStore(subscribe, signedIn, onServer);
   if (state === true) return children;
   const next = encodeURIComponent(path);
@@ -29,7 +30,7 @@ export default function ToolSignInGate({ path, title, children }) {
           <span className="tool-gate-icon">
             <Lock size={26} strokeWidth={2} aria-hidden="true" />
           </span>
-          <h2>Create a free account to use the {title}</h2>
+          <h2>{heading || `Create a free account to use the ${title}`}</h2>
           <p>
             All our design tools are free for Teracom members. It takes two minutes, and your account also gets you:
           </p>
