@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useProjectState } from '@/components/tools/ToolProjectFrame';
 import {
-  baseOf, baysFor, cagesFor, checks, defaults, driveFormsFor, partsCsv, partsList, partsText, powerEstimate, restore,
+  baseOf, baysFor, cagesFor, checks, defaults, driveFormsFor, keyOf, psuChoices, partsCsv, partsList, partsText, powerEstimate, restore,
   socketsFor, storageSummary, suggestedAccessories,
 } from '@/lib/serverBuilderEngine';
 
@@ -14,13 +14,13 @@ import {
 const list = (v) => (Array.isArray(v) ? v : []);
 const opt = (item) => item.part ? `${item.label} (${item.part})` : item.label;
 
-function Select({ id, label, value, onChange, items, none, keyOf = (i) => i.part, hint }) {
+function Select({ id, label, value, onChange, items, none, keyFn = keyOf, hint }) {
   return (
     <div className="field">
       <label htmlFor={id}>{label}</label>
       <select id={id} value={value} onChange={(e) => onChange(e.target.value)}>
         {none ? <option value="">{none}</option> : null}
-        {items.map((i) => <option key={keyOf(i)} value={keyOf(i)}>{opt(i)}</option>)}
+        {items.map((i) => <option key={keyFn(i)} value={keyFn(i)}>{opt(i)}</option>)}
       </select>
       {hint ? <small className="sb-hint">{hint}</small> : null}
     </div>
@@ -38,7 +38,7 @@ function Rows({ title, rows, items, onChange, addLabel, empty }) {
           <div className="field">
             <label htmlFor={`${title}-${n}`}>{title.replace(/s$/, '')} {n + 1}</label>
             <select id={`${title}-${n}`} value={row.part} onChange={(e) => update(n, 'part', e.target.value)}>
-              {items.map((i) => <option key={i.part} value={i.part}>{opt(i)}</option>)}
+              {items.map((i) => <option key={keyOf(i)} value={keyOf(i)}>{opt(i)}</option>)}
             </select>
           </div>
           <div className="field sb-qty">
@@ -50,7 +50,7 @@ function Rows({ title, rows, items, onChange, addLabel, empty }) {
         </div>
       ))}
       {items.length ? (
-        <button type="button" className="btn btn-secondary sb-add" onClick={() => onChange([...rows, { part: items[0].part, qty: 1 }])}>{addLabel}</button>
+        <button type="button" className="btn btn-secondary sb-add" onClick={() => onChange([...rows, { part: keyOf(items[0]), qty: 1 }])}>{addLabel}</button>
       ) : null}
     </>
   );
@@ -91,10 +91,13 @@ export default function ServerBuilderApp({ models }) {
   const drives = list(model.drives).filter((d) => !forms.size || forms.has(d.form))
     .sort((a, b) => (bays[a.form] ? 0 : 1) - (bays[b.form] ? 0 : 1));
   const suggested = new Set(suggestedAccessories(model, state));
-  const otherKits = list(model.accessories).filter((a) => !suggested.has(a.part));
+  const otherKits = list(model.accessories).filter((a) => !suggested.has(keyOf(a)));
   const valid = list(model.memory_rules?.valid_counts_per_cpu);
   const memCounts = valid.length ? valid : [1, 2, 4, 8];
-  const psuMax = Math.max(1, Number(base?.psu_slots) || Number(model.psu_rules?.max) || 1);
+  // A Dell power supply line can already be a redundant pair (count 2): then it is ordered once.
+  const psuItem = list(model.psus).find((p) => keyOf(p) === state.psuPart);
+  const psuPair = Number(psuItem?.count) >= 2;
+  const psuMax = psuPair ? 1 : psuChoices(model, base);
 
   const changeModel = (next) => {
     const m = models.find((x) => x.slug === next);
@@ -124,10 +127,21 @@ export default function ServerBuilderApp({ models }) {
   return (
     <div className="section calculator-section">
       <div className="container calculator sb">
-        <Select id="sb-model" label="Server" value={model.slug} onChange={changeModel} keyOf={(m) => m.slug} hint={model.summary}
-          items={models.map((m) => ({ slug: m.slug, label: `${m.maker} ${m.model}${m.form ? ` (${m.form})` : ''}` }))} />
+        <div className="field">
+          <label htmlFor="sb-model">Server</label>
+          <select id="sb-model" value={model.slug} onChange={(e) => changeModel(e.target.value)}>
+            {[...new Set(models.map((m) => m.maker))].map((maker) => (
+              <optgroup key={maker} label={maker}>
+                {models.filter((m) => m.maker === maker).map((m) => (
+                  <option key={m.slug} value={m.slug}>{m.maker} {m.model}{m.form ? ` (${m.form})` : ''}</option>
+                ))}
+              </optgroup>
+            ))}
+          </select>
+          {model.summary ? <small className="sb-hint">{model.summary}</small> : null}
+        </div>
         <Select id="sb-base" label="Chassis" value={state.baseId} onChange={(v) => set({ baseId: v, cages: {}, drives: [] })}
-          items={list(model.bases)} keyOf={(b) => b.id} hint={base?.notes} />
+          items={list(model.bases)} keyFn={(b) => b.id} hint={base?.notes} />
 
         <h2>Processor and memory</h2>
         <Select id="sb-cpu" label="Processor" value={state.cpuPart} onChange={(v) => set({ cpuPart: v })} items={list(model.cpus)} />
@@ -150,12 +164,12 @@ export default function ServerBuilderApp({ models }) {
 
         <h2>Drive bays</h2>
         {cagesFor(model, base).length ? cagesFor(model, base).map((cage) => (
-          <div className="field" key={cage.part}>
-            <label htmlFor={`sb-cage-${cage.part}`}>{cage.label}</label>
-            <select id={`sb-cage-${cage.part}`} value={state.cages?.[cage.part] || 0}
-              onChange={(e) => set({ cages: { ...state.cages, [cage.part]: Number(e.target.value) } })}>
+          <div className="field" key={keyOf(cage)}>
+            <label htmlFor={`sb-cage-${keyOf(cage)}`}>{cage.label}</label>
+            <select id={`sb-cage-${keyOf(cage)}`} value={state.cages?.[keyOf(cage)] || 0}
+              onChange={(e) => set({ cages: { ...state.cages, [keyOf(cage)]: Number(e.target.value) } })}>
               <option value={0}>Not fitted</option>
-              <option value={1}>Fitted ({cage.part})</option>
+              <option value={1}>Fitted{cage.part ? ` (${cage.part})` : ''}</option>
             </select>
             {cage.notes ? <small className="sb-hint">{cage.notes}</small> : null}
           </div>
@@ -166,35 +180,36 @@ export default function ServerBuilderApp({ models }) {
 
         <h2>Storage and boot</h2>
         <Select id="sb-ctrl" label="Storage controller (RAID)" value={state.controller} onChange={(v) => set({ controller: v })}
-          items={list(model.controllers)} keyOf={(c) => c.part || c.label} none="None"
-          hint={list(model.controllers).find((c) => (c.part || c.label) === state.controller)?.notes} />
+          items={list(model.controllers)} keyFn={keyOf} none="None"
+          hint={list(model.controllers).find((c) => keyOf(c) === state.controller)?.notes} />
         <Select id="sb-boot" label="Boot device" value={state.boot} onChange={(v) => set({ boot: v })} items={list(model.boot)} none="None (boot from the drives)" />
 
         <Rows title="Network cards" rows={state.nics || []} items={list(model.nics)} onChange={(v) => set({ nics: v })}
           addLabel="Add a network card" empty="The server's own management port is always included. Add network cards for cameras and users." />
 
         <h2>Power and extras</h2>
-        <Select id="sb-psu" label="Power supply" value={state.psuPart} onChange={(v) => set({ psuPart: v })} items={list(model.psus)}
+        <Select id="sb-psu" label="Power supply" value={state.psuPart}
+          onChange={(v) => set({ psuPart: v, psuQty: Number(list(model.psus).find((p) => keyOf(p) === v)?.count) >= 2 ? 1 : state.psuQty })} items={list(model.psus)}
           hint={model.psu_rules?.notes} />
         <div className="field">
           <label htmlFor="sb-psuqty">Power supplies</label>
           <select id="sb-psuqty" value={state.psuQty} onChange={(e) => set({ psuQty: Number(e.target.value) })}>
-            {Array.from({ length: psuMax }, (_, i) => i + 1).map((n) => <option key={n} value={n}>{n}{n === 2 ? ' (redundant)' : ''}</option>)}
+            {Array.from({ length: psuMax }, (_, i) => i + 1).map((n) => <option key={n} value={n}>{psuPair ? '1 (a redundant pair)' : `${n}${n === 2 ? ' (redundant)' : ''}`}</option>)}
           </select>
         </div>
         {list(model.management).length ? <Select id="sb-mgmt" label="Remote management licence" value={state.management} onChange={(v) => set({ management: v })} items={list(model.management)} none="Standard (no licence)" /> : null}
         {list(model.rails).length ? <Select id="sb-rails" label={/tower/i.test(model.form || '') ? 'Rack conversion' : 'Rail kit'} value={state.rails} onChange={(v) => set({ rails: v })} items={list(model.rails)} none="None" /> : null}
-        {list(model.support).filter((s) => s.part).length ? <Select id="sb-support" label="Support" value={state.support} onChange={(v) => set({ support: v })} items={list(model.support).filter((s) => s.part)} none="Standard warranty" /> : null}
+        {list(model.support).filter((s) => s.part || s.id).length ? <Select id="sb-support" label="Support" value={state.support} onChange={(v) => set({ support: v })} items={list(model.support).filter((s) => s.part || s.id)} none="Standard warranty" /> : null}
 
         {list(model.accessories).length ? (
           <details className="sb-kits" open={suggested.size > 0}>
             <summary>Kits and cables ({Object.values(state.extras || {}).filter(Boolean).length} chosen)</summary>
             <p className="sb-hint">Kits your choices call for are ticked. {model.maker}&apos;s own configurator confirms the exact cables when we quote.</p>
-            {[...list(model.accessories).filter((a) => suggested.has(a.part)), ...otherKits].map((a) => (
-              <label className="sb-kit" key={a.part}>
-                <input type="checkbox" checked={!!state.extras?.[a.part]}
-                  onChange={(e) => setState((s) => ({ ...s, extras: { ...s.extras, [a.part]: e.target.checked } }))} />
-                <span><strong>{a.part}</strong> {a.label}{a.needed_when ? <em> {a.needed_when}</em> : null}</span>
+            {[...list(model.accessories).filter((a) => suggested.has(keyOf(a))), ...otherKits].map((a) => (
+              <label className="sb-kit" key={keyOf(a)}>
+                <input type="checkbox" checked={!!state.extras?.[keyOf(a)]}
+                  onChange={(e) => setState((s) => ({ ...s, extras: { ...s.extras, [keyOf(a)]: e.target.checked } }))} />
+                <span>{a.part ? <strong>{a.part}</strong> : null} {a.label}{a.needed_when ? <em> {a.needed_when}</em> : null}</span>
               </label>
             ))}
           </details>
@@ -211,7 +226,7 @@ export default function ServerBuilderApp({ models }) {
 
           <h2>Parts list</h2>
           {rows.map((r) => (
-            <p key={r.part} className="sb-part">{r.group}: <strong>{r.qty} x {r.part}</strong> {r.label}</p>
+            <p key={r.key} className="sb-part">{r.group}: <strong>{r.qty} x {r.part || 'option'}</strong> {r.label}</p>
           ))}
           <div className="sb-actions print-hide">
             <button type="button" className="btn btn-primary" onClick={copy}>{copied ? 'Copied' : 'Copy parts list'}</button>
@@ -219,7 +234,7 @@ export default function ServerBuilderApp({ models }) {
             <Link className="btn btn-secondary" href="/contact">Ask us for a quote</Link>
           </div>
           <p className="form-note">
-            Paste the parts list into your message and we&apos;ll price it. Options are from {model.maker}&apos;s QuickSpecs
+            Paste the parts list into your message and we&apos;ll price it. Options are from {model.maker}&apos;s {model.maker === 'Dell' ? 'Technical Guide and configurator' : 'QuickSpecs'}
             ({model.quickspecs_version}), checked weekly. Need help with drive sizes? Try the{' '}
             <Link href="/tools/cctv-storage-calculator">CCTV storage calculator</Link>.
           </p>
@@ -231,7 +246,7 @@ export default function ServerBuilderApp({ models }) {
             <ul>{list(model.rules).map((r) => <li key={r}>{r}</li>)}</ul>
           </details>
         ) : null}
-        <p className="sb-hint">{model.maker === 'HPE' ? 'HPE and ProLiant are trademarks of Hewlett Packard Enterprise.' : `${model.maker} is a trademark of its owner.`} Prices are not shown; we quote each build.</p>
+        <p className="sb-hint">{model.maker === 'HPE' ? 'HPE and ProLiant are trademarks of Hewlett Packard Enterprise.' : model.maker === 'Dell' ? 'Dell and PowerEdge are trademarks of Dell Inc.' : ''} Prices are not shown; we quote each build.</p>
       </div>
     </div>
   );
