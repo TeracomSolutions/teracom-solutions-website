@@ -6,6 +6,7 @@ import AskTeraNudge from '@/components/AskTeraNudge';
 import ComparisonTable from '@/components/ComparisonTable';
 import ResourceHero from '@/components/ResourceHero';
 import ToolPrintButton from '@/components/tools/ToolPrintButton';
+import ToolSignInGate from '@/components/tools/ToolSignInGate';
 import { getComparison, getComparisons } from '@/lib/comparisons';
 import { pageMetadata } from '@/lib/seo';
 
@@ -43,7 +44,13 @@ export default async function ComparisonPage(props) {
       </ResourceHero>
       <section className="section cmp-section">
         <div className="container cmp-container">
-          <ComparisonTable comparison={comparison} />
+          <ToolSignInGate
+            path={`/resources/comparisons/${comparison.slug}`}
+            title={comparison.title}
+            heading={`Create a free account to see the full ${comparison.title}`}
+          >
+            <ComparisonTable comparison={comparison} />
+          </ToolSignInGate>
           <p>
             Choosing a system for your site? <Link href="/contact">Talk to our team</Link> and we&apos;ll help you pick
             and price the right one.
