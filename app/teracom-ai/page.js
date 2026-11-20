@@ -88,7 +88,7 @@ export default async function TeracomAI() {
 
       {catalogue.source === 'live' ? <CatalogueDepartments entries={catalogue.entries} alt /> : <DepartmentModel alt />}
 
-      <section className="section savings-cta">
+      <section className="section savings-cta" id="savings">
         <div className="container">
           <div className="section-heading">
             <span className="eyebrow">Savings</span>
@@ -123,7 +123,7 @@ export default async function TeracomAI() {
 
       <CustomerJourney />
 
-      <section className="section section-spacious">
+      <section className="section section-spacious" id="capabilities">
         <div className="container">
           <div className="section-heading">
             <span className="eyebrow">Live today</span>
