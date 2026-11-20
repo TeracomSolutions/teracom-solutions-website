@@ -1,6 +1,6 @@
 import ToolBrandBand from '@/components/tools/ToolBrandBand';
 import Link from 'next/link';
-import { ArrowRight, Bot, FileStack, HardDrive, Zap } from 'lucide-react';
+import { ArrowRight, Bot, Calculator, FileStack, HardDrive, Zap } from 'lucide-react';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import OrbitArt from '@/components/OrbitArt';
 import { CalculatorIcon } from '@/components/tools/ToolIcon';
@@ -52,6 +52,22 @@ export default async function Tools({ searchParams }) {
         </div>
         <Link className="btn btn-primary" href="/tools/project">
           Open the project report <ArrowRight size={16} strokeWidth={2} aria-hidden="true" />
+        </Link>
+      </div>
+
+      <div className="container tools-project-callout">
+        <span className="tools-project-callout-icon" aria-hidden="true">
+          <Calculator size={30} strokeWidth={1.6} />
+        </span>
+        <div>
+          <h2>Estimate a job and draft the proposal</h2>
+          <p>
+            Price a job from our store at your own price, add your labour and markup, and turn it into a proposal PDF in your
+            business name. Estimates are saved to your account.
+          </p>
+        </div>
+        <Link className="btn btn-primary" href="/tools/estimator">
+          Open the Estimator <ArrowRight size={16} strokeWidth={2} aria-hidden="true" />
         </Link>
       </div>
 

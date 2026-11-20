@@ -53,6 +53,7 @@ const staticRoutes = [
   { path: '/contact', changeFrequency: 'yearly', priority: 0.7 },
   { path: '/tools', changeFrequency: 'monthly', priority: 0.6 },
   { path: '/tools/project', changeFrequency: 'monthly', priority: 0.5 },
+  { path: '/tools/estimator', changeFrequency: 'monthly', priority: 0.6 },
   { path: '/about', changeFrequency: 'monthly', priority: 0.7 },
   { path: '/resources', changeFrequency: 'monthly', priority: 0.7 },
   { path: '/warranty', changeFrequency: 'yearly', priority: 0.4 },
