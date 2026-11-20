@@ -19,6 +19,8 @@ export default function AdminTimeZone({ initial, zones, common }) {
   const [error, setError] = useState('');
   const [saved, setSaved] = useState('');
   const [clock, setClock] = useState(null);
+  const [ntp, setNtp] = useState((initial.ntp_servers || []).join(', '));
+  const [ntpSaved, setNtpSaved] = useState('');
 
   const others = zones.filter((z) => !common.includes(z));
 
@@ -32,6 +34,24 @@ export default function AdminTimeZone({ initial, zones, common }) {
       if (!response.ok) throw new Error(result.error || 'Unable to save the time zone.');
       setCurrent(result);
       setSaved('Saved. Every page now shows times in this zone; reload a page that is already open.');
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setBusy('');
+    }
+  }
+
+  async function saveNtp() {
+    setBusy('ntp');
+    setError('');
+    setNtpSaved('');
+    try {
+      const servers = ntp.split(/[\s,]+/).map((s) => s.trim()).filter(Boolean);
+      const response = await fetch('/api/admin/time/ntp', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ servers }) });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(result.error || 'Unable to save the NTP servers.');
+      setNtp(result.ntp_servers.join(', '));
+      setNtpSaved('Saved. The next clock check asks these servers.');
     } catch (err) {
       setError(err.message);
     } finally {
@@ -59,7 +79,7 @@ export default function AdminTimeZone({ initial, zones, common }) {
     : '';
 
   return (
-    <div className="admin-card" style={{ display: 'grid', gap: 16, maxWidth: 720 }}>
+    <div className="admin-card bp-section bp-time-card">
       <div>
         <h2 className="admin-subheading">Time zone</h2>
         <p className="admin-muted">
@@ -69,8 +89,8 @@ export default function AdminTimeZone({ initial, zones, common }) {
           Now in <strong>{current.zone.replace(/_/g, ' ')}</strong>: {clockText(current.now, current.zone)} ({current.offset})
         </p>
         <label className="field-label" htmlFor="time-zone-select">Show times in</label>
-        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-          <select id="time-zone-select" value={choice} onChange={(e) => setChoice(e.target.value)} style={{ minWidth: 280 }}>
+        <div className="bp-inline">
+          <select id="time-zone-select" value={choice} onChange={(e) => setChoice(e.target.value)}>
             <optgroup label="Common">
               {common.map((z) => <option key={z} value={z}>{z.replace(/_/g, ' ')}</option>)}
             </optgroup>
@@ -87,10 +107,20 @@ export default function AdminTimeZone({ initial, zones, common }) {
 
       <div>
         <h2 className="admin-subheading">Server clock</h2>
-        <p className="admin-muted">Compares the website server&apos;s clock with an internet time source (NTP). A clock that is more than a second out can make scheduled posts, sign-in codes and logs disagree.</p>
-        <button type="button" className="btn" onClick={check} disabled={busy === 'clock'}>
-          {busy === 'clock' ? 'Checking…' : 'Check the clock'}
-        </button>
+        <p className="admin-muted">Compares the website server&apos;s clock with a time source (NTP). A clock that is more than a second out can make scheduled posts, sign-in codes and logs disagree.</p>
+        <label className="field-label" htmlFor="ntp-servers">NTP servers, first that answers is used</label>
+        <div className="bp-inline">
+          <input id="ntp-servers" type="text" value={ntp} onChange={(e) => setNtp(e.target.value)}
+            placeholder={(initial.ntp_default || []).join(', ')} />
+          <button type="button" className="btn btn-secondary" onClick={saveNtp} disabled={busy === 'ntp'}>
+            {busy === 'ntp' ? 'Saving…' : 'Save servers'}
+          </button>
+          <button type="button" className="btn btn-primary" onClick={check} disabled={busy === 'clock'}>
+            {busy === 'clock' ? 'Checking…' : 'Check the clock'}
+          </button>
+        </div>
+        <p className="admin-muted">Up to three, separated by commas: a name such as au.pool.ntp.org or an address such as the office router. Leave it empty for the defaults ({(initial.ntp_default || []).join(', ')}).</p>
+        {ntpSaved ? <p role="status">{ntpSaved}</p> : null}
         {clock ? (
           clock.source ? (
             <p role="status">
@@ -100,6 +130,11 @@ export default function AdminTimeZone({ initial, zones, common }) {
           ) : (
             <p className="form-error" role="alert">{clock.detail}</p>
           )
+        ) : null}
+        {clock && clock.sync ? (
+          <p className="admin-muted">
+            The server&apos;s own clock {clock.sync.synchronised ? 'is kept in step' : 'is NOT in step'}{clock.sync.server ? ` by ${clock.sync.server}` : ''}. Changing which source the server itself follows is a server setting, not this one.
+          </p>
         ) : null}
       </div>
 
