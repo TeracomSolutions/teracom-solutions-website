@@ -4601,3 +4601,15 @@ html.reveal-ready .section-sticky[data-reveal].is-revealed { transform:none; }
 .aicmp-legend { display:flex; flex-wrap:wrap; align-items:center; gap:6px 10px; font-size:13px; color:var(--muted); }
 .aicmp-key { display:inline-block; width:14px; height:10px; border-radius:3px; }
 @media (max-width:640px) { .aicmp-day { grid-template-columns:1fr; gap:4px; } }
+
+/* Departments on /teracom-ai as a short vertical list (components/CatalogueDepartments.js). */
+.dept-rows { list-style:none; margin:20px auto 0; padding:0; max-width:960px; border:1px solid var(--line); border-radius:14px; overflow:hidden; }
+.dept-row { display:grid; grid-template-columns:200px 1fr auto; gap:4px 16px; align-items:baseline; padding:8px 16px; border-top:1px solid var(--line); font-size:14.5px; }
+.dept-row:first-child { border-top:0; }
+.dept-row-name { font-weight:800; color:#fff; }
+.dept-row-text { color:var(--muted); overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:1; -webkit-box-orient:vertical; }
+.dept-row-links { display:flex; gap:12px; font-size:14px; font-weight:700; white-space:nowrap; }
+.dept-fold { max-width:960px; margin:16px auto 0; }
+.dept-fold summary { cursor:pointer; font-weight:800; padding:8px 0; }
+.dept-fold .dept-note { margin:4px 0 0; }
+@media (max-width:700px) { .dept-row { grid-template-columns:1fr; } }
