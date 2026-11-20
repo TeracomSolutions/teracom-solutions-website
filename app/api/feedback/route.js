@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
 import { submitFeedback } from '@/lib/api/feedback';
-import { clientIpFromRequest } from '@/lib/rateLimit';
+import { checkSharedRateLimit, clientIpFromRequest, rateLimitResponse } from '@/lib/rateLimit';
 import { stripe } from '@/lib/stripe';
 
 // The order-complete page's recommend score, comment and Google review click (components/CheckoutFeedback.js).
@@ -15,6 +15,9 @@ const Answer = z.object({
 });
 
 export async function POST(req) {
+  // Security review 2026-11-20: each answer looks the order up with Stripe, so answers are limited per visitor.
+  const limited = await checkSharedRateLimit(`feedback:${clientIpFromRequest(req)}`, { maxAttempts: 10, windowMs: 600_000 });
+  if (!limited.allowed) return rateLimitResponse(limited.retryAfterSeconds, 'Too many answers. Try again shortly.');
   const parsed = Answer.safeParse(await req.json().catch(() => null));
   if (!parsed.success) return NextResponse.json({ error: 'That answer was not understood.' }, { status: 400 });
   const { session_id: sessionId, ...answer } = parsed.data;

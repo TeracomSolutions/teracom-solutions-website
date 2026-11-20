@@ -62,7 +62,7 @@ export const GET = withAdminSession(async ({ token }) => {
     websiteInventory(false),
   ]);
   return NextResponse.json({ backend, website });
-});
+}, { verify: true });
 
 export const POST = withAdminSession(async ({ token }) => {
   const [backend, website] = await Promise.all([
@@ -70,4 +70,4 @@ export const POST = withAdminSession(async ({ token }) => {
     websiteInventory(true),
   ]);
   return NextResponse.json({ backend, website });
-});
+}, { verify: true });

@@ -330,6 +330,10 @@ export async function POST(req) {
 
   switch (event.type) {
     case 'checkout.session.completed':
+    case 'checkout.session.async_payment_succeeded':
+      // Security review 2026-11-20: a delayed payment method completes the session before the money arrives
+      // (payment_status "unpaid"); it is acted on when async_payment_succeeded says it has cleared.
+      if (!['paid', 'no_payment_required'].includes(event.data.object?.payment_status)) break;
       await handleCheckoutSessionCompleted(event.data.object);
       await forwardToOrderFlow(event);
       await recordCheckoutEvent('completed', event);
