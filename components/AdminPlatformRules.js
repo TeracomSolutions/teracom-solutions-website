@@ -72,37 +72,128 @@ function Live({ live }) {
   );
 }
 
-function Schedules({ groups, items }) {
+// The register as thin rows (Robert, 20 November 2026: "make them a little bit more horizontal and very thin ...
+// this is going to grow exponentially"). One line each: group, title, a one-line summary, when it was set or runs;
+// a click opens the full wording, and Administrators can edit it there.
+const RULE_FIELDS = [
+  ['title', 'Title', 'input'], ['what', 'What it does', 'textarea'], ['why', 'Why', 'textarea'],
+  ['where', 'Where it is changed', 'textarea'], ['set_on', 'Set on (YYYY-MM-DD or words)', 'input'],
+];
+const SCHEDULE_FIELDS = [
+  ['name', 'Name', 'input'], ['what', 'What it does', 'textarea'], ['when', 'When it runs', 'input'], ['where', 'Where it is set', 'textarea'],
+];
+
+function EditForm({ kind, item, groups, onSave, onCancel, saving }) {
+  const fields = kind === 'rules' ? RULE_FIELDS : SCHEDULE_FIELDS;
+  const groupKey = kind === 'rules' ? 'area' : 'group';
+  const [values, setValues] = useState(() => Object.fromEntries([[groupKey, item[groupKey] || groups[0]], ...fields.map(([k]) => [k, item[k] || ''])]));
   return (
-    <>
-      <p className="admin-muted">Everything that runs by itself on a timetable: what it does, when, and where it is set. Every new scheduled job or reminder is added here in the same change that makes it.</p>
-      {groups.map((group) => {
-        const list = items.filter((item) => item.group === group);
-        if (!list.length) return null;
-        return (
-          <section key={group} className="rules-area">
-            <h3>{group}</h3>
-            <div className="rules-grid">
-              {list.map((item) => (
-                <article key={item.id} className="rules-card">
-                  <h4>{item.name}</h4>
+    <form className="reg-form" onSubmit={(e) => { e.preventDefault(); onSave(values); }}>
+      <label>{kind === 'rules' ? 'Area' : 'Group'}
+        <select value={values[groupKey]} onChange={(e) => setValues({ ...values, [groupKey]: e.target.value })}>
+          {groups.map((g) => <option key={g} value={g}>{g}</option>)}
+        </select>
+      </label>
+      {fields.map(([k, label, type]) => (
+        <label key={k} className={type === 'textarea' ? 'reg-wide' : undefined}>{label}
+          {type === 'textarea'
+            ? <textarea rows={3} value={values[k]} onChange={(e) => setValues({ ...values, [k]: e.target.value })} />
+            : <input value={values[k]} onChange={(e) => setValues({ ...values, [k]: e.target.value })} />}
+        </label>
+      ))}
+      <p className="admin-muted reg-wide">Changing the wording here updates the record only. The setting itself (in Vercel, the code or a timetable) is changed where it says.</p>
+      <div className="reg-actions reg-wide">
+        <button type="submit" className="btn btn-primary btn-sm" disabled={saving}>{saving ? 'Saving…' : 'Save'}</button>
+        <button type="button" className="btn btn-secondary btn-sm" onClick={onCancel}>Cancel</button>
+      </div>
+    </form>
+  );
+}
+
+function Register({ kind, items, groups, onChange, intro }) {
+  const [query, setQuery] = useState('');
+  const [group, setGroup] = useState('');
+  const [open, setOpen] = useState('');
+  const [editing, setEditing] = useState('');
+  const [saving, setSaving] = useState(false);
+  const [problem, setProblem] = useState('');
+  const groupKey = kind === 'rules' ? 'area' : 'group';
+  const titleKey = kind === 'rules' ? 'title' : 'name';
+  const q = query.trim().toLowerCase();
+  const shown = items.filter((item) => (!group || item[groupKey] === group)
+    && (!q || Object.values(item).some((v) => typeof v === 'string' && v.toLowerCase().includes(q))));
+
+  async function send(payload) {
+    setSaving(true);
+    setProblem('');
+    try {
+      const res = await fetch('/api/admin/platform-rules/edit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(body.error || 'That change was not saved.');
+      onChange(body);
+      setEditing('');
+      return true;
+    } catch (e) {
+      setProblem(e.message);
+      return false;
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <div className="reg">
+      {intro ? <p className="admin-muted">{intro}</p> : null}
+      <div className="reg-tools">
+        <input type="search" placeholder="Search" value={query} onChange={(e) => setQuery(e.target.value)} aria-label="Search" />
+        <select value={group} onChange={(e) => setGroup(e.target.value)} aria-label={kind === 'rules' ? 'Area' : 'Group'}>
+          <option value="">{kind === 'rules' ? 'Every area' : 'Every group'}</option>
+          {groups.map((g) => <option key={g} value={g}>{g}</option>)}
+        </select>
+        <span className="admin-muted">{shown.length} of {items.length}</span>
+        {kind === 'rules' ? <button type="button" className="btn btn-secondary btn-sm" onClick={() => { setEditing('new'); setOpen(''); }}>Add a rule</button> : null}
+      </div>
+      {problem ? <p className="form-error" role="alert">{problem}</p> : null}
+      {editing === 'new' ? (
+        <EditForm kind="rules" item={{}} groups={groups} saving={saving} onCancel={() => setEditing('')}
+          onSave={(fields) => send({ action: 'add', fields })} />
+      ) : null}
+      <ul className="reg-rows">
+        {shown.map((item) => {
+          const isOpen = open === item.id;
+          return (
+            <li key={item.id} className={isOpen ? 'reg-row is-open' : 'reg-row'}>
+              <button type="button" className="reg-line" aria-expanded={isOpen} onClick={() => { setOpen(isOpen ? '' : item.id); setEditing(''); }}>
+                <span className="reg-group">{item[groupKey]}</span>
+                <span className="reg-title">{item[titleKey]}{item.edited ? <span className="rules-pill">Edited</span> : null}{item.source === 'staff' ? <span className="rules-pill">Added</span> : null}</span>
+                <span className="reg-summary">{item.what}</span>
+                <span className="reg-meta">{kind === 'rules' ? setOn(item.set_on) : item.last_at ? `Ran ${formatDateTime(item.last_at)}` : item.when}</span>
+                {item.last_ok === false ? <span className="rules-pill is-bad">Failing</span> : null}
+              </button>
+              {isOpen && editing !== item.id ? (
+                <div className="reg-detail">
                   <p>{item.what}</p>
-                  <p><span className="admin-muted">When: </span>{item.when}</p>
-                  <p><span className="admin-muted">Where it is set: </span>{item.where}</p>
-                  {item.last_at ? (
-                    <p className="admin-muted">
-                      Last ran {formatDateTime(item.last_at)}
-                      {item.last_ok === false ? <span className="rules-pill is-bad">Pages failing</span> : null}
-                      {item.last_error ? ` · last error: ${item.last_error}` : ''}
-                    </p>
-                  ) : null}
-                </article>
-              ))}
-            </div>
-          </section>
-        );
-      })}
-    </>
+                  {kind === 'rules' ? <p><span className="admin-muted">Why: </span>{item.why}</p> : <p><span className="admin-muted">When: </span>{item.when}</p>}
+                  <p><span className="admin-muted">{kind === 'rules' ? 'Where it is changed: ' : 'Where it is set: '}</span>{item.where}</p>
+                  {kind === 'rules' ? <p className="admin-muted">Set {setOn(item.set_on)}</p> : null}
+                  {item.last_at ? <p className="admin-muted">Last ran {formatDateTime(item.last_at)}{item.last_error ? ` · last error: ${item.last_error}` : ''}</p> : null}
+                  {item.edited_by ? <p className="admin-muted">Wording changed by {item.edited_by}{item.edited_at ? ` on ${formatDateTime(item.edited_at)}` : ''}.</p> : null}
+                  <div className="reg-actions">
+                    <button type="button" className="btn btn-secondary btn-sm" onClick={() => setEditing(item.id)}>Edit</button>
+                    {item.edited ? <button type="button" className="btn btn-secondary btn-sm" disabled={saving} onClick={() => send({ action: 'reset', kind, id: item.id })}>Reset to the original wording</button> : null}
+                    {item.source === 'staff' ? <button type="button" className="btn btn-secondary btn-sm" disabled={saving} onClick={() => { if (window.confirm('Remove this rule from the register?')) send({ action: 'remove', id: item.id }); }}>Remove</button> : null}
+                  </div>
+                </div>
+              ) : null}
+              {isOpen && editing === item.id ? (
+                <EditForm kind={kind} item={item} groups={groups} saving={saving} onCancel={() => setEditing('')}
+                  onSave={(fields) => send({ action: 'edit', kind, id: item.id, fields })} />
+              ) : null}
+            </li>
+          );
+        })}
+      </ul>
+    </div>
   );
 }
 
@@ -215,7 +306,8 @@ export default function AdminPlatformRules() {
         ))}
       </div>
 
-      {tab === 'schedules' ? <Schedules groups={data.schedule_groups || []} items={data.schedules || []} /> : null}
+      {tab === 'schedules' ? <Register kind="schedules" items={data.schedules || []} groups={data.schedule_groups || []} onChange={setData}
+        intro="Everything that runs by itself on a timetable. Every new scheduled job or reminder is added here in the same change that makes it." /> : null}
       {tab === 'check' ? <SiteCheck check={check} checking={checking} onCheck={checkNow} /> : null}
       {tab === 'rules' ? <>
       <div className="rules-head">
@@ -227,26 +319,8 @@ export default function AdminPlatformRules() {
       <Live live={data.live} />
 
       <h2>Settings made on purpose</h2>
-      {data.areas.map((area) => {
-        const rules = data.rules.filter((rule) => rule.area === area);
-        if (!rules.length) return null;
-        return (
-          <section key={area} className="rules-area">
-            <h3>{area}</h3>
-            <div className="rules-grid">
-              {rules.map((rule) => (
-                <article key={rule.id} className="rules-card">
-                  <h4>{rule.title}</h4>
-                  <p>{rule.what}</p>
-                  <p><span className="admin-muted">Why: </span>{rule.why}</p>
-                  <p><span className="admin-muted">Where it is changed: </span>{rule.where}</p>
-                  <p className="admin-muted">Set {setOn(rule.set_on)}</p>
-                </article>
-              ))}
-            </div>
-          </section>
-        );
-      })}
+      <Register kind="rules" items={data.rules || []} groups={data.areas || []} onChange={setData}
+        intro="Every setting made on purpose to keep the platform safe and cheap to run. Click a row for the detail; Administrators can edit the wording or add a rule." />
       </> : null}
     </div>
   );
