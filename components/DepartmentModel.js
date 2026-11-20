@@ -25,17 +25,14 @@ export function DepartmentModel({ alt = false }) {
             organisational memory and under your approval.
           </p>
         </div>
-        <div className="dept-grid">
+        <ul className="dept-rows">
           {DEPARTMENTS.map((dept) => (
-            <article className="dept-card" key={dept.name}>
-              <h3>{dept.name}</h3>
-              <p>{dept.purpose}</p>
-              <p className="dept-workers">
-                <strong>Workers:</strong> {dept.workers.join(', ')}
-              </p>
-            </article>
+            <li className="dept-row" key={dept.name}>
+              <span className="dept-row-name">{dept.name}</span>
+              <span className="dept-row-text">{dept.purpose.split('. ')[0].replace(/\.?$/, '.')}</span>
+            </li>
           ))}
-        </div>
+        </ul>
       </div>
     </section>
   );
