@@ -8,6 +8,7 @@ import NavDropdownCloser from './NavDropdownCloser';
 import SiteMotion from './SiteMotion';
 import HeaderAccount from './HeaderAccount';
 import { resourcesSections } from '@/lib/resourcesSections';
+import { teracomAiSections } from '@/lib/teracomAiSections';
 import { COMMISSIONING_FORM_URL, monitoringServices } from '@/lib/monitoring';
 import { MONITORING_LOGIN_PATH, monitoringLoginEnabled } from '@/lib/monitoringLogin';
 import { services, serviceGroups } from '@/lib/services';
@@ -73,7 +74,18 @@ export default function Header() {
               </div>
             </div>
           </div>
-          <Link className="nav-link" href="/teracom-ai">Teracom AI</Link>
+          <div className="nav-dropdown">
+            <Link className="nav-link" href="/teracom-ai">Teracom AI{chevron}</Link>
+            <div className="nav-dropdown-panel">
+              <div className="nav-dropdown-list">
+                {teracomAiSections.map((s) => (
+                  <Link href={s.href} key={s.href}>
+                    {s.title}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
           <Link className="nav-link" href="/brands">Brands</Link>
           <div className="nav-dropdown">
             <Link className="nav-link" href="/resources" data-match="/resources /tools">Resources{chevron}</Link>

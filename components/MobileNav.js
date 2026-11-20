@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useSearchSubmit } from './HeaderSearch';
 import { useCart } from '@/lib/cart-context';
 import { resourcesSections } from '@/lib/resourcesSections';
+import { teracomAiSections } from '@/lib/teracomAiSections';
 import { COMMISSIONING_FORM_URL } from '@/lib/monitoring';
 import { MONITORING_LOGIN_PATH, monitoringLoginEnabled } from '@/lib/monitoringLogin';
 
@@ -81,7 +82,14 @@ export default function MobileNav() {
                 {monitoringLoginEnabled() ? <li><Link href={MONITORING_LOGIN_PATH} onClick={close}>Customer login</Link></li> : null}
               </ul>
             </li>
-            <li><Link href="/teracom-ai" onClick={close}>Teracom AI</Link></li>
+            <li>
+              <Link href="/teracom-ai" onClick={close}>Teracom AI</Link>
+              <ul className="mobile-nav-sublinks">
+                {teracomAiSections.map((s) => (
+                  <li key={s.href}><Link href={s.href} onClick={close}>{s.title}</Link></li>
+                ))}
+              </ul>
+            </li>
             <li><Link href="/brands" onClick={close}>Brands</Link></li>
             <li><Link href="/store" onClick={close}>Store</Link></li>
             <li>

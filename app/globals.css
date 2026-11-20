@@ -4636,3 +4636,6 @@ html.reveal-ready .section-sticky[data-reveal].is-revealed { transform:none; }
 .reg-form .reg-wide { grid-column:1 / -1; }
 .reg-form textarea, .reg-form input, .reg-form select { width:100%; }
 @media (max-width:800px) { .reg-line { grid-template-columns:1fr auto; } .reg-group, .reg-summary { display:none; } }
+
+/* Jumps from the header's Teracom AI menu land below the fixed header. */
+#main-content section[id] { scroll-margin-top:90px; }
