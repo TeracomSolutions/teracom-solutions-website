@@ -4565,3 +4565,39 @@ html.reveal-ready .section-sticky[data-reveal].is-revealed { transform:none; }
   .est-pick-add { grid-column:3; }
   .est-proposal-sum strong { margin-left:0; }
 }
+
+/* Teracom AI against Claude, ChatGPT and Grok (components/AiCostComparison.js). */
+.aicmp { max-width:960px; margin:0 auto; display:grid; gap:16px; }
+.aicmp-presets, .aicmp-tabs, .aicmp-toggle { display:flex; flex-wrap:wrap; gap:8px; }
+.aicmp-inputs { display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:4px 16px; }
+.aicmp-depts { border:1px solid var(--line); border-radius:14px; padding:12px 14px; display:flex; flex-wrap:wrap; gap:8px; margin:0; min-width:0; }
+.aicmp-depts legend { padding:0 6px; font-weight:800; }
+.aicmp-chip { display:inline-flex; align-items:center; gap:6px; padding:6px 12px; border:1px solid var(--line); border-radius:999px; font-size:14px; cursor:pointer; }
+.aicmp-chip input { margin:0; }
+.aicmp-chip-on { border-color:rgba(255,23,23,.7); background:rgba(255,23,23,.1); }
+.aicmp-tab { padding:8px 14px; border:1px solid var(--line); border-radius:999px; background:transparent; color:inherit; font:inherit; font-size:14px; font-weight:700; cursor:pointer; }
+.aicmp-tab-on { border-color:#ff1717; background:rgba(255,23,23,.14); }
+.aicmp-toggle { margin-bottom:10px; }
+.aicmp-rows { list-style:none; margin:0; padding:0; display:grid; gap:10px; }
+.aicmp-row { padding:10px 14px; border:1px solid var(--line); border-radius:12px; }
+.aicmp-row-teracom { border-color:rgba(255,23,23,.6); background:rgba(255,23,23,.06); }
+.aicmp-row-head { display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+.aicmp-row-name { font-weight:800; }
+.aicmp-row-cost { font-weight:800; font-variant-numeric:tabular-nums; }
+.aicmp-row-cost small { font-weight:400; color:var(--muted); }
+.aicmp-bar { height:8px; margin:8px 0 6px; border-radius:4px; background:rgba(255,255,255,.06); overflow:hidden; }
+.aicmp-bar span { display:block; height:100%; border-radius:4px; background:#8a8f98; }
+.aicmp-row-teracom .aicmp-bar span { background:#ff1717; }
+.aicmp-row-note, .aicmp-note { margin:0; font-size:13.5px; color:var(--muted); }
+.aicmp-day { display:grid; grid-template-columns:minmax(150px, 220px) 1fr; gap:12px; align-items:center; margin:10px 0; }
+.aicmp-day-label { display:grid; font-size:14px; }
+.aicmp-day-label span { color:var(--muted); font-size:13px; }
+.aicmp-day-track { display:flex; gap:2px; height:22px; }
+.aicmp-day-track span { display:block; height:100%; border-radius:4px; }
+.aicmp-day-work { background:#22a06b; }
+.aicmp-day-wait { background:rgba(255,255,255,.14); }
+.aicmp-day-open { background:#ff1717; }
+.aicmp-axis { display:flex; justify-content:space-between; font-size:12px; color:var(--muted); }
+.aicmp-legend { display:flex; flex-wrap:wrap; align-items:center; gap:6px 10px; font-size:13px; color:var(--muted); }
+.aicmp-key { display:inline-block; width:14px; height:10px; border-radius:3px; }
+@media (max-width:640px) { .aicmp-day { grid-template-columns:1fr; gap:4px; } }
