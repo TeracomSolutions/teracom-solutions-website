@@ -4639,3 +4639,23 @@ html.reveal-ready .section-sticky[data-reveal].is-revealed { transform:none; }
 
 /* Jumps from the header's Teracom AI menu land below the fixed header. */
 #main-content section[id] { scroll-margin-top:90px; }
+
+/* Business profile lined up (Robert, 20 November 2026): every card the same width, headings and fields on one line
+   across a row (subgrid keeps label, box and help in rows even when one label wraps). */
+.bp-form, .bp-time { max-width:980px; }
+.bp-time { margin-top:18px; }
+.bp-section { padding:18px 20px; }
+.bp-section > .admin-subheading, .bp-time-card .admin-subheading { margin:0 0 6px; font-size:18px; }
+.bp-grid { align-items:start; }
+.bp-grid > label:not(.admin-check):not(.bp-wide) { display:grid; grid-row:span 3; grid-template-rows:subgrid; gap:6px; align-content:start; min-width:0; }
+.bp-grid > label:not(.admin-check) input, .bp-grid > label select, .bp-grid > label textarea { width:100%; min-width:0; }
+.bp-grid > .admin-check input[type=checkbox] { width:18px; height:18px; margin:0; flex:none; }
+.bp-grid > label .admin-muted { font-size:12.5px; font-weight:400; }
+.bp-grid > label.bp-wide:not(.admin-check) { display:grid; gap:6px; }
+.bp-grid > .admin-check { display:flex; flex-wrap:wrap; align-items:center; justify-content:flex-start; gap:6px 10px; font-weight:700; }
+.bp-grid > .admin-check .admin-muted { flex-basis:100%; }
+.bp-time-card { display:grid; gap:18px; }
+.bp-time-card > div { display:grid; gap:8px; }
+.bp-time-card p { margin:0; }
+.bp-inline { display:flex; flex-wrap:wrap; gap:10px; align-items:center; }
+.bp-inline select, .bp-inline input { flex:1 1 280px; min-width:0; max-width:520px; }
