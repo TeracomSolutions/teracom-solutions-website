@@ -6,6 +6,8 @@ import JsonLd from '@/components/JsonLd';
 import CatalogueDepartments from '@/components/CatalogueDepartments';
 import { CustomerJourney, DepartmentModel, PacksAndExtensions } from '@/components/DepartmentModel';
 import { fetchDepartmentCatalogue } from '@/lib/api/departmentCatalogue';
+import { publishedPrices } from '@/lib/departmentPrices';
+import AiCostComparison from '@/components/AiCostComparison';
 import { AiComparison, OrganisationalMemory, ResponsibleAi, SecurityTrust } from '@/components/PlatformSections';
 import { pageMetadata, SITE_ORIGIN, absoluteUrl } from '@/lib/seo';
 
@@ -47,7 +49,7 @@ const AI_CAPABILITIES_SCHEMA = {
 
 export default async function TeracomAI() {
   // Global's catalogue once it is switched on; the bundled Departments until then.
-  const catalogue = await fetchDepartmentCatalogue();
+  const [catalogue, prices] = await Promise.all([fetchDepartmentCatalogue(), publishedPrices()]);
   return (
     <main id="main-content">
       <JsonLd schema={AI_PLATFORM_SCHEMA} />
@@ -98,6 +100,22 @@ export default async function TeracomAI() {
           </p>
         </div>
       </section>
+
+      {prices ? (
+        <section className="section section-spacious alt" id="compare-ai-costs">
+          <div className="container">
+            <div className="section-heading">
+              <span className="eyebrow">Compare</span>
+              <h2>What your team would pay for Claude, ChatGPT or Grok, and what the limits cost you.</h2>
+              <p>
+                Chat plans are priced per person and stop you when you hit a 5-hour or weekly limit. Pay-per-token APIs
+                have no window but bill every task. Teracom AI is priced per Department and runs on your own server.
+              </p>
+            </div>
+            <AiCostComparison prices={prices} />
+          </div>
+        </section>
+      ) : null}
 
       <PacksAndExtensions />
 
