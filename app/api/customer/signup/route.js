@@ -5,6 +5,7 @@ import { customerSignup } from '@/lib/api/customerAuth';
 import { ApiError } from '@/lib/api/client';
 import { setCustomerSessionCookies } from '@/lib/customerSession';
 import { checkSharedRateLimit, clientIpFromRequest, rateLimitResponse } from '@/lib/rateLimit';
+import { sameOrigin } from '@/lib/sameOrigin';
 
 // Teracom Solutions Website Customer Authentication, Phase 2.
 const CUSTOMER_SIGNUP_RATE_LIMIT_MAX_ATTEMPTS = Number(process.env.CUSTOMER_SIGNUP_RATE_LIMIT_MAX_ATTEMPTS) || 5;
@@ -33,6 +34,7 @@ const SignupRequest = z.object({
 });
 
 export async function POST(req) {
+  if (!sameOrigin(req)) return NextResponse.json({ error: 'Not allowed' }, { status: 403 });
   const rateLimitKey = `customer-signup:${clientIpFromRequest(req)}`;
   const rateLimit = await checkSharedRateLimit(rateLimitKey, {
     maxAttempts: CUSTOMER_SIGNUP_RATE_LIMIT_MAX_ATTEMPTS,

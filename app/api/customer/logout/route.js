@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 
 import { clearCustomerSessionCookies } from '@/lib/customerSession';
+import { sameOrigin } from '@/lib/sameOrigin';
 
 // Teracom Solutions Website Customer Authentication, Phase 2.
 // No backend call (Phase 1 backend has no logout/token-revocation endpoint --
@@ -12,5 +13,6 @@ import { clearCustomerSessionCookies } from '@/lib/customerSession';
 // the customer looking at raw {"ok":true} text instead of going anywhere.
 // Same plain-form-POST-redirects convention as app/api/leads/route.js.
 export async function POST(req) {
+  if (!sameOrigin(req)) return NextResponse.json({ error: 'Not allowed' }, { status: 403 });
   return clearCustomerSessionCookies(NextResponse.redirect(new URL('/', req.url), 303));
 }

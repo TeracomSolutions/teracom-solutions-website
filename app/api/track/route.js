@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
 import { recordPageView } from '@/lib/api/track';
-import { clientIpFromRequest } from '@/lib/rateLimit';
+import { checkSharedRateLimit, clientIpFromRequest } from '@/lib/rateLimit';
 import {
   deviceFromUserAgent,
   isBot,
@@ -23,6 +23,9 @@ const Body = z.object({
 
 export async function POST(req) {
   const done = new NextResponse(null, { status: 204 });
+  // Security review 2026-11-20: a loop of beacons could inflate the visit figures.
+  const limited = await checkSharedRateLimit(`track:${clientIpFromRequest(req)}`, { maxAttempts: 120, windowMs: 60_000 });
+  if (!limited.allowed) return done;
 
   let body;
   try {

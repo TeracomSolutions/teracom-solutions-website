@@ -69,6 +69,11 @@ export async function POST(req) {
     return NextResponse.json({ error: 'Product not found' }, { status: 404 });
   }
 
+  // Security review 2026-11-20: hardware bought here skipped freight, 3D Secure, the delivery address and the
+  // card-risk check. Everything that is not a subscription goes through the cart.
+  if (product.type !== 'subscription') {
+    return NextResponse.json({ error: 'Add this product to your cart to check out.' }, { status: 400 });
+  }
   const isSubscription = product.type === 'subscription';
 
   const metadata = {

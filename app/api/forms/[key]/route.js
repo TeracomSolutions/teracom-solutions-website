@@ -8,6 +8,7 @@ import { checkSharedRateLimit, clientIpFromRequest, rateLimitResponse } from '@/
 import { STARTED_FIELD, TRAP_FIELD, checkSubmission } from '@/lib/formGuard';
 import { TERMS_VERSION } from '@/lib/termsDocument';
 import { TURNSTILE_FAILED_MESSAGE, verifyTurnstile } from '@/lib/turnstile';
+import { adminSessionToken, staffSessionIsValid } from '@/lib/adminApi';
 
 // A form customers fill in and sign (lib/onlineForms). Everything the browser checked is
 // checked again here against the form's own definition; only its own answers go on, with
@@ -37,6 +38,10 @@ export async function POST(req, props) {
   }
   // A form that is not live takes submissions only from its preview page.
   if (!form.live && body?.preview !== true) return NextResponse.json({ error: 'Unknown form.' }, { status: 404 });
+  // Security review 2026-11-20: anyone could send "preview" to a draft form; previews are for signed-in staff.
+  if (!form.live && !(await staffSessionIsValid(await adminSessionToken()))) {
+    return NextResponse.json({ error: 'Unknown form.' }, { status: 404 });
+  }
 
   const values = body?.values && typeof body.values === 'object' ? body.values : {};
   const incoming = Array.isArray(body?.files) ? body.files.filter((f) => f && typeof f === 'object') : [];

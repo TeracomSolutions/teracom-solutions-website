@@ -83,7 +83,6 @@ export async function GET() {
     checks,
     deploy: {
       commit: (process.env.VERCEL_GIT_COMMIT_SHA || '').slice(0, 7) || null,
-      message: (process.env.VERCEL_GIT_COMMIT_MESSAGE || '').split('\n')[0] || null,
       environment: process.env.VERCEL_ENV || process.env.NODE_ENV || null,
     },
     schedules: SCHEDULES,
