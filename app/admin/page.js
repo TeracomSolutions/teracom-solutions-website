@@ -3,7 +3,7 @@ import Link from 'next/link';
 import {
   Activity,
   DatabaseBackup,
-  ListChecks,
+  FileChartColumn, ListChecks,
   HeartPulse,
   BadgeDollarSign,
   Boxes,
@@ -185,6 +185,13 @@ const AREAS = [
     title: 'Platform rules',
     text: 'Every rule and setting that keeps the website safe and cheap to run: firewall blocks, Vercel set-up and caching, with why and where each is changed.',
     icon: ListChecks,
+    hue: '#64748b',
+  },
+  {
+    href: '/admin/reports',
+    title: 'Reports',
+    text: 'Report on anything in the platform: sales, customers, products, website visits, Google, marketing, AI calls and staff actions. Ready-made, saved and your own.',
+    icon: FileChartColumn,
     hue: '#64748b',
   },
   {
