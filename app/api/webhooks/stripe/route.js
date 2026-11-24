@@ -5,7 +5,7 @@ import { unitPriceCents } from '@/lib/catalogueMerge';
 import { createZohoContact, createZohoInvoice, findZohoContactByEmail } from '@/lib/zoho';
 import { linkLicenceBillingReference } from '@/lib/api/commerceLicensing';
 import { recordCouponRedemption } from '@/lib/api/coupons';
-import { checkOrderRisk, forwardCheckoutSession, forwardCheckoutEvent } from '@/lib/api/orderFlow';
+import { checkOrderRisk, forwardCheckoutSession, forwardCheckoutEvent, notifyOrder } from '@/lib/api/orderFlow';
 import { holdMetadata, riskRequest } from '@/lib/orderRisk';
 import { SESSION_EXPANSIONS, shouldForward, describeForwardResult } from '@/lib/orderFlowForward';
 
@@ -299,6 +299,18 @@ async function handleSubscriptionDeleted(subscription) {
   });
 }
 
+// Emails every paid order to the sales address (Business profile), whatever ORDER_FLOW_FORWARD says:
+// a paid order on 12 November 2026 was only ever seen in Stripe. Never throws.
+async function emailOrderToSales(event) {
+  try {
+    const session = await stripe.checkout.sessions.retrieve(event.data.object.id, { expand: SESSION_EXPANSIONS });
+    const result = await notifyOrder(session, event.id);
+    if (!result?.sent && result?.reason !== 'already sent') console.error('New order email not sent', session.id, result?.reason || '');
+  } catch (error) {
+    console.error('New order email failed', event.data.object?.id, error instanceof Error ? error.message : error);
+  }
+}
+
 // Hands a completed checkout to the backend order flow. Off unless ORDER_FLOW_FORWARD is 'true'.
 // Never throws: the existing handling above must not depend on it.
 async function forwardToOrderFlow(event) {
@@ -334,6 +346,7 @@ export async function POST(req) {
       // Security review 2026-11-20: a delayed payment method completes the session before the money arrives
       // (payment_status "unpaid"); it is acted on when async_payment_succeeded says it has cleared.
       if (!['paid', 'no_payment_required'].includes(event.data.object?.payment_status)) break;
+      await emailOrderToSales(event);
       await handleCheckoutSessionCompleted(event.data.object);
       await forwardToOrderFlow(event);
       await recordCheckoutEvent('completed', event);
