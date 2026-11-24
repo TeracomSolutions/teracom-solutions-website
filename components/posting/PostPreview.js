@@ -17,6 +17,7 @@ export default function PostPreview({ channel, accountName, title, text, linkUrl
                                  channel === 'facebook' ? 'Facebook' : 
                                  channel === 'instagram' ? 'Instagram' : 
                                  channel === 'x' ? 'X' : 
+                                 channel === 'snapchat' ? 'Snapchat' : 
                                  'Customer email');
 
   const moreWords = channel === 'linkedin' ? '…see more' : channel === 'facebook' ? 'See more' : channel === 'instagram' ? 'more' : 'see more';

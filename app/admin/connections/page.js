@@ -95,7 +95,7 @@ export default async function AdminConnectionsPage({ searchParams }) {
           <h4>Voice</h4>
           <p>The voice Tera and the Assistant speak with. The card shows whether visitors hear the voice built into their own browser (free, but it differs by device and can sound robotic) or a natural Australian voice from Microsoft Azure Speech. <strong>Edit</strong> sets the voice engine, the Azure key and region, which Azure voice, the speaking speed and a monthly limit on characters; after that limit, or if Azure does not answer, visitors hear their browser voice instead. <strong>Hear it</strong> speaks a sample the way visitors will hear it and says which voice answered.</p>
           <h4>Social</h4>
-          <p>The <strong>Social</strong> tab holds LinkedIn, Facebook, Instagram, X and YouTube: the profile link the website footer shows and the credentials we post with. Each card has a <strong>Help</strong> button with the exact steps to get that network&apos;s credentials. Posting itself is on the Social page.</p>
+          <p>The <strong>Social</strong> tab holds LinkedIn, Facebook, Instagram, X, Snapchat and YouTube: the profile link the website footer shows and the credentials we post with. Each card has a <strong>Help</strong> button with the exact steps to get that network&apos;s credentials. Posting itself is on the Social page.</p>
           <h4>Time</h4>
           <p>The <strong>Time</strong> tab sets the time zone every console page and the Assistant show times in (Melbourne unless you change it), and checks the server clock against an internet time source.</p>
           <h4>Software</h4>

@@ -85,6 +85,24 @@ function XSteps() {
   );
 }
 
+function SnapchatSteps() {
+  return (
+    <>
+      <h4>Snapchat: connecting the business profile</h4>
+      <p>Posts go to the {NAME} Snapchat Public Profile as a Story through Snap&apos;s Public Profile API. Snap only lets apps it has allowlisted use that API, so step 5 has to happen before Connect works.</p>
+      <ol>
+        <li>The {NAME} Snapchat account needs a <strong>Public Profile</strong> (a business profile). Create it in the Snapchat app under Profile if there is not one.</li>
+        <li>Sign in to <a href="https://business.snapchat.com" target="_blank" rel="noreferrer">business.snapchat.com</a> (Snap Business Manager) with the account that owns the profile.</li>
+        <li>Open <strong>Business Details</strong> and, under <strong>OAuth Apps</strong>, create an app named &ldquo;{NAME} website&rdquo;. Use this Business Manager app, not one from the Snap Kit developer portal: those Client IDs do not work with the Public Profile API.</li>
+        <li>As the app&apos;s <strong>Redirect URI</strong>, enter the address shown on this card under the Client ID boxes. Copy the <strong>Client ID</strong> and <strong>Client secret</strong>; the secret is shown once.</li>
+        <li>Ask Snap to allowlist the Client ID (never the secret) for the Public Profile API, through your Snap business contact or the support form in Business Manager. Until they do, Connect or Check says the access was refused.</li>
+        <li>On this card: paste the two values, select <strong>Save</strong>, then <strong>Connect Snapchat</strong> and sign in as the business. You come back here with the profile connected; select <strong>Check</strong> to confirm.</li>
+      </ol>
+      <p>A post to Snapchat is one picture or one MP4 video (5 seconds to 5 minutes, portrait 9:16 is best). The text becomes a one-line caption of up to 250 characters without emoji, and the link becomes a link sticker. A Story shows for 24 hours.</p>
+    </>
+  );
+}
+
 function YouTubeSteps() {
   return (
     <>
@@ -98,7 +116,7 @@ function YouTubeSteps() {
   );
 }
 
-const STEPS = { linkedin: LinkedInSteps, facebook: FacebookSteps, instagram: InstagramSteps, x: XSteps, youtube: YouTubeSteps };
+const STEPS = { linkedin: LinkedInSteps, facebook: FacebookSteps, instagram: InstagramSteps, x: XSteps, snapchat: SnapchatSteps, youtube: YouTubeSteps };
 
 export default function SocialSetupHelp({ network }) {
   const Steps = STEPS[network];

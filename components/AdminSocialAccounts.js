@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { formatDateTime } from '@/lib/adminFormat';
 import SocialSetupHelp from '@/components/SocialSetupHelp';
@@ -23,7 +23,7 @@ async function send(url, method, body) {
 // Identifiers are shown in their boxes so staff can see what is saved;
 // secrets stay blank with "saved, ends ..." as the hint, and a blank box
 // keeps the saved value.
-const PUBLIC_FIELDS = new Set(['page_id', 'ig_user_id', 'author_urn', 'app_id']);
+const PUBLIC_FIELDS = new Set(['page_id', 'ig_user_id', 'author_urn', 'app_id', 'client_id', 'profile_id']);
 
 function savedIds(account) {
   return Object.fromEntries(Object.entries(account?.saved || {}).filter(([field]) => PUBLIC_FIELDS.has(field)));
@@ -40,6 +40,25 @@ function AccountCard({ network, account, onChange }) {
 
   const configured = Boolean(account?.configured);
   const status = account?.status || 'not_configured';
+  const [redirectUri, setRedirectUri] = useState('');
+
+  // Back from the Snap sign-in: ?snapchat=connected or ?snapchat=failed&reason=...
+  useEffect(() => {
+    if (!network.connect) return;
+    setRedirectUri(`${window.location.origin}/api/admin/social/${network.key}/callback`);
+    const query = new URLSearchParams(window.location.search);
+    const outcome = query.get(network.key);
+    if (outcome === 'connected') setNotice(`${network.label} connected. Posting is ready; press Check any time.`);
+    else if (outcome === 'failed') setError(`${network.label} did not connect: ${query.get('reason') || 'no reason given'}`);
+  }, [network.connect, network.key, network.label]);
+
+  function connect() {
+    run('connect', async () => {
+      const result = await send(`/api/admin/social/${network.key}/authorize`, 'POST');
+      window.location.assign(result.url);
+      return 'Opening the Snapchat sign-in…';
+    });
+  }
 
   async function run(label, action) {
     setBusy(label);
@@ -130,6 +149,14 @@ function AccountCard({ network, account, onChange }) {
               />
             </label>
           ))}
+          {network.connect && (
+            <p className="admin-muted">
+              {account?.saved?.refresh_token
+                ? `Connected${account?.saved?.profile_id ? ` to profile ${account.saved.profile_id}` : ''}.`
+                : 'Not connected yet: save the Client ID and secret, then Connect.'}
+              {redirectUri && <> Redirect URI for the Snap app: <code>{redirectUri}</code></>}
+            </p>
+          )}
         </fieldset>
       )}
 
@@ -149,6 +176,11 @@ function AccountCard({ network, account, onChange }) {
 
       <div className="admin-actions">
         <button type="submit" className="btn btn-primary btn-sm" disabled={Boolean(busy)}>{busy === 'save' ? 'Saving…' : 'Save'}</button>
+        {network.connect && (
+          <button type="button" className="btn btn-secondary btn-sm" onClick={connect} disabled={Boolean(busy) || !account?.saved?.client_id}>
+            {busy === 'connect' ? 'Opening…' : account?.saved?.refresh_token ? `Reconnect ${network.label}` : `Connect ${network.label}`}
+          </button>
+        )}
         <button type="button" className="btn btn-secondary btn-sm" onClick={check} disabled={Boolean(busy)}>{busy === 'check' ? 'Checking…' : 'Check'}</button>
         {configured && (
           <button type="button" className="btn btn-secondary btn-sm" onClick={clear} disabled={Boolean(busy)}>Clear credentials</button>
