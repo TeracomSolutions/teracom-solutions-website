@@ -106,7 +106,7 @@ const AREAS = [
   {
     href: '/admin/social',
     title: 'Social',
-    text: 'LinkedIn, Facebook, Instagram, X and YouTube: the footer links, the accounts we post to, Posting with pictures, video and text per network, the Calendar, and the customers who get updates by email.',
+    text: 'LinkedIn, Facebook, Instagram, X, Snapchat and YouTube: the footer links, the accounts we post to, Posting with pictures, video and text per network, the Calendar, and the customers who get updates by email.',
     icon: Share2,
     hue: '#e879f9',
   },

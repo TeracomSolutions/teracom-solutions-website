@@ -77,7 +77,7 @@ export default async function AdminSocialPage(props) {
         Social
         <AdminHelpIcon>
           <h4>What this section is for</h4>
-          <p>Our presence on <strong>LinkedIn, Facebook, Instagram, X and YouTube</strong>: the profile links the website footer shows, the accounts we can post to, <strong>Posting</strong> that goes out in one go to the networks and to customers who asked to hear from us, and the <strong>Customers</strong> those emails go to.</p>
+          <p>Our presence on <strong>LinkedIn, Facebook, Instagram, X, Snapchat and YouTube</strong>: the profile links the website footer shows, the accounts we can post to, <strong>Posting</strong> that goes out in one go to the networks and to customers who asked to hear from us, and the <strong>Customers</strong> those emails go to.</p>
           <h4>Accounts</h4>
           <p>The networks&apos; profile links and posting credentials are under <strong>Connections &gt; Social</strong>. Each card there has a <strong>Help</strong> button with that network&apos;s setup steps.</p>
           <h4>Posting</h4>
