@@ -311,7 +311,7 @@ async function emailOrderToSales(event) {
   }
 }
 
-// Hands a completed checkout to the backend order flow. Off unless ORDER_FLOW_FORWARD is 'true'.
+// Records a completed checkout in the backend (Sales). Always on; ORDER_FLOW_FORWARD=false is an emergency off.
 // Never throws: the existing handling above must not depend on it.
 async function forwardToOrderFlow(event) {
   if (!shouldForward(process.env)) return;
