@@ -6,6 +6,7 @@ import AdminShell from '@/components/AdminShell';
 import AdminSalesTabs from '@/components/AdminSalesTabs';
 import AdminOrderBanner from '@/components/AdminOrderBanner';
 import AdminOrderDashboard from '@/components/AdminOrderDashboard';
+import AdminOrderImport from '@/components/AdminOrderImport';
 import OrderStageStrip from '@/components/OrderStageStrip';
 import { ShieldAlert } from 'lucide-react';
 
@@ -76,6 +77,7 @@ export default async function AdminOrdersPage({ searchParams }) {
 
       <p className="admin-muted"><Link href="/admin/orders/test-tools" className="admin-link">Test tools</Link> (make a test order, clean up test records)</p>      {banner && <AdminOrderBanner banner={banner} counts={banner.counts} />}
       <AdminOrderDashboard dashboard={dashboard} />
+      <AdminOrderImport />
       {(atStage || stuck) && (
         <p className="admin-muted">
           Showing orders {atStage ? 'at ' + stageName(atStage) : ''}{atStage && stuck ? ', ' : ''}{stuck ? 'stuck for a day or more' : ''}. <Link href="/admin/orders" className="admin-link">Show all orders</Link>
