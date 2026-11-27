@@ -3,10 +3,12 @@
 import Link from 'next/link';
 import { useState } from 'react';
 
+import AccountingSetupHelp from '@/components/AccountingSetupHelp';
 import AdminConnectionForm from '@/components/AdminConnectionForm';
 import AdminAddDevice, { DeviceActions } from '@/components/AdminMonitoredDevices';
 import AdminVoiceSample from '@/components/AdminVoiceSample';
 import { checkedText, groupConnections, statusLabel, summarise, withResult } from '@/lib/connectionStatus';
+import { ACCOUNTING_KEYS, PLATFORM_NAMES, visibleConnections } from '@/lib/accountingPlatforms';
 
 // Admin -> Connections: one card per outside service, server or computer,
 // grouped, with Test, Edit and Manage. The list comes from the backend and
@@ -24,7 +26,7 @@ function zohoReady(item) {
   return Boolean(id?.value && secret?.set);
 }
 
-export default function AdminConnections({ initial, notice }) {
+export default function AdminConnections({ initial, notice, platform = '' }) {
   const [list, setList] = useState(initial || []);
   const [busy, setBusy] = useState('');
   const [editing, setEditing] = useState('');
@@ -69,6 +71,18 @@ export default function AdminConnections({ initial, notice }) {
     setBusy('');
   }
 
+  async function connectAccounting(key) {
+    setBusy(key + '-connect');
+    setError('');
+    try {
+      const data = await call(`/api/admin/connections/${encodeURIComponent(key)}/authorize`);
+      window.location.assign(data.url);
+    } catch (err) {
+      setError(err.message);
+      setBusy('');
+    }
+  }
+
   async function connectZoho() {
     setBusy('zoho');
     setError('');
@@ -103,7 +117,7 @@ export default function AdminConnections({ initial, notice }) {
         </button>
       </div>
 
-      {groupConnections(list).map(({ group, items }) => (
+      {groupConnections(visibleConnections(list, platform)).map(({ group, items }) => (
         <details key={group} className="connection-group">
           <summary>
             <h2>{group}</h2>
@@ -115,7 +129,7 @@ export default function AdminConnections({ initial, notice }) {
             {items.map((item) => (
               <article key={item.key} className="connection-card">
                 <header>
-                  <h3>{item.name}</h3>
+                  <h3>{item.name}{ACCOUNTING_KEYS.includes(item.key) ? <> <AccountingSetupHelp connectionKey={item.key} redirectUri={item.redirect_uri} /></> : null}</h3>
                   <span className={`admin-status is-${item.status}`}>{statusLabel(item.status)}</span>
                 </header>
                 <p className="admin-muted">{item.purpose}</p>
@@ -138,6 +152,11 @@ export default function AdminConnections({ initial, notice }) {
                       {busy === 'zoho' ? 'Opening Zoho…' : item.connected ? 'Connect again' : 'Connect to Zoho Books'}
                     </button>
                   ) : null}
+                  {item.oauth && zohoReady(item) ? (
+                    <button type="button" className="btn btn-primary btn-sm" disabled={Boolean(busy)} onClick={() => connectAccounting(item.key)}>
+                      {busy === item.key + '-connect' ? 'Opening…' : item.connected ? 'Connect again' : `Connect to ${PLATFORM_NAMES[item.key] || item.name}`}
+                    </button>
+                  ) : null}
                   {item.manage_href && item.manage_href.startsWith('https://') ? (
                     <a className="btn btn-secondary btn-sm" href={item.manage_href} target="_blank" rel="noopener noreferrer">Edit in Vercel</a>
                   ) : null}
@@ -146,6 +165,9 @@ export default function AdminConnections({ initial, notice }) {
                   ) : null}
                   {item.device_id ? <DeviceActions item={item} onChanged={reload} /> : null}
                 </div>
+                {item.redirect_uri && ACCOUNTING_KEYS.includes(item.key) ? (
+                  <p className="connection-checked">Redirect URI to enter on the developer site: <code>{item.redirect_uri}</code></p>
+                ) : null}
                 {item.key === 'voice' && item.voice ? <AdminVoiceSample voice={item.voice} /> : null}
                 {editing === item.key ? (
                   <AdminConnectionForm connection={item} onSaved={saved} onCancel={() => setEditing('')} />

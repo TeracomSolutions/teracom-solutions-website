@@ -1,6 +1,7 @@
 import { BRAND, retitle } from '@/lib/brand';
 import { redirect } from 'next/navigation';
 
+import AdminAccountingPlatform from '@/components/AdminAccountingPlatform';
 import AdminConnections from '@/components/AdminConnections';
 import AdminHelpIcon from '@/components/AdminHelpIcon';
 import AdminShell from '@/components/AdminShell';
@@ -9,7 +10,8 @@ import AdminSocialAccounts from '@/components/AdminSocialAccounts';
 import AdminTabs from '@/components/AdminTabs';
 import AdminTimeZone from '@/components/AdminTimeZone';
 import AdminZohoFlow from '@/components/AdminZohoFlow';
-import { listConnections } from '@/lib/api/adminConnections';
+import { fetchAccountingPlatform, listConnections } from '@/lib/api/adminConnections';
+import { PLATFORM_NAMES, connectNotice } from '@/lib/accountingPlatforms';
 import { fetchTime, fetchZones } from '@/lib/api/adminTime';
 import { fetchZohoFlow } from '@/lib/api/adminZohoFlow';
 import { listSocialAccounts } from '@/lib/api/adminSocial';
@@ -45,6 +47,14 @@ export default async function AdminConnectionsPage({ searchParams }) {
     zohoFlow = null;
   }
 
+  // Which accounting platform the business uses: only its card shows, and the Zoho order flow only for Zoho Books.
+  let accounting = { platform: '', choices: [] };
+  try {
+    accounting = await fetchAccountingPlatform(token);
+  } catch {
+    accounting = { platform: '', choices: [] };
+  }
+
   // The Social tab, loaded on its own so a failure there leaves the services tab working.
   let socialAccounts = [];
   let socialError = '';
@@ -66,7 +76,7 @@ export default async function AdminConnectionsPage({ searchParams }) {
     timeError = 'Unable to load the time zone setting from the backend.';
   }
 
-  let notice = null;
+  let notice = connectNotice(query);
   if (ZOHO_NOTICES[query.zoho]) {
     notice = {
       ok: query.zoho === 'connected',
@@ -90,6 +100,8 @@ export default async function AdminConnectionsPage({ searchParams }) {
           </ul>
           <h4>Edit</h4>
           <p>Every card has an Edit button. Zoho Books, Cloudflare, Vercel and Email sending open their settings here; the website server, database, website and backend API cards set when they turn amber or red; a watched server or PC can be renamed or given a new check-in interval. Freight carriers and supplier feeds open their own pages, and Stripe, Turnstile and this deployment open their Vercel settings.</p>
+          <h4>Accounting platform</h4>
+          <p>Choose the accounting platform the business uses at the top of the Services tab: Zoho Books, Xero, MYOB Business or QuickBooks Online. Only that platform&apos;s card is shown under Accounts and payments. Each card has a <strong>Help</strong> button with the steps to create the app on the platform&apos;s developer site, the Redirect URI to enter there, then <strong>Edit</strong> to paste the keys and <strong>Connect</strong> to sign in. The Zoho order flow card shows only when Zoho Books is chosen.</p>
           <h4>Keys</h4>
           <p>Zoho Books, Cloudflare and Vercel keys are entered here with <strong>Edit</strong>; they are stored encrypted and never shown again, only their last four characters. Other connections link to the page that holds their keys. Stripe and Turnstile keys live in the website&apos;s Vercel settings.</p>
           <h4>Voice</h4>
@@ -114,8 +126,15 @@ export default async function AdminConnectionsPage({ searchParams }) {
             label: 'Services',
             content: (
               <>
-                {loadError ? <p className="form-error" role="alert">{loadError}</p> : <AdminConnections initial={connections} notice={notice} />}
-                <AdminZohoFlow initial={zohoFlow} />
+                <AdminAccountingPlatform initial={accounting} />
+                {loadError ? <p className="form-error" role="alert">{loadError}</p> : <AdminConnections initial={connections} notice={notice} platform={accounting.platform} />}
+                {accounting.platform === 'zoho_books' ? <AdminZohoFlow initial={zohoFlow} /> : null}
+                {accounting.platform && accounting.platform !== 'zoho_books' ? (
+                  <div className="admin-card">
+                    <h2 className="admin-heading">Order flow for {PLATFORM_NAMES[accounting.platform]}</h2>
+                    <p className="admin-muted">{PLATFORM_NAMES[accounting.platform]} connects and is checked here. Sending website orders to it (contacts, items, invoices, payments and purchase orders) is not built yet; today the order flow works with Zoho Books. Orders are still recorded in Sales &gt; Orders and emailed to sales.</p>
+                  </div>
+                ) : null}
               </>
             ),
           },
