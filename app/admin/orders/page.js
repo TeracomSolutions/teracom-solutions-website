@@ -7,6 +7,7 @@ import AdminSalesTabs from '@/components/AdminSalesTabs';
 import AdminOrderBanner from '@/components/AdminOrderBanner';
 import AdminOrderDashboard from '@/components/AdminOrderDashboard';
 import OrderStageStrip from '@/components/OrderStageStrip';
+import { ShieldAlert } from 'lucide-react';
 
 import { isSessionError, requireAdminToken } from '@/lib/adminPage';
 import { fetchOrders, fetchOrderBanner, fetchOrderAlerts, fetchOrdersDashboard } from '@/lib/api/adminOrders';
@@ -166,7 +167,17 @@ export default async function AdminOrdersPage({ searchParams }) {
               orders.map(order => (
                 <tr key={order.id}>
                   <td>{formatDateTime(order.created_at)}</td>
-                  <td>{order.name || order.email}</td>
+                  <td>
+                    {order.on_hold && (
+                      <span
+                        className="admin-status is-bad"
+                        title={`On hold, do not ship yet: ${(order.hold_reasons || []).join(' ') || 'flagged by the card fraud check'} Open the order to check it and release the hold.`}
+                      >
+                        <ShieldAlert size={16} aria-hidden="true" style={{ verticalAlign: 'text-bottom' }} /> On hold{' '}
+                      </span>
+                    )}
+                    {order.name || order.email}
+                  </td>
                   <td>{cents(order.total_cents)}</td>
                   <td>{order.mode}</td>
                   <td className={`admin-status is-${orderStatusTone(order.status)}`}>
