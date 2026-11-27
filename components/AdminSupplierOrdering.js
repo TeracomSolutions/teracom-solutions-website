@@ -17,6 +17,35 @@ export default function AdminSupplierOrdering({ supplierId, initial }) {
   const [autoSendPos, setAutoSendPos] = useState(initial?.auto_send_pos || false);
 
   const [busy, setBusy] = useState(false);
+  const [findText, setFindText] = useState(initial?.name || '');
+  const [found, setFound] = useState(null);
+  const [finding, setFinding] = useState(false);
+  const [findError, setFindError] = useState('');
+
+  // Find in Zoho: search the vendors in Zoho Books and pick one, so nobody has to copy an ID out of Zoho.
+  async function findInZoho() {
+    setFinding(true);
+    setFindError('');
+    setFound(null);
+    try {
+      const res = await fetch(`/api/admin/suppliers/zoho-vendors?q=${encodeURIComponent(findText.trim())}`);
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || data.detail || 'Zoho Books did not answer.');
+      setFound(data.vendors || []);
+    } catch (err) {
+      setFindError(err.message);
+    } finally {
+      setFinding(false);
+    }
+  }
+
+  function pickVendor(vendor) {
+    setZohoVendorName(vendor.name);
+    setZohoVendorId(vendor.id);
+    if (!poEmail && vendor.email) setPoEmail(vendor.email);
+    setFound(null);
+    setMessage(`${vendor.name} picked. Check the purchase order email, then press Save.`);
+  }
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
 
@@ -74,6 +103,40 @@ export default function AdminSupplierOrdering({ supplierId, initial }) {
       <p className="admin-muted">What we need to send this supplier a purchase order.</p>
 
       <form onSubmit={handleSubmit} className="admin-form">
+        <div className="mb-3">
+          <label htmlFor="findZohoVendor" className="form-label">Find this supplier in Zoho Books</label>
+          <div className="bp-inline">
+            <input
+              type="text"
+              id="findZohoVendor"
+              className="form-control"
+              value={findText}
+              placeholder="Part of the supplier's name in Zoho"
+              onChange={(e) => setFindText(e.target.value)}
+              onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); findInZoho(); } }}
+            />
+            <button type="button" className="btn btn-secondary btn-sm" onClick={findInZoho} disabled={finding || findText.trim().length < 2}>
+              {finding ? 'Searching…' : 'Find in Zoho'}
+            </button>
+          </div>
+          {findError && <div className="form-error" role="alert">{findError}</div>}
+          {found && found.length === 0 && <div className="admin-muted">No vendor in Zoho matches that name. Try fewer letters, or add the vendor in Zoho Books first.</div>}
+          {found && found.length > 0 && (
+            <ul className="admin-list">
+              {found.map((vendor) => (
+                <li key={vendor.id}>
+                  <strong>{vendor.name}</strong>
+                  {vendor.company && vendor.company !== vendor.name ? ` (${vendor.company})` : ''}
+                  {vendor.email ? `, ${vendor.email}` : ''}
+                  {!vendor.active ? ' (inactive in Zoho)' : ''}{' '}
+                  <button type="button" className="btn btn-secondary btn-sm" onClick={() => pickVendor(vendor)}>Use this one</button>
+                </li>
+              ))}
+            </ul>
+          )}
+          <div className="admin-muted">Fills in the vendor name and ID below (and the email, if it is empty). Press Save afterwards.</div>
+        </div>
+
         <div className="mb-3">
           <label htmlFor="zohoVendorName" className="form-label">Zoho vendor name</label>
           <input
