@@ -5,6 +5,7 @@ import AdminHelpIcon from '@/components/AdminHelpIcon';
 import AdminPricingManager from '@/components/AdminPricingManager';
 import AdminPriceCheck from '@/components/AdminPriceCheck';
 import AdminPricePublish from '@/components/AdminPricePublish';
+import AdminRrpCap from '@/components/AdminRrpCap';
 import AdminShell from '@/components/AdminShell';
 import AdminStoreTabs from '@/components/AdminStoreTabs';
 import { fetchBands, fetchPriceCheck, fetchPublishStatus, fetchSupplierPricing, fetchTiers } from '@/lib/api/adminPricing';
@@ -55,7 +56,9 @@ export default async function AdminPricingPage() {
         Pricing
         <AdminHelpIcon>
           <h4>What this page is for</h4>
-          <p>One place to see the whole price list and decide what each customer tier pays. A tier pays our <strong>cost</strong> (ex GST, from the supplier&apos;s feed) plus a <strong>markup</strong>, plus GST, rounded to the nearest 5 cents -- so every sale carries a known margin. A tier price never goes above the <strong>RRP</strong>; where the markup would, the customer pays RRP. Products with no cost sell at RRP.</p>
+          <p>One place to see the whole price list and decide what each customer tier pays. A tier pays our <strong>cost</strong> (ex GST, from the supplier&apos;s feed) plus a <strong>markup</strong>, plus GST, rounded to the nearest 5 cents -- so every sale carries a known margin. A tier price follows the markup even above the supplier&apos;s <strong>RRP</strong>, except for brands and supplier feeds ticked under <strong>Cap at RRP</strong>. Products with no cost sell at RRP.</p>
+          <h4>Cap at RRP</h4>
+          <p>Tick a supplier feed or a brand and press <em>Save Cap at RRP</em>: its tier prices then never go above the supplier&apos;s RRP, and never below cost plus GST. Nothing is capped until you tick it. Then press <em>Make prices live now</em>.</p>
           <h4>Markup on cost by tier</h4>
           <p>The default markup for Member, Silver, Gold and Platinum. Member is any signed-in customer without a tier; Silver, Gold and Platinum come from the customer&apos;s account (the Zoho import brought them across). Visitors who are not signed in see RRP. Clear a box and save to make that tier pay RRP.</p>
           <h4>Markup by cost band</h4>
@@ -73,6 +76,7 @@ export default async function AdminPricingPage() {
 
       <AdminPricePublish initial={publishStatus} />
       <AdminPriceCheck initial={priceCheck} />
+      <AdminRrpCap />
 
       {loadError ? <p className="form-error" role="alert">{loadError}</p> : (
         <AdminPricingManager tiers={tiers} bandSets={bandsResult.sets} suppliers={suppliers} priceList={priceList} facets={facets} />
