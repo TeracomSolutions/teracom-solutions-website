@@ -5,7 +5,9 @@ import { CUSTOMER_ACCESS_TOKEN_COOKIE } from '@/lib/customerSession';
 import { getCurrentCustomer } from '@/lib/api/customerAuth';
 import { ApiError } from '@/lib/api/client';
 import AuthShell from '@/components/AuthShell';
+import CustomerOrders from '@/components/CustomerOrders';
 import EmailPreferences from '@/components/EmailPreferences';
+import { fetchMyOrders } from '@/lib/api/customerOrders';
 import { BadgePercent, CircleUserRound, ReceiptText, ShoppingCart } from 'lucide-react';
 
 export default async function CustomerAccountPage() {
@@ -27,6 +29,17 @@ export default async function CustomerAccountPage() {
     // This matches the resilience pattern in app/admin/catalog/page.js
   }
 
+  // Their orders and where each is up to, loaded on their own so a failure leaves the rest of the page working.
+  let orders = [];
+  let ordersError = false;
+  if (customer) {
+    try {
+      orders = (await fetchMyOrders(token)).orders || [];
+    } catch {
+      ordersError = true;
+    }
+  }
+
   return (
     <AuthShell
       eyebrow="Account"
@@ -43,6 +56,8 @@ export default async function CustomerAccountPage() {
             <>
               <p className="lead">Welcome, {customer.email}!</p>
               <p>Your account was created on {new Date(customer.created_at).toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' })}.</p>
+
+              <CustomerOrders orders={orders} error={ordersError} />
 
               <EmailPreferences customer={customer} />
 
