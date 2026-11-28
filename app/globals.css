@@ -4698,3 +4698,9 @@ html.reveal-ready .section-sticky[data-reveal].is-revealed { transform:none; }
 .rep-bar { display:block; height:4px; margin-top:3px; border-radius:2px; background:rgba(255,255,255,.08); }
 .rep-bar span { display:block; height:100%; border-radius:2px; background:#ff1717; margin-left:auto; }
 @media (max-width:900px) { .rep { grid-template-columns:1fr; } .rep-side { position:static; max-height:none; } }
+
+/* Your orders on the customer account page (2026-11-28) */
+.customer-orders { margin: 24px 0; }
+.customer-order { border: 1px solid var(--border, rgba(127,127,127,0.3)); border-radius: 10px; padding: 14px 16px; margin: 12px 0; }
+.customer-order header { margin-bottom: 6px; }
+.customer-order ul { margin: 6px 0 8px 18px; padding: 0; }
