@@ -4704,3 +4704,7 @@ html.reveal-ready .section-sticky[data-reveal].is-revealed { transform:none; }
 .customer-order { border: 1px solid var(--border, rgba(127,127,127,0.3)); border-radius: 10px; padding: 14px 16px; margin: 12px 0; }
 .customer-order header { margin-bottom: 6px; }
 .customer-order ul { margin: 6px 0 8px 18px; padding: 0; }
+
+/* Stat tiles that are buttons (Website Data > Indexing) take the page's text colour, not the browser's black (2026-11-28). */
+button.admin-stat { color: inherit; font: inherit; }
+button.admin-stat .admin-stat-value { color: var(--text, #fff); }

@@ -101,17 +101,7 @@ export const ADMIN_SUBMENUS = {
     { path: '/admin/marketplace', title: 'Marketplace' },
     { path: '/admin/specials', title: 'Specials' },
   ],
-  '/admin/website-data': [
-    { path: '/admin/website-data', title: 'Overview', exact: true },
-    { path: '/admin/website-data/visitors', title: 'Visitors' },
-    { path: '/admin/website-data/opportunities', title: 'Opportunities' },
-    { path: '/admin/website-data/titles', title: 'Titles' },
-    { path: '/admin/website-data/indexing', title: 'Indexing' },
-    { path: '/admin/website-data/health', title: 'Health' },
-    { path: '/admin/website-data/shopping', title: 'Shopping' },
-    { path: '/admin/website-data/analytics', title: 'Analytics' },
-    { path: '/admin/website-data/redirects', title: 'Redirects' },
-  ],
+  // Website Data has its own tabs across the top of each page, so no list under it here (Robert, 28 November 2026).
 };
 
 const ICONS = {
