@@ -2,6 +2,7 @@ import { BRAND, retitle } from '@/lib/brand';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
+import AdminHelpIcon from '@/components/AdminHelpIcon';
 import AdminShell from '@/components/AdminShell';
 import AdminSalesTabs from '@/components/AdminSalesTabs';
 import AdminOrderBanner from '@/components/AdminOrderBanner';
@@ -72,7 +73,19 @@ export default async function AdminOrdersPage({ searchParams }) {
     <AdminShell>
       <AdminSalesTabs />
 
-      <h1 className="admin-heading">Orders</h1>
+      <h1 className="admin-heading">
+        Orders
+        <AdminHelpIcon>
+          <h4>What this page is for</h4>
+          <p>Every paid website order and where it is up to: Paid, Customer in Zoho, Products in Zoho, Prices, Invoice created, Invoice sent, Payment recorded, Supplier order raised and sent, Shipped and Complete. Green is done, yellow waiting or preview only, red a problem. Use <strong>At stage</strong> and <strong>Stuck only</strong> to find orders that need you.</p>
+          <h4>How orders get here</h4>
+          <p>When Stripe says a checkout is paid, the website records the order here and emails it to the Sales email on System &gt; Business profile, whatever the order flow switches say. <strong>Import paid orders from Stripe</strong> adds any paid order that never arrived (for example while Stripe could not reach the website), without emailing.</p>
+          <h4>On hold</h4>
+          <p>A red shield and <strong>On hold</strong> means the card fraud check stopped it, for example a card that did not pass the bank&apos;s security check. Do not ship or order stock until you have checked it and pressed <strong>I have checked it: release the hold</strong> on the order.</p>
+          <h4>Sending to Zoho</h4>
+          <p>Open an order and, step by step, press <strong>Prepare</strong>, read what will be sent, then <strong>Approve and send to Zoho</strong>. That needs Zoho Books connected and the order flow switched on under System &gt; Connections.</p>
+        </AdminHelpIcon>
+      </h1>
       <p className="lead">Every paid order, the steps to Zoho Books, and what needs you.</p>
 
       <p className="admin-muted"><Link href="/admin/orders/test-tools" className="admin-link">Test tools</Link> (make a test order, clean up test records)</p>      {banner && <AdminOrderBanner banner={banner} counts={banner.counts} />}
