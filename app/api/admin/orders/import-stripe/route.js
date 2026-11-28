@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
 
 import { withAdminSession } from '@/lib/adminApi';
-import { fetchOrderAlerts } from '@/lib/api/adminOrders';
+import { fetchOrderAlerts, fetchOrders } from '@/lib/api/adminOrders';
 import { checkOrderRisk, forwardCheckoutSession } from '@/lib/api/orderFlow';
 import { SESSION_EXPANSIONS } from '@/lib/orderFlowForward';
 import { holdMetadata, riskRequest } from '@/lib/orderRisk';
-import { importDays, shouldImport, stripeId } from '@/lib/stripeImport';
+import { importDays, missingRow, shouldImport, stripeId } from '@/lib/stripeImport';
 import { stripe } from '@/lib/stripe';
 
 export const runtime = 'nodejs';
@@ -15,6 +15,23 @@ export const maxDuration = 60;
 // reached us (the signing secret was wrong until 27 November) are read from Stripe and recorded in the backend.
 // An order already recorded is left as it is (the backend keys on the checkout session). New ones get the card
 // fraud check, the same as the webhook. Nothing is emailed: these orders are old.
+// The list: paid website checkouts in Stripe from the last N days that are not recorded here yet. Nothing changes.
+export const GET = withAdminSession(async ({ req, token }) => {
+  await fetchOrderAlerts(token); // administrators only
+  const days = importDays(new URL(req.url).searchParams.get('days'));
+  const since = Math.floor(Date.now() / 1000) - days * 86400;
+  const missing = [];
+  let checked = 0;
+  for await (const session of stripe.checkout.sessions.list({ status: 'complete', created: { gte: since }, limit: 100, expand: ['data.line_items'] })) {
+    checked += 1;
+    if (!shouldImport(session)) continue;
+    const found = await fetchOrders(token, { q: session.id, limit: 1 });
+    if (!found?.total) missing.push(missingRow(session));
+    if (checked >= 300) break;
+  }
+  return NextResponse.json({ days, checked, missing });
+}, { fallback: 'Could not read the orders from Stripe.' });
+
 export const POST = withAdminSession(async ({ req, token }) => {
   await fetchOrderAlerts(token); // the backend answers only for an administrator; anyone else gets its refusal
 
