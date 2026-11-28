@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import AdminPriceSchedule from '@/components/AdminPriceSchedule';
 import { publishDetails, publishState } from '@/lib/pricePublishView';
 
 export default function AdminPricePublish({ initial }) {
@@ -69,6 +70,7 @@ export default function AdminPricePublish({ initial }) {
       )}
       {error && <p className="form-error" role="alert">{error}</p>}
       <p className="admin-muted">How long it takes: the website rebuilds its saved store pages and clears its price cache straight away, but each page is rebuilt when somebody next opens it, and the price list a signed-in customer sees can be held for up to five minutes. Expect new prices within about a minute, at most five. Visitors who are not signed in see RRP, so only RRP changes show for them.</p>
+      <AdminPriceSchedule />
     </section>
   );
 }
