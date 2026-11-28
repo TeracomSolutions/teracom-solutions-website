@@ -4708,3 +4708,6 @@ html.reveal-ready .section-sticky[data-reveal].is-revealed { transform:none; }
 /* Stat tiles that are buttons (Website Data > Indexing) take the page's text colour, not the browser's black (2026-11-28). */
 button.admin-stat { color: inherit; font: inherit; }
 button.admin-stat .admin-stat-value { color: var(--text, #fff); }
+
+/* Cap at RRP choices on Store > Pricing (2026-11-28) */
+.rrp-cap-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 4px 16px; margin: 8px 0 16px; max-height: 320px; overflow-y: auto; }
