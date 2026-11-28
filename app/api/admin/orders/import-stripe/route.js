@@ -5,7 +5,7 @@ import { fetchOrderAlerts } from '@/lib/api/adminOrders';
 import { checkOrderRisk, forwardCheckoutSession } from '@/lib/api/orderFlow';
 import { SESSION_EXPANSIONS } from '@/lib/orderFlowForward';
 import { holdMetadata, riskRequest } from '@/lib/orderRisk';
-import { importDays, shouldImport } from '@/lib/stripeImport';
+import { importDays, shouldImport, stripeId } from '@/lib/stripeImport';
 import { stripe } from '@/lib/stripe';
 
 export const runtime = 'nodejs';
@@ -21,9 +21,22 @@ export const POST = withAdminSession(async ({ req, token }) => {
   const body = await req.json().catch(() => ({}));
   const days = importDays(body?.days);
   const since = Math.floor(Date.now() / 1000) - days * 86400;
+  const one = stripeId(body?.id);
+  if (body?.id && !one) return NextResponse.json({ error: 'That is not a Stripe payment ID (pi_...) or checkout ID (cs_...).' }, { status: 400 });
 
-  const result = { days, checked: 0, recorded: [], already: 0, skipped: 0, failed: [] };
-  for await (const listed of stripe.checkout.sessions.list({ status: 'complete', created: { gte: since }, limit: 100 })) {
+  // One order: the checkout session behind that payment ID, or that checkout ID itself. Nothing else is touched.
+  let sessions;
+  if (one) {
+    sessions = one.startsWith('cs_')
+      ? [await stripe.checkout.sessions.retrieve(one)]
+      : (await stripe.checkout.sessions.list({ payment_intent: one, limit: 1 })).data;
+    if (!sessions.length) return NextResponse.json({ error: `Stripe has no website checkout for ${one}.` }, { status: 404 });
+  } else {
+    sessions = stripe.checkout.sessions.list({ status: 'complete', created: { gte: since }, limit: 100 });
+  }
+
+  const result = { days: one ? null : days, id: one || null, checked: 0, recorded: [], already: 0, skipped: 0, failed: [] };
+  for await (const listed of sessions) {
     result.checked += 1;
     if (!shouldImport(listed)) {
       result.skipped += 1;

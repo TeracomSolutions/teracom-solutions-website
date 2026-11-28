@@ -8,6 +8,7 @@ import AdminSalesTabs from '@/components/AdminSalesTabs';
 import AdminOrderBanner from '@/components/AdminOrderBanner';
 import AdminOrderDashboard from '@/components/AdminOrderDashboard';
 import AdminOrderImport from '@/components/AdminOrderImport';
+import AutoSubmitForm from '@/components/AutoSubmitForm';
 import OrderStageStrip from '@/components/OrderStageStrip';
 import { ShieldAlert } from 'lucide-react';
 
@@ -116,7 +117,8 @@ export default async function AdminOrdersPage({ searchParams }) {
         </section>
       )}
 
-      <form method="get" className="admin-form">
+      <form method="get" action="/admin/orders#orders-list" className="admin-form">
+        <AutoSubmitForm />
         <div>
           <label htmlFor="status">Status</label>
           <select id="status" name="status">
@@ -157,10 +159,10 @@ export default async function AdminOrdersPage({ searchParams }) {
           <input type="text" id="q" name="q" defaultValue={q} />
         </div>
 
-        <button type="submit" className="btn btn-primary">Filter</button>
+        <p className="admin-muted">The list changes as soon as you pick a filter; press Enter after typing a search.</p>
       </form>
 
-      <div className="admin-table-wrap">
+      <div className="admin-table-wrap" id="orders-list">
         <table className="admin-table">
           <thead>
             <tr>
